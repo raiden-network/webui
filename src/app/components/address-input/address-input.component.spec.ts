@@ -17,8 +17,6 @@ describe('AddressInputComponent', () => {
     let fixture: ComponentFixture<AddressInputComponent>;
 
     const nonEip55Address = '0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359';
-    const errorPlaceholder = 'Token network';
-
     let input: HTMLInputElement;
     let mockConfig: MockConfig;
 
@@ -26,7 +24,7 @@ describe('AddressInputComponent', () => {
         const debugElement = fixture.debugElement.query(By.directive(MatError));
         const element = debugElement.query(By.css('span'));
         const span = element.nativeElement as HTMLSpanElement;
-        return span.innerText;
+        return span.innerText.trim();
     }
 
     function mockInput(inputValue: string) {
@@ -90,7 +88,7 @@ describe('AddressInputComponent', () => {
 
     it('should show error when address is not in checksum format', () => {
         component.displayIdenticon = true;
-        mockConfig.web3.checksumAddress = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
+        mockConfig.updateChecksumAddress('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359');
         fixture.detectChanges();
 
         mockInput(nonEip55Address);
@@ -117,7 +115,8 @@ describe('AddressInputComponent', () => {
     });
 
     it('should show an error if the address is own address', () => {
-        mockConfig.web3.isChecksum = true;
+        mockConfig.setIsChecksum(true);
+
         const service = TestBed.get(RaidenService);
         const address = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
         spyOnProperty(service, 'raidenAddress', 'get').and.returnValue(address);

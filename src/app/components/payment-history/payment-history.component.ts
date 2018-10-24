@@ -57,15 +57,16 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
         private indenticonCache: IdenticonCacheService
     ) {
         this.partnerInformation$ = this.route.queryParamMap.pipe(
-            concatMap((params: ParamMap) => {
+            map((params: ParamMap) => {
                 const tokenAddress = params.get('token_address');
                 const partnerAddress = params.get('partner_address');
 
-                return this.raidenService.getUserToken(tokenAddress).pipe(map(value => ({
+                const token = this.raidenService.getUserToken(tokenAddress);
+                return {
                     tokenAddress: tokenAddress,
                     partnerAddress: partnerAddress,
-                    token: value
-                })));
+                    token: token
+                };
             }),
             tap(x => this._decimals = x.token.decimals),
             share()

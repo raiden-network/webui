@@ -90,7 +90,8 @@ export class TokenNetworkSelectorComponent implements OnInit, ControlValueAccess
 
         const errors = this.tokenFc.errors;
         if (!errors) {
-            this.raidenService.getUserToken(c.value).subscribe(value => this.valueChanged.emit(value));
+            const userToken = this.raidenService.getUserToken(c.value);
+            this.valueChanged.emit(userToken);
         }
         return errors;
     }

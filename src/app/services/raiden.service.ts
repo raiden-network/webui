@@ -1,20 +1,20 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
-import { bindNodeCallback, combineLatest, from, Observable, of, throwError, zip } from 'rxjs';
-import { catchError, first, flatMap, map, share, shareReplay, switchMap, tap, toArray } from 'rxjs/operators';
+import { from, Observable, of, throwError, zip } from 'rxjs';
+import { fromPromise } from 'rxjs/internal-compatibility';
+import { catchError, first, flatMap, map, shareReplay, switchMap, tap, toArray } from 'rxjs/operators';
+import { Block } from 'web3/eth/types';
 import { Channel } from '../models/channel';
 import { Connections } from '../models/connection';
 import { Event, EventsParam } from '../models/event';
 import { PaymentEvent } from '../models/payment-event';
 import { SwapToken } from '../models/swaptoken';
-
 import { UserToken } from '../models/usertoken';
 import { amountFromDecimal, amountToDecimal } from '../utils/amount.converter';
 import { EnvironmentType } from './enviroment-type.enum';
-
 import { RaidenConfig } from './raiden.config';
 import { SharedService } from './shared.service';
-import { tokenabi } from './tokenabi';
+import { TokenInfoRetrieverService } from './token-info-retriever.service';
 
 export type CallbackFunc = (error: Error, result: any) => void;
 
@@ -23,18 +23,16 @@ export type CallbackFunc = (error: Error, result: any) => void;
 })
 export class RaidenService {
 
-    public tokenContract: any;
     readonly raidenAddress$: Observable<string>;
     private userTokens: { [id: string]: UserToken | null } = {};
-    private defaultDecimals = 18;
 
     constructor(
         private http: HttpClient,
         private zone: NgZone,
         private raidenConfig: RaidenConfig,
         private sharedService: SharedService,
+        private tokenInfoRetriever: TokenInfoRetrieverService
     ) {
-        this.tokenContract = this.raidenConfig.web3.eth.contract(tokenabi);
         this.raidenAddress$ = this.http.get<{ our_address: string }>(`${this.raidenConfig.api}/address`).pipe(
             map((data) => this._raidenAddress = data.our_address),
             catchError((error) => this.handleError(error)),
@@ -58,61 +56,64 @@ export class RaidenService {
     }
 
     getBlockNumber(): Observable<number> {
-        return bindNodeCallback((cb: CallbackFunc) =>
-            this.raidenConfig.web3.eth.getBlockNumber(this.zoneEncap(cb)))();
+        return fromPromise(this.raidenConfig.web3.eth.getBlockNumber());
     }
 
     public checkChecksumAddress(address: string): boolean {
-        return this.raidenConfig.web3.isChecksumAddress(address);
+        return this.raidenConfig.web3.utils.checkAddressChecksum(address);
     }
 
     public toChecksumAddress(address: string): string {
-        return this.raidenConfig.web3.toChecksumAddress(address);
+        return this.raidenConfig.web3.utils.toChecksumAddress(address);
     }
 
     public getChannels(): Observable<Array<Channel>> {
-        return this.http.get<Array<Channel>>(`${this.raidenConfig.api}/channels`).pipe(
+        let tokens$: Observable<any>;
+        if (Object.keys(this.userTokens).length === 0) {
+            tokens$ = this.getTokens(true);
+        } else {
+            tokens$ = of(null);
+        }
+
+        const fetchChannels = this.http.get<Array<Channel>>(`${this.raidenConfig.api}/channels`).pipe(
             flatMap((channels: Array<Channel>) => from(channels)),
-            flatMap((channel: Channel) => {
-                return this.getUserToken(channel.token_address).pipe(
-                    map((token: UserToken | null) => {
-                        channel.userToken = token;
-                        return channel;
-                    })
-                );
+            map((channel: Channel) => {
+                channel.userToken = this.getUserToken(channel.token_address);
+                return channel;
             }),
             toArray(),
             catchError((error) => this.handleError(error)),
         );
+
+        return tokens$.pipe(flatMap(() => fetchChannels));
     }
 
     public getTokens(refresh: boolean = false): Observable<Array<UserToken>> {
-        const tokens$ = this.http.get<Array<string>>(`${this.raidenConfig.api}/tokens`);
+        const tokens$: Observable<{ [address: string]: UserToken }> = this.http.get<Array<string>>(`${this.raidenConfig.api}/tokens`)
+            .pipe(flatMap(tokenAddresses => fromPromise(this.tokenInfoRetriever.createBatch(tokenAddresses, this._raidenAddress))));
         const connections$ = refresh ?
             this.http.get<Connections>(`${this.raidenConfig.api}/connections`) :
             of(null);
 
-        return combineLatest(tokens$, connections$).pipe(
-            map(([tokenArray, connections]): Array<Observable<UserToken>> =>
-                tokenArray.map((token) =>
-                    this.getUserToken(token, refresh).pipe(
-                        map((userToken) => userToken && connections ?
-                            Object.assign(
-                                userToken,
-                                {connected: connections[token]}
-                            ) : userToken
-                        )
-                    )
-                )
-            ),
-            switchMap((obsArray) => obsArray && obsArray.length ?
-                zip(...obsArray).pipe(first()) :
-                of([])
-            ),
-            map((tokenArray) => tokenArray.filter((token) => !!token)),
-            catchError((error) => this.handleError(error)),
-        );
+        return zip(tokens$, connections$).pipe(map(([userTokens, connections]) => {
+            Object.keys(userTokens).forEach(address => {
+                const token = userTokens[address];
+                if (connections) {
+                    token.connected = connections[address];
+                }
+
+                const cachedToken = this.userTokens[address];
+                if (cachedToken) {
+                    this.userTokens[address] = Object.assign(cachedToken, token);
+                } else {
+                    this.userTokens[address] = token;
+                }
+            });
+
+            return Object.values(this.userTokens);
+        }));
     }
+
 
     public getChannel(tokenAddress: string, partnerAddress: string): Observable<Channel> {
         return this.http.get<Channel>(
@@ -250,14 +251,13 @@ export class RaidenService {
             `${this.raidenConfig.api}/tokens/${tokenAddress}`,
             {},
         ).pipe(
-            switchMap(() => this.getUserToken(tokenAddress).pipe(
-                map((userToken) => {
-                    if (userToken === null) {
-                        throw new Error(`No contract on address: ${tokenAddress}`);
-                    }
-                    return userToken;
-                }),
-            )),
+            map(() => {
+                const userToken = this.getUserToken(tokenAddress);
+                if (userToken === null) {
+                    throw new Error(`No contract on address: ${tokenAddress}`);
+                }
+                return userToken;
+            }),
             tap((userToken: UserToken) => {
                 this.sharedService.success({
                     title: 'Token registered',
@@ -347,94 +347,14 @@ export class RaidenService {
     }
 
     public blocknumberToDate(block: number): Observable<Date> {
-        return bindNodeCallback((b: number, cb: CallbackFunc) =>
-            this.raidenConfig.web3.eth.getBlock(b, this.zoneEncap(cb))
-        )(block).pipe(
-            map((blk) => new Date(blk.timestamp * 1000)),
+        return fromPromise(this.raidenConfig.web3.eth.getBlock(block)).pipe(
+            map((blk: Block) => new Date(blk.timestamp * 1000)),
             first(),
         );
     }
 
-    public getUserToken(
-        tokenAddress: string,
-        refresh: boolean = false,
-    ): Observable<UserToken | null> {
-
-        const tokenContractInstance = this.tokenContract.at(tokenAddress);
-        const tokenMap = this.userTokens;
-        const userToken: UserToken | null | undefined = tokenMap[tokenAddress];
-
-        const balance$: Observable<number> = this.raidenAddress$.pipe(
-            flatMap(value => {
-                return bindNodeCallback((addr: string, cb: CallbackFunc) =>
-                    tokenContractInstance.balanceOf(addr, this.zoneEncap(cb))
-                )(value).pipe(
-                    map((balance) => balance.toNumber())
-                );
-            })
-        );
-
-        if (userToken === undefined) {
-            const decimals$: Observable<number> = bindNodeCallback((cb: CallbackFunc) =>
-                tokenContractInstance.decimals(this.zoneEncap(cb))
-            )().pipe(
-                map(value => value.toNumber()),
-                catchError(() => of(this.defaultDecimals))
-            );
-
-            const symbol$: Observable<string> = bindNodeCallback((cb: CallbackFunc) =>
-                tokenContractInstance.symbol(this.zoneEncap(cb))
-            )().pipe(catchError(() => of('')));
-
-            const name$: Observable<string> = bindNodeCallback((cb: CallbackFunc) =>
-                tokenContractInstance.name(this.zoneEncap(cb))
-            )().pipe(catchError(() => of('')));
-
-            return zip(
-                symbol$,
-                name$,
-                balance$,
-                decimals$
-            ).pipe(
-                map(([symbol, name, balance, decimals]): UserToken => {
-                    return ({
-                        address: tokenAddress,
-                        symbol,
-                        name,
-                        balance,
-                        decimals: decimals
-                    });
-                }),
-                tap((token) => tokenMap[tokenAddress] = token),
-                share(),
-                catchError((error) => {
-                    const message = (error as Error).message;
-                    if (message.startsWith('Invalid JSON RPC response')) {
-                        const errorMessage = 'Could not access the JSON-RPC endpoint, ' +
-                            'Please make sure that CORS for this domain is enabled on your ethereum client.';
-                        return throwError(Error(errorMessage));
-                    }
-                    return throwError(error);
-                })
-            );
-
-        } else if (refresh && userToken !== null) {
-            return balance$.pipe(
-                map((balance) => {
-                    if (balance === null) {
-                        return null;
-                    }
-                    userToken.balance = balance;
-                    return userToken;
-                }),
-            );
-        } else {
-            return of(userToken);
-        }
-    }
-
-    private zoneEncap(cb: CallbackFunc): CallbackFunc {
-        return (err, res) => this.zone.run(() => cb(err, res));
+    public getUserToken(tokenAddress: string): UserToken | null {
+        return this.userTokens[tokenAddress];
     }
 
     private handleError(error: Response | Error | any) {
