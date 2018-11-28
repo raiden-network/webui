@@ -1,0 +1,13 @@
+prune *
+recursive-include raiden_webui *.*
+exclude .gitignore
+exclude angular.json
+exclude karma.conf.js
+exclude package.json
+exclude package-lock.json
+exclude protractor.conf.js
+exclude proxy.config.json
+exclude tsconfig.json
+exclude tslint.json
+exclude .editorconfig
+exclude .bumpversion.cfg

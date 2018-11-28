@@ -1,6 +1,6 @@
-# Helper guide to install and test the Raiden UI
+# Raiden WebUI
 
-* Once you come in the `raiden/ui/web/` folder please run
+* To install the dependencies please run.
 
 > **npm install**.
 
@@ -24,7 +24,7 @@ You can read more about this [here](https://github.com/angular/angular-cli/blob/
 
 **npm run build:prod**
 
-It'll lay in the `dist` subfolder, and can be served directly by flask API.
+It'll lay in the `raiden_webui/ui` subfolder.
 
 * Inside the folder src/assets/config we have a config.development.json. This file contains configuration details about host port etc for the raiden as well as geth because we query both the api servers simultaneously. We need to change this file so that it can pick up details according our local configuration.
 ```
@@ -73,7 +73,35 @@ file.
 
 ```
 
-# Raidenwebui
+# Building the python package
+
+WebUI can be build as a python package that can then be consumed by raiden. 
+In order to build the package you have to run the following command:
+
+
+```bash
+python setup.py build sdist bdist_wheel
+```
+
+To install the package locally in your virtual environment you should run:
+
+```bash
+python setup.py build install
+```
+
+The `build` command will run the `npm build:prod` command and it will build 
+the production version of the WebUI.
+
+## Package the debug version of the WebUI.
+
+If you need to have a version of the python package installed  
+
+```bash
+python setup.py compile_webui -D install
+```  
+
+
+# Raiden WebUI
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.5.
 
@@ -87,7 +115,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Run `ng build` to build the project. The build artifacts will be stored in the `raiden_webui/ui` directory. Use the `-prod` flag for a production build.
 
 ## Running unit tests
 
