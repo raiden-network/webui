@@ -73,32 +73,41 @@ file.
 
 ```
 
-# Building the python package
+# WebUI python package
 
-WebUI can be build as a python package that can then be consumed by raiden. 
-In order to build the package you have to run the following command:
+The WebUI can be build as a python package that can then be consumed by raiden.
+The package provides a static that points to the location of the WebUI static content root directory.
 
+The WebUI resources path can be imported in the following way:
+ 
+```python
+from raiden_webui import RAIDEN_WEBUI_PATH
+```
+ 
+You can build the python package by calling:
 
 ```bash
 python setup.py build sdist bdist_wheel
 ```
 
-To install the package locally in your virtual environment you should run:
+This will call `npm build:prod` to build the static production version of the WebUI so 
+that it can get included in the python package.
+
+If you need to install the package locally to your development virtual environment you can do
+so by running:
 
 ```bash
 python setup.py build install
 ```
 
-The `build` command will run the `npm build:prod` command and it will build 
-the production version of the WebUI.
-
-## Package the debug version of the WebUI.
-
-If you need to have a version of the python package installed  
+In case you need to use the debug version of the WebUI with in your virtual environment you can also
+run: 
 
 ```bash
 python setup.py compile_webui -D install
-```  
+``` 
+
+This will build the debug version of the WebUI to include in your package. 
 
 
 # Raiden WebUI
