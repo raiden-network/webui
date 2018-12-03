@@ -16,8 +16,6 @@ import { RaidenConfig } from './raiden.config';
 import { SharedService } from './shared.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 
-export type CallbackFunc = (error: Error, result: any) => void;
-
 @Injectable({
     providedIn: 'root'
 })
@@ -90,7 +88,7 @@ export class RaidenService {
 
     public getTokens(refresh: boolean = false): Observable<Array<UserToken>> {
         const tokens$: Observable<{ [address: string]: UserToken }> = this.http.get<Array<string>>(`${this.raidenConfig.api}/tokens`)
-            .pipe(flatMap(tokenAddresses => fromPromise(this.tokenInfoRetriever.createBatch(tokenAddresses, this._raidenAddress))));
+            .pipe(flatMap(tokenAddresses => fromPromise(this.tokenInfoRetriever.createBatch(tokenAddresses, this._raidenAddress, this.userTokens))));
         const connections$ = refresh ?
             this.http.get<Connections>(`${this.raidenConfig.api}/connections`) :
             of(null);
