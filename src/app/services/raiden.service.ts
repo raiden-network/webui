@@ -87,8 +87,14 @@ export class RaidenService {
     }
 
     public getTokens(refresh: boolean = false): Observable<Array<UserToken>> {
-        const tokens$: Observable<{ [address: string]: UserToken }> = this.http.get<Array<string>>(`${this.raidenConfig.api}/tokens`)
-            .pipe(flatMap(tokenAddresses => fromPromise(this.tokenInfoRetriever.createBatch(tokenAddresses, this._raidenAddress, this.userTokens))));
+        const tokensUrl = `${this.raidenConfig.api}/tokens`;
+        const tokens$: Observable<{ [address: string]: UserToken }> = this.http.get<Array<string>>(tokensUrl).pipe(
+            flatMap(tokenAddresses => fromPromise(this.tokenInfoRetriever.createBatch(
+                tokenAddresses,
+                this._raidenAddress,
+                this.userTokens
+            )))
+        );
         const connections$ = refresh ?
             this.http.get<Connections>(`${this.raidenConfig.api}/connections`) :
             of(null);

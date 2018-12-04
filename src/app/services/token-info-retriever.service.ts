@@ -5,12 +5,13 @@ import { RaidenConfig } from './raiden.config';
 import { tokenabi } from './tokenabi';
 // @ts-ignore
 import * as Web3 from 'web3';
-import { BatchManager } from "./batch-manager";
+import { BatchManager } from './batch-manager';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TokenInfoRetrieverService {
+
     private readonly web3: Web3;
     private readonly tokenContract: Contract;
     private readonly batchManager: BatchManager;
@@ -18,19 +19,29 @@ export class TokenInfoRetrieverService {
     constructor(private raidenConfig: RaidenConfig) {
         this.web3 = this.raidenConfig.web3;
         this.tokenContract = new this.web3.eth.Contract(tokenabi) as Contract;
-        this.batchManager = new BatchManager(this.web3.currentProvider)
+        this.batchManager = this.raidenConfig.batchManager;
+    }
+
+    private static createToken(address: string): UserToken {
+        return {
+            address,
+            name: '',
+            symbol: '',
+            decimals: 18,
+            balance: 0
+        };
     }
 
     async createBatch(
         tokenAddresses: string[],
         raidenAddress: string,
         userTokens: { [address: string]: UserToken | null }): Promise<{ [address: string]: UserToken }> {
-        let batchManager = this.batchManager;
+        const batchManager = this.batchManager;
 
         const map: { [index: number]: { method: string; address: string } } = {};
 
-        function add(methods, nameProperty: string, tokenAddress: string, defaultValue: any = undefined) {
-            let index = batchManager.add({
+        function add(methods, nameProperty: string, tokenAddress: string, defaultValue?: any) {
+            const index = batchManager.add({
                 request: methods[nameProperty]().call.request(),
                 defaultValue: defaultValue,
             });
@@ -42,10 +53,10 @@ export class TokenInfoRetrieverService {
         }
 
         tokenAddresses.forEach(tokenAddress => {
-            let contract = this.tokenContract;
+            const contract = this.tokenContract;
             contract.options.address = tokenAddress;
 
-            let methods = contract.methods;
+            const methods = contract.methods;
 
             if (!userTokens[tokenAddress]) {
                 add(methods, 'name', tokenAddress, '');
@@ -54,7 +65,7 @@ export class TokenInfoRetrieverService {
             }
 
             // @ts-ignore
-            let request = methods.balanceOf(raidenAddress).call.request();
+            const request = methods.balanceOf(raidenAddress).call.request();
 
             const balanceIndex = this.batchManager.add({
                 request: request
@@ -63,18 +74,16 @@ export class TokenInfoRetrieverService {
             map[balanceIndex - 1] = {
                 method: 'balanceOf',
                 address: tokenAddress
-            }
+            };
         });
 
-
-        let results = await this.batchManager.execute();
+        const results = await this.batchManager.execute();
 
         results.forEach((value, index) => {
-            let element = map[index];
+            const element = map[index];
 
             if (!element) {
-                console.log(index);
-                throw Error(`could not find element for index ${index}`)
+                throw Error(`could not find element for index ${index}`);
             }
 
             let token: UserToken = userTokens[element.address];
@@ -82,20 +91,10 @@ export class TokenInfoRetrieverService {
                 token = TokenInfoRetrieverService.createToken(element.address);
             }
 
-            token[element.method] = value;
+            token[element.method !== 'balanceOf' ? element.method : 'balance'] = value;
             userTokens[element.address] = token;
         });
 
         return userTokens;
-    }
-
-    private static createToken(address: string): UserToken {
-        return {
-            address,
-            name: '',
-            symbol: '',
-            decimals: 18,
-            balance: 0
-        };
     }
 }

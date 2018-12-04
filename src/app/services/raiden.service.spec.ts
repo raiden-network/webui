@@ -1,7 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
-import { BigNumber } from 'bignumber.js';
 import { of } from 'rxjs';
 import { MockConfig } from '../components/channel-table/channel-table.component.spec';
 import { Channel } from '../models/channel';
@@ -155,7 +154,8 @@ describe('RaidenService', () => {
             balance: 20
         };
 
-        spyOn(service, 'getUserToken').and.returnValue(of(token));
+        spyOn(service, 'getUserToken').and.returnValue(token);
+        spyOn(service, 'getTokens').and.returnValue(of([token]));
 
         service.getChannels().subscribe((channels: Array<Channel>) => {
             channels.forEach(value => {

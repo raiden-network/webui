@@ -4,6 +4,7 @@ import { EnvironmentType } from './enviroment-type.enum';
 import { SharedService } from './shared.service';
 // @ts-ignore
 import * as Web3 from 'web3';
+import { BatchManager } from './batch-manager';
 
 interface RDNConfig {
     raiden: string;
@@ -41,6 +42,12 @@ export class RaidenConfig {
     ) {
     }
 
+    private _batchManager: BatchManager;
+
+    public get batchManager(): BatchManager {
+        return this._batchManager;
+    }
+
     load(url: string): Promise<any> {
         return new Promise((resolve, reject) => {
             this.http.get<RDNConfig>(url)
@@ -56,13 +63,19 @@ export class RaidenConfig {
                         console.error(`Invalid web3 endpoint, switching to fallback ${this.config.web3_fallback}`, reason);
                         this.config.web3 = this.config.web3_fallback;
                         this.web3 = new Web3(new Web3.providers.HttpProvider(this.config.web3));
+                        this.createBatchManager();
                         reject(reason);
                     }).then(() => {
                         this.web3 = new Web3(new Web3.providers.HttpProvider(this.config.web3));
+                        this.createBatchManager();
                         resolve();
                     });
 
                 });
         });
+    }
+
+    private createBatchManager() {
+        this._batchManager = new BatchManager(this.web3.currentProvider);
     }
 }

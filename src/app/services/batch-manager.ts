@@ -1,6 +1,6 @@
-import { Manager } from 'web3-core-requestmanager'
+import { Manager } from 'web3-core-requestmanager';
 import { JsonRPCRequest, Provider } from 'web3/providers';
-import { errors } from 'web3-core-helpers'
+import { errors } from 'web3-core-helpers';
 
 export interface BatchRequest {
     readonly request: JsonRPCRequest | any;
@@ -14,14 +14,14 @@ export class BatchManager {
     private requestManager: Manager;
 
     constructor(provider: Provider) {
-        this.requestManager = new Manager(provider)
+        this.requestManager = new Manager(provider);
     }
 
     private static defaultOrThrow(defaultValue: any, error: Error): any {
-        if (defaultValue == undefined) {
-            throw error
+        if (defaultValue === undefined) {
+            throw error;
         } else {
-            return defaultValue
+            return defaultValue;
         }
     }
 
@@ -35,22 +35,22 @@ export class BatchManager {
         return results;
     }
 
-    async execute(): Promise<Array<any>> {
+    public async execute(): Promise<Array<any>> {
         const batches = BatchManager.chunkArray(this.requests, BatchManager.BATCH_LIMIT);
         const results = [];
 
         for (let i = 0; i < batches.length; i++) {
             const batch = batches[i];
-            let rpcRequests = batch.map(value => value.request);
+            const rpcRequests = batch.map(value => value.request);
             const batchResults = await this.sendBatch(rpcRequests) || [];
 
-            let allResults = batch.map((request, index) => {
+            const allResults = batch.map((request, index) => {
                 return batchResults[index] || {};
             });
 
             const processedResults = [];
             for (let index = 0; index < allResults.length; index++) {
-                processedResults[index] = this.processResult(allResults[index], batch[index])
+                processedResults[index] = this.processResult(allResults[index], batch[index]);
             }
             results.push(...processedResults);
         }
@@ -65,15 +65,15 @@ export class BatchManager {
 
     private processResult(result: any, currentRequest: BatchRequest): Object {
         let resultValue: Object;
-        let defaultValue = currentRequest.defaultValue;
+        const defaultValue = currentRequest.defaultValue;
 
         if (result && result.error) {
-            throw errors.ErrorResponse(result)
+            throw errors.ErrorResponse(result);
         } else if (!this.isValidResponse(result)) {
-            throw errors.InvalidResponse(result)
+            throw errors.InvalidResponse(result);
         } else {
             try { // @ts-ignore
-                let format = currentRequest.request.format;
+                const format = currentRequest.request.format;
                 resultValue = format ? format(result.result) : result.result;
             } catch (e) {
                 resultValue = BatchManager.defaultOrThrow(defaultValue, e);
@@ -87,13 +87,13 @@ export class BatchManager {
         return new Promise<Array<any>>((resolve, reject) => {
             this.requestManager.sendBatch(rpcRequests, (err: any, results: Array<any>) => {
                 if (err) {
-                    reject(err)
+                    reject(err);
                 } else {
                     resolve(results);
                 }
 
-            })
-        })
+            });
+        });
     }
 
     private isValidResponse(response: any) {

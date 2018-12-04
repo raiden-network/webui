@@ -31,6 +31,7 @@ import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 
 import { ChannelTableComponent } from './channel-table.component';
+import { BatchManager } from '../../services/batch-manager';
 import Spy = jasmine.Spy;
 
 class MockWeb3 extends Web3 {
@@ -57,13 +58,18 @@ class MockWeb3 extends Web3 {
 
 export class MockConfig extends RaidenConfig {
     public web3: Web3 = new MockWeb3();
+    private testBatchManager: BatchManager = new BatchManager(this.web3.currentProvider);
 
-    updateChecksumAddress(address: string): void {
-        this.mock.checksumAddress = address;
+    get batchManager(): BatchManager {
+        return this.testBatchManager;
     }
 
     private get mock(): MockWeb3 {
         return (this.web3 as MockWeb3);
+    }
+
+    updateChecksumAddress(address: string): void {
+        this.mock.checksumAddress = address;
     }
 
     setIsChecksum(isChecksum: boolean): void {
