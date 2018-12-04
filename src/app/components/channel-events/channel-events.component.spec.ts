@@ -2,7 +2,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -38,10 +37,18 @@ describe('ChannelEventsComponent', () => {
                 {
                     provide: ActivatedRoute,
                     useValue: {
-                        paramMap: of({channel_identifier: 123}),
+                        paramMap: of({
+                            channel_identifier: 123,
+                            get: () => {
+                                return 123;
+                            }
+                        }),
                         queryParamMap: of({
                             token_address: '0x',
-                            partner_address: '0x'
+                            partner_address: '0x',
+                            get: () => {
+                                return '0x';
+                            }
                         })
                     }
                 },
@@ -62,7 +69,7 @@ describe('ChannelEventsComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it('should create', async (() => {
         expect(component).toBeTruthy();
-    });
+    }));
 });

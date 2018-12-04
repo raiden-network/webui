@@ -106,7 +106,7 @@ describe('TokenNetworkSelectorComponent', () => {
         raidenSpy = spyOn(raidenService, 'getTokens');
         raidenSpy.and.returnValue(of(tokens));
         mockConfig = TestBed.get(RaidenConfig);
-        spyOn(raidenService, 'getUserToken').and.returnValue(of(connectedToken));
+        spyOn(raidenService, 'getUserToken').and.returnValue(connectedToken);
 
         fixture = TestBed.createComponent(TokenNetworkSelectorComponent);
         component = fixture.componentInstance;
