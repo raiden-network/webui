@@ -1,6 +1,6 @@
-# Helper guide to install and test the Raiden UI
+# Raiden WebUI
 
-* Once you come in the `raiden/ui/web/` folder please run
+* To install the dependencies please run.
 
 > **npm install**.
 
@@ -24,7 +24,7 @@ You can read more about this [here](https://github.com/angular/angular-cli/blob/
 
 **npm run build:prod**
 
-It'll lay in the `dist` subfolder, and can be served directly by flask API.
+It'll lay in the `raiden_webui/ui` subfolder.
 
 * Inside the folder src/assets/config we have a config.development.json. This file contains configuration details about host port etc for the raiden as well as geth because we query both the api servers simultaneously. We need to change this file so that it can pick up details according our local configuration.
 ```
@@ -73,7 +73,44 @@ file.
 
 ```
 
-# Raidenwebui
+# WebUI python package
+
+The WebUI can be build as a python package that can then be consumed by raiden.
+The package provides a static that points to the location of the WebUI static content root directory.
+
+The WebUI resources path can be imported in the following way:
+ 
+```python
+from raiden_webui import RAIDEN_WEBUI_PATH
+```
+ 
+You can build the python package by calling:
+
+```bash
+python setup.py build sdist bdist_wheel
+```
+
+This will call `npm build:prod` to build the static production version of the WebUI so 
+that it can get included in the python package.
+
+If you need to install the package locally to your development virtual environment you can do
+so by running:
+
+```bash
+python setup.py build install
+```
+
+In case you need to use the debug version of the WebUI with in your virtual environment you can also
+run: 
+
+```bash
+python setup.py compile_webui -D install
+``` 
+
+This will build the debug version of the WebUI to include in your package. 
+
+
+# Raiden WebUI
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.5.
 
@@ -87,7 +124,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Run `ng build` to build the project. The build artifacts will be stored in the `raiden_webui/ui` directory. Use the `-prod` flag for a production build.
 
 ## Running unit tests
 
