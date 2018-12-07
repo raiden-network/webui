@@ -38,6 +38,7 @@ __pycache__
 npm-debug.log
 testem.log
 /typings
+/test-reports
 
 # e2e
 /e2e/*.js
