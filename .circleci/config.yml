@@ -105,15 +105,12 @@ jobs:
       - image: cibuilds/github:0.10
     steps:
       - attach_workspace: *attach_options
-      - when:
-          condition: ${CIRCLE_TAG}
-          steps:
-            - run:
-                name: "Publish Release on GitHub"
-                command: |
-                  echo "TAG: ${CIRCLE_TAG}"
-                  VERSION=${CIRCLE_TAG}
-                  ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./dist/
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            echo "TAG: ${CIRCLE_TAG}"
+            VERSION=${CIRCLE_TAG}
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./dist/
 
   deploy-pypi:
     executor:
