@@ -1,5 +1,7 @@
 # Raiden WebUI
 
+[![CircleCI](https://circleci.com/gh/raiden-network/webui/tree/master.svg?style=svg)](https://circleci.com/gh/raiden-network/webui/tree/master)
+
 * To install the dependencies please run.
 
 > **npm install**.
