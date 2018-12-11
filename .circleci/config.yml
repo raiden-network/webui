@@ -1,5 +1,13 @@
 version: 2.1
 
+templates:
+  filter-tag-templates: &filter-version-regex
+    tags:
+      only: /^v\d+\.\d+\.\d+$/
+    branches:
+      ignore: /.*/
+
+
 var_1: &docker_image circleci/node:10.13.0-browsers
 var_2: &cache_key raiden-webui-{{ .Branch }}-{{ checksum "package-lock.json" }}
 
@@ -15,6 +23,29 @@ executors:
     working_directory: ~/src
     docker:
       - image: *docker_image
+  python-executor:
+    working_directory: ~/
+    docker:
+      - image: circleci/python:3.7
+
+
+commands:
+  config-path:
+    description: "Set environment variables and change path to use venv"
+    steps:
+      - run:
+          name: "Configure PATH"
+          command: |
+            echo 'export PATH=~/venv-3.7/bin:~/.local/bin:${PATH}' >> ${BASH_ENV}
+
+  activate-venv:
+    description: "Activate the venv"
+    steps:
+      - run:
+          name: "Activate the venv"
+          command: |
+            . ${VENV_PATH}/bin/activate
+
 
 jobs:
   install:
@@ -22,7 +53,7 @@ jobs:
     steps:
       - checkout
       - restore_cache: *root_package_lock_key
-      - run: npm install
+      - run: npm ci
       - save_cache:
           <<: *root_package_lock_key
           paths:
@@ -49,19 +80,101 @@ jobs:
     steps:
       - attach_workspace: *attach_options
       - run: npm run build:prod
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./raiden_webui/ui
+
+  build-package:
+    executor: python-executor
+    steps:
+      - attach_workspace: *attach_options
+      - run:
+          name: "Create the packages"
+          command: |
+            python setup.py sdist
+            python setup.py bdist_wheel
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./dist
+
+  deploy-github-release:
+    working_directory: ~/
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace: *attach_options
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            echo "TAG: ${CIRCLE_TAG}"
+            VERSION=${CIRCLE_TAG}
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./dist/
+
+  deploy-pypi:
+    executor:
+      name: python-executor
+    steps:
+      - attach_workspace: *attach_options
+      - run:
+          name: "Create the virtualenv"
+          command: |
+            python -m venv ~/venv-3.7
+            echo 'export VENV_PATH="$HOME/venv-3.7"' >> ${BASH_ENV}
+      - config-path
+      - activate-venv
+      - run:
+          name: "Install twine"
+          command: pip install twine
+      - run:
+          name: "Upload to pypi"
+          command: |
+            twine upload -u $PYPI_USER -p $PYPI_PASSWORD --repository-url $PYPI_URL dist/*
 
 
 workflows:
-    version: 2
-    default_workflow:
-        jobs:
-          - install
-          - lint:
-              requires:
-                - install
-          - build:
-              requires:
-                - install
-          - test:
-              requires:
-                - build
+  version: 2
+  default_workflow:
+    jobs:
+      - install
+      - lint:
+          requires:
+            - install
+      - build:
+          requires:
+            - install
+      - test:
+          requires:
+            - lint
+            - build
+  package_deploy:
+    jobs:
+      - install:
+          filters:
+            <<: *filter-version-regex
+      - build:
+          requires:
+            - install
+          filters:
+            <<: *filter-version-regex
+      - test:
+          requires:
+            - build
+          filters:
+            <<: *filter-version-regex
+      - build-package:
+          requires:
+            - test
+          filters:
+            <<: *filter-version-regex
+      - deploy-github-release:
+          requires:
+            - build-package
+          filters:
+            <<: *filter-version-regex
+      - deploy-pypi:
+          requires:
+            - build-package
+          filters:
+            <<: *filter-version-regex
