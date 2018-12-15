@@ -73,7 +73,13 @@ jobs:
     executor: base-executor
     steps:
       - attach_workspace: *attach_options
-      - run: npm run test -- --watch=false --progress=false --browsers=ChromeHeadlessCI
+      - run: npm run test -- --watch=false --progress=false --browsers=ChromeHeadlessCI --code-coverage
+      - run:
+          name: "Install codecov"
+          command: npm install codecov
+      - run:
+          name: "Upload coverage"
+          command: node_modules/codecov/bin/codecov
 
   build:
     executor: base-executor
