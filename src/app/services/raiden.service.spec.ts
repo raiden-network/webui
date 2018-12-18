@@ -1,15 +1,16 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
-import { BigNumber } from 'bignumber.js';
 import { of } from 'rxjs';
 import { MockConfig } from '../components/channel-table/channel-table.component.spec';
 import { Channel } from '../models/channel';
 import { UserToken } from '../models/usertoken';
 import { RaidenConfig } from './raiden.config';
 
-import { CallbackFunc, RaidenService } from './raiden.service';
+import { RaidenService } from './raiden.service';
 import { SharedService } from './shared.service';
+import { TokenInfoRetrieverService } from './token-info-retriever.service';
+import Spy = jasmine.Spy;
 
 describe('RaidenService', () => {
 
@@ -20,6 +21,8 @@ describe('RaidenService', () => {
     let endpoint: String;
 
     let service: RaidenService;
+
+    let retrieverSpy: Spy;
 
     const channel1: Channel = {
         state: 'opened',
@@ -57,7 +60,8 @@ describe('RaidenService', () => {
                     useClass: MockConfig
                 },
                 RaidenService,
-                SharedService
+                SharedService,
+                TokenInfoRetrieverService
             ]
         });
 
@@ -66,6 +70,8 @@ describe('RaidenService', () => {
         endpoint = TestBed.get(RaidenConfig).api;
         sharedService = TestBed.get(SharedService);
         service = TestBed.get(RaidenService);
+
+        retrieverSpy = spyOn(TestBed.get(TokenInfoRetrieverService), 'createBatch');
 
         spyOn(sharedService, 'error');
         spyOn(service, 'raidenAddress$').and.returnValue(of('0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'));
@@ -148,24 +154,8 @@ describe('RaidenService', () => {
             balance: 20
         };
 
-        service.tokenContract = {
-            at: () => ({
-                name: (callback: CallbackFunc) => {
-                    callback(null, token.name);
-                },
-                balanceOf: (address: String, callback: CallbackFunc) => {
-                    callback(null, {
-                        toNumber: () => token.balance
-                    });
-                },
-                symbol: (callback: CallbackFunc) => {
-                    callback(null, token.symbol);
-                },
-                decimals: (callback: CallbackFunc) => {
-                    callback(null, new BigNumber(token.decimals));
-                }
-            })
-        };
+        spyOn(service, 'getUserToken').and.returnValue(token);
+        spyOn(service, 'getTokens').and.returnValue(of([token]));
 
         service.getChannels().subscribe((channels: Array<Channel>) => {
             channels.forEach(value => {
@@ -190,114 +180,6 @@ describe('RaidenService', () => {
         });
 
         tick();
-
-        mockHttp.expectOne({
-            url: `${endpoint}/address`,
-            method: 'GET'
-        }).flush({
-            own_address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
-        }, {
-            status: 200,
-            statusText: 'All Good'
-        });
-        flush();
-    }));
-
-    it('should show an error message for JSON RPC errors while fetching channels', fakeAsync(() => {
-
-        const rpcError = Error('Invalid JSON RPC response');
-
-        // noinspection JSUnusedLocalSymbols
-        service.tokenContract = {
-            at: () => ({
-                name: (callback: CallbackFunc) => {
-                    throw rpcError;
-                },
-                balanceOf: (address: String, callback: CallbackFunc) => {
-                    throw rpcError;
-                },
-                symbol: (callback: CallbackFunc) => {
-                    throw rpcError;
-                }
-            })
-        };
-
-        service.getChannels().subscribe(() => {
-            fail('Call should fail with error');
-        }, (error) => {
-            expect(error).toBeTruthy();
-        });
-
-        mockHttp.expectOne({
-            url: `${endpoint}/channels`,
-            method: 'GET'
-        }).flush([
-            channel1,
-            channel2
-        ], {
-            status: 200,
-            statusText: 'All good'
-        });
-
-        mockHttp.expectOne({
-            url: `${endpoint}/address`,
-            method: 'GET'
-        }).flush({
-            own_address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
-        }, {
-            status: 200,
-            statusText: 'All Good'
-        });
-
-        expect(sharedService.error).toHaveBeenCalledTimes(1);
-
-        // @ts-ignore
-        const payload = sharedService.error.calls.first().args[0];
-
-        expect(payload.title).toBe('Raiden Error', 'It should be a Raiden Error');
-        expect(payload.description).toContain('Could not access the JSON-RPC endpoint');
-
-        flush();
-    }));
-
-
-    it('should show an error message for JSON RPC errors when fetching a token', fakeAsync(() => {
-        const rpcError = Error('Invalid JSON RPC response');
-
-        // noinspection JSUnusedLocalSymbols
-        service.tokenContract = {
-            at: () => ({
-                name: (callback: CallbackFunc) => {
-                    throw rpcError;
-                },
-                balanceOf: (address: String, callback: CallbackFunc) => {
-                    throw rpcError;
-                },
-                symbol: (callback: CallbackFunc) => {
-                    throw rpcError;
-                }
-            })
-        };
-
-        service.getUserToken(tokenAddress, false).subscribe(() => {
-            fail('There should be an error');
-        }, (error) => {
-            expect(error).toBeTruthy();
-            expect(error.message).toContain('Could not access the JSON-RPC endpoint');
-        });
-
-        tick();
-
-        mockHttp.expectOne({
-            url: `${endpoint}/address`,
-            method: 'GET'
-        }).flush({
-            own_address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
-        }, {
-            status: 200,
-            statusText: 'All Good'
-        });
-
         flush();
     }));
 });

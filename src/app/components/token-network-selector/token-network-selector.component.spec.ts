@@ -60,7 +60,7 @@ describe('TokenNetworkSelectorComponent', () => {
         const debugElement = fixture.debugElement.query(By.directive(MatError));
         const element = debugElement.query(By.css('span'));
         const span = element.nativeElement as HTMLSpanElement;
-        return span.innerText;
+        return span.innerText.trim();
     }
 
     function mockInput(inputValue: string = '') {
@@ -106,7 +106,7 @@ describe('TokenNetworkSelectorComponent', () => {
         raidenSpy = spyOn(raidenService, 'getTokens');
         raidenSpy.and.returnValue(of(tokens));
         mockConfig = TestBed.get(RaidenConfig);
-        spyOn(raidenService, 'getUserToken').and.returnValue(of(connectedToken));
+        spyOn(raidenService, 'getUserToken').and.returnValue(connectedToken);
 
         fixture = TestBed.createComponent(TokenNetworkSelectorComponent);
         component = fixture.componentInstance;
@@ -115,7 +115,7 @@ describe('TokenNetworkSelectorComponent', () => {
         const inputDebugElement = fixture.debugElement.query(By.css('input[type=text]'));
         input = inputDebugElement.nativeElement as HTMLInputElement;
 
-        mockConfig.web3.isChecksum = true;
+        mockConfig.setIsChecksum(true);
     });
 
     it('should create', () => {
@@ -162,8 +162,8 @@ describe('TokenNetworkSelectorComponent', () => {
     });
 
     it('should show error when address is not in checksum format', () => {
-        mockConfig.web3.isChecksum = false;
-        mockConfig.web3.checksumAddress = '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195';
+        mockConfig.setIsChecksum(false);
+        mockConfig.updateChecksumAddress('0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195');
         mockInput('0xeb7f4bbaa1714f3e5a12ff8b681908d7b98bd195');
         fixture.detectChanges();
         expect(errorMessage()).toBe('Address is not in checksum format: 0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195');

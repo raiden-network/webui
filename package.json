@@ -11,7 +11,8 @@
     "build:prod": "ng build --prod --aot",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "node patch.js"
   },
   "private": true,
   "dependencies": {
@@ -36,7 +37,7 @@
     "ngx-clipboard": "11.1.3",
     "ngx-toastr": "^9.0.2",
     "rxjs": "^6.2.2",
-    "web3": "0.20.6",
+    "web3": "^1.0.0-beta.36",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
@@ -47,6 +48,7 @@
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "10.7.1",
+    "@types/web3": "^1.0.11",
     "codelyzer": "^4.4.4",
     "jasmine-core": "^3.2.1",
     "jasmine-spec-reporter": "~4.2.1",
