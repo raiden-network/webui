@@ -179,11 +179,13 @@ workflows:
           filters:
             <<: *filter-version-regex
       - deploy-github-release:
+          context: "Raiden Context"
           requires:
             - build-package
           filters:
             <<: *filter-version-regex
       - deploy-pypi:
+          context: "Raiden Context"
           requires:
             - build-package
           filters:
