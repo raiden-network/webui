@@ -74,6 +74,10 @@ jobs:
     steps:
       - attach_workspace: *attach_options
       - run: npm run test -- --watch=false --progress=false --browsers=ChromeHeadlessCI --code-coverage
+      - store_test_results:
+          path: ./test-reports
+      - store_artifacts:
+          path: ./test-reports
       - run:
           name: "Install codecov"
           command: npm install codecov
