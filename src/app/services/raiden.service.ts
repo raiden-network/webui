@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { from, Observable, of, throwError, zip } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
@@ -6,7 +6,6 @@ import { catchError, first, flatMap, map, shareReplay, switchMap, tap, toArray }
 import { Block } from 'web3/eth/types';
 import { Channel } from '../models/channel';
 import { Connections } from '../models/connection';
-import { Event, EventsParam } from '../models/event';
 import { PaymentEvent } from '../models/payment-event';
 import { SwapToken } from '../models/swaptoken';
 import { UserToken } from '../models/usertoken';
@@ -297,37 +296,6 @@ export class RaidenService {
                     description: description,
                 });
             }),
-            catchError((error) => this.handleError(error)),
-        );
-    }
-
-    public getBlockchainEvents(
-        eventsParam: EventsParam,
-        fromBlock?: number,
-        toBlock?: number,
-    ): Observable<Array<Event>> {
-        let path: string;
-        const channel = eventsParam.channel;
-        const basePath = '_debug/blockchain_events';
-
-        if (channel) {
-            path = `${basePath}/payment_networks/${channel.token_address}/channels/${channel.partner_address}`;
-        } else if (eventsParam.token) {
-            path = `${basePath}/tokens/${eventsParam.token}`;
-        } else {
-            path = `${basePath}/network`;
-        }
-        let params = new HttpParams();
-        if (fromBlock) {
-            params = params.set('from_block', '' + fromBlock);
-        }
-        if (toBlock) {
-            params = params.set('to_block', '' + toBlock);
-        }
-        return this.http.get<Array<Event>>(
-            `${this.raidenConfig.api}/${path}`,
-            {params}
-        ).pipe(
             catchError((error) => this.handleError(error)),
         );
     }
