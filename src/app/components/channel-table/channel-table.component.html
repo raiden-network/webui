@@ -130,11 +130,6 @@
                 </button>
                 <mat-menu #menu="matMenu">
                     <button mat-menu-item
-                            [routerLink]="['/events/channels/' + channel.channel_identifier]"
-                            [queryParams]="{ token_address: channel.token_address, partner_address: channel.partner_address}">
-                        <span>View channel events</span>
-                    </button>
-                    <button mat-menu-item
                             [routerLink]="['/payments']"
                             [queryParams]="{ token_address: channel.token_address, partner_address: channel.partner_address}">
                         <span>Payment History</span>

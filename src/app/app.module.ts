@@ -10,15 +10,12 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { ChannelTableComponent } from './components/channel-table/channel-table.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
-import { EventListComponent } from './components/event-list/event-list.component';
 import { HomeComponent } from './components/home/home.component';
 import { JoinDialogComponent } from './components/join-dialog/join-dialog.component';
 import { LicenseComponent } from './components/license/license.component';
-import { NetworkEventsComponent } from './components/network-events/network-events.component';
 import { OpenDialogComponent } from './components/open-dialog/open-dialog.component';
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
 import { RegisterDialogComponent } from './components/register-dialog/register-dialog.component';
-import { TokenEventsComponent } from './components/token-events/token-events.component';
 import { TokenNetworkComponent } from './components/token-network/token-network.component';
 import { CdkDetailRowDirective } from './directives/cdk-detail-row.directive';
 import { MaterialComponentsModule } from './modules/material-components/material-components.module';
@@ -31,7 +28,6 @@ import { RaidenInterceptor } from './services/raiden.interceptor';
 import { RaidenService } from './services/raiden.service';
 import { SharedService } from './services/shared.service';
 import { DepositDialogComponent } from './components/deposit-dialog/deposit-dialog.component';
-import { ChannelEventsComponent } from './components/channel-events/channel-events.component';
 import { DecimalPipe } from './pipes/decimal.pipe';
 import { TokenInputComponent } from './components/token-input/token-input.component';
 import { AddressInputComponent } from './components/address-input/address-input.component';
@@ -45,9 +41,6 @@ const appRoutes: Routes = [
     {path: 'license', component: LicenseComponent},
     {path: 'tokens', component: TokenNetworkComponent},
     {path: 'channels', component: ChannelTableComponent},
-    {path: 'events/network', component: NetworkEventsComponent},
-    {path: 'events/tokens/:address', component: TokenEventsComponent},
-    {path: 'events/channels/:channel_identifier', component: ChannelEventsComponent},
     {path: 'payments', component: PaymentHistoryComponent}
 ];
 
@@ -60,7 +53,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
     declarations: [
         AppComponent,
         ChannelTableComponent,
-        EventListComponent,
         TokenNetworkComponent,
         HomeComponent,
         LicenseComponent,
@@ -72,12 +64,9 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         SubsetPipe,
         TokenPipe,
         EllipsisPipe,
-        NetworkEventsComponent,
-        TokenEventsComponent,
         CdkDetailRowDirective,
         ConfirmationDialogComponent,
         DepositDialogComponent,
-        ChannelEventsComponent,
         DecimalPipe,
         TokenInputComponent,
         AddressInputComponent,

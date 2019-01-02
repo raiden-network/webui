@@ -25,7 +25,6 @@ import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import { SharedService } from '../../services/shared.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
-import { EventListComponent } from '../event-list/event-list.component';
 import { OpenDialogComponent } from '../open-dialog/open-dialog.component';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
@@ -88,7 +87,6 @@ describe('ChannelTableComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 ChannelTableComponent,
-                EventListComponent,
                 OpenDialogComponent,
                 TokenInputComponent,
                 AddressInputComponent,

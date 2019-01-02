@@ -22,14 +22,6 @@
                     <mat-icon aria-label="Register a new token">add_circle</mat-icon>
                 </button>
             </div>
-            <button mat-icon-button color="accent" [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item [routerLink]="['/events/network']">
-                    <span>View network events</span>
-                </button>
-            </mat-menu>
         </div>
 
         <mat-card-content fxLayout="row"
@@ -155,16 +147,6 @@
                         color="accent"
                         (click)="showLeaveDialog(token)">{{ 'Leave Network' | uppercase }}
                 </button>
-            </div>
-            <div fxLayout="column" fxFlex="0 0 1em" fxLayoutAlign="start end">
-                <button mat-icon-button color="accent" [matMenuTriggerFor]="menu">
-                    <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                    <button mat-menu-item [routerLink]="['/events/tokens/' + token.address]">
-                        <span>View token events</span>
-                    </button>
-                </mat-menu>
             </div>
         </mat-card>
     </div>
