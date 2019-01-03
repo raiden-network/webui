@@ -2,7 +2,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatError } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
@@ -16,6 +15,7 @@ import { SharedService } from '../../services/shared.service';
 import { MockConfig } from '../channel-table/channel-table.component.spec';
 
 import { TokenNetworkSelectorComponent } from './token-network-selector.component';
+import { errorMessage, mockEvent } from "../../../testing/interaction-helper";
 
 describe('TokenNetworkSelectorComponent', () => {
     let component: TokenNetworkSelectorComponent;
@@ -56,25 +56,12 @@ describe('TokenNetworkSelectorComponent', () => {
 
     const tokens = [notOwnedToken, connectedToken, ownedToken];
 
-    function errorMessage(): string {
-        const debugElement = fixture.debugElement.query(By.directive(MatError));
-        const element = debugElement.query(By.css('span'));
-        const span = element.nativeElement as HTMLSpanElement;
-        return span.innerText.trim();
-    }
-
     function mockInput(inputValue: string = '') {
         component.tokenFc.markAsTouched();
         component.tokenFc.setValue(inputValue);
         input.value = inputValue;
         input.dispatchEvent(mockEvent('focusin'));
         input.dispatchEvent(mockEvent('input'));
-    }
-
-    function mockEvent(type: string, canBubble = false, cancellable = true) {
-        const event = document.createEvent('Event');
-        event.initEvent(type, canBubble, cancellable);
-        return event;
     }
 
     beforeEach(async(() => {
@@ -138,27 +125,27 @@ describe('TokenNetworkSelectorComponent', () => {
     it('should show an error if the input is empty', () => {
         mockInput('');
         fixture.detectChanges();
-        expect(errorMessage()).toBe(`Please select a token network`);
+        expect(errorMessage(fixture.debugElement)).toBe(`Please select a token network`);
     });
 
     it('should show an error if the error is not 42 characters long', () => {
         mockInput('0x34234');
         fixture.detectChanges();
-        expect(errorMessage()).toBe(`Invalid token network address length`);
+        expect(errorMessage(fixture.debugElement)).toBe(`Invalid token network address length`);
     });
 
 
     it('should show an error if the address is not valid', () => {
         mockInput('abbfosdaiudaisduaosiduaoisduaoisdu23423423');
         fixture.detectChanges();
-        expect(errorMessage()).toBe('This is not a valid token network address.');
+        expect(errorMessage(fixture.debugElement)).toBe('This is not a valid token network address.');
     });
 
     it('should show an error if network not in registered networks', () => {
         const address = '0xc778417E063141139Fce010982780140Aa0cD5Ab';
         mockInput(address);
         fixture.detectChanges();
-        expect(errorMessage()).toBe('This address does not belong to a registered token network');
+        expect(errorMessage(fixture.debugElement)).toBe('This address does not belong to a registered token network');
     });
 
     it('should show error when address is not in checksum format', () => {
@@ -166,7 +153,7 @@ describe('TokenNetworkSelectorComponent', () => {
         mockConfig.updateChecksumAddress('0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195');
         mockInput('0xeb7f4bbaa1714f3e5a12ff8b681908d7b98bd195');
         fixture.detectChanges();
-        expect(errorMessage()).toBe('Address is not in checksum format: 0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195');
+        expect(errorMessage(fixture.debugElement)).toBe('Address is not in checksum format: 0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195');
     });
 
     it('should update form control value properly if a truthy value is passed', () => {

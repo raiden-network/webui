@@ -6,3 +6,43 @@
     height: 100%;
     padding-top: 30px;
 }
+
+.element {
+    margin-left: 29px;
+    margin-right: 29px;
+}
+
+.address-list {
+    height: 100%;
+    min-height: 400px;
+    overflow-y: scroll;
+    padding: 10px 10px 10px 29px;
+}
+
+.paginator {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    min-height: 5em;
+}
+
+#drop-zone {
+    width: 100%;
+    border: 2px dashed #bbb;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 25px;
+    text-align: center;
+    font-weight: bold;
+    color: #bbb;
+}
+
+.drop-zone-error {
+    font-weight: 400;
+    font-size: small;
+}
+
+.action-buttons {
+    padding-bottom: 10px;
+    padding-top: 10px;
+}

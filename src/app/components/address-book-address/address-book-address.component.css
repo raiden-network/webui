@@ -1,0 +1,5 @@
+.mat-input-element:disabled {
+    color: rgba(0, 0, 0, 0.87) !important;
+    font-weight: 500;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}

@@ -36,6 +36,8 @@ import { RegisteredNetworkValidatorDirective } from './directives/registered-net
 import { PaymentHistoryComponent } from './components/payment-history/payment-history.component';
 import { AddressBookComponent } from './components/address-book/address-book.component';
 import { LocalStorageAdapter } from "./adapters/local-storage-adapter";
+import { AddressBookAddress } from './components/address-book-address/address-book-address.component';
+import { DragUploadDirective } from './directives/drag-upload.directive';
 
 const appRoutes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -76,7 +78,9 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         TokenNetworkSelectorComponent,
         RegisteredNetworkValidatorDirective,
         PaymentHistoryComponent,
-        AddressBookComponent
+        AddressBookComponent,
+        AddressBookAddress,
+        DragUploadDirective
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
