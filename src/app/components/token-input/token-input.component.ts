@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
@@ -35,6 +35,7 @@ import { amountFromDecimal, amountToDecimal } from '../../utils/amount.converter
 })
 export class TokenInputComponent implements ControlValueAccessor, Validator {
 
+    @Input() allowZero: boolean;
     @Input() placeholder: string;
     @Input() errorPlaceholder: string;
 
@@ -157,6 +158,9 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     }
 
     validate(c: AbstractControl): ValidationErrors | null {
+        if (this.allowZero && parseInt(this.inputControl.value, 10) === 0) {
+            return null;
+        }
         if (!this.inputControl.value) {
             return {empty: true};
         }
@@ -184,7 +188,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
                 return {
                     tooManyDecimals: true
                 };
-            } else if (controlValue === 0) {
+            } else if (!this.allowZero && controlValue === 0) {
                 return {
                     invalidAmount: true
                 };

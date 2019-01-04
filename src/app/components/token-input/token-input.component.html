@@ -6,7 +6,7 @@
                [step]="step()"
                (input)="precise($event)"
                min="0"
-               required/>
+               [required]="!allowZero"/>
 
         <mat-hint align="start">
             <span *ngIf="form.get('decimals').value; else alternative">
