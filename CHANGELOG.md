@@ -4,11 +4,12 @@
 
 ### Changed
 
+- `#44` Fixes an issue with the types in `TokenInfoRetriever` that would cause issue on amount input.
 - `#41` WebUI should allow you to open a channel without any balance
 - `#37` Remove debug events from the WebUI
 - `#9` Optimize the WebUI to handle a great number of tokens
 
-## [0.6.0] - 2018-12-05
+## [0.6.0](https://github.com/raiden-network/webui/releases/tag/v0.6.0) - 2018-12-05
 
 ### Changed
 
