@@ -148,5 +148,7 @@ describe('TokenInfoRetriever', () => {
         expect(userToken.address).toBe('0x0f114A1E9Db192502E7856309cc899952b3db1ED');
         expect(userToken.decimals).toBe(18);
         expect(userToken.balance).toBe(150);
+        expect(typeof userToken.decimals).toBe('number');
+        expect(typeof userToken.balance).toBe('number');
     });
 });

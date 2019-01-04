@@ -91,6 +91,12 @@ export class TokenInfoRetrieverService {
                 token = TokenInfoRetrieverService.createToken(element.address);
             }
 
+            const expectedType = typeof token[element.method !== 'balanceOf' ? element.method : 'balance'];
+
+            if (expectedType === 'number') {
+                value = Number(value);
+            }
+
             token[element.method !== 'balanceOf' ? element.method : 'balance'] = value;
             userTokens[element.address] = token;
         });
