@@ -112,6 +112,18 @@ describe('TokenInputComponent', () => {
         expect(component.form.get('amount').errors['invalidAmount']).toBe(true);
     });
 
+    it('should show no error when input value is 0 and zero is allowed', () => {
+        component.decimals = 18;
+        component.allowZero = true;
+
+        mockInput('0');
+        fixture.detectChanges();
+
+        expect(component.tokenAmount.isEqualTo(0)).toBe(true);
+        expect(component.tokenAmountDecimals).toBe(18);
+        expect(component.form.get('amount').errors).toBeNull();
+    });
+
     it('should automatically change the value integer value on checkbox change', () => {
         component.decimals = 8;
 
