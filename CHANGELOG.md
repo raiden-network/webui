@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `#48` WebUI fails to load on Firefox with Parity due to CORS errors.
+
 ## [0.7.0](https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0) - 2019-01-04
 
 ### Changed
