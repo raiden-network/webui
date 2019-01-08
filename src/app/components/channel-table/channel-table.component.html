@@ -94,10 +94,10 @@
                 <div class="label" fxLayout="row">Partner</div>
                 <div fxLayout="row" class="address-label truncate">{{addressLabel(channel.partner_address)}}</div>
                 <div fxLayout="row" class="truncate info-line">
-                    <span fxLayout="column" class="truncate">{{channel.partner_address}}</span>
+                    <span fxLayout="column" class="truncate address">{{channel.partner_address}}</span>
                     <span fxLayout="column">
                         <button class="clipboard-button"
-                            mat-icon-button ngxClipboard [cbContent]="channel.partner_address">
+                                mat-icon-button ngxClipboard [cbContent]="channel.partner_address">
                             <mat-icon aria-label="Copy address to clipboard">content_copy</mat-icon>
                         </button>
                     </span>
@@ -107,12 +107,13 @@
                 <div class="info-line balance" fxLayout="row">
                     <span>{{channel.balance | decimal: channel.userToken.decimals}}</span>
                     <sup matTooltip="{{channel.userToken | token}}" matTooltipPosition="above"
-                         class="token-symbol">
+                         class="token-symbol space gray">
                         {{channel.userToken.symbol}}
                     </sup>
                 </div>
                 <div class="channel-status" fxLayout="row">
-                    Status: {{channel.state}}
+                    <span class="label">Status:</span>
+                    <span class="light space">{{channel.state | status}}</span>
                 </div>
             </div>
 
@@ -136,7 +137,7 @@
                         (click)="onClose(channel)">{{ 'Close' | uppercase }}
                 </button>
             </div>
-            <div fxLayout="column" fxFlex="0 0 1em" fxLayoutAlign="start end">
+            <div fxLayout="column" fxFlex="0 0 40px" fxLayoutAlign="start end">
                 <button mat-icon-button color="accent" [matMenuTriggerFor]="menu">
                     <mat-icon>more_vert</mat-icon>
                 </button>

@@ -38,6 +38,7 @@ import { AddressBookComponent } from './components/address-book/address-book.com
 import { LocalStorageAdapter } from "./adapters/local-storage-adapter";
 import { AddressBookAddress } from './components/address-book-address/address-book-address.component';
 import { DragUploadDirective } from './directives/drag-upload.directive';
+import { StatusPipe } from './pipes/status.pipe';
 
 const appRoutes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -80,7 +81,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         PaymentHistoryComponent,
         AddressBookComponent,
         AddressBookAddress,
-        DragUploadDirective
+        DragUploadDirective,
+        StatusPipe
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
