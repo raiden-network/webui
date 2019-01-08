@@ -1,5 +1,5 @@
 import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { UploadError } from "../model/upload-error";
+import { UploadError } from '../model/upload-error';
 
 @Directive({
     selector: '[appDragUpload]'
@@ -33,11 +33,11 @@ export class DragUploadDirective {
     public onDrop(evt: DragEvent) {
         evt.preventDefault();
         evt.stopPropagation();
-        let files = evt.dataTransfer.files;
+        const files = evt.dataTransfer.files;
 
         if (files.length > 1) {
             this.error.emit({multiple: true});
-            return
+            return;
         }
 
         if (files.length <= 0) {
@@ -49,15 +49,15 @@ export class DragUploadDirective {
 
         if (extension && !file.name.endsWith(extension)) {
             this.error.emit({invalidExtension: true});
-            return
+            return;
         }
 
         if (file.size > DragUploadDirective.MAX_UPLOAD_SIZE) {
             this.error.emit({exceedsUploadLimit: DragUploadDirective.MAX_UPLOAD_SIZE});
-            return
+            return;
         }
 
-        this.selectedFile.emit(file)
+        this.selectedFile.emit(file);
     }
 
 }

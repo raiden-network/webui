@@ -108,11 +108,11 @@
                   class="card"
                   [@flyInOut]="'in'">
 
-            <app-address-book-address
+            <app-address-book-item
                 [address]="address"
                 (delete)="deleteAddress($event)"
                 (update)="updateAddress($event)"
-            ></app-address-book-address>
+            ></app-address-book-item>
 
         </mat-card>
     </div>

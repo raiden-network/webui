@@ -19,7 +19,7 @@ export function storageMock(): Storage {
             return keys[i] || null;
         },
         clear(): void {
-            storage = {}
+            storage = {};
         }
     };
 }

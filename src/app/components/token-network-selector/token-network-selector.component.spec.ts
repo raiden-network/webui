@@ -15,7 +15,7 @@ import { SharedService } from '../../services/shared.service';
 import { MockConfig } from '../channel-table/channel-table.component.spec';
 
 import { TokenNetworkSelectorComponent } from './token-network-selector.component';
-import { errorMessage, mockEvent } from "../../../testing/interaction-helper";
+import { errorMessage, mockEvent } from '../../../testing/interaction-helper';
 
 describe('TokenNetworkSelectorComponent', () => {
     let component: TokenNetworkSelectorComponent;

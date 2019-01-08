@@ -1,4 +1,4 @@
-import { of } from "rxjs";
+import { of } from 'rxjs';
 
 export class MockMatDialog {
     cancelled: boolean;
@@ -6,8 +6,8 @@ export class MockMatDialog {
     open() {
         return {
             afterClosed: () => {
-                return of(this.cancelled ? null : true)
+                return of(this.cancelled ? null : true);
             }
-        }
+        };
     }
 }

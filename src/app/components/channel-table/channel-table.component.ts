@@ -24,9 +24,8 @@ import {
 import { OpenDialogComponent, OpenDialogPayload, OpenDialogResult } from '../open-dialog/open-dialog.component';
 import { PaymentDialogComponent, PaymentDialogPayload } from '../payment-dialog/payment-dialog.component';
 import { ChannelSorting } from './channel.sorting.enum';
-import { AddressBookAddress } from "../address-book-address/address-book-address.component";
-import { AddressBookService } from "../../services/address-book.service";
-import { Addresses } from "../../models/address";
+import { AddressBookService } from '../../services/address-book.service';
+import { Addresses } from '../../models/address';
 
 @Component({
     selector: 'app-channel-table',

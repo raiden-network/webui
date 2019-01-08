@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup } from "@angular/forms";
-import { addressValidator } from "../../shared/address.validator";
-import { Address } from "../../models/address";
-import { AddressBookService } from "../../services/address-book.service";
-import { PageEvent } from "@angular/material";
-import { animate, state, style, transition, trigger } from "@angular/animations";
-import { IdenticonCacheService } from "../../services/identicon-cache.service";
-import { UploadError } from "../../model/upload-error";
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { addressValidator } from '../../shared/address.validator';
+import { Address } from '../../models/address';
+import { AddressBookService } from '../../services/address-book.service';
+import { PageEvent } from '@angular/material';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { IdenticonCacheService } from '../../services/identicon-cache.service';
+import { UploadError } from '../../model/upload-error';
 
 @Component({
     selector: 'app-address-book',
@@ -32,24 +32,6 @@ import { UploadError } from "../../model/upload-error";
     ]
 })
 export class AddressBookComponent implements OnInit {
-    public readonly form: FormGroup = this.fb.group({
-        address: ['', addressValidator()],
-        label: ['', (control: AbstractControl) => !control.value]
-    });
-
-    // noinspection JSMethodCanBeStatic
-    trackByFn(index, item: Address) {
-        return item.address;
-    }
-
-    visibleAddresses: Array<Address>;
-    totalAddresses: number;
-    pageSize = 10;
-    currentPage = 0;
-
-    showDropArea = false;
-
-    private _uploadError: UploadError;
 
     public get uploadError(): UploadError {
         return this._uploadError;
@@ -62,6 +44,25 @@ export class AddressBookComponent implements OnInit {
     ) {
     }
 
+    public readonly form: FormGroup = this.fb.group({
+        address: ['', addressValidator()],
+        label: ['', (control: AbstractControl) => !control.value]
+    });
+
+    visibleAddresses: Array<Address>;
+    totalAddresses: number;
+    pageSize = 10;
+    currentPage = 0;
+
+    showDropArea = false;
+
+    private _uploadError: UploadError;
+
+    // noinspection JSMethodCanBeStatic
+    trackByFn(index, item: Address) {
+        return item.address;
+    }
+
     ngOnInit() {
         this.updateVisibleAddresses();
     }
@@ -71,14 +72,14 @@ export class AddressBookComponent implements OnInit {
     }
 
     private updateVisibleAddresses() {
-        let addresses = this.addressBookService.getArray();
+        const addresses = this.addressBookService.getArray();
         this.totalAddresses = addresses.length;
         this.visibleAddresses = addresses.slice(this.pageSize * this.currentPage, this.pageSize);
     }
 
     save() {
-        let addressControl = this.form.get('address');
-        let labelControl = this.form.get('label');
+        const addressControl = this.form.get('address');
+        const labelControl = this.form.get('label');
         const address: Address = {
             address: addressControl.value,
             label: labelControl.value
@@ -104,20 +105,20 @@ export class AddressBookComponent implements OnInit {
     }
 
     error(dragError: UploadError) {
-        this._uploadError = dragError
+        this._uploadError = dragError;
     }
 
     filesSelected(file: File) {
         this._uploadError = null;
 
         const reader = new FileReader();
-        reader.onload = ev => {
+        reader.onload = () => {
             try {
                 this.addressBookService.store(JSON.parse(reader.result as string));
                 setTimeout(() => this.showDropArea = false, 800);
-                this.updateVisibleAddresses()
+                this.updateVisibleAddresses();
             } catch (e) {
-                this._uploadError = {invalidFormat: true}
+                this._uploadError = {invalidFormat: true};
             }
         };
 

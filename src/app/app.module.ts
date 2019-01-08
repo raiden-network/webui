@@ -35,8 +35,8 @@ import { TokenNetworkSelectorComponent } from './components/token-network-select
 import { RegisteredNetworkValidatorDirective } from './directives/registered-network-validator.directive';
 import { PaymentHistoryComponent } from './components/payment-history/payment-history.component';
 import { AddressBookComponent } from './components/address-book/address-book.component';
-import { LocalStorageAdapter } from "./adapters/local-storage-adapter";
-import { AddressBookAddress } from './components/address-book-address/address-book-address.component';
+import { LocalStorageAdapter } from './adapters/local-storage-adapter';
+import { AddressBookItemComponent } from './components/address-book-item/address-book-item.component';
 import { DragUploadDirective } from './directives/drag-upload.directive';
 import { StatusPipe } from './pipes/status.pipe';
 
@@ -80,7 +80,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         RegisteredNetworkValidatorDirective,
         PaymentHistoryComponent,
         AddressBookComponent,
-        AddressBookAddress,
+        AddressBookItemComponent,
         DragUploadDirective,
         StatusPipe
     ],

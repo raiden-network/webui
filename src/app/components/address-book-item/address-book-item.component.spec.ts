@@ -1,25 +1,25 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddressBookAddress } from './address-book-address.component';
-import { MaterialComponentsModule } from "../../modules/material-components/material-components.module";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { By } from "@angular/platform-browser";
-import { Address } from "../../models/address";
-import { ConfirmationDialogComponent } from "../confirmation-dialog/confirmation-dialog.component";
-import { MatDialog } from "@angular/material";
-import { clickElement, errorMessage, mockInput } from "../../../testing/interaction-helper";
-import { ReactiveFormsModule } from "@angular/forms";
-import { MockMatDialog } from "../../../testing/mock-mat-dialog";
+import { AddressBookItemComponent } from './address-book-item.component';
+import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { By } from '@angular/platform-browser';
+import { Address } from '../../models/address';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material';
+import { clickElement, errorMessage, mockInput } from '../../../testing/interaction-helper';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 
-describe('AddressBookAddress', () => {
-    let component: AddressBookAddress;
-    let fixture: ComponentFixture<AddressBookAddress>;
+describe('AddressBookItemComponent', () => {
+    let component: AddressBookItemComponent;
+    let fixture: ComponentFixture<AddressBookItemComponent>;
     let testAddress: Address;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [
-                AddressBookAddress,
+                AddressBookItemComponent,
                 ConfirmationDialogComponent
             ],
             imports: [
@@ -37,7 +37,7 @@ describe('AddressBookAddress', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AddressBookAddress);
+        fixture = TestBed.createComponent(AddressBookItemComponent);
         component = fixture.componentInstance;
         testAddress = {
             address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
@@ -85,7 +85,7 @@ describe('AddressBookAddress', () => {
     it('should emit a the address when the user confirms the delete', async(() => {
 
         component.update.subscribe(address => {
-            fail(`there should be no address emitted but got ${address}`)
+            fail(`there should be no address emitted but got ${address}`);
         });
 
         component.edit.subscribe(editMode => {
@@ -119,7 +119,7 @@ describe('AddressBookAddress', () => {
 
         mockInput(element, '#address-label', 'TestNode 2');
 
-        let button = clickElement(element, '#edit-address');
+        const button = clickElement(element, '#edit-address');
         fixture.detectChanges();
 
         expect(button.disabled).toBe(false);
@@ -131,7 +131,7 @@ describe('AddressBookAddress', () => {
         const element = fixture.debugElement;
 
         component.delete.subscribe(address => {
-            fail(`There should be no address emitted but got ${address}`)
+            fail(`There should be no address emitted but got ${address}`);
         });
 
         let sub = component.edit.subscribe(editMode => {
@@ -142,7 +142,7 @@ describe('AddressBookAddress', () => {
 
         fixture.detectChanges();
 
-        let input = mockInput(element, '#address-label', 'TestNode 2');
+        const input = mockInput(element, '#address-label', 'TestNode 2');
 
         sub.unsubscribe();
         sub = component.edit.subscribe(editMode => {
@@ -162,7 +162,7 @@ describe('AddressBookAddress', () => {
         dialog.cancelled = true;
 
         component.update.subscribe(address => {
-            fail(`there should be no address emitted but got ${address}`)
+            fail(`there should be no address emitted but got ${address}`);
         });
 
         component.edit.subscribe(editMode => {
@@ -170,7 +170,7 @@ describe('AddressBookAddress', () => {
         });
 
         component.delete.subscribe(address => {
-            fail(`there should be no address emitted but got ${address}`)
+            fail(`there should be no address emitted but got ${address}`);
         });
 
         clickElement(fixture.debugElement, '#delete-address');
@@ -190,6 +190,6 @@ describe('AddressBookAddress', () => {
 
         fixture.detectChanges();
 
-        expect(errorMessage(element)).toBe('Label cannot be empty!')
+        expect(errorMessage(element)).toBe('Label cannot be empty!');
     }));
 });

@@ -1,21 +1,21 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IdenticonCacheService } from "../../services/identicon-cache.service";
-import { Address } from "../../models/address";
+import { IdenticonCacheService } from '../../services/identicon-cache.service';
+import { Address } from '../../models/address';
 import {
     ConfirmationDialogComponent,
     ConfirmationDialogPayload
-} from "../confirmation-dialog/confirmation-dialog.component";
-import { flatMap } from "rxjs/operators";
-import { EMPTY, of } from "rxjs";
-import { MatDialog } from "@angular/material";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+} from '../confirmation-dialog/confirmation-dialog.component';
+import { flatMap } from 'rxjs/operators';
+import { EMPTY, of } from 'rxjs';
+import { MatDialog } from '@angular/material';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-    selector: 'app-address-book-address',
-    templateUrl: './address-book-address.component.html',
-    styleUrls: ['./address-book-address.component.css']
+    selector: 'app-address-book-item',
+    templateUrl: './address-book-item.component.html',
+    styleUrls: ['./address-book-item.component.css']
 })
-export class AddressBookAddress implements OnInit {
+export class AddressBookItemComponent implements OnInit {
 
     @Input() address: Address;
     @Output() edit: EventEmitter<boolean> = new EventEmitter();
@@ -51,9 +51,9 @@ export class AddressBookAddress implements OnInit {
         this.edit.emit(this._editMode);
         const control = this.form.get('label');
         if (this._editMode) {
-            control.enable({onlySelf: true})
+            control.enable({onlySelf: true});
         } else {
-            control.disable({onlySelf: true})
+            control.disable({onlySelf: true});
         }
     }
 
@@ -78,7 +78,7 @@ export class AddressBookAddress implements OnInit {
             if (!result) {
                 return EMPTY;
             } else {
-                return of(result)
+                return of(result);
             }
         });
 
@@ -98,6 +98,6 @@ export class AddressBookAddress implements OnInit {
 
     cancel() {
         this.form.get('label').setValue(this.address.label);
-        this.toggleEdit()
+        this.toggleEdit();
     }
 }

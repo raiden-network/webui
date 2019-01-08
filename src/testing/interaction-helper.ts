@@ -1,6 +1,6 @@
-import { By } from "@angular/platform-browser";
-import { DebugElement } from "@angular/core";
-import { MatError } from "@angular/material";
+import { By } from '@angular/platform-browser';
+import { DebugElement } from '@angular/core';
+import { MatError } from '@angular/material';
 
 export function mockEvent(type: string, eventInterface = 'Event', canBubble = false, cancellable = true) {
     const event = document.createEvent(eventInterface);
@@ -21,7 +21,7 @@ export function mockInput(element: DebugElement, cssSelector: string, value: str
     input.value = value;
     input.dispatchEvent(mockEvent('focusin'));
     input.dispatchEvent(mockEvent('input'));
-    return input
+    return input;
 }
 
 export function errorMessage(element: DebugElement): string {
