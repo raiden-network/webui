@@ -3,10 +3,16 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { addressValidator } from '../../shared/address.validator';
 import { Address } from '../../models/address';
 import { AddressBookService } from '../../services/address-book.service';
-import { PageEvent } from '@angular/material';
+import { MatDialog, PageEvent } from '@angular/material';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { UploadError } from '../../model/upload-error';
+import {
+    ConfirmationDialogComponent,
+    ConfirmationDialogPayload
+} from '../confirmation-dialog/confirmation-dialog.component';
+import { flatMap } from 'rxjs/operators';
+import { EMPTY, of } from 'rxjs';
 
 @Component({
     selector: 'app-address-book',
@@ -40,7 +46,8 @@ export class AddressBookComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private addressBookService: AddressBookService,
-        private identiconService: IdenticonCacheService
+        private identiconService: IdenticonCacheService,
+        public dialog: MatDialog
     ) {
     }
 
@@ -132,5 +139,32 @@ export class AddressBookComponent implements OnInit {
         link.setAttribute('visibility', 'hidden');
         link.setAttribute('download', 'address-book');
         link.click();
+    }
+
+    confirmDelete() {
+        const payload: ConfirmationDialogPayload = {
+            title: 'Delete Address Book',
+            message: 'This action will delete all your stored addresses. <br/> ' +
+                'Unless you exported your Address book all your addresses will be lost. <br/>' +
+                'Are you sure you want to continue?'
+        };
+
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+            width: '500px',
+            data: payload
+        });
+
+        dialog.afterClosed().pipe(
+            flatMap(result => {
+                if (!result) {
+                    return EMPTY;
+                }
+
+                return of(result);
+            })
+        ).subscribe(() => {
+            this.addressBookService.deleteAll();
+            this.updateVisibleAddresses();
+        });
     }
 }

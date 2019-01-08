@@ -136,4 +136,29 @@ describe('AddressBookService', () => {
         expect(addresses[keys[0]]).toBe(secondAddress.label);
     }));
 
+    it('should delete all the addresses if deleteAll is called', inject([AddressBookService], (service: AddressBookService) => {
+        const address: Address = {
+            label: 'Test Node 1',
+            address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+        };
+
+        const secondAddress: Address = {
+            label: 'Test Node 2',
+            address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
+        };
+
+        service.save(address);
+        service.save(secondAddress);
+
+        let addresses = service.get();
+
+        expect(Object.keys(addresses).length).toBe(2);
+
+        service.deleteAll();
+
+        addresses = service.get();
+        const keys = Object.keys(addresses);
+        expect(keys.length).toBe(0);
+    }));
+
 });

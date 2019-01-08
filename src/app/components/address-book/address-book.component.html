@@ -7,7 +7,7 @@
      fxFlexOffset.xl="20"
      fxFlexOffset.lg="15">
 
-    <mat-card class="card" fxLayoutGap.lt-sm="30px" class="element">
+    <mat-card class="element" fxLayoutGap.lt-sm="30px">
         <div fxLayout="row">
             <h4>Address Book</h4>
         </div>
@@ -29,7 +29,8 @@
             <div fxLayout="column" fxFlex="1 1 auto">
                 <mat-form-field hideRequiredMarker>
                     <input matInput placeholder="Address" formControlName="address" required/>
-                    <mat-error *ngIf="form.get('address').invalid && (form.get('address').dirty || form.get('address').touched)">
+                    <mat-error
+                        *ngIf="form.get('address').invalid && (form.get('address').dirty || form.get('address').touched)">
 
                     </mat-error>
                 </mat-form-field>
@@ -67,6 +68,13 @@
                     <mat-icon aria-label="Export icon">cloud_download</mat-icon>
                 </button>
             </div>
+
+            <div fxlayout="column">
+                <button mat-icon-button color="primary" (click)="confirmDelete()"
+                        matTooltip="Deletes all the addresses in the Address book">
+                    <mat-icon aria-label="Delete icon">delete</mat-icon>
+                </button>
+            </div>
         </div>
 
         <div fxLayout="row" *ngIf="showDropArea">
@@ -102,7 +110,7 @@
         <h2 class="mat-title">No addresses found!</h2>
     </div>
 
-    <div class="address-list" fxLayout="column" fxLayoutGap="15px">
+    <div class="address-list" fxLayout="column" fxLayoutGap="15px" *ngIf="totalAddresses > 0">
         <mat-card *ngFor="let address of visibleAddresses; trackBy: trackByFn"
                   [id]="'address_'+address.address"
                   class="card"

@@ -94,4 +94,8 @@ export class AddressBookService {
             };
         });
     }
+
+    deleteAll() {
+        this.store({});
+    }
 }
