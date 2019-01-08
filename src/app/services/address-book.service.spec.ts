@@ -1,7 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 
 import { AddressBookService } from './address-book.service';
-import { Address } from '../models/address';
+import { Address, Addresses } from '../models/address';
 import { LocalStorageAdapter } from '../adapters/local-storage-adapter';
 import { storageMock } from '../../testing/mock-storage';
 
@@ -159,6 +159,48 @@ describe('AddressBookService', () => {
         addresses = service.get();
         const keys = Object.keys(addresses);
         expect(keys.length).toBe(0);
+    }));
+
+
+    it('should throw an exception when trying to restore invalid schema', inject([AddressBookService], (service: AddressBookService) => {
+        const addresses: Addresses = {};
+
+        // @ts-ignore
+        addresses['randomKey'] = {};
+        // @ts-ignore
+        addresses['anotherRandomKey'] = [];
+
+        try {
+            service.store(addresses);
+            fail('It should fail before reaching this point');
+        } catch (e) {
+            expect(e).toBeTruthy();
+        }
+    }));
+
+    it('should return the addresses as an array', inject([AddressBookService], (service: AddressBookService) => {
+        const address: Address = {
+            label: 'Test Node 1',
+            address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+        };
+
+        const secondAddress: Address = {
+            label: 'Test Node 2',
+            address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
+        };
+
+        service.save(address);
+        service.save(secondAddress);
+
+        const array = service.getArray();
+        expect(array.length).toBe(2);
+        expect(array).toContain(address);
+        expect(array).toContain(secondAddress);
+    }));
+
+    it('should create a that can be used for export', inject([AddressBookService], (service: AddressBookService) => {
+        const url = service.createExportURL();
+        expect(url).toContain('blob:http://localhost');
     }));
 
 });
