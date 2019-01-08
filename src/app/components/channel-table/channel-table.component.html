@@ -91,8 +91,14 @@
                 <img class="identicon no-margin" [src]="identicon(channel)" alt="Identicon of the partner address"/>
             </div>
             <div class="can-shrink" fxLayout="column" fxFlex="1 1 100%" fxLayoutAlign="center" fxLayoutGap="2px">
-                <div class="label" fxLayout="row">Partner</div>
-                <div fxLayout="row" class="address-label truncate">{{addressLabel(channel.partner_address)}}</div>
+
+                <div fxLayout="row"
+                     *ngIf="addressLabel(channel.partner_address); else partner_label"
+                     class="label truncate">{{addressLabel(channel.partner_address)}}</div>
+
+                <ng-template #partner_label>
+                    <div class="label" fxLayout="row">Partner</div>
+                </ng-template>
                 <div fxLayout="row" class="truncate info-line">
                     <span fxLayout="column" class="truncate address">{{channel.partner_address}}</span>
                     <span fxLayout="column">
