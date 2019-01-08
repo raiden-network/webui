@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, TestBed } from '@angular/core/testing';
-import { MockConfig } from '../components/channel-table/channel-table.component.spec';
+import { MockConfig } from '../../testing/mock-config';
 import { RaidenConfig } from './raiden.config';
 import { SharedService } from './shared.service';
 

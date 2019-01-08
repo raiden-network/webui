@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { from } from 'rxjs';
-import { MockConfig } from '../components/channel-table/channel-table.component.spec';
+import { MockConfig } from '../../testing/mock-config';
 import { Channel } from '../models/channel';
 import { UserToken } from '../models/usertoken';
 

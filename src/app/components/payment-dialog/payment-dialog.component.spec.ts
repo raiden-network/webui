@@ -8,7 +8,7 @@ import { TokenPipe } from '../../pipes/token.pipe';
 import { RaidenConfig } from '../../services/raiden.config';
 import { SharedService } from '../../services/shared.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
-import { MockConfig } from '../channel-table/channel-table.component.spec';
+import { MockConfig } from '../../../testing/mock-config';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 import { PaymentDialogComponent, PaymentDialogPayload } from './payment-dialog.component';

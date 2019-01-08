@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { FormControl, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { MockConfig } from '../components/channel-table/channel-table.component.spec';
+import { MockConfig } from '../../testing/mock-config';
 import { UserToken } from '../models/usertoken';
 import { RaidenConfig } from '../services/raiden.config';
 import { RaidenService } from '../services/raiden.service';

@@ -11,7 +11,7 @@ import { EnvironmentType } from '../../services/enviroment-type.enum';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import { SharedService } from '../../services/shared.service';
-import { MockConfig } from '../channel-table/channel-table.component.spec';
+import { MockConfig } from '../../../testing/mock-config';
 
 import { TokenNetworkComponent } from './token-network.component';
 

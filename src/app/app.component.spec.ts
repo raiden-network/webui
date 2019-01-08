@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ClipboardModule } from 'ngx-clipboard';
 
 import { AppComponent } from './app.component';
-import { MockConfig } from './components/channel-table/channel-table.component.spec';
+import { MockConfig } from '../testing/mock-config';
 import { MaterialComponentsModule } from './modules/material-components/material-components.module';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenConfig } from './services/raiden.config';

@@ -15,7 +15,7 @@ import { TokenPipe } from '../../pipes/token.pipe';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import { SharedService } from '../../services/shared.service';
-import { MockConfig } from '../channel-table/channel-table.component.spec';
+import { MockConfig } from '../../../testing/mock-config';
 
 import { PaymentHistoryComponent } from './payment-history.component';
 

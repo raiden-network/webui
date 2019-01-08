@@ -8,7 +8,7 @@ import { MaterialComponentsModule } from '../../modules/material-components/mate
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import { SharedService } from '../../services/shared.service';
-import { MockConfig } from '../channel-table/channel-table.component.spec';
+import { MockConfig } from '../../../testing/mock-config';
 
 import { AddressInputComponent } from './address-input.component';
 
