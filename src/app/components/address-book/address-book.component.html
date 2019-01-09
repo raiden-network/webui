@@ -7,14 +7,14 @@
      fxFlexOffset.xl="20"
      fxFlexOffset.lg="15">
 
-    <mat-card class="element" fxLayoutGap.lt-sm="30px">
+    <mat-card class="header" fxLayoutGap.lt-sm="30px">
         <div fxLayout="row">
             <h4>Address Book</h4>
         </div>
         <div fxLayout="row" [formGroup]="form" fxLayoutGap="14px">
 
             <div fxLayout="column"
-                 fxFlex="0 0 30px"
+                 fxFlex="0 0 40px"
                  fxLayoutAlign="center center">
 
                 <img class="identicon no-margin"
@@ -26,9 +26,9 @@
                 </ng-template>
             </div>
 
-            <div fxLayout="column" fxFlex="1 1 auto">
+            <div fxLayout="column" fxFlex="1 1 40%">
                 <mat-form-field hideRequiredMarker>
-                    <input matInput placeholder="Address" formControlName="address" required/>
+                    <input id="addresses-address" matInput placeholder="Address" formControlName="address" required/>
                     <mat-error
                         *ngIf="form.get('address').invalid && (form.get('address').dirty || form.get('address').touched)">
 
@@ -36,9 +36,9 @@
                 </mat-form-field>
             </div>
 
-            <div fxLayout="column" fxFlex="1 1 auto">
+            <div fxLayout="column" fxFlex="1 1 40%">
                 <mat-form-field hideRequiredMarker>
-                    <input matInput placeholder="Label" formControlName="label" required/>
+                    <input id="addresses-label" matInput placeholder="Label" formControlName="label" required/>
                     <mat-error
                         *ngIf="form.get('label').invalid && (form.get('label').dirty || form.get('label').touched)">
                         The label cannot be empty!
@@ -46,8 +46,8 @@
                 </mat-form-field>
             </div>
 
-            <div fxLayout="column">
-                <button mat-mini-fab color="primary" [disabled]="!form.valid" (click)="save()"
+            <div fxLayout="column" fxflex="0 0 40px" fxLayoutAlign="center end">
+                <button id="addresses-save" mat-mini-fab color="primary" [disabled]="!form.valid" (click)="save()"
                         matTooltip="Adds a new address to the address book">
                     <mat-icon>add</mat-icon>
                 </button>
@@ -56,21 +56,21 @@
 
         <div fxLayout="row" fxLayoutAlign="end" class="action-buttons">
             <div fxLayout="column">
-                <button mat-icon-button color="primary" (click)="showDropArea = !showDropArea"
+                <button id="addresses-import" mat-icon-button color="primary" (click)="showDropArea = !showDropArea"
                         matTooltip="Opens the drop area where you can drag the file to import">
                     <mat-icon aria-label="Import icon">cloud_upload</mat-icon>
                 </button>
             </div>
 
             <div fxLayout="column">
-                <button mat-icon-button color="primary" (click)="saveAddresses()"
+                <button id="addresses-export" mat-icon-button color="primary" (click)="saveAddresses()"
                         matTooltip="Downloads the address book as a JSON file">
                     <mat-icon aria-label="Export icon">cloud_download</mat-icon>
                 </button>
             </div>
 
             <div fxlayout="column">
-                <button mat-icon-button color="primary" (click)="confirmDelete()"
+                <button id="addresses-delete" mat-icon-button color="primary" (click)="confirmDelete()"
                         matTooltip="Deletes all the addresses in the Address book">
                     <mat-icon aria-label="Delete icon">delete</mat-icon>
                 </button>
@@ -97,7 +97,7 @@
 
     </mat-card>
 
-    <mat-paginator class="mat-elevation-z1 paginator element"
+    <mat-paginator class="mat-elevation-z1 paginator header"
                    fxLayout="row" fxLayoutAlign="end"
                    [length]="totalAddresses"
                    [pageSize]="pageSize"
