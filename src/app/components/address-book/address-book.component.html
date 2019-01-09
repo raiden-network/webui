@@ -118,6 +118,9 @@
 
             <app-address-book-item
                 [address]="address"
+                [editMode]="editedAddress === address.address"
+                (edit)="setEdited(address.address)"
+                (cancelled)="cancelled()"
                 (delete)="deleteAddress($event)"
                 (update)="updateAddress($event)"
             ></app-address-book-item>

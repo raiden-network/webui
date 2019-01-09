@@ -38,6 +38,7 @@ import { EMPTY, of } from 'rxjs';
     ]
 })
 export class AddressBookComponent implements OnInit {
+    private _editedAddress: string;
 
     public get uploadError(): UploadError {
         return this._uploadError;
@@ -65,6 +66,10 @@ export class AddressBookComponent implements OnInit {
 
     private _uploadError: UploadError;
 
+    get editedAddress(): string {
+        return this._editedAddress;
+    }
+
     // noinspection JSMethodCanBeStatic
     trackByFn(index, item: Address) {
         return item.address;
@@ -81,7 +86,8 @@ export class AddressBookComponent implements OnInit {
     private updateVisibleAddresses() {
         const addresses = this.addressBookService.getArray();
         this.totalAddresses = addresses.length;
-        this.visibleAddresses = addresses.slice(this.pageSize * this.currentPage, this.pageSize);
+        const start = this.pageSize * this.currentPage;
+        this.visibleAddresses = addresses.slice(start, start + this.pageSize);
     }
 
     save() {
@@ -100,6 +106,7 @@ export class AddressBookComponent implements OnInit {
 
     onPageEvent($event: PageEvent) {
         this.currentPage = $event.pageIndex;
+        this.updateVisibleAddresses();
     }
 
     deleteAddress(address: Address) {
@@ -166,5 +173,13 @@ export class AddressBookComponent implements OnInit {
             this.addressBookService.deleteAll();
             this.updateVisibleAddresses();
         });
+    }
+
+    setEdited(address: string) {
+        this._editedAddress = address;
+    }
+
+    cancelled() {
+        this._editedAddress = undefined;
     }
 }

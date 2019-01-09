@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { Address } from '../../models/address';
 import {
@@ -15,10 +15,12 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
     templateUrl: './address-book-item.component.html',
     styleUrls: ['./address-book-item.component.css']
 })
-export class AddressBookItemComponent implements OnInit {
+export class AddressBookItemComponent implements OnChanges {
 
     @Input() address: Address;
+    @Input() editMode: boolean;
     @Output() edit: EventEmitter<boolean> = new EventEmitter();
+    @Output() cancelled: EventEmitter<boolean> = new EventEmitter();
     @Output() update: EventEmitter<Address> = new EventEmitter();
     @Output() delete: EventEmitter<Address> = new EventEmitter();
 
@@ -29,12 +31,6 @@ export class AddressBookItemComponent implements OnInit {
         }, Validators.required)
     });
 
-    private _editMode = false;
-
-    get editMode(): boolean {
-        return this._editMode;
-    }
-
     constructor(
         private identiconCache: IdenticonCacheService,
         public dialog: MatDialog,
@@ -43,14 +39,10 @@ export class AddressBookItemComponent implements OnInit {
 
     }
 
-    ngOnInit() {
-    }
-
     toggleEdit() {
-        this._editMode = !this._editMode;
-        this.edit.emit(this._editMode);
+        this.edit.emit(this.editMode);
         const control = this.form.get('label');
-        if (this._editMode) {
+        if (this.editMode) {
             control.enable({onlySelf: true});
         } else {
             control.disable({onlySelf: true});
@@ -99,5 +91,19 @@ export class AddressBookItemComponent implements OnInit {
     cancel() {
         this.form.get('label').setValue(this.address.label);
         this.toggleEdit();
+        this.cancelled.emit(true);
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (!changes.hasOwnProperty('editMode')) {
+            return;
+        }
+
+        const control = this.form.get('label');
+        if (changes['editMode'].currentValue) {
+            control.enable({onlySelf: true});
+        } else {
+            control.disable({onlySelf: true});
+        }
     }
 }
