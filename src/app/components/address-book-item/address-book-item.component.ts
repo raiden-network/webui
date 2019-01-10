@@ -18,7 +18,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 export class AddressBookItemComponent implements OnChanges {
 
     @Input() address: Address;
-    @Input() editMode: boolean;
+    @Input() editMode = false;
     @Output() edit: EventEmitter<boolean> = new EventEmitter();
     @Output() cancelled: EventEmitter<boolean> = new EventEmitter();
     @Output() update: EventEmitter<Address> = new EventEmitter();
@@ -40,6 +40,7 @@ export class AddressBookItemComponent implements OnChanges {
     }
 
     toggleEdit() {
+        this.editMode = !this.editMode;
         this.edit.emit(this.editMode);
         const control = this.form.get('label');
         if (this.editMode) {

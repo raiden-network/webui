@@ -138,6 +138,10 @@ describe('AddressBookItemComponent', () => {
             expect(editMode).toBe(true);
         });
 
+        component.cancelled.subscribe(cancelled => {
+            expect(cancelled).toBe(true);
+        });
+
         clickElement(element, '#edit-address');
 
         fixture.detectChanges();
