@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 
 import { AddressBookComponent } from './address-book.component';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -10,7 +10,7 @@ import { AddressBookService } from '../../services/address-book.service';
 import { stub } from '../../../testing/stub';
 // @ts-ignore
 import * as Web3 from 'web3';
-import { Address } from '../../models/address';
+import { Address, Addresses } from '../../models/address';
 import { MatDialog } from '@angular/material';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { By } from '@angular/platform-browser';
@@ -36,11 +36,11 @@ describe('AddressBookComponent', () => {
         return expectations;
     }
 
-    function createData(): Address[] {
+    function createData(count: number = 15): Address[] {
         const web3 = new Web3();
         const addresses: Address[] = [];
 
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < count; i++) {
             const account = web3.eth.accounts.create(web3.utils.randomHex(32));
             addresses.push({
                 address: account.address,
@@ -234,6 +234,96 @@ describe('AddressBookComponent', () => {
         const addressListElement = fixture.debugElement.query(By.css('.address-list'));
         expect(addressListElement).toBeNull();
         expect(emptyText).toBe('No addresses found!');
+    });
+
+    it('should hide the drop area and import the addresses', fakeAsync(function () {
+        let imported: Addresses = null;
+        serviceStub.store = addresses => imported = addresses;
+        serviceStub.getArray = () => [];
+
+        fixture.detectChanges();
+
+        const reader = window['FileReader'];
+        const result = {};
+        const data = createData(2);
+
+        for (let i = 0; i < data.length; i++) {
+            result[data[i].address] = data[i].label;
+        }
+
+        const mockReader = {
+            result: JSON.stringify(result),
+            readAsText: function () {
+                this.onload();
+            },
+            onload: () => {
+            }
+        };
+
+        window['FileReader'] = () => mockReader;
+
+        expect(fixture.debugElement.query(By.css('.address-list'))).toBeFalsy();
+        serviceStub.getArray = () => data;
+
+        const file = stub<File>();
+        component.filesSelected(file);
+        tick(1000);
+        expect(component.showDropArea).toBe(false);
+        expect(imported).toEqual(result);
+
+        fixture.detectChanges();
+        tick();
+
+        expect(fixture.debugElement.query(By.css('.address-list')).children.length).toEqual(2);
+        window['FileReader'] = reader;
+
+        flush();
+    }));
+
+    it('should have an error if the import fails', function () {
+        const reader = window['FileReader'];
+
+        const mockReader = {
+            result: '',
+            readAsText: function () {
+                this.onload();
+            },
+            onload: () => {
+            }
+        };
+
+        serviceStub.store = () => {
+            throw new Error('invalid');
+        };
+
+        window['FileReader'] = () => mockReader;
+
+        const file = stub<File>();
+        component.filesSelected(file);
+
+        expect(component.uploadError).toEqual(jasmine.objectContaining({invalidFormat: true}));
+
+        window['FileReader'] = reader;
+    });
+
+    it('should download a json file', function () {
+        const spy = jasmine.createSpyObj('a', ['click', 'setAttribute']);
+        spy.setAttribute = function (attr, value) {
+            this[attr] = value;
+        };
+
+        spyOn(document, 'createElement').and.returnValue(spy);
+        serviceStub.createExportURL = () => 'blob:http://localhost/mockpath';
+
+        component.saveAddresses();
+
+        expect(document.createElement).toHaveBeenCalledTimes(1);
+        expect(document.createElement).toHaveBeenCalledWith('a');
+
+        expect(spy.href).toBe('blob:http://localhost/mockpath');
+        expect(spy.target).toBe('_blank');
+        expect(spy.download).toBe('address-book');
+        expect(spy.click).toHaveBeenCalledTimes(1);
     });
 
 });
