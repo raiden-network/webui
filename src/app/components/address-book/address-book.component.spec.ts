@@ -94,7 +94,7 @@ describe('AddressBookComponent', () => {
         fixture.detectChanges();
 
         const paginatorLabel = fixture.debugElement.query(By.css('.mat-paginator-range-label'));
-        const addressListElement = fixture.debugElement.query(By.css('.address-list'));
+        const addressListElement = fixture.debugElement.query(By.css('.page-list'));
         expect((paginatorLabel.nativeElement as HTMLDivElement).textContent).toBe('1 - 10 of 15');
         expect(addressListElement.children.length).toBe(10);
 
@@ -108,7 +108,7 @@ describe('AddressBookComponent', () => {
         clickElement(fixture.debugElement, '.mat-paginator-navigation-next');
         fixture.detectChanges();
         const paginatorLabel = fixture.debugElement.query(By.css('.mat-paginator-range-label'));
-        const addressListElement = fixture.debugElement.query(By.css('.address-list'));
+        const addressListElement = fixture.debugElement.query(By.css('.page-list'));
         expect((paginatorLabel.nativeElement as HTMLDivElement).textContent).toBe('11 - 15 of 15');
         expect(addressListElement.children.length).toBe(5);
 
@@ -122,7 +122,7 @@ describe('AddressBookComponent', () => {
 
         fixture.detectChanges();
 
-        expect(fixture.debugElement.query(By.css('.address-list'))).toBeNull();
+        expect(fixture.debugElement.query(By.css('.page-list'))).toBeNull();
 
         mockInput(fixture.debugElement, '#addresses-address', '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C');
         mockInput(fixture.debugElement, '#addresses-label', 'Test Node');
@@ -133,7 +133,7 @@ describe('AddressBookComponent', () => {
 
         fixture.detectChanges();
 
-        const addressListElement = fixture.debugElement.query(By.css('.address-list'));
+        const addressListElement = fixture.debugElement.query(By.css('.page-list'));
         expect(addressListElement.children.length).toBe(1);
         expect(getLabels(addressListElement)).toEqual(['Test Node']);
     });
@@ -145,13 +145,13 @@ describe('AddressBookComponent', () => {
 
         fixture.detectChanges();
 
-        expect(fixture.debugElement.query(By.css('.address-list')).children.length).toBe(10);
+        expect(fixture.debugElement.query(By.css('.page-list')).children.length).toBe(10);
 
         clickElement(fixture.debugElement, '#addresses-delete');
 
         fixture.detectChanges();
 
-        expect(fixture.debugElement.query(By.css('.address-list'))).toBeNull();
+        expect(fixture.debugElement.query(By.css('.page-list'))).toBeNull();
 
     });
 
@@ -166,13 +166,13 @@ describe('AddressBookComponent', () => {
 
         fixture.detectChanges();
 
-        expect(fixture.debugElement.query(By.css('.address-list')).children.length).toBe(10);
+        expect(fixture.debugElement.query(By.css('.page-list')).children.length).toBe(10);
 
         clickElement(fixture.debugElement, '#addresses-delete');
 
         fixture.detectChanges();
 
-        expect(fixture.debugElement.query(By.css('.address-list')).children.length).toBe(10);
+        expect(fixture.debugElement.query(By.css('.page-list')).children.length).toBe(10);
 
     });
 
@@ -180,7 +180,7 @@ describe('AddressBookComponent', () => {
         serviceStub.getArray = () => createData();
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.query(By.css('.address-list')).children;
+        const debugElements = fixture.debugElement.query(By.css('.page-list')).children;
 
         const addressInput = (element: DebugElement) => element.query(By.css('#address-label')).nativeElement as HTMLInputElement;
 
@@ -231,7 +231,7 @@ describe('AddressBookComponent', () => {
         fixture.detectChanges();
 
         const emptyText = (fixture.debugElement.query(By.css('h2.mat-title')).nativeElement as HTMLHeadElement).textContent;
-        const addressListElement = fixture.debugElement.query(By.css('.address-list'));
+        const addressListElement = fixture.debugElement.query(By.css('.page-list'));
         expect(addressListElement).toBeNull();
         expect(emptyText).toBe('No addresses found!');
     });
@@ -262,7 +262,7 @@ describe('AddressBookComponent', () => {
 
         window['FileReader'] = () => mockReader;
 
-        expect(fixture.debugElement.query(By.css('.address-list'))).toBeFalsy();
+        expect(fixture.debugElement.query(By.css('.page-list'))).toBeFalsy();
         serviceStub.getArray = () => data;
 
         const file = stub<File>();
@@ -274,7 +274,7 @@ describe('AddressBookComponent', () => {
         fixture.detectChanges();
         tick();
 
-        expect(fixture.debugElement.query(By.css('.address-list')).children.length).toEqual(2);
+        expect(fixture.debugElement.query(By.css('.page-list')).children.length).toEqual(2);
         window['FileReader'] = reader;
 
         flush();
