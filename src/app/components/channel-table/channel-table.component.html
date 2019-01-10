@@ -1,4 +1,4 @@
-<div class="channels"
+<div class="page-container"
      fxLayout='column'
      fxFlex="90"
      fxFlex.lg="70"
@@ -6,7 +6,8 @@
      fxFlexOffset="5"
      fxFlexOffset.xl="20"
      fxFlexOffset.lg="15">
-    <mat-card fxLayout="column" class="card">
+
+    <mat-card class="page-header">
         <div fxLayout="row">
             <mat-card-title fxLayoutAlign="start" fxFlex="50">
                 Channels: {{ totalChannels }}
@@ -42,7 +43,7 @@
         </mat-card-content>
     </mat-card>
 
-    <mat-paginator class="mat-elevation-z1 paginator"
+    <mat-paginator class="mat-elevation-z1 page-paginator"
                    fxLayout="row" fxLayoutAlign="end"
                    [length]="totalChannels"
                    [pageSize]="pageSize"
@@ -76,7 +77,7 @@
         </mat-progress-spinner>
     </div>
 
-    <div class="channel-list" fxLayout="column" fxLayoutGap="15px">
+    <div class="page-list" fxLayout="column" fxLayoutGap="15px">
         <mat-card *ngFor="let channel of visibleChannels; trackBy: trackByFn"
                   [id]="'channel_'+channel.channel_identifier"
                   class="card"
@@ -94,12 +95,12 @@
 
                 <div fxLayout="row"
                      *ngIf="addressLabel(channel.partner_address); else partner_label"
-                     class="label truncate">{{addressLabel(channel.partner_address)}}</div>
+                     class="item-label truncate">{{addressLabel(channel.partner_address)}}</div>
 
                 <ng-template #partner_label>
-                    <div class="label" fxLayout="row">Partner</div>
+                    <div class="item-label" fxLayout="row">Partner</div>
                 </ng-template>
-                <div fxLayout="row" class="truncate info-line">
+                <div fxLayout="row" class="truncate item-info">
                     <span fxLayout="column" class="truncate address">{{channel.partner_address}}</span>
                     <span fxLayout="column">
                         <button class="clipboard-button"
@@ -109,8 +110,8 @@
                     </span>
                 </div>
 
-                <div class="label" fxLayout="row">Balance</div>
-                <div class="info-line balance" fxLayout="row">
+                <div class="item-label" fxLayout="row">Balance</div>
+                <div class="item-info" fxLayout="row">
                     <span>{{channel.balance | decimal: channel.userToken.decimals}}</span>
                     <sup matTooltip="{{channel.userToken | token}}" matTooltipPosition="above"
                          class="token-symbol space gray">
@@ -118,7 +119,7 @@
                     </sup>
                 </div>
                 <div class="channel-status" fxLayout="row">
-                    <span class="label">Status:</span>
+                    <span class="item-label">Status:</span>
                     <span class="light space">{{channel.state | status}}</span>
                 </div>
             </div>

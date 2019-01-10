@@ -1,0 +1,44 @@
+@import "../../../sass/pages";
+
+:host {
+    height: 100%;
+}
+
+.channel-id {
+    text-align: center;
+    font-size: 14px;
+}
+
+.channel-status {
+    font-size: 13px;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.clipboard-button {
+    line-height: 28px !important;
+    height: 28px !important;
+}
+
+.space {
+    margin-left: 6px;
+}
+
+.light {
+    font-weight: 300;
+}
+
+.gray {
+    color: #424242 !important;
+}
+
+.token-transfer-button {
+    margin: 0.8rem 0.8rem 1.2rem;
+    min-height: 36px;
+}
+
+.token-transfer-button button mat-icon {
+    font-size: 20px;
+}

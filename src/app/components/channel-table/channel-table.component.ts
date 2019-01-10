@@ -30,7 +30,7 @@ import { Addresses } from '../../models/address';
 @Component({
     selector: 'app-channel-table',
     templateUrl: './channel-table.component.html',
-    styleUrls: ['./channel-table.component.css'],
+    styleUrls: ['./channel-table.component.scss'],
     animations: [
         trigger('flyInOut', [
             state('in', style({opacity: 1, transform: 'translateX(0)'})),

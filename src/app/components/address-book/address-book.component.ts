@@ -17,7 +17,7 @@ import { EMPTY, of } from 'rxjs';
 @Component({
     selector: 'app-address-book',
     templateUrl: './address-book.component.html',
-    styleUrls: ['./address-book.component.css'],
+    styleUrls: ['./address-book.component.scss'],
     animations: [
         trigger('flyInOut', [
             state('in', style({opacity: 1, transform: 'translateX(0)'})),
