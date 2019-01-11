@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.7.1](https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0) - 2019-01-11
+## [0.7.1](https://github.com/raiden-network/webui/compare/v0.7.0...v0.7.1) - 2019-01-11
 
 ### Changed
 
