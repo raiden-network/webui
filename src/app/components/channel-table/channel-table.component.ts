@@ -169,7 +169,8 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
             width: '500px',
-            data: payload
+            data: payload,
+            autoFocus: false
         });
 
         dialog.afterClosed().pipe(

@@ -3,3 +3,15 @@ mat-error span {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.blocky > * {
+    display: block;
+    line-height: 20px !important;
+    font-size: 14px;
+}
+
+.medium {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 12px;
+}

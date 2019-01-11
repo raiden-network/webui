@@ -12,6 +12,8 @@ import { MockConfig } from '../../../testing/mock-config';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 import { PaymentDialogComponent, PaymentDialogPayload } from './payment-dialog.component';
+import { AddressBookService } from '../../services/address-book.service';
+import { stub } from '../../../testing/stub';
 
 describe('PaymentDialogComponent', () => {
     let component: PaymentDialogComponent;
@@ -44,6 +46,10 @@ describe('PaymentDialogComponent', () => {
                 {
                     provide: RaidenConfig,
                     useClass: MockConfig
+                },
+                {
+                    provide: AddressBookService,
+                    useFactory: () => stub<AddressBookService>()
                 },
                 SharedService
             ],

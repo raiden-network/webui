@@ -10,6 +10,8 @@ import { AddressInputComponent } from '../address-input/address-input.component'
 import { MockConfig } from '../../../testing/mock-config';
 
 import { RegisterDialogComponent } from './register-dialog.component';
+import { AddressBookService } from '../../services/address-book.service';
+import { stub } from '../../../testing/stub';
 
 describe('RegisterDialogComponent', () => {
     let component: RegisterDialogComponent;
@@ -33,6 +35,10 @@ describe('RegisterDialogComponent', () => {
                 {
                     provide: RaidenConfig,
                     useClass: MockConfig
+                },
+                {
+                    provide: AddressBookService,
+                    useFactory: () => stub<AddressBookService>()
                 },
                 SharedService
             ],

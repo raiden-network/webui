@@ -18,6 +18,7 @@ export function clickElement(element: DebugElement, cssSelector: string): HTMLBu
 export function mockInput(element: DebugElement, cssSelector: string, value: string): HTMLInputElement {
     const inputElement = element.query(By.css(cssSelector));
     const input = (inputElement.nativeElement as HTMLInputElement);
+    input.focus();
     input.value = value;
     input.dispatchEvent(mockEvent('focusin'));
     input.dispatchEvent(mockEvent('input'));

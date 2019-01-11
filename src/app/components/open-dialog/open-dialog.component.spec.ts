@@ -13,6 +13,8 @@ import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 
 import { OpenDialogComponent } from './open-dialog.component';
+import { AddressBookService } from '../../services/address-book.service';
+import { stub } from '../../../testing/stub';
 
 describe('OpenDialogComponent', () => {
     let component: OpenDialogComponent;
@@ -39,6 +41,10 @@ describe('OpenDialogComponent', () => {
                 {
                     provide: RaidenConfig,
                     useClass: MockConfig
+                },
+                {
+                    provide: AddressBookService,
+                    useFactory: () => stub<AddressBookService>()
                 },
                 SharedService
             ],
