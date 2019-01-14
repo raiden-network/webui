@@ -7,10 +7,12 @@
      fxFlexOffset.xl="20"
      fxFlexOffset.lg="15">
 
-    <mat-card class="page-header" fxLayoutGap.lt-sm="30px">
+    <mat-card class="page-header">
         <mat-card-title>Address Book</mat-card-title>
         <mat-card-content>
-            <div fxLayout="row" [formGroup]="form" fxLayoutGap="14px">
+            <div fxLayout="row"
+                 fxLayout.lt-sm="column"
+                 [formGroup]="form" fxLayoutGap="14px">
 
                 <div fxLayout="column"
                      fxFlex="0 0 40px"
@@ -25,8 +27,8 @@
                     </ng-template>
                 </div>
 
-                <div fxLayout="column" fxFlex="1 1 40%">
-                    <mat-form-field hideRequiredMarker>
+                <div fxLayout="column" fxFlex="auto">
+                    <mat-form-field hideRequiredMarker class="full-width-form-field">
                         <input id="addresses-address" matInput placeholder="Address" formControlName="address" required/>
                         <mat-error
                             *ngIf="form.get('address').invalid && (form.get('address').dirty || form.get('address').touched)">
@@ -35,8 +37,8 @@
                     </mat-form-field>
                 </div>
 
-                <div fxLayout="column" fxFlex="1 1 40%">
-                    <mat-form-field hideRequiredMarker>
+                <div fxLayout="column" fxFlex="auto">
+                    <mat-form-field hideRequiredMarker class="full-width-form-field">
                         <input id="addresses-label" matInput placeholder="Label" formControlName="label" required/>
                         <mat-error
                             *ngIf="form.get('label').invalid && (form.get('label').dirty || form.get('label').touched)">
@@ -100,7 +102,8 @@
     </mat-card>
 
     <mat-paginator class="mat-elevation-z1 page-paginator"
-                   fxLayout="row" fxLayoutAlign="end"
+                   fxLayout="row"
+                   fxLayoutAlign="end"
                    [length]="totalAddresses"
                    [pageSize]="pageSize"
                    [pageSizeOptions]="[10,25,50,100]"

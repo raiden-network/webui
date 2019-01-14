@@ -31,7 +31,7 @@
             <div fxLayout="column" fxFlex="50" fxLayout.lt-sm="row" fxFlex.lt-sm="100">
                 <div fxLayout="row" fxLayoutGap="15px" fxFlex="100" fxLayoutAlign.lt-sm="center">
                     <mat-icon fxLayout="column" fxFlexAlign="center">search</mat-icon>
-                    <mat-form-field class="example-form-field" fxFlex="1 1 auto" fxLayout="column">
+                    <mat-form-field class="full-width-form-field" fxFlex="1 1 auto" fxLayout="column">
                         <input matInput type="text" placeholder="Filter" [(ngModel)]="filter"
                                (keyup)="applyKeywordFilter()">
                         <button mat-button *ngIf="filter" matSuffix mat-icon-button aria-label="Clear"
@@ -45,7 +45,7 @@
             <div fxLayout="column" fxFlex="50" fxLayout.lt-sm="row" fxFlex.lt-sm="100">
                 <div fxLayout="row" fxLayoutGap="15px" fxFlex="100">
                     <mat-icon fxLayout="column" fxFlexAlign="center">sort</mat-icon>
-                    <mat-form-field fxLayout="column" fxFlex="1 1 auto">
+                    <mat-form-field class="full-width-form-field" fxLayout="column" fxFlex="1 1 auto">
                         <mat-select placeholder="Sort by" [(value)]="sorting"
                                     (selectionChange)="applyFilters($event.value)">
                             <mat-option *ngFor="let option of sortingOptions" [value]="option.value">{{option.label}}

@@ -25,7 +25,15 @@ $margin: 10px;
 
 .page-paginator {
     margin: 10px $margin;
-    min-height: 5em;
+    min-height: 65px;
+    height: 65px;
+}
+
+@media only screen and (max-width: 600px) {
+    .page-paginator {
+        margin: 10px $margin;
+        height: 130px;
+    }
 }
 
 .item-label {
