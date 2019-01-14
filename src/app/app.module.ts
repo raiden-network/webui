@@ -39,6 +39,7 @@ import { LocalStorageAdapter } from './adapters/local-storage-adapter';
 import { AddressBookItemComponent } from './components/address-book-item/address-book-item.component';
 import { DragUploadDirective } from './directives/drag-upload.directive';
 import { StatusPipe } from './pipes/status.pipe';
+import 'hammerjs';
 
 const appRoutes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
