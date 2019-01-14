@@ -20,7 +20,6 @@ import { KeysPipe } from '../../pipes/keys.pipe';
 import { SubsetPipe } from '../../pipes/subset.pipe';
 import { TokenPipe } from '../../pipes/token.pipe';
 import { ChannelPollingService } from '../../services/channel-polling.service';
-import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import { SharedService } from '../../services/shared.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
@@ -30,10 +29,8 @@ import { TokenNetworkSelectorComponent } from '../token-network-selector/token-n
 
 import { ChannelTableComponent } from './channel-table.component';
 import { StatusPipe } from '../../pipes/status.pipe';
-import { AddressBookService } from '../../services/address-book.service';
-import { stub } from '../../../testing/stub';
-import { MockConfig } from '../../../testing/mock-config';
 import Spy = jasmine.Spy;
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('ChannelTableComponent', () => {
     let component: ChannelTableComponent;
@@ -42,11 +39,7 @@ describe('ChannelTableComponent', () => {
     let refreshingSpy: Spy;
     let tokenSpy: Spy;
 
-    let addressBookStub: AddressBookService;
-
     beforeEach(async(() => {
-        addressBookStub = stub<AddressBookService>();
-        addressBookStub.get = () => ({});
 
         TestBed.configureTestingModule({
             declarations: [
@@ -65,14 +58,9 @@ describe('ChannelTableComponent', () => {
             ],
             providers: [
                 SharedService,
-                {
-                    provide: RaidenConfig,
-                    useClass: MockConfig
-                },
-                {
-                    provide: AddressBookService,
-                    useFactory: () => addressBookStub
-                },
+                TestProviders.MockRaidenConfigProvider(),
+                TestProviders.HammerJSProvider(),
+                TestProviders.AddressBookStubProvider(),
                 RaidenService,
                 ChannelPollingService,
                 ToastrService,

@@ -16,6 +16,7 @@ import { MockConfig } from '../../../testing/mock-config';
 
 import { TokenNetworkSelectorComponent } from './token-network-selector.component';
 import { errorMessage, mockEvent } from '../../../testing/interaction-helper';
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('TokenNetworkSelectorComponent', () => {
     let component: TokenNetworkSelectorComponent;
@@ -72,10 +73,7 @@ describe('TokenNetworkSelectorComponent', () => {
                 TokenPipe
             ],
             providers: [
-                {
-                    provide: RaidenConfig,
-                    useClass: MockConfig
-                },
+                TestProviders.MockRaidenConfigProvider(),
                 SharedService
             ],
             imports: [

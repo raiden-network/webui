@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material';
 import { clickElement, errorMessage, mockInput } from '../../../testing/interaction-helper';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('AddressBookItemComponent', () => {
     let component: AddressBookItemComponent;
@@ -28,12 +29,9 @@ describe('AddressBookItemComponent', () => {
                 ReactiveFormsModule
             ],
             providers: [
-                {
-                    provide: MatDialog,
-                    useClass: MockMatDialog
-                }
+                TestProviders.MockMatDialog()
             ]
-        }).compileComponents();
+        });
     }));
 
     beforeEach(() => {

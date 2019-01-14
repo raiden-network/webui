@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('ConfirmationDialogComponent', () => {
     let component: ConfirmationDialogComponent;
@@ -15,14 +15,8 @@ describe('ConfirmationDialogComponent', () => {
                 ConfirmationDialogComponent
             ],
             providers: [
-                {
-                    provide: MAT_DIALOG_DATA,
-                    useValue: {}
-                },
-                {
-                    provide: MatDialogRef,
-                    useValue: {}
-                }
+                TestProviders.MockMatDialogData(),
+                TestProviders.MockMatDialogRef()
             ],
             imports: [
                 MaterialComponentsModule,

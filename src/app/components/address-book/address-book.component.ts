@@ -6,7 +6,7 @@ import { AddressBookService } from '../../services/address-book.service';
 import { MatDialog, PageEvent } from '@angular/material';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
-import { UploadError } from '../../model/upload-error';
+import { UploadError } from '../../models/upload-error';
 import {
     ConfirmationDialogComponent,
     ConfirmationDialogPayload

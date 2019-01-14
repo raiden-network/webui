@@ -1,20 +1,16 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { TokenPipe } from '../../pipes/token.pipe';
-import { RaidenConfig } from '../../services/raiden.config';
 import { SharedService } from '../../services/shared.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
-import { MockConfig } from '../../../testing/mock-config';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 
 import { OpenDialogComponent } from './open-dialog.component';
-import { AddressBookService } from '../../services/address-book.service';
-import { stub } from '../../../testing/stub';
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('OpenDialogComponent', () => {
     let component: OpenDialogComponent;
@@ -30,22 +26,11 @@ describe('OpenDialogComponent', () => {
                 TokenNetworkSelectorComponent
             ],
             providers: [
-                {
-                    provide: MAT_DIALOG_DATA,
-                    useValue: {}
-                },
-                {
-                    provide: MatDialogRef,
-                    useValue: {}
-                },
-                {
-                    provide: RaidenConfig,
-                    useClass: MockConfig
-                },
-                {
-                    provide: AddressBookService,
-                    useFactory: () => stub<AddressBookService>()
-                },
+                TestProviders.MockMatDialogData(),
+                TestProviders.MockMatDialogRef(),
+                TestProviders.MockRaidenConfigProvider(),
+                TestProviders.AddressBookStubProvider(),
+                TestProviders.HammerJSProvider(),
                 SharedService
             ],
             imports: [

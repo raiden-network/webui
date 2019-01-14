@@ -58,9 +58,7 @@ export class AddressBookService {
         const isValid = this.schema(addresses);
 
         if (!isValid) {
-            const errors = this.schema.errors.map(value => value.message).join(', ');
-            console.error(this.schema.errors);
-            throw Error(errors);
+            throw Error(this.schema.errors.map(value => value.message).join(', '));
         }
 
         const addressesValue = JSON.stringify(addresses);

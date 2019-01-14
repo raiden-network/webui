@@ -1,7 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, TestBed } from '@angular/core/testing';
-import { MockConfig } from '../../testing/mock-config';
 import { RaidenConfig } from './raiden.config';
 import { SharedService } from './shared.service';
 
@@ -9,6 +8,7 @@ import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { BatchManager, BatchRequest } from './batch-manager';
 import { UserToken } from '../models/usertoken';
 import Spy = jasmine.Spy;
+import { TestProviders } from '../../testing/test-providers';
 
 describe('TokenInfoRetriever', () => {
     let service: TokenInfoRetrieverService;
@@ -24,10 +24,7 @@ describe('TokenInfoRetriever', () => {
             providers: [
                 TokenInfoRetrieverService,
                 SharedService,
-                {
-                    provide: RaidenConfig,
-                    useClass: MockConfig
-                }
+                TestProviders.MockRaidenConfigProvider()
             ]
         });
 

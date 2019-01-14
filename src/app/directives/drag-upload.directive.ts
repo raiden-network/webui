@@ -1,5 +1,5 @@
 import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { UploadError } from '../model/upload-error';
+import { UploadError } from '../models/upload-error';
 
 @Directive({
     selector: '[appDragUpload]'

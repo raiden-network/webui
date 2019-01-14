@@ -5,6 +5,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 
 import { TokenInputComponent } from './token-input.component';
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('TokenInputComponent', () => {
     let component: TokenInputComponent;
@@ -35,6 +36,9 @@ describe('TokenInputComponent', () => {
                 NoopAnimationsModule,
                 FormsModule,
                 ReactiveFormsModule
+            ],
+            providers: [
+                TestProviders.HammerJSProvider()
             ]
         }).compileComponents();
     }));

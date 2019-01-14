@@ -16,6 +16,7 @@ import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { By } from '@angular/platform-browser';
 import { clickElement, mockInput } from '../../../testing/interaction-helper';
 import { DebugElement } from '@angular/core';
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('AddressBookComponent', () => {
     let component: AddressBookComponent;
@@ -52,8 +53,6 @@ describe('AddressBookComponent', () => {
     }
 
     beforeEach(async(() => {
-        serviceStub = stub();
-
         TestBed.configureTestingModule({
             declarations: [
                 AddressBookComponent,
@@ -66,16 +65,12 @@ describe('AddressBookComponent', () => {
                 ReactiveFormsModule
             ],
             providers: [
-                {
-                    provide: AddressBookService,
-                    useFactory: () => serviceStub
-                },
-                {
-                    provide: MatDialog,
-                    useClass: MockMatDialog
-                }
+                TestProviders.HammerJSProvider(),
+                TestProviders.AddressBookStubProvider(),
+                TestProviders.MockMatDialog(),
             ]
         }).compileComponents();
+        serviceStub = TestBed.get(AddressBookService);
     }));
 
     beforeEach(() => {
@@ -140,7 +135,9 @@ describe('AddressBookComponent', () => {
 
     it('should delete all nodes when user confirms delete all', function () {
         let addresses: Address[] = createData();
-        serviceStub.getArray = () => addresses;
+        serviceStub.getArray = () => {
+            return addresses;
+        };
         serviceStub.deleteAll = () => addresses = [];
 
         fixture.detectChanges();

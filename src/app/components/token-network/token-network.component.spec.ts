@@ -14,6 +14,7 @@ import { SharedService } from '../../services/shared.service';
 import { MockConfig } from '../../../testing/mock-config';
 
 import { TokenNetworkComponent } from './token-network.component';
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('TokenNetworkComponent', () => {
     let component: TokenNetworkComponent;
@@ -27,10 +28,8 @@ describe('TokenNetworkComponent', () => {
                 DecimalPipe
             ],
             providers: [
-                {
-                    provide: RaidenConfig,
-                    useClass: MockConfig
-                },
+                TestProviders.HammerJSProvider(),
+                TestProviders.MockRaidenConfigProvider(),
                 RaidenService,
                 SharedService
             ],
