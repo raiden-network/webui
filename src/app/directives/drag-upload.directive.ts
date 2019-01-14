@@ -1,6 +1,11 @@
 import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { UploadError } from '../models/upload-error';
 
+export enum DragStatus {
+    OVER,
+    LEAVE
+}
+
 @Directive({
     selector: '[appDragUpload]'
 })
@@ -12,6 +17,7 @@ export class DragUploadDirective {
 
     @Output() selectedFile: EventEmitter<File> = new EventEmitter();
     @Output() error: EventEmitter<UploadError> = new EventEmitter();
+    @Output() dragStatus: EventEmitter<DragStatus> = new EventEmitter();
 
     constructor() {
     }
@@ -21,12 +27,14 @@ export class DragUploadDirective {
         evt.preventDefault();
         evt.stopPropagation();
         evt.dataTransfer.dropEffect = 'copy';
+        this.dragStatus.emit(DragStatus.OVER);
     }
 
     @HostListener('dragleave', ['$event'])
     public onDragLeave(evt: DragEvent) {
         evt.preventDefault();
         evt.stopPropagation();
+        this.dragStatus.emit(DragStatus.LEAVE);
     }
 
     @HostListener('drop', ['$event'])

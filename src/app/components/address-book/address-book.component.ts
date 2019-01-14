@@ -7,12 +7,10 @@ import { MatDialog, PageEvent } from '@angular/material';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { UploadError } from '../../models/upload-error';
-import {
-    ConfirmationDialogComponent,
-    ConfirmationDialogPayload
-} from '../confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent, ConfirmationDialogPayload } from '../confirmation-dialog/confirmation-dialog.component';
 import { flatMap } from 'rxjs/operators';
 import { EMPTY, of } from 'rxjs';
+import { DragStatus } from '../../directives/drag-upload.directive';
 
 @Component({
     selector: 'app-address-book',
@@ -39,6 +37,11 @@ import { EMPTY, of } from 'rxjs';
 })
 export class AddressBookComponent implements OnInit {
     private _editedAddress: string;
+    private _isOver: boolean;
+
+    public get isOver(): boolean {
+        return this._isOver;
+    }
 
     public get uploadError(): UploadError {
         return this._uploadError;
@@ -129,7 +132,10 @@ export class AddressBookComponent implements OnInit {
         reader.onload = () => {
             try {
                 this.addressBookService.store(JSON.parse(reader.result as string));
-                setTimeout(() => this.showDropArea = false, 800);
+                setTimeout(() => {
+                    this.showDropArea = false;
+                    this._isOver = false;
+                }, 800);
                 this.updateVisibleAddresses();
             } catch (e) {
                 this._uploadError = {invalidFormat: true};
@@ -181,5 +187,9 @@ export class AddressBookComponent implements OnInit {
 
     cancelled() {
         this._editedAddress = undefined;
+    }
+
+    updateDragStatus(status: DragStatus) {
+        this._isOver = status === DragStatus.OVER;
     }
 }

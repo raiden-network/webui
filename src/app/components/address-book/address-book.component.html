@@ -29,7 +29,8 @@
 
                 <div fxLayout="column" fxFlex="auto">
                     <mat-form-field hideRequiredMarker class="full-width-form-field">
-                        <input id="addresses-address" matInput placeholder="Address" formControlName="address" required/>
+                        <input id="addresses-address" matInput placeholder="Address" formControlName="address"
+                               required/>
                         <mat-error
                             *ngIf="form.get('address').invalid && (form.get('address').dirty || form.get('address').touched)">
 
@@ -83,8 +84,10 @@
 
         <div fxLayout="row" *ngIf="showDropArea">
             <div id="drop-zone" appDragUpload
+                 [class.over]="isOver"
                  (selectedFile)="filesSelected($event)"
                  (error)="error($event)"
+                 (dragStatus)="updateDragStatus($event)"
                  allowedExtension="json">
                 Drop address file here
 
