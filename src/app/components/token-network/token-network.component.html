@@ -93,7 +93,7 @@
         </mat-progress-spinner>
     </div>
 
-    <div class="page-list" fxLayout="column" fxLayoutGap="15px">
+    <div class="page-list" fxLayout="column" fxLayoutGap="15px" *ngIf="totalTokens > 0">
         <mat-card *ngFor="let token of visibleTokens; trackBy: trackByFn"
                   class="card"
                   [@flyInOut]="'in'"

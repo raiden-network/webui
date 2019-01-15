@@ -71,13 +71,13 @@
     <div class="match-parent-height" fxLayout="column" fxLayoutAlign="center center"
          *ngIf="!filter && totalChannels == 0 && (refreshing$ | async)">
         <mat-progress-spinner
-                [diameter]="60"
-                [color]="'primary'"
-                [mode]="'indeterminate'">
+            [diameter]="60"
+            [color]="'primary'"
+            [mode]="'indeterminate'">
         </mat-progress-spinner>
     </div>
 
-    <div class="page-list" fxLayout="column" fxLayoutGap="15px">
+    <div class="page-list" fxLayout="column" fxLayoutGap="15px" *ngIf="totalChannels > 0">
         <mat-card *ngFor="let channel of visibleChannels; trackBy: trackByFn"
                   [id]="'channel_'+channel.channel_identifier"
                   class="card"
