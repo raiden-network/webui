@@ -24,3 +24,42 @@
 .token-transfer-button button mat-icon {
     font-size: 20px;
 }
+
+.address-label {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.info-line {
+    line-height: 28px;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #616161;
+}
+
+.channel-id {
+    text-align: center;
+    font-size: 14px;
+}
+
+.channel-status {
+    font-size: 13px;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.clipboard-button {
+    line-height: 28px !important;
+    height: 28px !important;
+}
+
+.balance:nth-child(2) {
+    padding-left: 4px;
+}
