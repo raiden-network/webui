@@ -11,6 +11,7 @@ import { clickElement, errorMessage, mockInput } from '../../../testing/interact
 import { ReactiveFormsModule } from '@angular/forms';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { TestProviders } from '../../../testing/test-providers';
+import { SimpleChange } from '@angular/core';
 
 describe('AddressBookItemComponent', () => {
     let component: AddressBookItemComponent;
@@ -194,4 +195,19 @@ describe('AddressBookItemComponent', () => {
 
         expect(errorMessage(element)).toBe('Label cannot be empty!');
     }));
+
+    it('should update the label if the underlying address is modified', function () {
+        const newAddress = {
+            address: component.address.address,
+            label: 'New Label'
+        };
+
+        component.ngOnChanges({
+            address: new SimpleChange(component.address, newAddress, false)
+        });
+
+        fixture.detectChanges();
+
+        expect(component.form.get('label').value).toBe('New Label');
+    });
 });

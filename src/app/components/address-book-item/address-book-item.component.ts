@@ -1,10 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { Address } from '../../models/address';
-import {
-    ConfirmationDialogComponent,
-    ConfirmationDialogPayload
-} from '../confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent, ConfirmationDialogPayload } from '../confirmation-dialog/confirmation-dialog.component';
 import { flatMap } from 'rxjs/operators';
 import { EMPTY, of } from 'rxjs';
 import { MatDialog } from '@angular/material';
@@ -104,5 +101,17 @@ export class AddressBookItemComponent implements OnChanges {
                 control.disable({onlySelf: true});
             }
         }
+
+        if (changes.hasOwnProperty('address')) {
+            this.updateLabel(changes['address']);
+        }
+    }
+
+    private updateLabel(simpleChange: SimpleChange) {
+        if (simpleChange.isFirstChange()) {
+            return;
+        }
+
+        this.form.get('label').setValue(simpleChange.currentValue.label);
     }
 }
