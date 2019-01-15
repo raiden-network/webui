@@ -1,35 +1,5 @@
 @import "../../../sass/pages";
 
-$over-color:  #43a047;
-$border-radius: 5px;
-
 :host {
     height: 100%;
-}
-
-#drop-zone {
-    width: 100%;
-    border: 2px dashed #bbb;
-    -moz-border-radius: $border-radius;
-    -webkit-border-radius: $border-radius;
-    border-radius: $border-radius;
-    padding: 25px;
-    text-align: center;
-    font-weight: bold;
-    color: #bbb;
-}
-
-.over {
-    border: 2px dashed $over-color !important;
-    color: $over-color !important;
-}
-
-.drop-zone-error {
-    font-weight: 400;
-    font-size: small;
-}
-
-.action-buttons {
-    padding-bottom: 10px;
-    padding-top: 10px;
 }

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AddressBookComponent } from './address-book.component';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -7,16 +7,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AddressBookItemComponent } from '../address-book-item/address-book-item.component';
 import { DragUploadDirective } from '../../directives/drag-upload.directive';
 import { AddressBookService } from '../../services/address-book.service';
-import { stub } from '../../../testing/stub';
-// @ts-ignore
-import * as Web3 from 'web3';
-import { Address, Addresses } from '../../models/address';
+import { Address } from '../../models/address';
 import { MatDialog } from '@angular/material';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { By } from '@angular/platform-browser';
 import { clickElement, mockInput } from '../../../testing/interaction-helper';
 import { DebugElement } from '@angular/core';
 import { TestProviders } from '../../../testing/test-providers';
+import { createTestAddresses } from '../../../testing/test-data';
+import { FileUploadComponent } from '../file-upload/file-upload.component';
 
 describe('AddressBookComponent', () => {
     let component: AddressBookComponent;
@@ -37,26 +36,12 @@ describe('AddressBookComponent', () => {
         return expectations;
     }
 
-    function createData(count: number = 15): Address[] {
-        const web3 = new Web3();
-        const addresses: Address[] = [];
-
-        for (let i = 0; i < count; i++) {
-            const account = web3.eth.accounts.create(web3.utils.randomHex(32));
-            addresses.push({
-                address: account.address,
-                label: `Random Account ${i + 1}`
-            });
-        }
-
-        return addresses;
-    }
-
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [
                 AddressBookComponent,
                 AddressBookItemComponent,
+                FileUploadComponent,
                 DragUploadDirective
             ],
             imports: [
@@ -79,13 +64,13 @@ describe('AddressBookComponent', () => {
     });
 
     it('should create', () => {
-        serviceStub.getArray = () => createData();
+        serviceStub.getArray = () => createTestAddresses();
         fixture.detectChanges();
         expect(component).toBeTruthy();
     });
 
     it('should display 10 of 15 items by default', function () {
-        serviceStub.getArray = () => createData();
+        serviceStub.getArray = () => createTestAddresses();
         fixture.detectChanges();
 
         const paginatorLabel = fixture.debugElement.query(By.css('.mat-paginator-range-label'));
@@ -97,7 +82,7 @@ describe('AddressBookComponent', () => {
     });
 
     it('should display 5 items after changing page', async(function () {
-        serviceStub.getArray = () => createData();
+        serviceStub.getArray = () => createTestAddresses();
         fixture.detectChanges();
 
         clickElement(fixture.debugElement, '.mat-paginator-navigation-next');
@@ -134,7 +119,7 @@ describe('AddressBookComponent', () => {
     });
 
     it('should delete all nodes when user confirms delete all', function () {
-        let addresses: Address[] = createData();
+        let addresses: Address[] = createTestAddresses();
         serviceStub.getArray = () => {
             return addresses;
         };
@@ -157,7 +142,7 @@ describe('AddressBookComponent', () => {
         dialog.cancelled = true;
 
         // noinspection JSMismatchedCollectionQueryUpdate
-        let addresses: Address[] = createData();
+        let addresses: Address[] = createTestAddresses();
         serviceStub.getArray = () => addresses;
         serviceStub.deleteAll = () => addresses = [];
 
@@ -174,7 +159,7 @@ describe('AddressBookComponent', () => {
     });
 
     it('should only be able to edit one element at a time', function () {
-        serviceStub.getArray = () => createData();
+        serviceStub.getArray = () => createTestAddresses();
         fixture.detectChanges();
 
         const debugElements = fixture.debugElement.query(By.css('.page-list')).children;
@@ -233,76 +218,6 @@ describe('AddressBookComponent', () => {
         expect(emptyText).toBe('No addresses found!');
     });
 
-    it('should hide the drop area and import the addresses', fakeAsync(function () {
-        let imported: Addresses = null;
-        serviceStub.store = addresses => imported = addresses;
-        serviceStub.getArray = () => [];
-
-        fixture.detectChanges();
-
-        const reader = window['FileReader'];
-        const result = {};
-        const data = createData(2);
-
-        for (let i = 0; i < data.length; i++) {
-            result[data[i].address] = data[i].label;
-        }
-
-        const mockReader = {
-            result: JSON.stringify(result),
-            readAsText: function () {
-                this.onload();
-            },
-            onload: () => {
-            }
-        };
-
-        window['FileReader'] = () => mockReader;
-
-        expect(fixture.debugElement.query(By.css('.page-list'))).toBeFalsy();
-        serviceStub.getArray = () => data;
-
-        const file = stub<File>();
-        component.filesSelected(file);
-        tick(1000);
-        expect(component.showDropArea).toBe(false);
-        expect(imported).toEqual(result);
-
-        fixture.detectChanges();
-        tick();
-
-        expect(fixture.debugElement.query(By.css('.page-list')).children.length).toEqual(2);
-        window['FileReader'] = reader;
-
-        flush();
-    }));
-
-    it('should have an error if the import fails', function () {
-        const reader = window['FileReader'];
-
-        const mockReader = {
-            result: '',
-            readAsText: function () {
-                this.onload();
-            },
-            onload: () => {
-            }
-        };
-
-        serviceStub.store = () => {
-            throw new Error('invalid');
-        };
-
-        window['FileReader'] = () => mockReader;
-
-        const file = stub<File>();
-        component.filesSelected(file);
-
-        expect(component.uploadError).toEqual(jasmine.objectContaining({invalidFormat: true}));
-
-        window['FileReader'] = reader;
-    });
-
     it('should download a json file', function () {
         const spy = jasmine.createSpyObj('a', ['click', 'setAttribute']);
         spy.setAttribute = function (attr, value) {
@@ -321,6 +236,29 @@ describe('AddressBookComponent', () => {
         expect(spy.target).toBe('_blank');
         expect(spy.download).toBe('address-book');
         expect(spy.click).toHaveBeenCalledTimes(1);
+    });
+
+    it('should update stored data when the user updates a label', function () {
+        const testAddresses = createTestAddresses(5);
+        serviceStub.getArray = () => testAddresses;
+        serviceStub.save = function (address: Address) {
+            const index = testAddresses.findIndex(value => value.address === address.address);
+            testAddresses[index] = address;
+        };
+        fixture.detectChanges();
+
+        const debugElements = fixture.debugElement.query(By.css('.page-list')).children;
+
+        const addressInput = (element: DebugElement) => element.query(By.css('#address-label')).nativeElement as HTMLInputElement;
+
+        const inputElement = addressInput(debugElements[0]);
+        expect(inputElement.value).toEqual('Random Account 1');
+        clickElement(debugElements[0], '#edit-address');
+        fixture.detectChanges();
+        mockInput(debugElements[0], '#address-label', 'An Account');
+        clickElement(debugElements[0], '#edit-address');
+        fixture.detectChanges();
+        expect(testAddresses[0].label).toBe('An Account');
     });
 
 });

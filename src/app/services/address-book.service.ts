@@ -54,14 +54,21 @@ export class AddressBookService {
         return addressBook;
     }
 
-    store(addresses: Addresses) {
+    store(addresses: Addresses, merge: boolean = false) {
         const isValid = this.schema(addresses);
 
         if (!isValid) {
             throw Error(this.schema.errors.map(value => value.message).join(', '));
         }
 
-        const addressesValue = JSON.stringify(addresses);
+        let data: Addresses;
+        if (merge) {
+            data = Object.assign(this.get(), addresses);
+        } else {
+            data = addresses;
+        }
+
+        const addressesValue = JSON.stringify(data);
         this.storage.setItem(AddressBookService.ADDRESS_BOOK_KEY, addressesValue);
     }
 

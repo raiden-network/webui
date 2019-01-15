@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { Address } from '../../models/address';
 import {
@@ -96,15 +96,13 @@ export class AddressBookItemComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (!changes.hasOwnProperty('editMode')) {
-            return;
-        }
-
-        const control = this.form.get('label');
-        if (changes['editMode'].currentValue) {
-            control.enable({onlySelf: true});
-        } else {
-            control.disable({onlySelf: true});
+        if (changes.hasOwnProperty('editMode')) {
+            const control = this.form.get('label');
+            if (changes['editMode'].currentValue) {
+                control.enable({onlySelf: true});
+            } else {
+                control.disable({onlySelf: true});
+            }
         }
     }
 }

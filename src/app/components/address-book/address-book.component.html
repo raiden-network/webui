@@ -59,7 +59,8 @@
         <mat-card-actions>
             <div fxLayout="row" fxLayoutAlign="end" class="action-buttons">
                 <div fxLayout="column">
-                    <button id="addresses-import" mat-icon-button color="primary" (click)="showDropArea = !showDropArea"
+                    <button id="addresses-import" mat-icon-button color="primary"
+                            (click)="uploader.showDropArea = !uploader.showDropArea"
                             matTooltip="Opens the drop area where you can drag the file to import">
                         <mat-icon aria-label="Import icon">cloud_upload</mat-icon>
                     </button>
@@ -82,25 +83,8 @@
             </div>
         </mat-card-actions>
 
-        <div fxLayout="row" *ngIf="showDropArea">
-            <div id="drop-zone" appDragUpload
-                 [class.over]="isOver"
-                 (selectedFile)="filesSelected($event)"
-                 (error)="error($event)"
-                 (dragStatus)="updateDragStatus($event)"
-                 allowedExtension="json">
-                Drop address file here
-
-                <mat-error *ngIf="uploadError" class="drop-zone-error">
-                    <span *ngIf="uploadError.invalidExtension">Only json files are allowed</span>
-                    <span *ngIf="uploadError.multiple">Only a single file is supported</span>
-                    <span *ngIf="uploadError.invalidFormat">The uploaded file is not in a valid format</span>
-                    <span *ngIf="uploadError.exceedsUploadLimit">
-                        The file exceed the max allowed size of {{ uploadError.exceedsUploadLimit }} bytes
-                    </span>
-                </mat-error>
-            </div>
-        </div>
+        <app-file-upload #uploader="file-upload"
+                         (addresses)="importAddresses($event)"></app-file-upload>
 
     </mat-card>
 

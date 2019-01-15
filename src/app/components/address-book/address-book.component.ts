@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { addressValidator } from '../../shared/address.validator';
-import { Address } from '../../models/address';
+import { Address, Addresses } from '../../models/address';
 import { AddressBookService } from '../../services/address-book.service';
 import { MatDialog, PageEvent } from '@angular/material';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
-import { UploadError } from '../../models/upload-error';
 import { ConfirmationDialogComponent, ConfirmationDialogPayload } from '../confirmation-dialog/confirmation-dialog.component';
 import { flatMap } from 'rxjs/operators';
 import { EMPTY, of } from 'rxjs';
-import { DragStatus } from '../../directives/drag-upload.directive';
 
 @Component({
     selector: 'app-address-book',
@@ -37,15 +35,6 @@ import { DragStatus } from '../../directives/drag-upload.directive';
 })
 export class AddressBookComponent implements OnInit {
     private _editedAddress: string;
-    private _isOver: boolean;
-
-    public get isOver(): boolean {
-        return this._isOver;
-    }
-
-    public get uploadError(): UploadError {
-        return this._uploadError;
-    }
 
     constructor(
         private fb: FormBuilder,
@@ -53,6 +42,7 @@ export class AddressBookComponent implements OnInit {
         private identiconService: IdenticonCacheService,
         public dialog: MatDialog
     ) {
+
     }
 
     public readonly form: FormGroup = this.fb.group({
@@ -64,10 +54,6 @@ export class AddressBookComponent implements OnInit {
     totalAddresses: number;
     pageSize = 10;
     currentPage = 0;
-
-    showDropArea = false;
-
-    private _uploadError: UploadError;
 
     get editedAddress(): string {
         return this._editedAddress;
@@ -121,30 +107,6 @@ export class AddressBookComponent implements OnInit {
         this.addressBookService.save(address);
     }
 
-    error(dragError: UploadError) {
-        this._uploadError = dragError;
-    }
-
-    filesSelected(file: File) {
-        this._uploadError = null;
-
-        const reader = new FileReader();
-        reader.onload = () => {
-            try {
-                this.addressBookService.store(JSON.parse(reader.result as string));
-                setTimeout(() => {
-                    this.showDropArea = false;
-                    this._isOver = false;
-                }, 800);
-                this.updateVisibleAddresses();
-            } catch (e) {
-                this._uploadError = {invalidFormat: true};
-            }
-        };
-
-        reader.readAsText(file);
-    }
-
     saveAddresses() {
         const link = document.createElement('a');
         link.target = '_blank';
@@ -189,7 +151,8 @@ export class AddressBookComponent implements OnInit {
         this._editedAddress = undefined;
     }
 
-    updateDragStatus(status: DragStatus) {
-        this._isOver = status === DragStatus.OVER;
+    importAddresses(address: Addresses) {
+        this.addressBookService.store(address, true);
+        this.updateVisibleAddresses();
     }
 }

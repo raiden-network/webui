@@ -1,5 +1,4 @@
 import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { UploadError } from '../models/upload-error';
 
 export enum DragStatus {
     OVER,
@@ -11,12 +10,8 @@ export enum DragStatus {
 })
 export class DragUploadDirective {
 
-    public static MAX_UPLOAD_SIZE = 256 * 1024;
-
     @Input() allowedExtension: string;
-
-    @Output() selectedFile: EventEmitter<File> = new EventEmitter();
-    @Output() error: EventEmitter<UploadError> = new EventEmitter();
+    @Output() files: EventEmitter<FileList> = new EventEmitter();
     @Output() dragStatus: EventEmitter<DragStatus> = new EventEmitter();
 
     constructor() {
@@ -41,31 +36,7 @@ export class DragUploadDirective {
     public onDrop(evt: DragEvent) {
         evt.preventDefault();
         evt.stopPropagation();
-        const files = evt.dataTransfer.files;
-
-        if (files.length > 1) {
-            this.error.emit({multiple: true});
-            return;
-        }
-
-        if (files.length <= 0) {
-            return;
-        }
-
-        const file = files.item(0);
-        const extension = this.allowedExtension;
-
-        if (extension && !file.name.endsWith(extension)) {
-            this.error.emit({invalidExtension: true});
-            return;
-        }
-
-        if (file.size > DragUploadDirective.MAX_UPLOAD_SIZE) {
-            this.error.emit({exceedsUploadLimit: DragUploadDirective.MAX_UPLOAD_SIZE});
-            return;
-        }
-
-        this.selectedFile.emit(file);
+        this.files.emit(evt.dataTransfer.files);
     }
 
 }

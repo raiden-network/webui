@@ -203,4 +203,39 @@ describe('AddressBookService', () => {
         expect(url).toContain('blob:http://localhost');
     }));
 
+    it('should merge and override if merge is specified', inject([AddressBookService], (service: AddressBookService) => {
+        const first: Address = {
+            label: 'Test Node 1',
+            address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+        };
+
+        const second: Address = {
+            label: 'Test Node 2',
+            address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
+        };
+
+        const third: Address = {
+            label: 'Test Node 3',
+            address: '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6'
+        };
+
+        service.save(first);
+        service.save(second);
+
+        expect(service.getArray()).toEqual([first, second]);
+
+        const modified: Address = {
+            label: 'New Node Label',
+            address: first.address
+        };
+
+        const imported: Addresses = {};
+        imported[modified.address] = modified.label;
+        imported[second.address] = second.label;
+        imported[third.address] = third.label;
+
+        service.store(imported, true);
+
+        expect(service.getArray()).toEqual([modified, second, third]);
+    }));
 });
