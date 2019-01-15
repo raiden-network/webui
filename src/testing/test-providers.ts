@@ -42,10 +42,10 @@ export class TestProviders {
         };
     }
 
-    static MockMatDialogRef(): Provider {
+    static MockMatDialogRef(obj = {}): Provider {
         return {
             provide: MatDialogRef,
-            useValue: {}
+            useValue: obj
         };
     }
 

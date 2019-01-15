@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 export interface ConfirmationDialogPayload {
@@ -11,7 +11,7 @@ export interface ConfirmationDialogPayload {
     templateUrl: './confirmation-dialog.component.html',
     styleUrls: ['./confirmation-dialog.component.css']
 })
-export class ConfirmationDialogComponent implements OnInit {
+export class ConfirmationDialogComponent {
     readonly title: string;
     readonly message: string;
 
@@ -21,9 +21,6 @@ export class ConfirmationDialogComponent implements OnInit {
     ) {
         this.title = this.payload.title;
         this.message = this.payload.message;
-    }
-
-    ngOnInit() {
     }
 
     confirm() {
