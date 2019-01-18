@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { fakeAsync, flush, inject, TestBed } from '@angular/core/testing';
+import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { from } from 'rxjs';
 import { MockConfig } from '../components/channel-table/channel-table.component.spec';
 import { Channel } from '../models/channel';
@@ -155,17 +155,26 @@ describe('ChannelPollingService', () => {
     }));
 
     it('should not send notification about channel the first time loading the channels', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(from([[], [channel1]]));
+        raidenServiceSpy.and.returnValues(from([[channel1], [channel1]]));
         const subscription = pollingService.channels().subscribe();
         expect(sharedService.info).toHaveBeenCalledTimes(0);
         subscription.unsubscribe();
         flush();
     }));
 
-    it('should show notification if new channels are detected', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(from([[channel1], [channel1, channel2]]));
+    it('should send a notification when user opens the first channel', fakeAsync(() => {
+        raidenServiceSpy.and.returnValues(from([[], [], [channel1], [channel1]]));
         const subscription = pollingService.channels().subscribe();
+        tick();
         expect(sharedService.info).toHaveBeenCalledTimes(1);
+        subscription.unsubscribe();
+        flush();
+    }));
+
+    it('should show notification if new channels are detected', fakeAsync(() => {
+        raidenServiceSpy.and.returnValues(from([[], [channel1], [channel1, channel2]]));
+        const subscription = pollingService.channels().subscribe();
+        expect(sharedService.info).toHaveBeenCalledTimes(2);
         // @ts-ignore
         const payload = sharedService.info.calls.first().args[0];
         expect(payload.title).toBe('New channel');
