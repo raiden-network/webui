@@ -271,15 +271,18 @@ export class RaidenService {
         );
     }
 
-    public connectTokenNetwork(funds: number, tokenAddress: string, decimals: number): Observable<any> {
+    public connectTokenNetwork(funds: number, tokenAddress: string, decimals: number, join: boolean): Observable<any> {
         return this.http.put(
             `${this.raidenConfig.api}/connections/${tokenAddress}`,
             {funds: amountFromDecimal(funds, decimals)},
         ).pipe(
             tap(() => {
+                const title = join ? 'Joined Token Network' : 'Funds Added';
+                const description = join ? `You have successfully joined the Network of Token ${tokenAddress}`
+                    : `You successfully added funds to the Network of Token ${tokenAddress}`;
                 this.sharedService.success({
-                    title: 'Joined Token Network',
-                    description: `You have successfully joined the Network of Token ${tokenAddress}`
+                    title: title,
+                    description: description
                 });
             }),
             catchError((error) => this.handleError(error)),

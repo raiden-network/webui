@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { ChannelTableComponent } from './components/channel-table/channel-table.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { HomeComponent } from './components/home/home.component';
+import { ConnectionManagerDialogComponent } from './components/connection-manager-dialog/connection-manager-dialog.component';
 import { LicenseComponent } from './components/license/license.component';
 import { OpenDialogComponent } from './components/open-dialog/open-dialog.component';
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
@@ -33,7 +34,6 @@ import { AddressInputComponent } from './components/address-input/address-input.
 import { TokenNetworkSelectorComponent } from './components/token-network-selector/token-network-selector.component';
 import { RegisteredNetworkValidatorDirective } from './directives/registered-network-validator.directive';
 import { PaymentHistoryComponent } from './components/payment-history/payment-history.component';
-import { ConnectionManagerDialogComponent } from './components/connection-manager-dialog/connection-manager-dialog.component';
 
 const appRoutes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},

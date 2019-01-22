@@ -7,6 +7,7 @@ export interface ConnectionManagerDialogPayload {
     tokenAddress: string;
     funds: number;
     decimals: number;
+    join: boolean;
 }
 
 @Component({
@@ -35,11 +36,12 @@ export class ConnectionManagerDialogComponent implements OnInit {
         this.cdRef.detectChanges();
     }
 
-    public joinTokenNetwork() {
+    public allocateFunds() {
         const payload: ConnectionManagerDialogPayload = {
             tokenAddress: this.data.tokenAddress,
             funds: this.tokenInput.tokenAmount.toNumber(),
-            decimals: this.tokenInput.tokenAmountDecimals
+            decimals: this.tokenInput.tokenAmountDecimals,
+            join: this.data.join
         };
         this.dialogRef.close(payload);
     }
