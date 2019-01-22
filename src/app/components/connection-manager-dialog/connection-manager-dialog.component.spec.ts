@@ -7,7 +7,7 @@ import { TokenInputComponent } from '../token-input/token-input.component';
 
 import { JoinDialogComponent } from './join-dialog.component';
 
-describe('JoinDialogComponent', () => {
+describe('ConnectionManagerDialogComponent', () => {
     let component: JoinDialogComponent;
     let fixture: ComponentFixture<JoinDialogComponent>;
 

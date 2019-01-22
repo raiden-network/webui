@@ -5,17 +5,18 @@ import { BehaviorSubject, EMPTY, Subscription } from 'rxjs';
 import { flatMap, switchMap, tap } from 'rxjs/operators';
 import { SortingData } from '../../models/sorting.data';
 import { UserToken } from '../../models/usertoken';
-import { EnvironmentType } from '../../services/enviroment-type.enum';
 import { RaidenConfig } from '../../services/raiden.config';
-
 import { RaidenService } from '../../services/raiden.service';
 import { amountToDecimal } from '../../utils/amount.converter';
 import { StringUtils } from '../../utils/string.utils';
 import { ConfirmationDialogComponent, ConfirmationDialogPayload } from '../confirmation-dialog/confirmation-dialog.component';
-import { JoinDialogComponent, JoinDialogPayload } from '../join-dialog/join-dialog.component';
 import { PaymentDialogComponent, PaymentDialogPayload } from '../payment-dialog/payment-dialog.component';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { TokenSorting } from './token.sorting.enum';
+import {
+    ConnectionManagerDialogComponent,
+    ConnectionManagerDialogPayload
+} from '../connection-manager-dialog/connection-manager-dialog.component';
 
 @Component({
     selector: 'app-token-network',
@@ -149,19 +150,19 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     }
 
     public showJoinDialog(userToken: UserToken) {
-        const payload: JoinDialogPayload = {
+        const payload: ConnectionManagerDialogPayload = {
             tokenAddress: userToken.address,
             funds: 0,
             decimals: userToken.decimals
         };
 
-        const joinDialogRef = this.dialog.open(JoinDialogComponent, {
+        const joinDialogRef = this.dialog.open(ConnectionManagerDialogComponent, {
             width: '480px',
             data: payload
         });
 
         joinDialogRef.afterClosed().pipe(
-            flatMap((result: JoinDialogPayload) => {
+            flatMap((result: ConnectionManagerDialogPayload) => {
                 if (result) {
                     return this.raidenService.connectTokenNetwork(result.funds, result.tokenAddress, result.decimals);
                 } else {

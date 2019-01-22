@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { TokenInputComponent } from '../token-input/token-input.component';
 
-export interface JoinDialogPayload {
+export interface ConnectionManagerDialogPayload {
     tokenAddress: string;
     funds: number;
     decimals: number;
@@ -11,10 +11,10 @@ export interface JoinDialogPayload {
 
 @Component({
     selector: 'app-join-dialog',
-    templateUrl: './join-dialog.component.html',
-    styleUrls: ['./join-dialog.component.css']
+    templateUrl: './connection-manager-dialog.component.html',
+    styleUrls: ['./connection-manager-dialog.component.css']
 })
-export class JoinDialogComponent implements OnInit {
+export class ConnectionManagerDialogComponent implements OnInit {
 
     @ViewChild(TokenInputComponent) tokenInput: TokenInputComponent;
 
@@ -23,8 +23,8 @@ export class JoinDialogComponent implements OnInit {
     });
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: JoinDialogPayload,
-        public dialogRef: MatDialogRef<JoinDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: ConnectionManagerDialogPayload,
+        public dialogRef: MatDialogRef<ConnectionManagerDialogComponent>,
         private fb: FormBuilder,
         private cdRef: ChangeDetectorRef,
     ) {
@@ -36,7 +36,7 @@ export class JoinDialogComponent implements OnInit {
     }
 
     public joinTokenNetwork() {
-        const payload: JoinDialogPayload = {
+        const payload: ConnectionManagerDialogPayload = {
             tokenAddress: this.data.tokenAddress,
             funds: this.tokenInput.tokenAmount.toNumber(),
             decimals: this.tokenInput.tokenAmountDecimals
