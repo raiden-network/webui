@@ -15,6 +15,7 @@ export class ChannelPollingService {
     private channelsSubject: BehaviorSubject<void> = new BehaviorSubject(null);
     private refreshingSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private readonly channels$: Observable<Channel[]>;
+    private loaded = false;
 
     constructor(
         private raidenService: RaidenService,
@@ -66,7 +67,12 @@ export class ChannelPollingService {
             for (const channel of channels) {
                 this.informAboutNewChannel(channel);
             }
+        } else if (this.loaded && oldChannels.length === 0 && newChannels.length > 0) {
+            for (const channel of newChannels) {
+                this.informAboutNewChannel(channel);
+            }
         }
+        this.loaded = true;
     }
 
     private checkForBalanceChanges(oldChannels: Channel[], newChannels: Channel[]) {
