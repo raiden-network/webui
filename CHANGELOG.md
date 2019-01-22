@@ -4,6 +4,10 @@
 ### Changed
 - [#55] WebUI does not show notification when user opens their first channel.
 
+### Added
+- [#13] Adds an `Add Funds` button to the Token Card that allows to add funds to the connection manager after joining a 
+token network.
+
 ## [0.7.1] - 2019-01-11
 ### Changed
 - [#48] WebUI fails to load on Firefox with Parity due to CORS errors.
@@ -29,4 +33,5 @@
 [#44]: https://github.com/raiden-network/webui/issues/44
 [#41]: https://github.com/raiden-network/webui/issues/41
 [#37]: https://github.com/raiden-network/webui/issues/37
+[#13]: https://github.com/raiden-network/webui/issues/13
 [#9]: https://github.com/raiden-network/webui/issues/9
