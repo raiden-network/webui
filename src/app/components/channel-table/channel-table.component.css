@@ -16,3 +16,11 @@
 :host {
     height: 100%;
 }
+
+.token-transfer-button {
+    margin: 0.8rem 0.8rem 1.2rem;
+}
+
+.token-transfer-button button mat-icon {
+    font-size: 20px;
+}
