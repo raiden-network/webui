@@ -56,7 +56,7 @@
                             fxFlexAlign="center"
                             matTooltip="Change the sorting order">
                         <mat-icon
-                                aria-label="Change sorting order">{{ ascending ? 'keyboard_arrow_up' :
+                            aria-label="Change sorting order">{{ ascending ? 'keyboard_arrow_up' :
                             'keyboard_arrow_down' }}
                         </mat-icon>
                     </button>
@@ -87,9 +87,9 @@
          fxLayoutAlign="center center"
          *ngIf="totalTokens == 0 && refreshing">
         <mat-progress-spinner
-                [diameter]="60"
-                [color]="'primary'"
-                [mode]="'indeterminate'">
+            [diameter]="60"
+            [color]="'primary'"
+            [mode]="'indeterminate'">
         </mat-progress-spinner>
     </div>
 
@@ -135,12 +135,22 @@
                         [disabled]="!(token.connected.sum_deposits > 0)"
                         (click)="showPaymentDialog(token)">{{ 'Pay' | uppercase }}
                 </button>
-                <button *ngIf="!token.connected"
+                <button *ngIf="!token.connected; else add_funds"
                         class="match-parent-width"
                         mat-stroked-button
                         color="accent"
-                        (click)="showJoinDialog(token)">{{ 'Join Network' | uppercase }}
+                        (click)="showConnectionManagerDialog(token)">{{ 'Join Network' | uppercase }}
                 </button>
+
+                <ng-template #add_funds>
+                    <button
+                        class="match-parent-width"
+                        mat-button
+                        color="accent"
+                        matTooltip="Adds funds to the connection manager"
+                        (click)="showConnectionManagerDialog(token, false)">{{ 'Add funds' | uppercase }}
+                    </button>
+                </ng-template>
                 <button *ngIf="token.connected"
                         class="match-parent-width"
                         mat-button

@@ -11,7 +11,7 @@ import { AppComponent } from './app.component';
 import { ChannelTableComponent } from './components/channel-table/channel-table.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { HomeComponent } from './components/home/home.component';
-import { JoinDialogComponent } from './components/join-dialog/join-dialog.component';
+import { ConnectionManagerDialogComponent } from './components/connection-manager-dialog/connection-manager-dialog.component';
 import { LicenseComponent } from './components/license/license.component';
 import { OpenDialogComponent } from './components/open-dialog/open-dialog.component';
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
@@ -57,7 +57,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         HomeComponent,
         LicenseComponent,
         PaymentDialogComponent,
-        JoinDialogComponent,
+        ConnectionManagerDialogComponent,
         RegisterDialogComponent,
         OpenDialogComponent,
         KeysPipe,
@@ -109,7 +109,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
     ],
     entryComponents: [
         RegisterDialogComponent,
-        JoinDialogComponent,
+        ConnectionManagerDialogComponent,
         PaymentDialogComponent,
         ConfirmationDialogComponent,
         DepositDialogComponent,
