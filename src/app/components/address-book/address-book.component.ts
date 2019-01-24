@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { addressValidator } from '../../shared/address.validator';
 import { Address, Addresses } from '../../models/address';
 import { AddressBookService } from '../../services/address-book.service';
@@ -47,7 +47,7 @@ export class AddressBookComponent implements OnInit {
 
     public readonly form: FormGroup = this.fb.group({
         address: ['', addressValidator()],
-        label: ['', (control: AbstractControl) => !control.value]
+        label: ['']
     });
 
     visibleAddresses: Array<Address>;
