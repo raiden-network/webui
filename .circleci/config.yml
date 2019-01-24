@@ -140,7 +140,7 @@ jobs:
       - run:
           name: "Upload to pypi"
           command: |
-            twine upload -u $PYPI_USER -p $PYPI_PASSWORD --repository-url $PYPI_URL dist/*
+            twine upload -u $PYPI_USER -p $PYPI_PASSWORD dist/*
 
 
 workflows:
