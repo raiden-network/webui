@@ -15,6 +15,7 @@ import { MockConfig } from '../../../testing/mock-config';
 
 import { TokenNetworkComponent } from './token-network.component';
 import { TestProviders } from '../../../testing/test-providers';
+import { EllipsisPipe } from '../../pipes/ellipsis.pipe';
 
 describe('TokenNetworkComponent', () => {
     let component: TokenNetworkComponent;
@@ -25,7 +26,8 @@ describe('TokenNetworkComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 TokenNetworkComponent,
-                DecimalPipe
+                DecimalPipe,
+                EllipsisPipe
             ],
             providers: [
                 TestProviders.HammerJSProvider(),
