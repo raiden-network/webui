@@ -142,13 +142,13 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         return this.identiconCacheService.getIdenticon(channel.partner_address);
     }
 
-    public onPay(channel: Channel) {
+    public onPay(channel: Channel = null) {
 
         const payload: PaymentDialogPayload = {
-            tokenAddress: channel.token_address,
-            targetAddress: channel.partner_address,
+            tokenAddress: channel ? channel.token_address : '',
+            targetAddress: channel ? channel.partner_address : '',
             amount: this.amount,
-            decimals: channel.userToken.decimals
+            decimals: channel ? channel.userToken.decimals : 0
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {

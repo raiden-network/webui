@@ -5,6 +5,7 @@
 - [#55] WebUI does not show notification when user opens their first channel.
 
 ### Added
+- [#31] Add a general `Send Token` button in the channels page.
 - [#13] Adds an `Add Funds` button to the Token Card that allows to add funds to the connection manager after joining a 
 token network.
 
@@ -15,13 +16,13 @@ token network.
 ## [0.7.0] - 2019-01-04
 ### Changed
 - [#44] Fixes an issue with the types in `TokenInfoRetriever` that would cause issue on amount input.
-- [#41] WebUI should allow you to open a channel without any balance
-- [#37] Remove debug events from the WebUI
-- [#9] Optimize the WebUI to handle a great number of tokens
+- [#41] WebUI should allow you to open a channel without any balance.
+- [#37] Remove debug events from the WebUI.
+- [#9] Optimize the WebUI to handle a great number of tokens.
 
 ## [0.6.0] - 2018-12-05
 ### Changed
-- First python package release
+- First python package release.
 
 [Unreleased]: https://github.com/raiden-network/webui/compare/v0.7.1...HEAD
 [0.7.1]: https://github.com/raiden-network/webui/compare/v0.7.0...v0.7.1
@@ -33,5 +34,6 @@ token network.
 [#44]: https://github.com/raiden-network/webui/issues/44
 [#41]: https://github.com/raiden-network/webui/issues/41
 [#37]: https://github.com/raiden-network/webui/issues/37
+[#31]: https://github.com/raiden-network/webui/issues/31
 [#13]: https://github.com/raiden-network/webui/issues/13
 [#9]: https://github.com/raiden-network/webui/issues/9
