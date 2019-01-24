@@ -68,9 +68,9 @@ export class BatchManager {
         const defaultValue = currentRequest.defaultValue;
 
         if (result && result.error) {
-            throw errors.ErrorResponse(result);
+            resultValue = BatchManager.defaultOrThrow(defaultValue, errors.ErrorResponse(result));
         } else if (!this.isValidResponse(result)) {
-            throw errors.InvalidResponse(result);
+            resultValue = BatchManager.defaultOrThrow(defaultValue, errors.ErrorResponse(result));
         } else {
             try { // @ts-ignore
                 const format = currentRequest.request.format;
