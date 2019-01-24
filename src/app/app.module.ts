@@ -34,6 +34,13 @@ import { AddressInputComponent } from './components/address-input/address-input.
 import { TokenNetworkSelectorComponent } from './components/token-network-selector/token-network-selector.component';
 import { RegisteredNetworkValidatorDirective } from './directives/registered-network-validator.directive';
 import { PaymentHistoryComponent } from './components/payment-history/payment-history.component';
+import { AddressBookComponent } from './components/address-book/address-book.component';
+import { LocalStorageAdapter } from './adapters/local-storage-adapter';
+import { AddressBookItemComponent } from './components/address-book-item/address-book-item.component';
+import { DragUploadDirective } from './directives/drag-upload.directive';
+import { StatusPipe } from './pipes/status.pipe';
+import 'hammerjs';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
 
 const appRoutes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -41,7 +48,8 @@ const appRoutes: Routes = [
     {path: 'license', component: LicenseComponent},
     {path: 'tokens', component: TokenNetworkComponent},
     {path: 'channels', component: ChannelTableComponent},
-    {path: 'payments', component: PaymentHistoryComponent}
+    {path: 'payments', component: PaymentHistoryComponent},
+    {path: 'address-book', component: AddressBookComponent}
 ];
 
 export function ConfigLoader(raidenConfig: RaidenConfig) {
@@ -72,7 +80,12 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         AddressInputComponent,
         TokenNetworkSelectorComponent,
         RegisteredNetworkValidatorDirective,
-        PaymentHistoryComponent
+        PaymentHistoryComponent,
+        AddressBookComponent,
+        AddressBookItemComponent,
+        DragUploadDirective,
+        StatusPipe,
+        FileUploadComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
@@ -106,6 +119,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         },
         RaidenService,
         TokenPipe,
+        LocalStorageAdapter
     ],
     entryComponents: [
         RegisterDialogComponent,

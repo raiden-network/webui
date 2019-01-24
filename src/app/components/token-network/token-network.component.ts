@@ -21,7 +21,7 @@ import { TokenSorting } from './token.sorting.enum';
 @Component({
     selector: 'app-token-network',
     templateUrl: './token-network.component.html',
-    styleUrls: ['./token-network.component.css'],
+    styleUrls: ['./token-network.component.scss'],
     animations: [
         trigger('flyInOut', [
             state('in', style({opacity: 1, transform: 'translateX(0)'})),

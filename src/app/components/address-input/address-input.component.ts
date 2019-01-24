@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
@@ -11,6 +11,10 @@ import {
 } from '@angular/forms';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenService } from '../../services/raiden.service';
+import { AddressBookService } from '../../services/address-book.service';
+import { Address } from '../../models/address';
+import { flatMap, map, startWith } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 @Component({
     selector: 'app-address-input',
@@ -29,18 +33,37 @@ import { RaidenService } from '../../services/raiden.service';
         }
     ]
 })
-export class AddressInputComponent implements ControlValueAccessor, Validator {
+export class AddressInputComponent implements ControlValueAccessor, Validator, OnInit {
 
     @Input() placeholder: string;
     @Input() errorPlaceholder: string;
     @Input() displayIdenticon = false;
+    @Input() userAccount = false;
 
     readonly addressFc = new FormControl('', [this.addressValidatorFn(this.raidenService)]);
 
+    filteredOptions$: Observable<Address[]>;
+
+    trackByFn(address: Address) {
+        return address.address;
+    }
+
     constructor(
         private identiconCacheService: IdenticonCacheService,
-        private raidenService: RaidenService
+        private raidenService: RaidenService,
+        private addressBookService: AddressBookService
     ) {
+    }
+
+    ngOnInit(): void {
+        if (!this.userAccount) {
+            return;
+        }
+
+        this.filteredOptions$ = this.addressFc.valueChanges.pipe(
+            startWith(''),
+            flatMap(value => this._filter(value))
+        );
     }
 
     // noinspection JSMethodCanBeStatic
@@ -93,5 +116,22 @@ export class AddressInputComponent implements ControlValueAccessor, Validator {
                 return undefined;
             }
         };
+    }
+
+    private _filter(value: string | Address): Observable<Address[]> {
+        const addresses$ = of(this.addressBookService.getArray());
+        if (!value || typeof value !== 'string') {
+            return addresses$;
+        }
+
+        const keyword = value.toLowerCase();
+
+        function matches(addressObj: Address) {
+            const label = addressObj.label.toLocaleLowerCase();
+            const address = addressObj.address.toLocaleLowerCase();
+            return label.indexOf(keyword) >= 0 || address.indexOf(keyword) >= 0;
+        }
+
+        return addresses$.pipe(map((addresses: Address[]) => addresses.filter(matches)));
     }
 }

@@ -12,12 +12,11 @@ import { UserToken } from '../../models/usertoken';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { TokenPipe } from '../../pipes/token.pipe';
-import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import { SharedService } from '../../services/shared.service';
-import { MockConfig } from '../channel-table/channel-table.component.spec';
 
 import { PaymentHistoryComponent } from './payment-history.component';
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('PaymentHistoryComponent', () => {
     let component: PaymentHistoryComponent;
@@ -131,10 +130,8 @@ describe('PaymentHistoryComponent', () => {
             ],
             providers: [
                 SharedService,
-                {
-                    provide: RaidenConfig,
-                    useClass: MockConfig
-                },
+                TestProviders.HammerJSProvider(),
+                TestProviders.MockRaidenConfigProvider(),
                 {
                     provide: ActivatedRoute,
                     useValue: {

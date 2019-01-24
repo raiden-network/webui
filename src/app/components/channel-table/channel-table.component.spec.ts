@@ -10,7 +10,6 @@ import { EMPTY } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { delay, startWith } from 'rxjs/operators';
 // @ts-ignore
-import * as Web3 from 'web3';
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { Channel } from '../../models/channel';
 import { UserToken } from '../../models/usertoken';
@@ -21,7 +20,6 @@ import { KeysPipe } from '../../pipes/keys.pipe';
 import { SubsetPipe } from '../../pipes/subset.pipe';
 import { TokenPipe } from '../../pipes/token.pipe';
 import { ChannelPollingService } from '../../services/channel-polling.service';
-import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import { SharedService } from '../../services/shared.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
@@ -30,51 +28,9 @@ import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 
 import { ChannelTableComponent } from './channel-table.component';
-import { BatchManager } from '../../services/batch-manager';
+import { StatusPipe } from '../../pipes/status.pipe';
 import Spy = jasmine.Spy;
-
-class MockWeb3 extends Web3 {
-    isChecksum = false;
-    checksumAddress = '';
-
-    constructor() {
-        super();
-
-        const mockWeb3 = this;
-        this.eth.getBlockNumber = function () {
-            return Promise.resolve(3694423);
-        };
-        this.utils.checkAddressChecksum = function () {
-            return mockWeb3.isChecksum;
-        };
-
-        this.utils.toChecksumAddress = function () {
-            return mockWeb3.checksumAddress;
-        };
-    }
-
-}
-
-export class MockConfig extends RaidenConfig {
-    public web3: Web3 = new MockWeb3();
-    private testBatchManager: BatchManager = new BatchManager(this.web3.currentProvider);
-
-    get batchManager(): BatchManager {
-        return this.testBatchManager;
-    }
-
-    private get mock(): MockWeb3 {
-        return (this.web3 as MockWeb3);
-    }
-
-    updateChecksumAddress(address: string): void {
-        this.mock.checksumAddress = address;
-    }
-
-    setIsChecksum(isChecksum: boolean): void {
-        this.mock.isChecksum = isChecksum;
-    }
-}
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('ChannelTableComponent', () => {
     let component: ChannelTableComponent;
@@ -84,6 +40,7 @@ describe('ChannelTableComponent', () => {
     let tokenSpy: Spy;
 
     beforeEach(async(() => {
+
         TestBed.configureTestingModule({
             declarations: [
                 ChannelTableComponent,
@@ -95,15 +52,15 @@ describe('ChannelTableComponent', () => {
                 KeysPipe,
                 SubsetPipe,
                 DecimalPipe,
+                StatusPipe,
                 CdkDetailRowDirective,
                 TokenNetworkSelectorComponent
             ],
             providers: [
                 SharedService,
-                {
-                    provide: RaidenConfig,
-                    useClass: MockConfig
-                },
+                TestProviders.MockRaidenConfigProvider(),
+                TestProviders.HammerJSProvider(),
+                TestProviders.AddressBookStubProvider(),
                 RaidenService,
                 ChannelPollingService,
                 ToastrService,

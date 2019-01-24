@@ -1,0 +1,52 @@
+@import "../../../webui-app-theme";
+@import "~@angular/material/theming";
+
+$over-color:  mat-color($webui-app-primary);
+$border-radius: 5px;
+
+#drop-zone {
+    width: 100%;
+    border: 2px dashed #bbb;
+    -moz-border-radius: $border-radius;
+    -webkit-border-radius: $border-radius;
+    border-radius: $border-radius;
+    padding: 25px;
+    text-align: center;
+    font-weight: 500;
+    color: #bbb;
+}
+
+.over {
+    border: 2px dashed $over-color !important;
+}
+
+.drop-zone-error {
+    font-weight: 400;
+    font-size: small;
+}
+
+.action-buttons {
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+.upload-progress {
+    margin-top: 5px;
+}
+
+#upload_select {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+#upload_select + label {
+    color: #aaaaaa;
+    margin-right: 4px;
+}
+
+#upload_select + label:hover {
+    color: $over-color;
+}

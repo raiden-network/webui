@@ -2,12 +2,11 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { FormControl, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { MockConfig } from '../components/channel-table/channel-table.component.spec';
 import { UserToken } from '../models/usertoken';
-import { RaidenConfig } from '../services/raiden.config';
 import { RaidenService } from '../services/raiden.service';
 import { SharedService } from '../services/shared.service';
 import { RegisteredNetworkValidatorDirective } from './registered-network-validator.directive';
+import { TestProviders } from '../../testing/test-providers';
 
 describe('RegisteredNetworkValidatorDirective', () => {
 
@@ -47,10 +46,7 @@ describe('RegisteredNetworkValidatorDirective', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             providers: [
-                {
-                    provide: RaidenConfig,
-                    useClass: MockConfig
-                },
+                TestProviders.MockRaidenConfigProvider(),
                 SharedService
             ],
             imports: [

@@ -1,0 +1,53 @@
+$margin: 10px;
+
+.page-container {
+    height: 100%;
+    padding-top: 30px;
+}
+
+.page-header {
+    margin-left: $margin;
+    margin-right: $margin;
+}
+
+.page-list {
+    height: 100%;
+    min-height: 400px;
+    overflow-y: scroll;
+    margin-left: $margin - 2px;
+    margin-right: $margin - 2px;
+    margin-bottom: 15px;
+}
+
+.page-list mat-card {
+    margin: 1px 2px 1px;
+}
+
+.page-paginator {
+    margin: 10px $margin;
+    min-height: 65px;
+    height: 65px;
+}
+
+@media only screen and (max-width: 600px) {
+    .page-paginator {
+        margin: 10px $margin;
+        height: 130px;
+    }
+}
+
+.item-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.item-info {
+    line-height: 28px;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.item-info .address {
+    font-size: 16px;
+}

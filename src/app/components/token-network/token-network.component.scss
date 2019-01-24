@@ -1,3 +1,5 @@
+@import "../../../sass/pages";
+
 .button-pane button {
     margin-right: 0.5em;
 }
@@ -13,21 +15,6 @@
     text-align: center;
     font-size: 2em;
     font-weight: 500;
-}
-
-.paginator {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    min-height: 5em;
-}
-
-.token-network {
-    height: 100%;
-    padding-top: 30px;
-}
-
-.token-list {
-    padding-bottom: 40px;
 }
 
 :host {

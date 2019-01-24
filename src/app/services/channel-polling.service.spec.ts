@@ -2,15 +2,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { from } from 'rxjs';
-import { MockConfig } from '../components/channel-table/channel-table.component.spec';
 import { Channel } from '../models/channel';
 import { UserToken } from '../models/usertoken';
 
 import { ChannelPollingService } from './channel-polling.service';
-import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { SharedService } from './shared.service';
 import Spy = jasmine.Spy;
+import { TestProviders } from '../../testing/test-providers';
 
 describe('ChannelPollingService', () => {
     beforeEach(() => {
@@ -22,10 +21,7 @@ describe('ChannelPollingService', () => {
             providers: [
                 ChannelPollingService,
                 SharedService,
-                {
-                    provide: RaidenConfig,
-                    useClass: MockConfig
-                },
+                TestProviders.MockRaidenConfigProvider(),
                 RaidenService
             ]
         });

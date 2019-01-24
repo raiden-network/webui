@@ -12,16 +12,25 @@ import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import { amountToDecimal } from '../../utils/amount.converter';
 import { StringUtils } from '../../utils/string.utils';
-import { ConfirmationDialogComponent, ConfirmationDialogPayload } from '../confirmation-dialog/confirmation-dialog.component';
-import { DepositDialogComponent, DepositDialogPayload, DepositDialogResult } from '../deposit-dialog/deposit-dialog.component';
+import {
+    ConfirmationDialogComponent,
+    ConfirmationDialogPayload
+} from '../confirmation-dialog/confirmation-dialog.component';
+import {
+    DepositDialogComponent,
+    DepositDialogPayload,
+    DepositDialogResult
+} from '../deposit-dialog/deposit-dialog.component';
 import { OpenDialogComponent, OpenDialogPayload, OpenDialogResult } from '../open-dialog/open-dialog.component';
 import { PaymentDialogComponent, PaymentDialogPayload } from '../payment-dialog/payment-dialog.component';
 import { ChannelSorting } from './channel.sorting.enum';
+import { AddressBookService } from '../../services/address-book.service';
+import { Addresses } from '../../models/address';
 
 @Component({
     selector: 'app-channel-table',
     templateUrl: './channel-table.component.html',
-    styleUrls: ['./channel-table.component.css'],
+    styleUrls: ['./channel-table.component.scss'],
     animations: [
         trigger('flyInOut', [
             state('in', style({opacity: 1, transform: 'translateX(0)'})),
@@ -85,13 +94,15 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
     private currentPage = 0;
     private channels: Channel[];
     private subscription: Subscription;
+    private _addresses: Addresses;
 
     constructor(
         public dialog: MatDialog,
         private raidenConfig: RaidenConfig,
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService,
-        private identiconCacheService: IdenticonCacheService
+        private identiconCacheService: IdenticonCacheService,
+        private addressBookService: AddressBookService
     ) {
     }
 
@@ -104,6 +115,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         });
 
         this.refresh();
+        this._addresses = this.addressBookService.get();
     }
 
     ngOnDestroy() {
@@ -142,6 +154,10 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         return this.identiconCacheService.getIdenticon(channel.partner_address);
     }
 
+    addressLabel(address: string): string | undefined {
+        return this._addresses[address];
+    }
+
     public onPay(channel: Channel = null) {
 
         const payload: PaymentDialogPayload = {
@@ -153,7 +169,8 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
             width: '500px',
-            data: payload
+            data: payload,
+            autoFocus: false
         });
 
         dialog.afterClosed().pipe(

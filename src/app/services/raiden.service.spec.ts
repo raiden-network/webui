@@ -2,7 +2,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { MockConfig } from '../components/channel-table/channel-table.component.spec';
 import { Channel } from '../models/channel';
 import { UserToken } from '../models/usertoken';
 import { RaidenConfig } from './raiden.config';
@@ -11,6 +10,7 @@ import { RaidenService } from './raiden.service';
 import { SharedService } from './shared.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import Spy = jasmine.Spy;
+import { TestProviders } from '../../testing/test-providers';
 
 describe('RaidenService', () => {
 
@@ -55,10 +55,7 @@ describe('RaidenService', () => {
                 HttpClientTestingModule
             ],
             providers: [
-                {
-                    provide: RaidenConfig,
-                    useClass: MockConfig
-                },
+                TestProviders.MockRaidenConfigProvider(),
                 RaidenService,
                 SharedService,
                 TokenInfoRetrieverService
