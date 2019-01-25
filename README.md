@@ -2,6 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/raiden-network/webui/tree/master.svg?style=svg)](https://circleci.com/gh/raiden-network/webui/tree/master)
 [![Codecove](https://codecov.io/github/raiden-network/webui/coverage.svg?precision=2)](https://codecov.io/gh/raiden-network/webui)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 * To install the dependencies please run.
 
