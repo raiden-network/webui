@@ -87,11 +87,11 @@ export class FakeHttpProvider implements Provider {
         return response;
     }
 
-    public injectBatchResults(results: Array<any>, error: boolean = false) {
-        this.response.push(results.map(value => {
+    public injectBatchResults(results: Array<any>, error: boolean = false, errorIndex: number = -1) {
+        this.response.push(results.map((value, index) => {
             let response: JsonRPCResponse;
 
-            if (error) {
+            if (error || errorIndex === index) {
                 response = this.getErrorStub();
                 response.error = value;
             } else {
@@ -314,5 +314,51 @@ describe('BatchManager', () => {
             expect(e).toBeTruthy();
             expect(e.message).toMatch('format failed');
         }
+    });
+
+    it('should not fail the whole batch if there is an error response but the request has a default value', async function () {
+        batchManager.add({
+            request: getEthCallStub(),
+            defaultValue: ''
+        });
+
+        batchManager.add({
+            request: getEthCallStub(),
+            defaultValue: ''
+        });
+
+        httpProvider.injectBatchResults([
+            'test',
+
+        ], false, 1);
+
+        const result = await batchManager.execute();
+
+        expect(result.length).toBe(2);
+        expect(result[0]).toBe('test');
+        expect(result[1]).toBe('');
+    });
+
+    it('should not fail the whole batch if there is an invalid response but the request has a default value', async function () {
+        batchManager.add({
+            request: getEthCallStub(),
+            defaultValue: ''
+        });
+
+        batchManager.add({
+            request: getEthCallStub(),
+            defaultValue: ''
+        });
+
+        httpProvider.injectBatchResults([
+            'test'
+        ]);
+        httpProvider.injectInvalidResponse({'not_valid_response': true});
+
+        const result = await batchManager.execute();
+
+        expect(result.length).toBe(2);
+        expect(result[0]).toBe('test');
+        expect(result[1]).toBe('');
     });
 });

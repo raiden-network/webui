@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Changed
+- [#66] Fixes an issue where token information would fail to load.
 - [#8] Fixes truncation of long token network names.
 - [#55] WebUI does not show notification when user opens their first channel.
 - [#43] Changes the layout in tokens/channels to make only the entries scrollable.
@@ -32,6 +33,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#66]: https://github.com/raiden-network/webui/issues/66
 [#55]: https://github.com/raiden-network/webui/issues/55
 [#48]: https://github.com/raiden-network/webui/issues/48
 [#44]: https://github.com/raiden-network/webui/issues/44
