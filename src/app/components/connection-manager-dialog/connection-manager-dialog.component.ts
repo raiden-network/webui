@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    Inject,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { TokenInputComponent } from '../token-input/token-input.component';
@@ -16,7 +22,6 @@ export interface ConnectionManagerDialogPayload {
     styleUrls: ['./connection-manager-dialog.component.css']
 })
 export class ConnectionManagerDialogComponent implements OnInit {
-
     @ViewChild(TokenInputComponent) tokenInput: TokenInputComponent;
 
     form = this.fb.group({
@@ -27,9 +32,8 @@ export class ConnectionManagerDialogComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: ConnectionManagerDialogPayload,
         public dialogRef: MatDialogRef<ConnectionManagerDialogComponent>,
         private fb: FormBuilder,
-        private cdRef: ChangeDetectorRef,
-    ) {
-    }
+        private cdRef: ChangeDetectorRef
+    ) {}
 
     ngOnInit(): void {
         this.tokenInput.decimals = this.data.decimals;

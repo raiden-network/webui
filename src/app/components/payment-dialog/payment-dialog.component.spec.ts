@@ -8,7 +8,10 @@ import { SharedService } from '../../services/shared.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
-import { PaymentDialogComponent, PaymentDialogPayload } from './payment-dialog.component';
+import {
+    PaymentDialogComponent,
+    PaymentDialogPayload
+} from './payment-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
 
 describe('PaymentDialogComponent', () => {

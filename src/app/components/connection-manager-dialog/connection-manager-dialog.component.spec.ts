@@ -26,7 +26,7 @@ describe('ConnectionManagerDialogComponent', () => {
                 {
                     provide: MatDialogRef,
                     useValue: {}
-                },
+                }
             ],
             imports: [
                 MaterialComponentsModule,
@@ -55,8 +55,14 @@ describe('ConnectionManagerDialogComponent', () => {
         };
 
         fixture.detectChanges();
-        expect((fixture.debugElement.query(By.css('h1')).nativeElement as HTMLHeadingElement).innerText).toContain('Join');
-        expect((fixture.debugElement.queryAll(By.css('button'))[1].nativeElement as HTMLButtonElement).innerText).toContain('Join');
+        expect(
+            (fixture.debugElement.query(By.css('h1'))
+                .nativeElement as HTMLHeadingElement).innerText
+        ).toContain('Join');
+        expect(
+            (fixture.debugElement.queryAll(By.css('button'))[1]
+                .nativeElement as HTMLButtonElement).innerText
+        ).toContain('Join');
     });
 
     it('should have join if it is a join dialog', () => {
@@ -68,7 +74,13 @@ describe('ConnectionManagerDialogComponent', () => {
         };
 
         fixture.detectChanges();
-        expect((fixture.debugElement.query(By.css('h1')).nativeElement as HTMLHeadingElement).innerText).toContain('Add');
-        expect((fixture.debugElement.queryAll(By.css('button'))[1].nativeElement as HTMLButtonElement).innerText).toContain('Add');
+        expect(
+            (fixture.debugElement.query(By.css('h1'))
+                .nativeElement as HTMLHeadingElement).innerText
+        ).toContain('Add');
+        expect(
+            (fixture.debugElement.queryAll(By.css('button'))[1]
+                .nativeElement as HTMLButtonElement).innerText
+        ).toContain('Add');
     });
 });

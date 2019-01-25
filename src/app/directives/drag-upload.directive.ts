@@ -1,4 +1,10 @@
-import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import {
+    Directive,
+    EventEmitter,
+    HostListener,
+    Input,
+    Output
+} from '@angular/core';
 
 export enum DragStatus {
     OVER,
@@ -9,13 +15,11 @@ export enum DragStatus {
     selector: '[appDragUpload]'
 })
 export class DragUploadDirective {
-
     @Input() allowedExtension: string;
     @Output() files: EventEmitter<FileList> = new EventEmitter();
     @Output() dragStatus: EventEmitter<DragStatus> = new EventEmitter();
 
-    constructor() {
-    }
+    constructor() {}
 
     @HostListener('dragover', ['$event'])
     public onDragOver(evt: DragEvent) {
@@ -38,5 +42,4 @@ export class DragUploadDirective {
         evt.stopPropagation();
         this.files.emit(evt.dataTransfer.files);
     }
-
 }

@@ -10,7 +10,6 @@ import { RaidenService } from '../../services/raiden.service';
     styleUrls: ['./register-dialog.component.css']
 })
 export class RegisterDialogComponent {
-
     readonly form = this.fb.group({
         token_address: ''
     });
@@ -19,8 +18,7 @@ export class RegisterDialogComponent {
         public dialogRef: MatDialogRef<RegisterDialogComponent>,
         private raidenService: RaidenService,
         private fb: FormBuilder
-    ) {
-    }
+    ) {}
 
     public registerToken() {
         const tokenAddress = this.form.get('token_address').value;

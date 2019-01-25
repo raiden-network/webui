@@ -33,14 +33,16 @@ import { Observable, of } from 'rxjs';
         }
     ]
 })
-export class AddressInputComponent implements ControlValueAccessor, Validator, OnInit {
-
+export class AddressInputComponent
+    implements ControlValueAccessor, Validator, OnInit {
     @Input() placeholder: string;
     @Input() errorPlaceholder: string;
     @Input() displayIdenticon = false;
     @Input() userAccount = false;
 
-    readonly addressFc = new FormControl('', [this.addressValidatorFn(this.raidenService)]);
+    readonly addressFc = new FormControl('', [
+        this.addressValidatorFn(this.raidenService)
+    ]);
 
     filteredOptions$: Observable<Address[]>;
 
@@ -52,8 +54,7 @@ export class AddressInputComponent implements ControlValueAccessor, Validator, O
         private identiconCacheService: IdenticonCacheService,
         private raidenService: RaidenService,
         private addressBookService: AddressBookService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         if (!this.userAccount) {
@@ -87,20 +88,18 @@ export class AddressInputComponent implements ControlValueAccessor, Validator, O
         if (!obj) {
             return;
         }
-        this.addressFc.setValue(obj, {emitEvent: false});
+        this.addressFc.setValue(obj, { emitEvent: false });
     }
 
     checksum(): string {
         return this.raidenService.toChecksumAddress(this.addressFc.value);
     }
 
-    registerOnValidatorChange(fn: () => void): void {
-
-    }
+    registerOnValidatorChange(fn: () => void): void {}
 
     validate(c: AbstractControl): ValidationErrors | null {
         if (!this.addressFc.value) {
-            return {empty: true};
+            return { empty: true };
         }
         return this.addressFc.errors;
     }
@@ -109,9 +108,13 @@ export class AddressInputComponent implements ControlValueAccessor, Validator, O
         return (control: AbstractControl) => {
             const controlValue = control.value;
             if (controlValue === raidenService.raidenAddress) {
-                return {ownAddress: true};
-            } else if (controlValue && controlValue.length === 42 && !raidenService.checkChecksumAddress(controlValue)) {
-                return {notChecksumAddress: true};
+                return { ownAddress: true };
+            } else if (
+                controlValue &&
+                controlValue.length === 42 &&
+                !raidenService.checkChecksumAddress(controlValue)
+            ) {
+                return { notChecksumAddress: true };
             } else {
                 return undefined;
             }
@@ -132,6 +135,8 @@ export class AddressInputComponent implements ControlValueAccessor, Validator, O
             return label.indexOf(keyword) >= 0 || address.indexOf(keyword) >= 0;
         }
 
-        return addresses$.pipe(map((addresses: Address[]) => addresses.filter(matches)));
+        return addresses$.pipe(
+            map((addresses: Address[]) => addresses.filter(matches))
+        );
     }
 }

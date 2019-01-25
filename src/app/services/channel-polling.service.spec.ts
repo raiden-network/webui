@@ -14,10 +14,7 @@ import { TestProviders } from '../../testing/test-providers';
 describe('ChannelPollingService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [
-                HttpClientModule,
-                HttpClientTestingModule
-            ],
+            imports: [HttpClientModule, HttpClientTestingModule],
             providers: [
                 ChannelPollingService,
                 SharedService,
@@ -47,7 +44,6 @@ describe('ChannelPollingService', () => {
         balance: 20,
         decimals: 8
     };
-
 
     const channel1: Channel = {
         state: 'opened',
@@ -111,11 +107,7 @@ describe('ChannelPollingService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [
-                ChannelPollingService,
-                RaidenService,
-                SharedService,
-            ]
+            providers: [ChannelPollingService, RaidenService, SharedService]
         });
 
         raidenService = TestBed.get(RaidenService);
@@ -123,16 +115,20 @@ describe('ChannelPollingService', () => {
         pollingService = TestBed.get(ChannelPollingService);
 
         raidenServiceSpy = spyOn(raidenService, 'getChannels');
-        spyOn(sharedService, 'info').and.callFake(() => {
-        });
+        spyOn(sharedService, 'info').and.callFake(() => {});
     });
 
-    it('should be created', inject([ChannelPollingService], (service: ChannelPollingService) => {
-        expect(service).toBeTruthy();
-    }));
+    it('should be created', inject(
+        [ChannelPollingService],
+        (service: ChannelPollingService) => {
+            expect(service).toBeTruthy();
+        }
+    ));
 
     it('should show a notification on balance increases', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(from([[channel1], [channel1Updated]]));
+        raidenServiceSpy.and.returnValues(
+            from([[channel1], [channel1Updated]])
+        );
         const subscription = pollingService.channels().subscribe();
         expect(sharedService.info).toHaveBeenCalledTimes(1);
         // @ts-ignore
@@ -143,7 +139,9 @@ describe('ChannelPollingService', () => {
     }));
 
     it('should not show a notification on when balance is reduced', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(from([[channel1], [channel1UpdatedNegative]]));
+        raidenServiceSpy.and.returnValues(
+            from([[channel1], [channel1UpdatedNegative]])
+        );
         const subscription = pollingService.channels().subscribe();
         expect(sharedService.info).toHaveBeenCalledTimes(0);
         subscription.unsubscribe();
@@ -159,7 +157,9 @@ describe('ChannelPollingService', () => {
     }));
 
     it('should send a notification when user opens the first channel', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(from([[], [], [channel1], [channel1]]));
+        raidenServiceSpy.and.returnValues(
+            from([[], [], [channel1], [channel1]])
+        );
         const subscription = pollingService.channels().subscribe();
         tick();
         expect(sharedService.info).toHaveBeenCalledTimes(1);
@@ -168,7 +168,9 @@ describe('ChannelPollingService', () => {
     }));
 
     it('should show notification if new channels are detected', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(from([[], [channel1], [channel1, channel2]]));
+        raidenServiceSpy.and.returnValues(
+            from([[], [channel1], [channel1, channel2]])
+        );
         const subscription = pollingService.channels().subscribe();
         expect(sharedService.info).toHaveBeenCalledTimes(2);
         // @ts-ignore
@@ -187,16 +189,19 @@ describe('ChannelPollingService', () => {
     }));
 
     it('should not throw if a channel is removed from the list', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(from([[channel1, channel2], [channel1]]));
+        raidenServiceSpy.and.returnValues(
+            from([[channel1, channel2], [channel1]])
+        );
         const subscription = pollingService.channels().subscribe();
         expect(sharedService.info).toHaveBeenCalledTimes(0);
         subscription.unsubscribe();
         flush();
     }));
 
-
     it('should not show a notification for the same identifier on different network', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(from([[channel1, channel1Network2], [channel1Network2]]));
+        raidenServiceSpy.and.returnValues(
+            from([[channel1, channel1Network2], [channel1Network2]])
+        );
         const subscription = pollingService.channels().subscribe();
         expect(sharedService.info).toHaveBeenCalledTimes(0);
         subscription.unsubscribe();

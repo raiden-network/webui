@@ -17,9 +17,7 @@ describe('AppComponent', () => {
     let app: AppComponent;
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                AppComponent
-            ],
+            declarations: [AppComponent],
             providers: [
                 {
                     provide: RaidenConfig,

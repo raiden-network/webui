@@ -11,7 +11,7 @@ export class UploadChecks {
 
     static check(files: FileList, extension: string): File {
         if (files.length > 1) {
-            throw new UploadCheckError({multiple: true});
+            throw new UploadCheckError({ multiple: true });
         }
 
         if (files.length <= 0) {
@@ -21,14 +21,15 @@ export class UploadChecks {
         const file = files.item(0);
 
         if (extension && !file.name.endsWith(extension)) {
-            throw new UploadCheckError({invalidExtension: true});
+            throw new UploadCheckError({ invalidExtension: true });
         }
 
         if (file.size > UploadChecks.MAX_UPLOAD_SIZE) {
-            throw new UploadCheckError({exceedsUploadLimit: UploadChecks.MAX_UPLOAD_SIZE});
+            throw new UploadCheckError({
+                exceedsUploadLimit: UploadChecks.MAX_UPLOAD_SIZE
+            });
         }
 
         return file;
     }
 }
-

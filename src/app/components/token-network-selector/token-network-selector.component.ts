@@ -1,4 +1,10 @@
-import { Component, EventEmitter, forwardRef, OnInit, Output } from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    forwardRef,
+    OnInit,
+    Output
+} from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
@@ -32,15 +38,16 @@ import { amountToDecimal } from '../../utils/amount.converter';
         }
     ]
 })
-export class TokenNetworkSelectorComponent implements OnInit, ControlValueAccessor, Validator {
-
+export class TokenNetworkSelectorComponent
+    implements OnInit, ControlValueAccessor, Validator {
     @Output() valueChanged = new EventEmitter<UserToken>();
     public filteredOptions$: Observable<UserToken[]>;
-    readonly tokenFc = new FormControl('', [this.addressValidatorFn(this.raidenService)]);
+    readonly tokenFc = new FormControl('', [
+        this.addressValidatorFn(this.raidenService)
+    ]);
     private tokens$: Observable<UserToken[]>;
 
-    constructor(private raidenService: RaidenService) {
-    }
+    constructor(private raidenService: RaidenService) {}
 
     ngOnInit() {
         this.tokens$ = this.raidenService.getTokens().pipe(
@@ -71,9 +78,7 @@ export class TokenNetworkSelectorComponent implements OnInit, ControlValueAccess
         this.tokenFc.registerOnChange(fn);
     }
 
-    registerOnValidatorChange(fn: () => void): void {
-
-    }
+    registerOnValidatorChange(fn: () => void): void {}
 
     setDisabledState(isDisabled: boolean): void {
         if (isDisabled) {
@@ -85,7 +90,7 @@ export class TokenNetworkSelectorComponent implements OnInit, ControlValueAccess
 
     validate(c: AbstractControl): ValidationErrors | null {
         if (!this.tokenFc.value) {
-            return {empty: true};
+            return { empty: true };
         }
 
         const errors = this.tokenFc.errors;
@@ -100,7 +105,7 @@ export class TokenNetworkSelectorComponent implements OnInit, ControlValueAccess
         if (!obj) {
             return;
         }
-        this.tokenFc.setValue(obj, {emitEvent: false});
+        this.tokenFc.setValue(obj, { emitEvent: false });
     }
 
     checksum(): string {
@@ -112,7 +117,10 @@ export class TokenNetworkSelectorComponent implements OnInit, ControlValueAccess
         const aConnected = !!a.connected;
         const bConnected = !!b.connected;
         if (aConnected === bConnected) {
-            return amountToDecimal(b.balance, b.decimals) - amountToDecimal(a.balance, a.decimals);
+            return (
+                amountToDecimal(b.balance, b.decimals) -
+                amountToDecimal(a.balance, a.decimals)
+            );
         } else {
             return aConnected ? -1 : 1;
         }
@@ -129,17 +137,27 @@ export class TokenNetworkSelectorComponent implements OnInit, ControlValueAccess
             const name = token.name.toLocaleLowerCase();
             const symbol = token.symbol.toLocaleLowerCase();
             const address = token.address.toLocaleLowerCase();
-            return name.startsWith(keyword) || symbol.startsWith(keyword) || address.startsWith(keyword);
+            return (
+                name.startsWith(keyword) ||
+                symbol.startsWith(keyword) ||
+                address.startsWith(keyword)
+            );
         }
 
-        return this.tokens$.pipe(map((tokens: UserToken[]) => tokens.filter(matches)));
+        return this.tokens$.pipe(
+            map((tokens: UserToken[]) => tokens.filter(matches))
+        );
     }
 
     private addressValidatorFn(raidenService: RaidenService): ValidatorFn {
         return (control: AbstractControl) => {
             const controlValue = control.value;
-            if (controlValue && controlValue.length === 42 && !raidenService.checkChecksumAddress(controlValue)) {
-                return {notChecksumAddress: true};
+            if (
+                controlValue &&
+                controlValue.length === 42 &&
+                !raidenService.checkChecksumAddress(controlValue)
+            ) {
+                return { notChecksumAddress: true };
             } else {
                 return undefined;
             }

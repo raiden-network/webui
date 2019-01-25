@@ -24,16 +24,12 @@ describe('AddressInputComponent', () => {
     let fixture: ComponentFixture<AddressInputComponent>;
     let mockAddressBookService: AddressBookService;
 
-
     const nonEip55Address = '0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359';
     let mockConfig: MockConfig;
 
     beforeEach(async(() => {
-
         TestBed.configureTestingModule({
-            declarations: [
-                AddressInputComponent
-            ],
+            declarations: [AddressInputComponent],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
@@ -74,48 +70,71 @@ describe('AddressInputComponent', () => {
             component.displayIdenticon = false;
 
             fixture.detectChanges();
-            const identiconElement = fixture.debugElement.query(By.css('.identicon'));
+            const identiconElement = fixture.debugElement.query(
+                By.css('.identicon')
+            );
             expect(identiconElement).toBeFalsy();
         });
 
         it('should display identicon container if displayIdenticon is true', () => {
             component.displayIdenticon = true;
             fixture.detectChanges();
-            const identiconPlaceholder = fixture.debugElement.query(By.directive(MatIcon));
+            const identiconPlaceholder = fixture.debugElement.query(
+                By.directive(MatIcon)
+            );
             expect(identiconPlaceholder).toBeTruthy();
         });
 
         it('should show error when address is not in checksum format', () => {
             component.displayIdenticon = true;
-            mockConfig.updateChecksumAddress('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359');
+            mockConfig.updateChecksumAddress(
+                '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
+            );
             fixture.detectChanges();
 
             component.addressFc.markAsTouched();
-            mockInput(fixture.debugElement, 'input[type=text]', nonEip55Address);
+            mockInput(
+                fixture.debugElement,
+                'input[type=text]',
+                nonEip55Address
+            );
             fixture.detectChanges();
-            expect(errorMessage(fixture.debugElement))
-                .toBe('Address is not in checksum format: 0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359');
+            expect(errorMessage(fixture.debugElement)).toBe(
+                'Address is not in checksum format: 0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
+            );
         });
 
         it('should show an error if the input is empty', () => {
             component.addressFc.markAsTouched();
             mockInput(fixture.debugElement, 'input[type=text]', '');
             fixture.detectChanges();
-            expect(errorMessage(fixture.debugElement)).toBe(`${component.errorPlaceholder} address cannot be empty`);
+            expect(errorMessage(fixture.debugElement)).toBe(
+                `${component.errorPlaceholder} address cannot be empty`
+            );
         });
 
         it('should show an error if the error is not 42 characters long', () => {
             component.addressFc.markAsTouched();
             mockInput(fixture.debugElement, 'input[type=text]', '0x');
             fixture.detectChanges();
-            expect(errorMessage(fixture.debugElement)).toBe(`Invalid ${component.errorPlaceholder} address length`);
+            expect(errorMessage(fixture.debugElement)).toBe(
+                `Invalid ${component.errorPlaceholder} address length`
+            );
         });
 
         it('should show an error if the address is not valid', () => {
             component.addressFc.markAsTouched();
-            mockInput(fixture.debugElement, 'input[type=text]', 'abbfosdaiudaisduaosiduaoisduaoisdu23423423');
+            mockInput(
+                fixture.debugElement,
+                'input[type=text]',
+                'abbfosdaiudaisduaosiduaoisduaoisdu23423423'
+            );
             fixture.detectChanges();
-            expect(errorMessage(fixture.debugElement)).toBe(`The ${component.errorPlaceholder} address is not in a valid format`);
+            expect(errorMessage(fixture.debugElement)).toBe(
+                `The ${
+                    component.errorPlaceholder
+                } address is not in a valid format`
+            );
         });
 
         it('should show an error if the address is own address', () => {
@@ -123,11 +142,15 @@ describe('AddressInputComponent', () => {
 
             const service = TestBed.get(RaidenService);
             const address = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
-            spyOnProperty(service, 'raidenAddress', 'get').and.returnValue(address);
+            spyOnProperty(service, 'raidenAddress', 'get').and.returnValue(
+                address
+            );
             component.addressFc.markAsTouched();
             mockInput(fixture.debugElement, 'input[type=text]', address);
             fixture.detectChanges();
-            expect(errorMessage(fixture.debugElement)).toBe(`You cannot use your own address for this action`);
+            expect(errorMessage(fixture.debugElement)).toBe(
+                `You cannot use your own address for this action`
+            );
         });
 
         it('should update form control value properly if a truthy value is passed', () => {
@@ -143,30 +166,35 @@ describe('AddressInputComponent', () => {
             expect(component.addressFc.value).toBe(address);
         });
 
-        it('should disable the input if the component is disabled', function () {
+        it('should disable the input if the component is disabled', function() {
             expect(component.addressFc.disabled).toBe(false);
             component.setDisabledState(true);
             fixture.detectChanges();
             expect(component.addressFc.disabled).toBe(true);
         });
 
-        it('should have any filteredOptions if not in userAccount mode', function () {
+        it('should have any filteredOptions if not in userAccount mode', function() {
             expect(component.filteredOptions$).toBeUndefined();
         });
 
-        it('should be return empty on validation', function () {
-            expect(component.validate(component.addressFc)).toEqual({empty: true});
-        });
-
-        it('should return validation errors on invalid value', function () {
-            component.addressFc.setValue('Testing Account 2');
+        it('should be return empty on validation', function() {
             expect(component.validate(component.addressFc)).toEqual({
-                minlength: {requiredLength: 42, actualLength: 17},
-                pattern: {requiredPattern: '^0x[0-9a-fA-F]{40}$', actualValue: 'Testing Account 2'}
+                empty: true
             });
         });
 
-        it('should call on touched when internal input value changes', function () {
+        it('should return validation errors on invalid value', function() {
+            component.addressFc.setValue('Testing Account 2');
+            expect(component.validate(component.addressFc)).toEqual({
+                minlength: { requiredLength: 42, actualLength: 17 },
+                pattern: {
+                    requiredPattern: '^0x[0-9a-fA-F]{40}$',
+                    actualValue: 'Testing Account 2'
+                }
+            });
+        });
+
+        it('should call on touched when internal input value changes', function() {
             const spyObj = jasmine.createSpyObj('spy', ['done']);
             component.registerOnTouched(spyObj.done);
             component.addressFc.setValue('12231');
@@ -174,7 +202,7 @@ describe('AddressInputComponent', () => {
             component.registerOnTouched(undefined);
         });
 
-        it('should call onChange function when internal input value changes', function () {
+        it('should call onChange function when internal input value changes', function() {
             const spyObj = jasmine.createSpyObj('spy', ['done']);
             component.registerOnChange(spyObj.done);
             component.addressFc.setValue('12231');
@@ -183,26 +211,35 @@ describe('AddressInputComponent', () => {
             component.registerOnChange(undefined);
         });
 
-        it('should display an identicon when a valid address is inserted', async function () {
+        it('should display an identicon when a valid address is inserted', async function() {
             component.displayIdenticon = true;
-            component.addressFc.setValue('0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6');
+            component.addressFc.setValue(
+                '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6'
+            );
             fixture.detectChanges();
-            expect(component.addressFc.valid).toBe(true, component.addressFc.errors);
+            expect(component.addressFc.valid).toBe(
+                true,
+                component.addressFc.errors
+            );
             await fixture.whenStable();
-            expect(fixture.debugElement.query(By.directive(MatIcon))).toBeNull();
+            expect(
+                fixture.debugElement.query(By.directive(MatIcon))
+            ).toBeNull();
             expect(fixture.debugElement.query(By.css('img'))).toBeTruthy();
         });
     });
 
     describe('as an autocomplete', () => {
-
-        const addresses: Address[] = [{
-            address: '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6',
-            label: 'Testing Account 1'
-        }, {
-            address: '0x88DBDdF47Fe2d8aa2b540b2FF1D83972AF60D41d',
-            label: 'Testing Account 2'
-        }];
+        const addresses: Address[] = [
+            {
+                address: '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6',
+                label: 'Testing Account 1'
+            },
+            {
+                address: '0x88DBDdF47Fe2d8aa2b540b2FF1D83972AF60D41d',
+                label: 'Testing Account 2'
+            }
+        ];
 
         beforeEach(async () => {
             component.userAccount = true;
@@ -219,13 +256,18 @@ describe('AddressInputComponent', () => {
             fixture.detectChanges();
 
             await fixture.whenStable();
-            const options = fixture.debugElement.queryAll(By.directive(MatOption));
+            const options = fixture.debugElement.queryAll(
+                By.directive(MatOption)
+            );
             expect(options.length).toBe(1);
             const visibleOption = options[0].componentInstance as MatOption;
-            expect(visibleOption.value).toBe(addresses[1].address, 'Second account should be visible');
+            expect(visibleOption.value).toBe(
+                addresses[1].address,
+                'Second account should be visible'
+            );
         });
 
-        it('should filter the results when the users types part of the address', async function () {
+        it('should filter the results when the users types part of the address', async function() {
             mockInput(fixture.debugElement, 'input[type=text]', '53A9462');
             component.addressFc.setValue('53A9462');
             component.addressFc.markAsTouched();
@@ -233,12 +275,17 @@ describe('AddressInputComponent', () => {
             fixture.detectChanges();
 
             await fixture.whenStable();
-            const options = fixture.debugElement.queryAll(By.directive(MatOption));
+            const options = fixture.debugElement.queryAll(
+                By.directive(MatOption)
+            );
             expect(options.length).toBe(1);
             const option = options[0];
             const visibleOption = option.componentInstance as MatOption;
             const firstAddress = addresses[0];
-            expect(visibleOption.value).toBe(firstAddress.address, 'First account should be visible');
+            expect(visibleOption.value).toBe(
+                firstAddress.address,
+                'First account should be visible'
+            );
             option.nativeElement.click();
             expect(component.addressFc.value).toBe(firstAddress.address);
         });

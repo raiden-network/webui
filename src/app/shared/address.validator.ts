@@ -5,9 +5,9 @@ export function addressValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
         const value = control.value;
         if (!value) {
-            return {emptyAddress: true};
+            return { emptyAddress: true };
         } else if (!regex.test(value)) {
-            return {invalidFormat: true};
+            return { invalidFormat: true };
         } else {
             return null;
         }

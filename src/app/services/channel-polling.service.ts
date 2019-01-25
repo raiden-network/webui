@@ -11,9 +11,10 @@ import { SharedService } from './shared.service';
     providedIn: 'root'
 })
 export class ChannelPollingService {
-
     private channelsSubject: BehaviorSubject<void> = new BehaviorSubject(null);
-    private refreshingSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private refreshingSubject: BehaviorSubject<boolean> = new BehaviorSubject<
+        boolean
+    >(false);
     private readonly channels$: Observable<Channel[]>;
     private loaded = false;
 
@@ -30,13 +31,12 @@ export class ChannelPollingService {
             }),
             switchMap(() => this.raidenService.getChannels()),
             tap(() => {
-                    timeout = setTimeout(
-                        () => this.refresh(),
-                        this.raidenConfig.config.poll_interval,
-                    );
-                    this.refreshingSubject.next(false);
-                }
-            ),
+                timeout = setTimeout(
+                    () => this.refresh(),
+                    this.raidenConfig.config.poll_interval
+                );
+                this.refreshingSubject.next(false);
+            }),
             scan((oldChannels: Channel[], newChannels: Channel[]) => {
                 this.checkForBalanceChanges(oldChannels, newChannels);
                 this.checkForNewChannels(oldChannels, newChannels);
@@ -58,16 +58,25 @@ export class ChannelPollingService {
         this.channelsSubject.next(null);
     }
 
-    private checkForNewChannels(oldChannels: Channel[], newChannels: Channel[]) {
+    private checkForNewChannels(
+        oldChannels: Channel[],
+        newChannels: Channel[]
+    ) {
         if (oldChannels.length > 0) {
             const channels = newChannels.filter(newChannel => {
-                return !oldChannels.find(oldChannel => this.isTheSameChannel(oldChannel, newChannel));
+                return !oldChannels.find(oldChannel =>
+                    this.isTheSameChannel(oldChannel, newChannel)
+                );
             });
 
             for (const channel of channels) {
                 this.informAboutNewChannel(channel);
             }
-        } else if (this.loaded && oldChannels.length === 0 && newChannels.length > 0) {
+        } else if (
+            this.loaded &&
+            oldChannels.length === 0 &&
+            newChannels.length > 0
+        ) {
             for (const channel of newChannels) {
                 this.informAboutNewChannel(channel);
             }
@@ -75,9 +84,14 @@ export class ChannelPollingService {
         this.loaded = true;
     }
 
-    private checkForBalanceChanges(oldChannels: Channel[], newChannels: Channel[]) {
+    private checkForBalanceChanges(
+        oldChannels: Channel[],
+        newChannels: Channel[]
+    ) {
         for (const oldChannel of oldChannels) {
-            const newChannel = newChannels.find(channel => this.isTheSameChannel(oldChannel, channel));
+            const newChannel = newChannels.find(channel =>
+                this.isTheSameChannel(oldChannel, channel)
+            );
             if (!newChannel || newChannel.balance <= oldChannel.balance) {
                 continue;
             }
@@ -87,7 +101,10 @@ export class ChannelPollingService {
 
     // noinspection JSMethodCanBeStatic
     private isTheSameChannel(channel1: Channel, channel2: Channel): boolean {
-        return channel1.channel_identifier === channel2.channel_identifier && channel1.token_address === channel2.token_address;
+        return (
+            channel1.channel_identifier === channel2.channel_identifier &&
+            channel1.token_address === channel2.token_address
+        );
     }
 
     private informAboutNewChannel(channel: Channel) {
@@ -101,7 +118,10 @@ export class ChannelPollingService {
         });
     }
 
-    private informAboutBalanceUpdate(channel: Channel, previousBalance: number) {
+    private informAboutBalanceUpdate(
+        channel: Channel,
+        previousBalance: number
+    ) {
         const amount = channel.balance - previousBalance;
         const symbol = channel.userToken.symbol;
         const channelId = channel.channel_identifier;

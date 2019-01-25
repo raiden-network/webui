@@ -36,7 +36,10 @@ export class FakeHttpProvider implements Provider {
     private response = [];
     private error = [];
 
-    public send(payload: JsonRPCRequest, callback: (e: Error, val: JsonRPCResponse) => void): any {
+    public send(
+        payload: JsonRPCRequest,
+        callback: (e: Error, val: JsonRPCResponse) => void
+    ): any {
         if (payload.id) {
             this.countId = payload.id;
         }
@@ -52,7 +55,10 @@ export class FakeHttpProvider implements Provider {
         setTimeout(() => callback(error, response), 1);
     }
 
-    public getResponseOrError(type: any, payload: any | Array<any>): JsonRPCResponse | JsonRPCResponse[] {
+    public getResponseOrError(
+        type: any,
+        payload: any | Array<any>
+    ): JsonRPCResponse | JsonRPCResponse[] {
         let response: JsonRPCResponse | JsonRPCResponse[];
 
         if (type === 'error') {
@@ -63,44 +69,51 @@ export class FakeHttpProvider implements Provider {
 
         if (response) {
             if (response instanceof Array) {
-
                 let currentResponse: JsonRPCResponse[];
 
                 if (response.length > payload.length) {
                     currentResponse = response.slice(0, payload.length);
-                    this.response.push(response.slice(payload.length, response.length));
+                    this.response.push(
+                        response.slice(payload.length, response.length)
+                    );
                 } else {
                     currentResponse = response;
                 }
 
                 response = currentResponse.map((resp, index) => {
-                    resp.id = payload[index] ? payload[index].id : this.countId++;
+                    resp.id = payload[index]
+                        ? payload[index].id
+                        : this.countId++;
                     return resp;
                 });
-
             } else {
                 response.id = payload.id;
             }
-
         }
 
         return response;
     }
 
-    public injectBatchResults(results: Array<any>, error: boolean = false, errorIndex: number = -1) {
-        this.response.push(results.map((value, index) => {
-            let response: JsonRPCResponse;
+    public injectBatchResults(
+        results: Array<any>,
+        error: boolean = false,
+        errorIndex: number = -1
+    ) {
+        this.response.push(
+            results.map((value, index) => {
+                let response: JsonRPCResponse;
 
-            if (error || errorIndex === index) {
-                response = this.getErrorStub();
-                response.error = value;
-            } else {
-                response = this.getResponseStub();
-                response.result = value;
-            }
+                if (error || errorIndex === index) {
+                    response = this.getErrorStub();
+                    response.error = value;
+                } else {
+                    response = this.getResponseStub();
+                    response.result = value;
+                }
 
-            return response;
-        }));
+                return response;
+            })
+        );
     }
 
     public injectResult(result: string) {
@@ -174,8 +187,8 @@ describe('BatchManager', () => {
     });
 
     it('should throw an exception if there is at least one error in the batch', async () => {
-        batchManager.add({request: getEthCallStub()});
-        batchManager.add({request: getEthCallStub()});
+        batchManager.add({ request: getEthCallStub() });
+        batchManager.add({ request: getEthCallStub() });
         httpProvider.injectResult(getRPCResult());
         httpProvider.injectError('err');
 
@@ -187,15 +200,11 @@ describe('BatchManager', () => {
         }
     });
 
-
     it('should process small batch and have the results', async () => {
-        httpProvider.injectBatchResults([
-            getRPCResult(),
-            getRPCResult()
-        ]);
+        httpProvider.injectBatchResults([getRPCResult(), getRPCResult()]);
 
-        batchManager.add({request: getEthCallStub()});
-        batchManager.add({request: getEthCallStub()});
+        batchManager.add({ request: getEthCallStub() });
+        batchManager.add({ request: getEthCallStub() });
 
         const result = await batchManager.execute();
 
@@ -204,7 +213,6 @@ describe('BatchManager', () => {
     });
 
     it('should only call through the http provider for the batch', async () => {
-
         const results = [];
 
         const batchSize = 800;
@@ -212,7 +220,7 @@ describe('BatchManager', () => {
         for (let i = 0; i < batchSize; i++) {
             const ethCallStub = getEthCallStub();
             ethCallStub.id = i + 1;
-            batchManager.add({request: ethCallStub});
+            batchManager.add({ request: ethCallStub });
 
             results.push(getRPCResult());
         }
@@ -222,7 +230,10 @@ describe('BatchManager', () => {
         const result = await batchManager.execute();
 
         expect(result).toBeTruthy('there should be a result');
-        expect(result.length).toBe(batchSize, 'there should be 800 results in the batch');
+        expect(result.length).toBe(
+            batchSize,
+            'there should be 800 results in the batch'
+        );
         expect(httpProvider.send).toHaveBeenCalledTimes(1);
     });
 
@@ -234,7 +245,7 @@ describe('BatchManager', () => {
         for (let i = 0; i < batchSize; i++) {
             const ethCallStub = getEthCallStub();
             ethCallStub.id = i + 1;
-            batchManager.add({request: ethCallStub});
+            batchManager.add({ request: ethCallStub });
 
             results.push(getRPCResult());
         }
@@ -244,14 +255,16 @@ describe('BatchManager', () => {
         const result = await batchManager.execute();
 
         expect(result).toBeTruthy('there should be a result');
-        expect(result.length).toBe(batchSize, 'there should be 1600 results in response');
+        expect(result.length).toBe(
+            batchSize,
+            'there should be 1600 results in response'
+        );
         expect(httpProvider.send).toHaveBeenCalledTimes(2);
     });
 
-
     it('should fail on Error', async () => {
         const ethCallStub = getEthCallStub();
-        batchManager.add({request: ethCallStub});
+        batchManager.add({ request: ethCallStub });
         httpProvider.injectBatchResults([getRPCResult()], true);
 
         try {
@@ -264,7 +277,7 @@ describe('BatchManager', () => {
 
     it('should fail on an invalid response', async () => {
         const ethCallStub = getEthCallStub();
-        batchManager.add({request: ethCallStub});
+        batchManager.add({ request: ethCallStub });
         httpProvider.injectInvalidResponse({
             jsonrpc: '2.0',
             id: 2
@@ -280,7 +293,7 @@ describe('BatchManager', () => {
 
     it('should ignore failure if there is a default value and the formatter throws', async () => {
         const ethCallStub = getEthCallStub();
-        ethCallStub.format = function () {
+        ethCallStub.format = function() {
             throw Error('format failed');
         };
         batchManager.add({
@@ -288,7 +301,9 @@ describe('BatchManager', () => {
             defaultValue: ''
         });
 
-        httpProvider.injectBatchResults(['0x4d4b520000000000000000000000000000000000000000000000000000000000']);
+        httpProvider.injectBatchResults([
+            '0x4d4b520000000000000000000000000000000000000000000000000000000000'
+        ]);
 
         const result = await batchManager.execute();
 
@@ -298,14 +313,16 @@ describe('BatchManager', () => {
 
     it('should fail if there is no default value and the formatter throws', async () => {
         const ethCallStub = getEthCallStub();
-        ethCallStub.format = function () {
+        ethCallStub.format = function() {
             throw Error('format failed');
         };
         batchManager.add({
             request: ethCallStub
         });
 
-        httpProvider.injectBatchResults(['0x4d4b520000000000000000000000000000000000000000000000000000000000']);
+        httpProvider.injectBatchResults([
+            '0x4d4b520000000000000000000000000000000000000000000000000000000000'
+        ]);
 
         try {
             await batchManager.execute();
@@ -316,7 +333,7 @@ describe('BatchManager', () => {
         }
     });
 
-    it('should not fail the whole batch if there is an error response but the request has a default value', async function () {
+    it('should not fail the whole batch if there is an error response but the request has a default value', async function() {
         batchManager.add({
             request: getEthCallStub(),
             defaultValue: ''
@@ -327,10 +344,7 @@ describe('BatchManager', () => {
             defaultValue: ''
         });
 
-        httpProvider.injectBatchResults([
-            'test',
-
-        ], false, 1);
+        httpProvider.injectBatchResults(['test'], false, 1);
 
         const result = await batchManager.execute();
 
@@ -339,7 +353,7 @@ describe('BatchManager', () => {
         expect(result[1]).toBe('');
     });
 
-    it('should not fail the whole batch if there is an invalid response but the request has a default value', async function () {
+    it('should not fail the whole batch if there is an invalid response but the request has a default value', async function() {
         batchManager.add({
             request: getEthCallStub(),
             defaultValue: ''
@@ -350,10 +364,8 @@ describe('BatchManager', () => {
             defaultValue: ''
         });
 
-        httpProvider.injectBatchResults([
-            'test'
-        ]);
-        httpProvider.injectInvalidResponse({'not_valid_response': true});
+        httpProvider.injectBatchResults(['test']);
+        httpProvider.injectInvalidResponse({ not_valid_response: true });
 
         const result = await batchManager.execute();
 

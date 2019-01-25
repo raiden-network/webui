@@ -1,31 +1,37 @@
-<h1 mat-dialog-title>{{ data.tokenAddress ? 'Pay' : 'Send Tokens'}}</h1>
+<h1 mat-dialog-title>{{ data.tokenAddress ? 'Pay' : 'Send Tokens' }}</h1>
 <div mat-dialog-content [formGroup]="form">
-
     <app-address-input
-            [displayIdenticon]="true"
-            [userAccount]="true"
-            formControlName="target_address"
-            placeholder="Receiver address"
-            errorPlaceholder="Receiver">
+        [displayIdenticon]="true"
+        [userAccount]="true"
+        formControlName="target_address"
+        placeholder="Receiver address"
+        errorPlaceholder="Receiver"
+    >
     </app-address-input>
 
     <app-token-network-selector
-            formControlName="token"
-            (valueChanged)="tokenNetworkSelected($event)">
-
+        formControlName="token"
+        (valueChanged)="tokenNetworkSelected($event)"
+    >
     </app-token-network-selector>
     <app-token-input
-            [placeholder]="'Amount'"
-            [errorPlaceholder]="'payment amount'"
-            formControlName="amount">
+        [placeholder]="'Amount'"
+        [errorPlaceholder]="'payment amount'"
+        formControlName="amount"
+    >
     </app-token-input>
-
 </div>
 <div mat-dialog-actions>
     <button mat-button mat-dialog-close>Close</button>
-    <button mat-button (click)="reset()" [disabled]="form.pristine">Reset</button>
-    <button mat-button color="accent"
-            (click)="accept()"
-            [disabled]="form.invalid">Send
+    <button mat-button (click)="reset()" [disabled]="form.pristine">
+        Reset
+    </button>
+    <button
+        mat-button
+        color="accent"
+        (click)="accept()"
+        [disabled]="form.invalid"
+    >
+        Send
     </button>
 </div>

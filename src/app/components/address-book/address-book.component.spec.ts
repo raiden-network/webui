@@ -23,9 +23,12 @@ describe('AddressBookComponent', () => {
     let serviceStub: AddressBookService;
 
     function getLabels(debugElement: DebugElement): string[] {
-        return debugElement.children.map(value => {
-            return value.queryAll(By.css('input'))[1].nativeElement as HTMLInputElement;
-        }).map(value => value.value);
+        return debugElement.children
+            .map(value => {
+                return value.queryAll(By.css('input'))[1]
+                    .nativeElement as HTMLInputElement;
+            })
+            .map(value => value.value);
     }
 
     function getExpected(start: number, end: number): string[] {
@@ -52,7 +55,7 @@ describe('AddressBookComponent', () => {
             providers: [
                 TestProviders.HammerJSProvider(),
                 TestProviders.AddressBookStubProvider(),
-                TestProviders.MockMatDialog(),
+                TestProviders.MockMatDialog()
             ]
         }).compileComponents();
         serviceStub = TestBed.get(AddressBookService);
@@ -69,33 +72,45 @@ describe('AddressBookComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should display 10 of 15 items by default', function () {
+    it('should display 10 of 15 items by default', function() {
         serviceStub.getArray = () => createTestAddresses();
         fixture.detectChanges();
 
-        const paginatorLabel = fixture.debugElement.query(By.css('.mat-paginator-range-label'));
-        const addressListElement = fixture.debugElement.query(By.css('.page-list'));
-        expect((paginatorLabel.nativeElement as HTMLDivElement).textContent).toBe('1 - 10 of 15');
+        const paginatorLabel = fixture.debugElement.query(
+            By.css('.mat-paginator-range-label')
+        );
+        const addressListElement = fixture.debugElement.query(
+            By.css('.page-list')
+        );
+        expect(
+            (paginatorLabel.nativeElement as HTMLDivElement).textContent
+        ).toBe('1 - 10 of 15');
         expect(addressListElement.children.length).toBe(10);
 
         expect(getLabels(addressListElement)).toEqual(getExpected(1, 10));
     });
 
-    it('should display 5 items after changing page', async(function () {
+    it('should display 5 items after changing page', async(function() {
         serviceStub.getArray = () => createTestAddresses();
         fixture.detectChanges();
 
         clickElement(fixture.debugElement, '.mat-paginator-navigation-next');
         fixture.detectChanges();
-        const paginatorLabel = fixture.debugElement.query(By.css('.mat-paginator-range-label'));
-        const addressListElement = fixture.debugElement.query(By.css('.page-list'));
-        expect((paginatorLabel.nativeElement as HTMLDivElement).textContent).toBe('11 - 15 of 15');
+        const paginatorLabel = fixture.debugElement.query(
+            By.css('.mat-paginator-range-label')
+        );
+        const addressListElement = fixture.debugElement.query(
+            By.css('.page-list')
+        );
+        expect(
+            (paginatorLabel.nativeElement as HTMLDivElement).textContent
+        ).toBe('11 - 15 of 15');
         expect(addressListElement.children.length).toBe(5);
 
         expect(getLabels(addressListElement)).toEqual(getExpected(11, 15));
     }));
 
-    it('should add an address when pressing add', function () {
+    it('should add an address when pressing add', function() {
         const addresses: Address[] = [];
         serviceStub.getArray = () => addresses;
         serviceStub.save = address => addresses.push(address);
@@ -104,7 +119,11 @@ describe('AddressBookComponent', () => {
 
         expect(fixture.debugElement.query(By.css('.page-list'))).toBeNull();
 
-        mockInput(fixture.debugElement, '#addresses-address', '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C');
+        mockInput(
+            fixture.debugElement,
+            '#addresses-address',
+            '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+        );
         mockInput(fixture.debugElement, '#addresses-label', 'Test Node');
 
         fixture.detectChanges();
@@ -113,58 +132,67 @@ describe('AddressBookComponent', () => {
 
         fixture.detectChanges();
 
-        const addressListElement = fixture.debugElement.query(By.css('.page-list'));
+        const addressListElement = fixture.debugElement.query(
+            By.css('.page-list')
+        );
         expect(addressListElement.children.length).toBe(1);
         expect(getLabels(addressListElement)).toEqual(['Test Node']);
     });
 
-    it('should delete all nodes when user confirms delete all', function () {
+    it('should delete all nodes when user confirms delete all', function() {
         let addresses: Address[] = createTestAddresses();
         serviceStub.getArray = () => {
             return addresses;
         };
-        serviceStub.deleteAll = () => addresses = [];
+        serviceStub.deleteAll = () => (addresses = []);
 
         fixture.detectChanges();
 
-        expect(fixture.debugElement.query(By.css('.page-list')).children.length).toBe(10);
+        expect(
+            fixture.debugElement.query(By.css('.page-list')).children.length
+        ).toBe(10);
 
         clickElement(fixture.debugElement, '#addresses-delete');
 
         fixture.detectChanges();
 
         expect(fixture.debugElement.query(By.css('.page-list'))).toBeNull();
-
     });
 
-    it('should delete nothing if user presses cancel on the delete confirmation', function () {
+    it('should delete nothing if user presses cancel on the delete confirmation', function() {
         const dialog = TestBed.get(MatDialog) as MockMatDialog;
         dialog.cancelled = true;
 
         // noinspection JSMismatchedCollectionQueryUpdate
         let addresses: Address[] = createTestAddresses();
         serviceStub.getArray = () => addresses;
-        serviceStub.deleteAll = () => addresses = [];
+        serviceStub.deleteAll = () => (addresses = []);
 
         fixture.detectChanges();
 
-        expect(fixture.debugElement.query(By.css('.page-list')).children.length).toBe(10);
+        expect(
+            fixture.debugElement.query(By.css('.page-list')).children.length
+        ).toBe(10);
 
         clickElement(fixture.debugElement, '#addresses-delete');
 
         fixture.detectChanges();
 
-        expect(fixture.debugElement.query(By.css('.page-list')).children.length).toBe(10);
-
+        expect(
+            fixture.debugElement.query(By.css('.page-list')).children.length
+        ).toBe(10);
     });
 
-    it('should only be able to edit one element at a time', function () {
+    it('should only be able to edit one element at a time', function() {
         serviceStub.getArray = () => createTestAddresses();
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.query(By.css('.page-list')).children;
+        const debugElements = fixture.debugElement.query(By.css('.page-list'))
+            .children;
 
-        const addressInput = (element: DebugElement) => element.query(By.css('#address-label')).nativeElement as HTMLInputElement;
+        const addressInput = (element: DebugElement) =>
+            element.query(By.css('#address-label'))
+                .nativeElement as HTMLInputElement;
 
         debugElements.forEach(value => {
             expect(addressInput(value).disabled).toBe(true);
@@ -194,10 +222,9 @@ describe('AddressBookComponent', () => {
         debugElements.forEach(value => {
             expect(addressInput(value).disabled).toBe(true);
         });
-
     });
 
-    it('should expand the drop zone when import is pressed', function () {
+    it('should expand the drop zone when import is pressed', function() {
         serviceStub.getArray = () => [];
         expect(fixture.debugElement.query(By.css('#drop-zone'))).toBeFalsy();
         clickElement(fixture.debugElement, '#addresses-import');
@@ -208,19 +235,22 @@ describe('AddressBookComponent', () => {
         expect(fixture.debugElement.query(By.css('#drop-zone'))).toBeFalsy();
     });
 
-    it('should show an empty view if no data', function () {
+    it('should show an empty view if no data', function() {
         serviceStub.getArray = () => [];
         fixture.detectChanges();
 
-        const emptyText = (fixture.debugElement.query(By.css('h2.mat-title')).nativeElement as HTMLHeadElement).textContent;
-        const addressListElement = fixture.debugElement.query(By.css('.page-list'));
+        const emptyText = (fixture.debugElement.query(By.css('h2.mat-title'))
+            .nativeElement as HTMLHeadElement).textContent;
+        const addressListElement = fixture.debugElement.query(
+            By.css('.page-list')
+        );
         expect(addressListElement).toBeNull();
         expect(emptyText).toBe('No addresses found!');
     });
 
-    it('should download a json file', function () {
+    it('should download a json file', function() {
         const spy = jasmine.createSpyObj('a', ['click', 'setAttribute']);
-        spy.setAttribute = function (attr, value) {
+        spy.setAttribute = function(attr, value) {
             this[attr] = value;
         };
 
@@ -238,18 +268,23 @@ describe('AddressBookComponent', () => {
         expect(spy.click).toHaveBeenCalledTimes(1);
     });
 
-    it('should update stored data when the user updates a label', function () {
+    it('should update stored data when the user updates a label', function() {
         const testAddresses = createTestAddresses(5);
         serviceStub.getArray = () => testAddresses;
-        serviceStub.save = function (address: Address) {
-            const index = testAddresses.findIndex(value => value.address === address.address);
+        serviceStub.save = function(address: Address) {
+            const index = testAddresses.findIndex(
+                value => value.address === address.address
+            );
             testAddresses[index] = address;
         };
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.query(By.css('.page-list')).children;
+        const debugElements = fixture.debugElement.query(By.css('.page-list'))
+            .children;
 
-        const addressInput = (element: DebugElement) => element.query(By.css('#address-label')).nativeElement as HTMLInputElement;
+        const addressInput = (element: DebugElement) =>
+            element.query(By.css('#address-label'))
+                .nativeElement as HTMLInputElement;
 
         const inputElement = addressInput(debugElements[0]);
         expect(inputElement.value).toEqual('Random Account 1');
@@ -260,6 +295,4 @@ describe('AddressBookComponent', () => {
         fixture.detectChanges();
         expect(testAddresses[0].label).toBe('An Account');
     });
-
 });
-

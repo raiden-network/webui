@@ -1,4 +1,11 @@
-import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    fakeAsync,
+    flush,
+    TestBed,
+    tick
+} from '@angular/core/testing';
 
 import { FileUploadComponent } from './file-upload.component';
 import { stub } from '../../../testing/stub';
@@ -9,7 +16,7 @@ import { DragStatus } from '../../directives/drag-upload.directive';
 function createMockReader(result: {}) {
     return {
         result: JSON.stringify(result),
-        readAsText: function () {
+        readAsText: function() {
             const progressEvent = stub<ProgressEvent>();
             // @ts-ignore
             progressEvent.loaded = 125;
@@ -18,10 +25,8 @@ function createMockReader(result: {}) {
             this.onprogress(progressEvent);
             this.onload();
         },
-        onload: () => {
-        },
-        onprogress: () => {
-        }
+        onload: () => {},
+        onprogress: () => {}
     };
 }
 
@@ -36,7 +41,7 @@ function createMockFileList(filename: string = 'address_book.json'): FileList {
     // @ts-ignore
     fileList.length = 1;
     // @ts-ignore
-    fileList.item = function () {
+    fileList.item = function() {
         return file;
     };
 
@@ -50,9 +55,7 @@ describe('FileUploadComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [FileUploadComponent],
-            imports: [
-                MaterialComponentsModule
-            ]
+            imports: [MaterialComponentsModule]
         }).compileComponents();
     }));
 
@@ -66,7 +69,7 @@ describe('FileUploadComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should hide the drop area and import the addresses', fakeAsync(function () {
+    it('should hide the drop area and import the addresses', fakeAsync(function() {
         fixture.detectChanges();
 
         const reader = window['FileReader'];
@@ -97,7 +100,7 @@ describe('FileUploadComponent', () => {
         flush();
     }));
 
-    it('should have an error if wrong type is passed', fakeAsync(function () {
+    it('should have an error if wrong type is passed', fakeAsync(function() {
         fixture.detectChanges();
 
         const reader = window['FileReader'];
@@ -117,7 +120,7 @@ describe('FileUploadComponent', () => {
         });
 
         component.filesSelected(fileList);
-        expect(component.error).toEqual({invalidExtension: true});
+        expect(component.error).toEqual({ invalidExtension: true });
         tick(1000);
 
         fixture.detectChanges();
@@ -128,11 +131,11 @@ describe('FileUploadComponent', () => {
         flush();
     }));
 
-    it('should have an error if invalid content is parsed', fakeAsync(function () {
+    it('should have an error if invalid content is parsed', fakeAsync(function() {
         fixture.detectChanges();
 
         const reader = window['FileReader'];
-        const result = {fake: true, invalid: 'yes'};
+        const result = { fake: true, invalid: 'yes' };
         window['FileReader'] = () => createMockReader(result);
 
         const fileList = createMockFileList('address.json');
@@ -142,7 +145,7 @@ describe('FileUploadComponent', () => {
         });
 
         component.filesSelected(fileList);
-        expect(component.error).toEqual({invalidFormat: true});
+        expect(component.error).toEqual({ invalidFormat: true });
         tick(1000);
 
         fixture.detectChanges();
@@ -153,7 +156,7 @@ describe('FileUploadComponent', () => {
         flush();
     }));
 
-    it('should change to over status when DragStatus.OVER is received', function () {
+    it('should change to over status when DragStatus.OVER is received', function() {
         expect(component.isOver).toBe(false);
         component.updateDragStatus(DragStatus.OVER);
         expect(component.isOver).toBe(true);

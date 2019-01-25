@@ -1,4 +1,13 @@
-import { Directive, EventEmitter, HostBinding, HostListener, Input, Output, TemplateRef, ViewContainerRef } from '@angular/core';
+import {
+    Directive,
+    EventEmitter,
+    HostBinding,
+    HostListener,
+    Input,
+    Output,
+    TemplateRef,
+    ViewContainerRef
+} from '@angular/core';
 
 @Directive({
     selector: '[cdkDetailRow]'
@@ -9,8 +18,7 @@ export class CdkDetailRowDirective {
     private tRef: TemplateRef<any>;
     private opened: boolean;
 
-    constructor(public vcRef: ViewContainerRef) {
-    }
+    constructor(public vcRef: ViewContainerRef) {}
 
     @HostBinding('class.expanded')
     get expended(): boolean {
@@ -50,7 +58,7 @@ export class CdkDetailRowDirective {
     private render(): void {
         this.vcRef.clear();
         if (this.tRef && this.row) {
-            this.vcRef.createEmbeddedView(this.tRef, {$implicit: this.row});
+            this.vcRef.createEmbeddedView(this.tRef, { $implicit: this.row });
         }
     }
 }

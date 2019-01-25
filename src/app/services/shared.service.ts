@@ -15,16 +15,15 @@ export class UiMessage {
 
 @Injectable()
 export class SharedService {
-
     public httpTimeout: number;
     private requestsSubject = new BehaviorSubject<number>(0);
-    public readonly pendingRequests: Observable<number> = this.requestsSubject.asObservable()
-        .pipe(
-            scan((acc, value) => Math.max(acc + value, 0), 0),
-        );
+    public readonly pendingRequests: Observable<
+        number
+    > = this.requestsSubject
+        .asObservable()
+        .pipe(scan((acc, value) => Math.max(acc + value, 0), 0));
 
-    constructor(@Inject(Injector) private injector: Injector) {
-    }
+    constructor(@Inject(Injector) private injector: Injector) {}
 
     private get toastrService(): ToastrService {
         return this.injector.get(ToastrService);
@@ -53,5 +52,4 @@ export class SharedService {
     requestFinished() {
         this.requestsSubject.next(-1);
     }
-
 }

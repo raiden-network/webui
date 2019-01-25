@@ -13,10 +13,7 @@ describe('DepositDialogComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                DepositDialogComponent,
-                TokenInputComponent
-            ],
+            declarations: [DepositDialogComponent, TokenInputComponent],
             providers: [
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialogData(),

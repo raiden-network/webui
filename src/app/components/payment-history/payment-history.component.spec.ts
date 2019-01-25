@@ -1,6 +1,13 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    fakeAsync,
+    flush,
+    TestBed,
+    tick
+} from '@angular/core/testing';
 import { MatCard } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -40,81 +47,83 @@ describe('PaymentHistoryComponent', () => {
 
     const mockData: PaymentEvent[] = [
         {
-            'event': 'EventPaymentSendFailed',
-            'target': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'reason': 'insufficient funds',
-            'identifier': 1536847754083
+            event: 'EventPaymentSendFailed',
+            target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            reason: 'insufficient funds',
+            identifier: 1536847754083
         },
         {
-            'event': 'EventPaymentReceivedSuccess',
-            'amount': 5,
-            'initiator': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'identifier': 1536847755083
+            event: 'EventPaymentReceivedSuccess',
+            amount: 5,
+            initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            identifier: 1536847755083
         },
         {
-            'event': 'EventPaymentSentSuccess',
-            'amount': 35,
-            'target': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'identifier': 1536847756083
+            event: 'EventPaymentSentSuccess',
+            amount: 35,
+            target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            identifier: 1536847756083
         },
         {
-            'event': 'EventPaymentSentSuccess',
-            'amount': 20,
-            'target': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'identifier': 1536847757083
+            event: 'EventPaymentSentSuccess',
+            amount: 20,
+            target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            identifier: 1536847757083
         },
         {
-            'event': 'EventPaymentReceivedSuccess',
-            'amount': 5,
-            'initiator': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'identifier': 1536847758103
+            event: 'EventPaymentReceivedSuccess',
+            amount: 5,
+            initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            identifier: 1536847758103
         },
         {
-            'event': 'EventPaymentSentSuccess',
-            'amount': 11,
-            'target': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'identifier': 1536847759000
+            event: 'EventPaymentSentSuccess',
+            amount: 11,
+            target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            identifier: 1536847759000
         },
         {
-            'event': 'EventPaymentSentSuccess',
-            'amount': 1,
-            'target': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'identifier': 1536847760030
+            event: 'EventPaymentSentSuccess',
+            amount: 1,
+            target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            identifier: 1536847760030
         },
         {
-            'event': 'EventPaymentSentSuccess',
-            'amount': 4,
-            'target': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'identifier': 1536847760130
+            event: 'EventPaymentSentSuccess',
+            amount: 4,
+            target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            identifier: 1536847760130
         },
         {
-            'event': 'EventPaymentReceivedSuccess',
-            'amount': 8,
-            'initiator': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'identifier': 1536847760230
+            event: 'EventPaymentReceivedSuccess',
+            amount: 8,
+            initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            identifier: 1536847760230
         },
         {
-            'event': 'EventPaymentSentSuccess',
-            'amount': 2,
-            'target': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'identifier': 1536847760330
+            event: 'EventPaymentSentSuccess',
+            amount: 2,
+            target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            identifier: 1536847760330
         },
         {
-            'event': 'EventPaymentReceivedSuccess',
-            'amount': 5,
-            'initiator': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'identifier': 1536847760430
+            event: 'EventPaymentReceivedSuccess',
+            amount: 5,
+            initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            identifier: 1536847760430
         },
         {
-            'event': 'EventPaymentSendFailed',
-            'target': '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            'reason': 'insufficient funds',
-            'identifier': 1536847760442
+            event: 'EventPaymentSendFailed',
+            target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
+            reason: 'insufficient funds',
+            identifier: 1536847760442
         }
     ];
 
     function getVisibleEventCards(): DebugElement[] {
-        const historyList = fixture.debugElement.query(By.css('#payment-history'));
+        const historyList = fixture.debugElement.query(
+            By.css('#payment-history')
+        );
         return historyList.queryAll(By.directive(MatCard));
     }
 
@@ -123,11 +132,7 @@ describe('PaymentHistoryComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                PaymentHistoryComponent,
-                DecimalPipe,
-                TokenPipe
-            ],
+            declarations: [PaymentHistoryComponent, DecimalPipe, TokenPipe],
             providers: [
                 SharedService,
                 TestProviders.HammerJSProvider(),
@@ -135,10 +140,12 @@ describe('PaymentHistoryComponent', () => {
                 {
                     provide: ActivatedRoute,
                     useValue: {
-                        queryParamMap: new BehaviorSubject(convertToParamMap({
-                            token_address: tokenNetwork,
-                            partner_address: partnerAddress
-                        }))
+                        queryParamMap: new BehaviorSubject(
+                            convertToParamMap({
+                                token_address: tokenNetwork,
+                                partner_address: partnerAddress
+                            })
+                        )
                     }
                 },
                 RaidenService
@@ -174,7 +181,11 @@ describe('PaymentHistoryComponent', () => {
     function noPaymentElement() {
         const elements = fixture.debugElement.queryAll(By.css('h2'));
         const label = 'No payments found!';
-        return elements.filter(value => (value.nativeElement as HTMLHeadingElement).textContent === label);
+        return elements.filter(
+            value =>
+                (value.nativeElement as HTMLHeadingElement).textContent ===
+                label
+        );
     }
 
     it('should display a no payments found message if there is no response', fakeAsync(() => {
@@ -189,10 +200,16 @@ describe('PaymentHistoryComponent', () => {
         tick();
 
         fixture.detectChanges();
-        expect(noPaymentElement().length).toBe(0, 'Should not show the no payment message');
+        expect(noPaymentElement().length).toBe(
+            0,
+            'Should not show the no payment message'
+        );
 
         const cards = getVisibleEventCards();
-        expect(cards.length).toBe(component.pageSize, 'Should display a full page');
+        expect(cards.length).toBe(
+            component.pageSize,
+            'Should display a full page'
+        );
 
         const id: string = cards[0].properties['id'];
         expect(id).toBe('payment-event-1536847760442');
@@ -205,7 +222,9 @@ describe('PaymentHistoryComponent', () => {
         tick();
 
         fixture.detectChanges();
-        const nextButton = fixture.debugElement.query(By.css('.mat-paginator-navigation-next'));
+        const nextButton = fixture.debugElement.query(
+            By.css('.mat-paginator-navigation-next')
+        );
         const button = nextButton.nativeElement as HTMLElement;
         button.click();
         tick();

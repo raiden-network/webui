@@ -4,9 +4,18 @@ import { addressValidator } from '../../shared/address.validator';
 import { Address, Addresses } from '../../models/address';
 import { AddressBookService } from '../../services/address-book.service';
 import { MatDialog, PageEvent } from '@angular/material';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+    animate,
+    state,
+    style,
+    transition,
+    trigger
+} from '@angular/animations';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
-import { ConfirmationDialogComponent, ConfirmationDialogPayload } from '../confirmation-dialog/confirmation-dialog.component';
+import {
+    ConfirmationDialogComponent,
+    ConfirmationDialogPayload
+} from '../confirmation-dialog/confirmation-dialog.component';
 import { flatMap } from 'rxjs/operators';
 import { EMPTY, of } from 'rxjs';
 
@@ -16,7 +25,7 @@ import { EMPTY, of } from 'rxjs';
     styleUrls: ['./address-book.component.scss'],
     animations: [
         trigger('flyInOut', [
-            state('in', style({opacity: 1, transform: 'translateX(0)'})),
+            state('in', style({ opacity: 1, transform: 'translateX(0)' })),
             transition('void => *', [
                 style({
                     opacity: 0,
@@ -25,10 +34,13 @@ import { EMPTY, of } from 'rxjs';
                 animate('0.2s ease-in')
             ]),
             transition('* => void', [
-                animate('0.2s 0.1s ease-out', style({
-                    opacity: 0,
-                    transform: 'translateX(100%)'
-                }))
+                animate(
+                    '0.2s 0.1s ease-out',
+                    style({
+                        opacity: 0,
+                        transform: 'translateX(100%)'
+                    })
+                )
             ])
         ])
     ]
@@ -41,9 +53,7 @@ export class AddressBookComponent implements OnInit {
         private addressBookService: AddressBookService,
         private identiconService: IdenticonCacheService,
         public dialog: MatDialog
-    ) {
-
-    }
+    ) {}
 
     public readonly form: FormGroup = this.fb.group({
         address: ['', addressValidator()],
@@ -119,7 +129,8 @@ export class AddressBookComponent implements OnInit {
     confirmDelete() {
         const payload: ConfirmationDialogPayload = {
             title: 'Delete Address Book',
-            message: 'This action will delete all your stored addresses. <br/> ' +
+            message:
+                'This action will delete all your stored addresses. <br/> ' +
                 'Unless you exported your Address book all your addresses will be lost. <br/>' +
                 'Are you sure you want to continue?'
         };
@@ -129,18 +140,21 @@ export class AddressBookComponent implements OnInit {
             data: payload
         });
 
-        dialog.afterClosed().pipe(
-            flatMap(result => {
-                if (!result) {
-                    return EMPTY;
-                }
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap(result => {
+                    if (!result) {
+                        return EMPTY;
+                    }
 
-                return of(result);
-            })
-        ).subscribe(() => {
-            this.addressBookService.deleteAll();
-            this.updateVisibleAddresses();
-        });
+                    return of(result);
+                })
+            )
+            .subscribe(() => {
+                this.addressBookService.deleteAll();
+                this.updateVisibleAddresses();
+            });
     }
 
     setEdited(address: string) {
