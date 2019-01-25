@@ -1,4 +1,10 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+    animate,
+    state,
+    style,
+    transition,
+    trigger
+} from '@angular/animations';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatPaginator, PageEvent } from '@angular/material';
 import { EMPTY, Subscription } from 'rxjs';
@@ -21,8 +27,15 @@ import {
     DepositDialogPayload,
     DepositDialogResult
 } from '../deposit-dialog/deposit-dialog.component';
-import { OpenDialogComponent, OpenDialogPayload, OpenDialogResult } from '../open-dialog/open-dialog.component';
-import { PaymentDialogComponent, PaymentDialogPayload } from '../payment-dialog/payment-dialog.component';
+import {
+    OpenDialogComponent,
+    OpenDialogPayload,
+    OpenDialogResult
+} from '../open-dialog/open-dialog.component';
+import {
+    PaymentDialogComponent,
+    PaymentDialogPayload
+} from '../payment-dialog/payment-dialog.component';
 import { ChannelSorting } from './channel.sorting.enum';
 import { AddressBookService } from '../../services/address-book.service';
 import { Addresses } from '../../models/address';
@@ -33,7 +46,7 @@ import { Addresses } from '../../models/address';
     styleUrls: ['./channel-table.component.scss'],
     animations: [
         trigger('flyInOut', [
-            state('in', style({opacity: 1, transform: 'translateX(0)'})),
+            state('in', style({ opacity: 1, transform: 'translateX(0)' })),
             transition('void => *', [
                 style({
                     opacity: 0,
@@ -42,16 +55,18 @@ import { Addresses } from '../../models/address';
                 animate('0.2s ease-in')
             ]),
             transition('* => void', [
-                animate('0.2s 0.1s ease-out', style({
-                    opacity: 0,
-                    transform: 'translateX(100%)'
-                }))
+                animate(
+                    '0.2s 0.1s ease-out',
+                    style({
+                        opacity: 0,
+                        transform: 'translateX(100%)'
+                    })
+                )
             ])
         ])
     ]
 })
 export class ChannelTableComponent implements OnInit, OnDestroy {
-
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     public channels$: Observable<Channel[]>;
@@ -59,7 +74,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
 
     visibleChannels: Channel[] = [];
     totalChannels = 0;
-
 
     pageSize = 10;
     sorting = ChannelSorting.Balance;
@@ -103,8 +117,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         private channelPollingService: ChannelPollingService,
         private identiconCacheService: IdenticonCacheService,
         private addressBookService: AddressBookService
-    ) {
-    }
+    ) {}
 
     ngOnInit() {
         this.channels$ = this.channelPollingService.channels();
@@ -120,7 +133,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
-
     }
 
     onPageEvent(event: PageEvent) {
@@ -159,7 +171,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
     }
 
     public onPay(channel: Channel = null) {
-
         const payload: PaymentDialogPayload = {
             tokenAddress: channel ? channel.token_address : '',
             targetAddress: channel ? channel.partner_address : '',
@@ -173,20 +184,23 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
             autoFocus: false
         });
 
-        dialog.afterClosed().pipe(
-            flatMap((result?: PaymentDialogPayload) => {
-                if (!result) {
-                    return EMPTY;
-                }
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap((result?: PaymentDialogPayload) => {
+                    if (!result) {
+                        return EMPTY;
+                    }
 
-                return this.raidenService.initiatePayment(
-                    result.tokenAddress,
-                    result.targetAddress,
-                    result.amount,
-                    result.decimals
-                );
-            })
-        ).subscribe(() => this.refresh());
+                    return this.raidenService.initiatePayment(
+                        result.tokenAddress,
+                        result.targetAddress,
+                        result.amount,
+                        result.decimals
+                    );
+                })
+            )
+            .subscribe(() => this.refresh());
     }
 
     public onDeposit(channel: Channel) {
@@ -199,28 +213,35 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
             data: payload
         });
 
-        dialog.afterClosed().pipe(
-            flatMap((deposit?: DepositDialogResult) => {
-                if (!deposit) {
-                    return EMPTY;
-                }
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap((deposit?: DepositDialogResult) => {
+                    if (!deposit) {
+                        return EMPTY;
+                    }
 
-                return this.raidenService.depositToChannel(
-                    channel.token_address,
-                    channel.partner_address,
-                    deposit.tokenAmount,
-                    deposit.tokenAmountDecimals
-                );
-            })
-        ).subscribe(() => this.refresh());
+                    return this.raidenService.depositToChannel(
+                        channel.token_address,
+                        channel.partner_address,
+                        deposit.tokenAmount,
+                        deposit.tokenAmountDecimals
+                    );
+                })
+            )
+            .subscribe(() => this.refresh());
     }
 
     public onClose(channel: Channel) {
-
         const payload: ConfirmationDialogPayload = {
             title: 'Close Channel',
-            message: `Are you sure you want to close channel ${channel.channel_identifier}<br/>` +
-                `with <b>${channel.partner_address}</b><br/> on <b>${channel.userToken.name}<b/> (${channel.userToken.address})`
+            message:
+                `Are you sure you want to close channel ${
+                    channel.channel_identifier
+                }<br/>` +
+                `with <b>${channel.partner_address}</b><br/> on <b>${
+                    channel.userToken.name
+                }<b/> (${channel.userToken.address})`
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
@@ -228,22 +249,24 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
             data: payload
         });
 
-        dialog.afterClosed().pipe(
-            flatMap(result => {
-                if (!result) {
-                    return EMPTY;
-                }
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap(result => {
+                    if (!result) {
+                        return EMPTY;
+                    }
 
-                return this.raidenService.closeChannel(
-                    channel.token_address,
-                    channel.partner_address,
-                );
-            })
-        ).subscribe(() => this.refresh());
+                    return this.raidenService.closeChannel(
+                        channel.token_address,
+                        channel.partner_address
+                    );
+                })
+            )
+            .subscribe(() => this.refresh());
     }
 
     public onOpenChannel() {
-
         const rdnConfig = this.raidenConfig.config;
 
         const payload: OpenDialogPayload = {
@@ -257,47 +280,77 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
             data: payload
         });
 
-        dialog.afterClosed().pipe(
-            flatMap((result: OpenDialogResult) => {
-                if (!result) {
-                    return EMPTY;
-                }
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap((result: OpenDialogResult) => {
+                    if (!result) {
+                        return EMPTY;
+                    }
 
-                return this.raidenService.openChannel(
-                    result.tokenAddress,
-                    result.partnerAddress,
-                    result.settleTimeout,
-                    result.balance,
-                    result.decimals
-                );
-            })).subscribe(() => this.refresh());
+                    return this.raidenService.openChannel(
+                        result.tokenAddress,
+                        result.partnerAddress,
+                        result.settleTimeout,
+                        result.balance,
+                        result.decimals
+                    );
+                })
+            )
+            .subscribe(() => this.refresh());
     }
 
     applyFilters(sorting: ChannelSorting) {
         const channels: Array<Channel> = this.channels;
         let compareFn: (a: Channel, b: Channel) => number;
 
-        const compareNumbers: (ascending: boolean, a: number, b: number) => number = ((ascending, a, b) => {
+        const compareNumbers: (
+            ascending: boolean,
+            a: number,
+            b: number
+        ) => number = (ascending, a, b) => {
             return this.ascending ? a - b : b - a;
-        });
+        };
 
         switch (sorting) {
             case ChannelSorting.State:
-                compareFn = (a, b) => StringUtils.compare(this.ascending, a.state, b.state);
+                compareFn = (a, b) =>
+                    StringUtils.compare(this.ascending, a.state, b.state);
                 break;
             case ChannelSorting.Token:
-                compareFn = (a, b) => StringUtils.compare(this.ascending, a.token_address, b.token_address);
+                compareFn = (a, b) =>
+                    StringUtils.compare(
+                        this.ascending,
+                        a.token_address,
+                        b.token_address
+                    );
                 break;
             case ChannelSorting.Partner:
-                compareFn = (a, b) => StringUtils.compare(this.ascending, a.partner_address, b.partner_address);
+                compareFn = (a, b) =>
+                    StringUtils.compare(
+                        this.ascending,
+                        a.partner_address,
+                        b.partner_address
+                    );
                 break;
             case ChannelSorting.Channel:
-                compareFn = (a, b) => compareNumbers(this.ascending, a.channel_identifier, b.channel_identifier);
+                compareFn = (a, b) =>
+                    compareNumbers(
+                        this.ascending,
+                        a.channel_identifier,
+                        b.channel_identifier
+                    );
                 break;
             default:
                 compareFn = (a, b) => {
-                    const aBalance = amountToDecimal(a.balance, a.userToken.decimals);
-                    const bBalance = amountToDecimal(b.balance, b.userToken.decimals);
+                    const aBalance = amountToDecimal(
+                        a.balance,
+                        a.userToken.decimals
+                    );
+                    const bBalance = amountToDecimal(
+                        b.balance,
+                        b.userToken.decimals
+                    );
                     return compareNumbers(this.ascending, aBalance, bBalance);
                 };
                 break;
@@ -305,9 +358,13 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
 
         const start = this.pageSize * this.currentPage;
 
-        const filteredChannels = channels.filter((value: Channel) => this.searchFilter(value));
+        const filteredChannels = channels.filter((value: Channel) =>
+            this.searchFilter(value)
+        );
 
-        this.totalChannels = this.filter ? filteredChannels.length : this.channels.length;
+        this.totalChannels = this.filter
+            ? filteredChannels.length
+            : this.channels.length;
 
         this.visibleChannels = filteredChannels
             .sort(compareFn)
@@ -327,11 +384,13 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         const tokenName = channel.userToken.name.toLocaleLowerCase();
         const tokenSymbol = channel.userToken.symbol.toLocaleLowerCase();
 
-        return identifier.startsWith(searchString) ||
+        return (
+            identifier.startsWith(searchString) ||
             partner.startsWith(searchString) ||
             tokenAddress.startsWith(searchString) ||
             channelState.startsWith(searchString) ||
             tokenName.startsWith(searchString) ||
-            tokenSymbol.startsWith(searchString);
+            tokenSymbol.startsWith(searchString)
+        );
     }
 }

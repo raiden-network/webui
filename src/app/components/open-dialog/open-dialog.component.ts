@@ -1,5 +1,10 @@
 import { Component, Inject, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+    AbstractControl,
+    FormBuilder,
+    FormGroup,
+    Validators
+} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { UserToken } from '../../models/usertoken';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
@@ -27,19 +32,24 @@ export interface OpenDialogResult {
     styleUrls: ['./open-dialog.component.css']
 })
 export class OpenDialogComponent {
-
     public form: FormGroup = this.fb.group({
         address: '',
         token: '',
         amount: 0,
-        settle_timeout: [this.data.defaultSettleTimeout, [(control: AbstractControl) => {
-            const value = parseInt(control.value, 10);
-            if (isNaN(value) || value <= 0) {
-                return {invalidAmount: true};
-            } else {
-                return undefined;
-            }
-        }, Validators.min(this.data.revealTimeout * 2)]]
+        settle_timeout: [
+            this.data.defaultSettleTimeout,
+            [
+                (control: AbstractControl) => {
+                    const value = parseInt(control.value, 10);
+                    if (isNaN(value) || value <= 0) {
+                        return { invalidAmount: true };
+                    } else {
+                        return undefined;
+                    }
+                },
+                Validators.min(this.data.revealTimeout * 2)
+            ]
+        ]
     });
 
     @ViewChild(TokenInputComponent) tokenInput: TokenInputComponent;
@@ -50,9 +60,8 @@ export class OpenDialogComponent {
         public dialogRef: MatDialogRef<OpenDialogComponent>,
         public raidenService: RaidenService,
         private identiconCacheService: IdenticonCacheService,
-        private fb: FormBuilder,
-    ) {
-    }
+        private fb: FormBuilder
+    ) {}
 
     accept() {
         const value = this.form.value;

@@ -1,5 +1,12 @@
 import { HttpClient, HttpHandler } from '@angular/common/http';
-import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    fakeAsync,
+    flush,
+    TestBed,
+    tick
+} from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -40,7 +47,6 @@ describe('ChannelTableComponent', () => {
     let tokenSpy: Spy;
 
     beforeEach(async(() => {
-
         TestBed.configureTestingModule({
             declarations: [
                 ChannelTableComponent,
@@ -83,7 +89,9 @@ describe('ChannelTableComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(ChannelTableComponent);
         const service: RaidenService = TestBed.get(RaidenService);
-        const channelPollingService: ChannelPollingService = TestBed.get(ChannelPollingService);
+        const channelPollingService: ChannelPollingService = TestBed.get(
+            ChannelPollingService
+        );
         channelsSpy = spyOn(channelPollingService, 'channels');
         refreshingSpy = spyOn(channelPollingService, 'refreshing');
         tokenSpy = spyOn(service, 'getUserToken');
@@ -92,10 +100,7 @@ describe('ChannelTableComponent', () => {
     });
 
     it('should create', () => {
-
-        channelsSpy
-            .and
-            .returnValues(EMPTY);
+        channelsSpy.and.returnValues(EMPTY);
         refreshingSpy.and.returnValue(of(false));
 
         fixture.detectChanges();
@@ -104,7 +109,6 @@ describe('ChannelTableComponent', () => {
     });
 
     it('should update action when channel has balance', fakeAsync(() => {
-
         const token: UserToken = {
             address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             symbol: 'TST',
@@ -171,16 +175,18 @@ describe('ChannelTableComponent', () => {
             total_deposit: 60,
             settle_timeout: 500,
             userToken: token
-
         };
 
-        const mockResponse = of([channel1, channel2Balance, channel3, channel4]).pipe(
+        const mockResponse = of([
+            channel1,
+            channel2Balance,
+            channel3,
+            channel4
+        ]).pipe(
             delay(5000),
             startWith([channel1, channel2, channel3, channel4])
         );
-        channelsSpy
-            .and
-            .returnValues(mockResponse);
+        channelsSpy.and.returnValues(mockResponse);
 
         tokenSpy.and.returnValue(of(token));
 
@@ -191,7 +197,10 @@ describe('ChannelTableComponent', () => {
         let button = channel.query(By.css('#pay-button'));
         let payButton = button.componentInstance as HTMLButtonElement;
 
-        expect(payButton.disabled).toBe(true, 'Payment should be disabled with 0 balance');
+        expect(payButton.disabled).toBe(
+            true,
+            'Payment should be disabled with 0 balance'
+        );
 
         tick(5000);
         fixture.detectChanges();
@@ -200,7 +209,10 @@ describe('ChannelTableComponent', () => {
         button = channel.query(By.css('#pay-button'));
         payButton = button.componentInstance as HTMLButtonElement;
 
-        expect(payButton.disabled).toBe(false, 'Payment option should be enabled with positive balance');
+        expect(payButton.disabled).toBe(
+            false,
+            'Payment option should be enabled with positive balance'
+        );
 
         component.ngOnDestroy();
         flush();

@@ -5,11 +5,9 @@ import makeBlockie from 'ethereum-blockies-base64';
     providedIn: 'root'
 })
 export class IdenticonCacheService {
-
     private cache: { [id: string]: string } = {};
 
-    constructor() {
-    }
+    constructor() {}
 
     public getIdenticon(address: string): string {
         const cached = this.cache[address];
@@ -22,5 +20,4 @@ export class IdenticonCacheService {
             return cached;
         }
     }
-
 }

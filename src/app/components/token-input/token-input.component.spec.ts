@@ -18,28 +18,23 @@ describe('TokenInputComponent', () => {
         input.value = inputValue;
         const event = new Event('input');
         if (!isStep) {
-            Object.assign(event, {inputType: 'mock'});
+            Object.assign(event, { inputType: 'mock' });
         }
 
         input.dispatchEvent(event);
         component.form.get('amount').markAsTouched();
     }
 
-
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                TokenInputComponent
-            ],
+            declarations: [TokenInputComponent],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
                 FormsModule,
                 ReactiveFormsModule
             ],
-            providers: [
-                TestProviders.HammerJSProvider()
-            ]
+            providers: [TestProviders.HammerJSProvider()]
         }).compileComponents();
     }));
 
@@ -50,10 +45,14 @@ describe('TokenInputComponent', () => {
         component.errorPlaceholder = 'amount';
         fixture.detectChanges();
 
-        const inputDebugElement = fixture.debugElement.query(By.css('input[type=number]'));
+        const inputDebugElement = fixture.debugElement.query(
+            By.css('input[type=number]')
+        );
         input = inputDebugElement.nativeElement as HTMLInputElement;
 
-        const checkboxElement = fixture.debugElement.query(By.css('input[type=checkbox]'));
+        const checkboxElement = fixture.debugElement.query(
+            By.css('input[type=checkbox]')
+        );
         checkbox = checkboxElement.nativeElement as HTMLInputElement;
     });
 
@@ -92,7 +91,6 @@ describe('TokenInputComponent', () => {
         expect(component.tokenAmount.isEqualTo(10)).toBe(true);
         expect(component.tokenAmountDecimals).toBe(0);
     });
-
 
     it('should allow a decimal amount if checkbox is selected', () => {
         component.decimals = 18;

@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    Inject,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { TokenInputComponent } from '../token-input/token-input.component';
@@ -18,7 +24,6 @@ export interface DepositDialogResult {
     styleUrls: ['./deposit-dialog.component.css']
 })
 export class DepositDialogComponent implements OnInit {
-
     @ViewChild(TokenInputComponent) tokenInput: TokenInputComponent;
 
     form = this.fb.group({
@@ -30,8 +35,7 @@ export class DepositDialogComponent implements OnInit {
         public dialogRef: MatDialogRef<DepositDialogComponent>,
         private fb: FormBuilder,
         private cdRef: ChangeDetectorRef
-    ) {
-    }
+    ) {}
 
     ngOnInit() {
         this.tokenInput.decimals = this.data.decimals;
@@ -42,7 +46,6 @@ export class DepositDialogComponent implements OnInit {
         const tokenInput = this.tokenInput;
         const tokenAmount = tokenInput.tokenAmount.toNumber();
         const tokenAmountDecimals = tokenInput.tokenAmountDecimals;
-        this.dialogRef.close({tokenAmount, tokenAmountDecimals});
+        this.dialogRef.close({ tokenAmount, tokenAmountDecimals });
     }
-
 }

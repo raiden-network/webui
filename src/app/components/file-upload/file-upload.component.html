@@ -1,32 +1,46 @@
 <div *ngIf="showDropArea">
-    <div id="drop-zone" appDragUpload
-         fxLayout="row"
-         fxLayoutAlign="center"
-         [class.over]="isOver"
-         (files)="filesSelected($event)"
-         (dragStatus)="updateDragStatus($event)"
-         allowedExtension="json">
-        <input id="upload_select" type="file" accept="application/json, .json"
-               (change)="filesSelected($event.target.files)">
+    <div
+        id="drop-zone"
+        appDragUpload
+        fxLayout="row"
+        fxLayoutAlign="center"
+        [class.over]="isOver"
+        (files)="filesSelected($event)"
+        (dragStatus)="updateDragStatus($event)"
+        allowedExtension="json"
+    >
+        <input
+            id="upload_select"
+            type="file"
+            accept="application/json, .json"
+            (change)="filesSelected($event.target.files)"
+        />
         <label for="upload_select">
             <strong>Select and address file</strong>
         </label>
         or drop it here
 
         <mat-error *ngIf="error" class="drop-zone-error">
-            <span *ngIf="error.invalidExtension">Only json files are allowed</span>
+            <span *ngIf="error.invalidExtension">
+                Only json files are allowed
+            </span>
             <span *ngIf="error.multiple">Only a single file is supported</span>
-            <span *ngIf="error.invalidFormat">The uploaded file is not in a valid format</span>
+            <span *ngIf="error.invalidFormat">
+                The uploaded file is not in a valid format
+            </span>
             <span *ngIf="error.exceedsUploadLimit">
-                The file exceed the max allowed size of {{ error.exceedsUploadLimit }} bytes
+                The file exceed the max allowed size of
+                {{ error.exceedsUploadLimit }} bytes
             </span>
         </mat-error>
     </div>
 
-    <mat-progress-bar class="upload-progress" fxlayout="row"
-                      *ngIf="progress > 0"
-                      mode="determinate"
-                      [value]="progress" color="primary"></mat-progress-bar>
-
+    <mat-progress-bar
+        class="upload-progress"
+        fxlayout="row"
+        *ngIf="progress > 0"
+        mode="determinate"
+        [value]="progress"
+        color="primary"
+    ></mat-progress-bar>
 </div>
-

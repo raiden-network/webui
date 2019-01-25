@@ -43,13 +43,13 @@ import 'hammerjs';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 
 const appRoutes: Routes = [
-    {path: '', redirectTo: '/home', pathMatch: 'full'},
-    {path: 'home', component: HomeComponent},
-    {path: 'license', component: LicenseComponent},
-    {path: 'tokens', component: TokenNetworkComponent},
-    {path: 'channels', component: ChannelTableComponent},
-    {path: 'payments', component: PaymentHistoryComponent},
-    {path: 'address-book', component: AddressBookComponent}
+    { path: '', redirectTo: '/home', pathMatch: 'full' },
+    { path: 'home', component: HomeComponent },
+    { path: 'license', component: LicenseComponent },
+    { path: 'tokens', component: TokenNetworkComponent },
+    { path: 'channels', component: ChannelTableComponent },
+    { path: 'payments', component: PaymentHistoryComponent },
+    { path: 'address-book', component: AddressBookComponent }
 ];
 
 export function ConfigLoader(raidenConfig: RaidenConfig) {
@@ -100,7 +100,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
             extendedTimeOut: 10000,
             preventDuplicates: true
         }),
-        ClipboardModule,
+        ClipboardModule
     ],
     providers: [
         SharedService,
@@ -131,5 +131,4 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
     ],
     bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

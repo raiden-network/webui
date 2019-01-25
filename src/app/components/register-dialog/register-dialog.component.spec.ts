@@ -15,10 +15,7 @@ describe('RegisterDialogComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                RegisterDialogComponent,
-                AddressInputComponent
-            ],
+            declarations: [RegisterDialogComponent, AddressInputComponent],
             providers: [
                 TestProviders.MockMatDialogData(),
                 TestProviders.MockMatDialogRef(),

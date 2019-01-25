@@ -20,7 +20,6 @@ export interface PaymentDialogPayload {
     styleUrls: ['./payment-dialog.component.css']
 })
 export class PaymentDialogComponent implements OnInit {
-
     public form: FormGroup;
 
     @ViewChild(TokenInputComponent) tokenInput: TokenInputComponent;
@@ -31,9 +30,7 @@ export class PaymentDialogComponent implements OnInit {
         private raidenService: RaidenService,
         private identiconCacheService: IdenticonCacheService,
         private fb: FormBuilder
-    ) {
-
-    }
+    ) {}
 
     ngOnInit() {
         const data = this.data;
@@ -42,7 +39,13 @@ export class PaymentDialogComponent implements OnInit {
         const raidenAddress = this.raidenService.raidenAddress;
 
         this.form = this.fb.group({
-            target_address: [data.targetAddress, (control) => control.value === raidenAddress ? {ownAddress: true} : undefined],
+            target_address: [
+                data.targetAddress,
+                control =>
+                    control.value === raidenAddress
+                        ? { ownAddress: true }
+                        : undefined
+            ],
             amount: 0,
             token: data.tokenAddress
         });

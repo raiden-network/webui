@@ -1,25 +1,38 @@
-<div fxLayout="row"
-     fxLayoutGap="40px">
+<div fxLayout="row" fxLayoutGap="40px">
     <div fxLayout="column" fxFlex="0 0 4em" fxLayoutAlign="center">
-        <img class="identicon" [src]="identicon(address.address)" alt="Address identicon"/>
+        <img
+            class="identicon"
+            [src]="identicon(address.address)"
+            alt="Address identicon"
+        />
     </div>
 
-    <div fxLayout="column" fxFlex="1 1 auto" fxLayoutAlign="center" [formGroup]="form">
+    <div
+        fxLayout="column"
+        fxFlex="1 1 auto"
+        fxLayoutAlign="center"
+        [formGroup]="form"
+    >
         <div fxLayout="row">
             <mat-form-field class="full-width-form-field">
-                <input matInput
-                       placeholder="Address"
-                       [value]="address.address"
-                       disabled>
+                <input
+                    matInput
+                    placeholder="Address"
+                    [value]="address.address"
+                    disabled
+                />
             </mat-form-field>
         </div>
         <div fxLayout="row">
             <mat-form-field class="full-width-form-field">
-                <input id="address-label" matInput
-                       placeholder="Label"
-                       formControlName="label"
-                       (keyup.enter)="updated()"
-                       [value]="address.label">
+                <input
+                    id="address-label"
+                    matInput
+                    placeholder="Label"
+                    formControlName="label"
+                    (keyup.enter)="updated()"
+                    [value]="address.label"
+                />
                 <mat-error *ngIf="form.invalid && (form.touched || form.dirty)">
                     Label cannot be empty!
                 </mat-error>
@@ -29,21 +42,37 @@
 
     <div fxLayout="column" fxFlex="0 0 1em" fxLayoutAlign="start end">
         <div>
-            <button id="edit-address"
-                    mat-icon-button
-                    color="primary"
-                    [disabled]="editMode && form.touched && form.dirty && !form.valid"
-                    (click)="editMode ? updated() : toggleEdit()">
-                <mat-icon aria-label="Edit icon">{{editMode ? 'save' : 'edit'}}</mat-icon>
+            <button
+                id="edit-address"
+                mat-icon-button
+                color="primary"
+                [disabled]="
+                    editMode && form.touched && form.dirty && !form.valid
+                "
+                (click)="editMode ? updated() : toggleEdit()"
+            >
+                <mat-icon aria-label="Edit icon">{{
+                    editMode ? 'save' : 'edit'
+                }}</mat-icon>
             </button>
         </div>
         <div *ngIf="!editMode">
-            <button id="delete-address" mat-icon-button color="primary" (click)="showConfirmation()">
+            <button
+                id="delete-address"
+                mat-icon-button
+                color="primary"
+                (click)="showConfirmation()"
+            >
                 <mat-icon aria-label="Delete icon">delete</mat-icon>
             </button>
         </div>
         <div *ngIf="editMode">
-            <button id="cancel-edit" mat-icon-button color="primary" (click)="cancel()">
+            <button
+                id="cancel-edit"
+                mat-icon-button
+                color="primary"
+                (click)="cancel()"
+            >
                 <mat-icon aria-label="Cancel icon">cancel</mat-icon>
             </button>
         </div>

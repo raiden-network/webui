@@ -1,4 +1,10 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+    animate,
+    state,
+    style,
+    transition,
+    trigger
+} from '@angular/animations';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material';
 import { ActivatedRoute, ParamMap } from '@angular/router';
@@ -22,7 +28,7 @@ interface PaymentHistoryParameters {
     styleUrls: ['./payment-history.component.css'],
     animations: [
         trigger('flyInOut', [
-            state('in', style({opacity: 1, transform: 'translateX(0)'})),
+            state('in', style({ opacity: 1, transform: 'translateX(0)' })),
             transition('void => *', [
                 style({
                     opacity: 0,
@@ -31,16 +37,18 @@ interface PaymentHistoryParameters {
                 animate('0.2s ease-in')
             ]),
             transition('* => void', [
-                animate('0.2s 0.1s ease-out', style({
-                    opacity: 0,
-                    transform: 'translateX(100%)'
-                }))
+                animate(
+                    '0.2s 0.1s ease-out',
+                    style({
+                        opacity: 0,
+                        transform: 'translateX(100%)'
+                    })
+                )
             ])
         ])
     ]
 })
 export class PaymentHistoryComponent implements OnInit, OnDestroy {
-
     @ViewChild(MatPaginator) paginator: MatPaginator;
     readonly partnerInformation$: Observable<PaymentHistoryParameters>;
     pageSize = 10;
@@ -68,18 +76,28 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
                     token: token
                 };
             }),
-            tap(x => this._decimals = x.token.decimals),
+            tap(x => (this._decimals = x.token.decimals)),
             share()
         );
 
         let timeout;
         this.history$ = this.subject.pipe(
             tap(() => clearTimeout(timeout)),
-            flatMap(() => this.partnerInformation$.pipe(
-                flatMap(value => this.raidenService.getPaymentHistory(value.tokenAddress, value.partnerAddress)),
-            )),
+            flatMap(() =>
+                this.partnerInformation$.pipe(
+                    flatMap(value =>
+                        this.raidenService.getPaymentHistory(
+                            value.tokenAddress,
+                            value.partnerAddress
+                        )
+                    )
+                )
+            ),
             tap(() => {
-                timeout = setTimeout(() => this.refresh(), this.raidenConfig.config.poll_interval);
+                timeout = setTimeout(
+                    () => this.refresh(),
+                    this.raidenConfig.config.poll_interval
+                );
             })
         );
     }
@@ -133,7 +151,8 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
 
     // noinspection JSMethodCanBeStatic
     normalizeEvent(event: string): string {
-        return event.replace('EventPayment', '')
+        return event
+            .replace('EventPayment', '')
             .replace('Success', '')
             .replace('Failed', '')
             .trim();
@@ -152,7 +171,8 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
         this._length = this._allHistory.length;
         const start = this.pageSize * this.currentPage;
         const end = start + this.pageSize;
-        this._visibleHistory = this._allHistory.concat()
+        this._visibleHistory = this._allHistory
+            .concat()
             .reverse()
             .slice(start, end);
     }

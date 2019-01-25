@@ -8,7 +8,7 @@ import { SharedService } from './services/shared.service';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
+    styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
     public title = 'Raiden';
@@ -21,17 +21,22 @@ export class AppComponent implements OnInit, OnDestroy {
         private sharedService: SharedService,
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService
-    ) {
-    }
+    ) {}
 
     ngOnInit() {
-        this.raidenService.raidenAddress$.subscribe((address) => this.raidenAddress = address);
-        this.sub = this.sharedService.pendingRequests.subscribe((pendingRequests) => {
-            setTimeout(() => {
-                this.pendingRequests = pendingRequests;
-            });
-        });
-        const pollingSubscription = this.channelPollingService.channels().subscribe();
+        this.raidenService.raidenAddress$.subscribe(
+            address => (this.raidenAddress = address)
+        );
+        this.sub = this.sharedService.pendingRequests.subscribe(
+            pendingRequests => {
+                setTimeout(() => {
+                    this.pendingRequests = pendingRequests;
+                });
+            }
+        );
+        const pollingSubscription = this.channelPollingService
+            .channels()
+            .subscribe();
         this.sub.add(pollingSubscription);
     }
 
@@ -46,6 +51,5 @@ export class AppComponent implements OnInit, OnDestroy {
         } else {
             return '';
         }
-
     }
 }

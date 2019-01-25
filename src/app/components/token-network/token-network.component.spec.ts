@@ -24,11 +24,7 @@ describe('TokenNetworkComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                TokenNetworkComponent,
-                DecimalPipe,
-                EllipsisPipe
-            ],
+            declarations: [TokenNetworkComponent, DecimalPipe, EllipsisPipe],
             providers: [
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockRaidenConfigProvider(),
@@ -60,14 +56,18 @@ describe('TokenNetworkComponent', () => {
     it('should have a registration button when configuration is development', async(() => {
         mockConfiguration.config.environment_type = EnvironmentType.DEVELOPMENT;
         fixture.detectChanges();
-        const element = fixture.debugElement.query(By.css('#token-registration'));
+        const element = fixture.debugElement.query(
+            By.css('#token-registration')
+        );
         expect(element).toBeTruthy();
     }));
 
     it('should have registration disabled when configuration is production', async(() => {
         mockConfiguration.config.environment_type = EnvironmentType.PRODUCTION;
         fixture.detectChanges();
-        const element = fixture.debugElement.query(By.css('#token-registration'));
+        const element = fixture.debugElement.query(
+            By.css('#token-registration')
+        );
         expect(element).toBeFalsy();
     }));
 });

@@ -1,5 +1,8 @@
 import { HttpClientModule } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+    HttpClientTestingModule,
+    HttpTestingController
+} from '@angular/common/http/testing';
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { Channel } from '../models/channel';
@@ -13,7 +16,6 @@ import Spy = jasmine.Spy;
 import { TestProviders } from '../../testing/test-providers';
 
 describe('RaidenService', () => {
-
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
 
     let mockHttp: HttpTestingController;
@@ -50,10 +52,7 @@ describe('RaidenService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [
-                HttpClientModule,
-                HttpClientTestingModule
-            ],
+            imports: [HttpClientModule, HttpClientTestingModule],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 RaidenService,
@@ -68,23 +67,33 @@ describe('RaidenService', () => {
         sharedService = TestBed.get(SharedService);
         service = TestBed.get(RaidenService);
 
-        retrieverSpy = spyOn(TestBed.get(TokenInfoRetrieverService), 'createBatch');
+        retrieverSpy = spyOn(
+            TestBed.get(TokenInfoRetrieverService),
+            'createBatch'
+        );
 
         spyOn(sharedService, 'error');
-        spyOn(service, 'raidenAddress$').and.returnValue(of('0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'));
+        spyOn(service, 'raidenAddress$').and.returnValue(
+            of('0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C')
+        );
     });
 
-    afterEach(inject([HttpTestingController], (backend: HttpTestingController) => {
-        backend.verify();
-    }));
+    afterEach(inject(
+        [HttpTestingController],
+        (backend: HttpTestingController) => {
+            backend.verify();
+        }
+    ));
 
     it('When token creation fails there should be a nice message', () => {
-
-        service.registerToken(tokenAddress).subscribe(() => {
-            fail('On next should not be called');
-        }, (error) => {
-            expect(error).toBeTruthy('An error is expected');
-        });
+        service.registerToken(tokenAddress).subscribe(
+            () => {
+                fail('On next should not be called');
+            },
+            error => {
+                expect(error).toBeTruthy('An error is expected');
+            }
+        );
 
         const registerRequest = mockHttp.expectOne({
             url: `${endpoint}/tokens/${tokenAddress}`,
@@ -106,25 +115,33 @@ describe('RaidenService', () => {
         // @ts-ignore
         const payload = sharedService.error.calls.first().args[0];
 
-        expect(payload.title).toBe('Raiden Error', 'It should be a Raiden Error');
+        expect(payload.title).toBe(
+            'Raiden Error',
+            'It should be a Raiden Error'
+        );
         expect(payload.description).toBe(errorMessage);
     });
 
     it('Show a proper response when non-EIP addresses are passed in channel creation', () => {
         const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
 
-        service.openChannel(tokenAddress, partnerAddress, 500, 10, 8).subscribe(() => {
-            fail('On next should not be called');
-        }, (error) => {
-            expect(error).toBeTruthy('An error was expected');
-        });
+        service.openChannel(tokenAddress, partnerAddress, 500, 10, 8).subscribe(
+            () => {
+                fail('On next should not be called');
+            },
+            error => {
+                expect(error).toBeTruthy('An error was expected');
+            }
+        );
 
         const openChannelRequest = mockHttp.expectOne({
             url: `${endpoint}/channels`,
             method: 'PUT'
         });
 
-        const errorBody = {'errors': {'partner_address': ['Not a valid EIP55 encoded address']}};
+        const errorBody = {
+            errors: { partner_address: ['Not a valid EIP55 encoded address'] }
+        };
 
         openChannelRequest.flush(errorBody, {
             status: 409,
@@ -136,13 +153,16 @@ describe('RaidenService', () => {
         // @ts-ignore
         const payload = sharedService.error.calls.first().args[0];
 
-        expect(payload.title).toBe('Raiden Error', 'It should be a Raiden Error');
-        expect(payload.description).toBe('partner_address: Not a valid EIP55 encoded address');
-
+        expect(payload.title).toBe(
+            'Raiden Error',
+            'It should be a Raiden Error'
+        );
+        expect(payload.description).toBe(
+            'partner_address: Not a valid EIP55 encoded address'
+        );
     });
 
     it('should have user token included in the channels', fakeAsync(() => {
-
         const token: UserToken = {
             address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             symbol: 'TST',
@@ -154,24 +174,26 @@ describe('RaidenService', () => {
         spyOn(service, 'getUserToken').and.returnValue(token);
         spyOn(service, 'getTokens').and.returnValue(of([token]));
 
-        service.getChannels().subscribe((channels: Array<Channel>) => {
-            channels.forEach(value => {
-                expect(value.userToken).toBeTruthy('UserToken should not be null');
-                expect(value.userToken.address).toBe(token.address);
-            });
-        }, (error) => {
-            fail(error);
-        });
+        service.getChannels().subscribe(
+            (channels: Array<Channel>) => {
+                channels.forEach(value => {
+                    expect(value.userToken).toBeTruthy(
+                        'UserToken should not be null'
+                    );
+                    expect(value.userToken.address).toBe(token.address);
+                });
+            },
+            error => {
+                fail(error);
+            }
+        );
 
         const getChannelsRequest = mockHttp.expectOne({
             url: `${endpoint}/channels`,
             method: 'GET'
         });
 
-        getChannelsRequest.flush([
-            channel1,
-            channel2
-        ], {
+        getChannelsRequest.flush([channel1, channel2], {
             status: 200,
             statusText: 'All good'
         });

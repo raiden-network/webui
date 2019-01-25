@@ -17,12 +17,11 @@ export class AddressBookService {
     private web3: Web3;
     private readonly schema: ValidateFunction;
 
-
     constructor(localStorageAdapter: LocalStorageAdapter) {
         this.storage = localStorageAdapter.localStorage;
         this.web3 = new Web3();
 
-        const validator = new Ajv({allErrors: true});
+        const validator = new Ajv({ allErrors: true });
         this.schema = validator.compile(addressSchema);
     }
 
@@ -41,8 +40,9 @@ export class AddressBookService {
     }
 
     public get(): Addresses {
-
-        const addresses: string = this.storage.getItem(AddressBookService.ADDRESS_BOOK_KEY);
+        const addresses: string = this.storage.getItem(
+            AddressBookService.ADDRESS_BOOK_KEY
+        );
         let addressBook: Addresses;
 
         if (!addresses) {
@@ -58,7 +58,9 @@ export class AddressBookService {
         const isValid = this.schema(addresses);
 
         if (!isValid) {
-            throw Error(this.schema.errors.map(value => value.message).join(', '));
+            throw Error(
+                this.schema.errors.map(value => value.message).join(', ')
+            );
         }
 
         let data: Addresses;
@@ -69,7 +71,10 @@ export class AddressBookService {
         }
 
         const addressesValue = JSON.stringify(data);
-        this.storage.setItem(AddressBookService.ADDRESS_BOOK_KEY, addressesValue);
+        this.storage.setItem(
+            AddressBookService.ADDRESS_BOOK_KEY,
+            addressesValue
+        );
     }
 
     public delete(address: Address) {
@@ -83,11 +88,13 @@ export class AddressBookService {
     }
 
     createExportURL() {
-        let json: string = this.storage.getItem(AddressBookService.ADDRESS_BOOK_KEY);
+        let json: string = this.storage.getItem(
+            AddressBookService.ADDRESS_BOOK_KEY
+        );
         if (!json) {
             json = JSON.stringify({});
         }
-        const blob = new Blob([json], {type: 'application/json'});
+        const blob = new Blob([json], { type: 'application/json' });
         return URL.createObjectURL(blob);
     }
 

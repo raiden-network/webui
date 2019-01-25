@@ -7,9 +7,13 @@ describe('DragUploadDirective', () => {
         expect(directive).toBeTruthy();
     });
 
-    it('should fire a DragStatus.OVER when the user drags over', function (done) {
+    it('should fire a DragStatus.OVER when the user drags over', function(done) {
         const directive = new DragUploadDirective();
-        const event: DragEvent = jasmine.createSpyObj('DragEvent', ['preventDefault', 'stopPropagation', 'dataTransfer']);
+        const event: DragEvent = jasmine.createSpyObj('DragEvent', [
+            'preventDefault',
+            'stopPropagation',
+            'dataTransfer'
+        ]);
         directive.dragStatus.subscribe(value => {
             expect(value).toBe(DragStatus.OVER);
             done();
@@ -22,9 +26,13 @@ describe('DragUploadDirective', () => {
         expect(event.dataTransfer.dropEffect).toBe('copy');
     });
 
-    it('should fire a DragStatus.LEAVE when the user leaves', function (done) {
+    it('should fire a DragStatus.LEAVE when the user leaves', function(done) {
         const directive = new DragUploadDirective();
-        const event: DragEvent = jasmine.createSpyObj('DragEvent', ['preventDefault', 'stopPropagation', 'dataTransfer']);
+        const event: DragEvent = jasmine.createSpyObj('DragEvent', [
+            'preventDefault',
+            'stopPropagation',
+            'dataTransfer'
+        ]);
         directive.dragStatus.subscribe(value => {
             expect(value).toBe(DragStatus.LEAVE);
             done();
@@ -36,9 +44,13 @@ describe('DragUploadDirective', () => {
         expect(event.stopPropagation).toHaveBeenCalledTimes(1);
     });
 
-    it('should emit the selected files', function (done) {
+    it('should emit the selected files', function(done) {
         const directive = new DragUploadDirective();
-        const event: DragEvent = jasmine.createSpyObj('DragEvent', ['preventDefault', 'stopPropagation', 'dataTransfer']);
+        const event: DragEvent = jasmine.createSpyObj('DragEvent', [
+            'preventDefault',
+            'stopPropagation',
+            'dataTransfer'
+        ]);
 
         const files = stub<FileList>();
         // @ts-ignore
@@ -55,4 +67,3 @@ describe('DragUploadDirective', () => {
         expect(event.stopPropagation).toHaveBeenCalledTimes(1);
     });
 });
-

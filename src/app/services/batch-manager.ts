@@ -25,7 +25,10 @@ export class BatchManager {
         }
     }
 
-    private static chunkArray<T>(myArray: Array<T>, chunk_size): Array<Array<T>> {
+    private static chunkArray<T>(
+        myArray: Array<T>,
+        chunk_size
+    ): Array<Array<T>> {
         const results = [];
 
         while (myArray.length) {
@@ -36,13 +39,16 @@ export class BatchManager {
     }
 
     public async execute(): Promise<Array<any>> {
-        const batches = BatchManager.chunkArray(this.requests, BatchManager.BATCH_LIMIT);
+        const batches = BatchManager.chunkArray(
+            this.requests,
+            BatchManager.BATCH_LIMIT
+        );
         const results = [];
 
         for (let i = 0; i < batches.length; i++) {
             const batch = batches[i];
             const rpcRequests = batch.map(value => value.request);
-            const batchResults = await this.sendBatch(rpcRequests) || [];
+            const batchResults = (await this.sendBatch(rpcRequests)) || [];
 
             const allResults = batch.map((request, index) => {
                 return batchResults[index] || {};
@@ -50,7 +56,10 @@ export class BatchManager {
 
             const processedResults = [];
             for (let index = 0; index < allResults.length; index++) {
-                processedResults[index] = this.processResult(allResults[index], batch[index]);
+                processedResults[index] = this.processResult(
+                    allResults[index],
+                    batch[index]
+                );
             }
             results.push(...processedResults);
         }
@@ -68,11 +77,18 @@ export class BatchManager {
         const defaultValue = currentRequest.defaultValue;
 
         if (result && result.error) {
-            resultValue = BatchManager.defaultOrThrow(defaultValue, errors.ErrorResponse(result));
+            resultValue = BatchManager.defaultOrThrow(
+                defaultValue,
+                errors.ErrorResponse(result)
+            );
         } else if (!this.isValidResponse(result)) {
-            resultValue = BatchManager.defaultOrThrow(defaultValue, errors.ErrorResponse(result));
+            resultValue = BatchManager.defaultOrThrow(
+                defaultValue,
+                errors.ErrorResponse(result)
+            );
         } else {
-            try { // @ts-ignore
+            try {
+                // @ts-ignore
                 const format = currentRequest.request.format;
                 resultValue = format ? format(result.result) : result.result;
             } catch (e) {
@@ -85,27 +101,33 @@ export class BatchManager {
 
     private sendBatch(rpcRequests: any): Promise<Array<any>> {
         return new Promise<Array<any>>((resolve, reject) => {
-            this.requestManager.sendBatch(rpcRequests, (err: any, results: Array<any>) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(results);
+            this.requestManager.sendBatch(
+                rpcRequests,
+                (err: any, results: Array<any>) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
                 }
-
-            });
+            );
         });
     }
 
     private isValidResponse(response: any) {
-
-        return Array.isArray(response) ? response.every(validateSingleMessage) : validateSingleMessage(response);
+        return Array.isArray(response)
+            ? response.every(validateSingleMessage)
+            : validateSingleMessage(response);
 
         function validateSingleMessage(message) {
-            return !!message &&
+            return (
+                !!message &&
                 !message.error &&
                 message.jsonrpc === '2.0' &&
-                (typeof message.id === 'number' || typeof message.id === 'string') &&
-                message.result !== undefined; // only undefined is not valid json object
+                (typeof message.id === 'number' ||
+                    typeof message.id === 'string') &&
+                message.result !== undefined
+            ); // only undefined is not valid json object
         }
     }
 }

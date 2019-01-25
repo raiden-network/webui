@@ -5,7 +5,6 @@ import { UserToken } from '../models/usertoken';
     name: 'token'
 })
 export class TokenPipe implements PipeTransform {
-
     transform(token?: UserToken): string {
         return this.tokenToString(token);
     }
@@ -28,5 +27,4 @@ export class TokenPipe implements PipeTransform {
         }
         return text;
     }
-
 }

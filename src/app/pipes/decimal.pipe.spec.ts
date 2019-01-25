@@ -1,7 +1,6 @@
 import { DecimalPipe } from './decimal.pipe';
 
 describe('DecimalPipe', () => {
-
     let pipe: DecimalPipe;
 
     beforeEach(() => {
@@ -32,7 +31,7 @@ describe('DecimalPipe', () => {
         expect(pipe.transform(100000000000000000, 18)).toBe('0.1');
     });
 
-    it('should show 8e-18 when the value is 8 with 18 decimals', function () {
+    it('should show 8e-18 when the value is 8 with 18 decimals', function() {
         expect(pipe.transform(8, 18)).toBe('8e-18');
     });
 });

@@ -7,7 +7,11 @@ import { By } from '@angular/platform-browser';
 import { Address } from '../../models/address';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material';
-import { clickElement, errorMessage, mockInput } from '../../../testing/interaction-helper';
+import {
+    clickElement,
+    errorMessage,
+    mockInput
+} from '../../../testing/interaction-helper';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { TestProviders } from '../../../testing/test-providers';
@@ -29,9 +33,7 @@ describe('AddressBookItemComponent', () => {
                 NoopAnimationsModule,
                 ReactiveFormsModule
             ],
-            providers: [
-                TestProviders.MockMatDialog()
-            ]
+            providers: [TestProviders.MockMatDialog()]
         });
     }));
 
@@ -55,19 +57,25 @@ describe('AddressBookItemComponent', () => {
         const element = fixture.debugElement;
 
         const editButton = element.query(By.css('#edit-address'));
-        expect(editButton.query(By.css('mat-icon')).nativeElement.innerText).toBe('edit');
+        expect(
+            editButton.query(By.css('mat-icon')).nativeElement.innerText
+        ).toBe('edit');
 
         const inputs = element.queryAll(By.css('input'));
         expect(inputs.length).toBe(2);
-        expect((inputs[0].nativeElement as HTMLInputElement).disabled).toBe(true);
-        expect((inputs[1].nativeElement as HTMLInputElement).disabled).toBe(true);
+        expect((inputs[0].nativeElement as HTMLInputElement).disabled).toBe(
+            true
+        );
+        expect((inputs[1].nativeElement as HTMLInputElement).disabled).toBe(
+            true
+        );
 
         const buttons = element.queryAll(By.css('button'));
         expect(buttons.length).toBe(2);
 
         expect(element.query(By.css('#delete-address'))).toBeTruthy();
 
-        component.edit.subscribe((edit) => {
+        component.edit.subscribe(edit => {
             expect(edit).toBe(true);
         });
 
@@ -76,19 +84,22 @@ describe('AddressBookItemComponent', () => {
 
         fixture.detectChanges();
 
-        expect(editButton.query(By.css('mat-icon')).nativeElement.innerText).toBe('save');
+        expect(
+            editButton.query(By.css('mat-icon')).nativeElement.innerText
+        ).toBe('save');
         expect(element.query(By.css('#cancel-edit'))).toBeTruthy();
         expect(element.query(By.css('#delete-address'))).toBeFalsy();
     }));
 
     it('should emit a the address when the user confirms the delete', async(() => {
-
         component.update.subscribe(address => {
             fail(`there should be no address emitted but got ${address}`);
         });
 
         component.edit.subscribe(editMode => {
-            return fail(`There should be no change to edit mode but got ${editMode}`);
+            return fail(
+                `There should be no change to edit mode but got ${editMode}`
+            );
         });
 
         component.delete.subscribe(address => {
@@ -101,7 +112,6 @@ describe('AddressBookItemComponent', () => {
     }));
 
     it('should emit the updated address when user saves an edit', async(() => {
-
         const element = fixture.debugElement;
 
         component.delete.subscribe(address => {
@@ -196,7 +206,7 @@ describe('AddressBookItemComponent', () => {
         expect(errorMessage(element)).toBe('Label cannot be empty!');
     }));
 
-    it('should update the label if the underlying address is modified', function () {
+    it('should update the label if the underlying address is modified', function() {
         const newAddress = {
             address: component.address.address,
             label: 'New Label'

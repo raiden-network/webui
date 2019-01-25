@@ -2,7 +2,6 @@ import { UserToken } from '../models/usertoken';
 import { TokenPipe } from './token.pipe';
 
 describe('TokenPipe', () => {
-
     let pipe: TokenPipe;
 
     let token: UserToken;
@@ -24,7 +23,9 @@ describe('TokenPipe', () => {
 
     it('should convert a user token to a string representation', () => {
         const tokenString = pipe.transform(token);
-        expect(tokenString).toBe(`[${token.symbol}] ${token.name} (${token.address})`);
+        expect(tokenString).toBe(
+            `[${token.symbol}] ${token.name} (${token.address})`
+        );
     });
 
     it('should have the following format if symbol is missing', () => {
@@ -39,5 +40,4 @@ describe('TokenPipe', () => {
         const tokenString = pipe.transform(token);
         expect(tokenString).toBe(token.address);
     });
-
 });

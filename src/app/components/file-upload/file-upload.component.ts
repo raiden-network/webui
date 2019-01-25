@@ -14,7 +14,6 @@ import * as Ajv from 'ajv';
     styleUrls: ['./file-upload.component.scss']
 })
 export class FileUploadComponent {
-
     @Input() showDropArea = false;
     @Output() addresses: EventEmitter<Addresses> = new EventEmitter();
 
@@ -39,7 +38,7 @@ export class FileUploadComponent {
 
     constructor() {
         this.uploadChecks = new UploadChecks();
-        const validator = new Ajv({allErrors: true});
+        const validator = new Ajv({ allErrors: true });
         this.schema = validator.compile(addressSchema);
     }
 
@@ -68,12 +67,12 @@ export class FileUploadComponent {
                     this._progress = 0;
                 }, 800);
             } else {
-                this._error = {invalidFormat: true};
+                this._error = { invalidFormat: true };
             }
         };
 
         reader.onprogress = ev => {
-            this._progress = (ev.loaded / ev.total * 100);
+            this._progress = (ev.loaded / ev.total) * 100;
         };
 
         reader.readAsText(file);

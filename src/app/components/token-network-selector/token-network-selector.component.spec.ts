@@ -1,6 +1,13 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    fakeAsync,
+    flush,
+    TestBed,
+    tick
+} from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -44,7 +51,7 @@ describe('TokenNetworkSelectorComponent', () => {
         symbol: 'ATT',
         name: 'Another Test Token',
         decimals: 0,
-        balance: 400,
+        balance: 400
     };
 
     const notOwnedToken: UserToken = {
@@ -52,7 +59,7 @@ describe('TokenNetworkSelectorComponent', () => {
         symbol: 'ATT2',
         name: 'Another Test Token2',
         decimals: 18,
-        balance: 0,
+        balance: 0
     };
 
     const tokens = [notOwnedToken, connectedToken, ownedToken];
@@ -97,7 +104,9 @@ describe('TokenNetworkSelectorComponent', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
 
-        const inputDebugElement = fixture.debugElement.query(By.css('input[type=text]'));
+        const inputDebugElement = fixture.debugElement.query(
+            By.css('input[type=text]')
+        );
         input = inputDebugElement.nativeElement as HTMLInputElement;
 
         mockConfig.setIsChecksum(true);
@@ -109,12 +118,24 @@ describe('TokenNetworkSelectorComponent', () => {
 
     it('should order filtered tokens first by connected, then owned and last not owned', fakeAsync(() => {
         let done = false;
-        component.filteredOptions$.subscribe(value => {
-            expect(value[0].address).toBe(connectedToken.address, 'connected token should go first');
-            expect(value[1].address).toBe(ownedToken.address, 'owned token should go second');
-            expect(value[2].address).toBe(notOwnedToken.address, 'not owned token should go third');
-            done = true;
-        }, error => fail(error));
+        component.filteredOptions$.subscribe(
+            value => {
+                expect(value[0].address).toBe(
+                    connectedToken.address,
+                    'connected token should go first'
+                );
+                expect(value[1].address).toBe(
+                    ownedToken.address,
+                    'owned token should go second'
+                );
+                expect(value[2].address).toBe(
+                    notOwnedToken.address,
+                    'not owned token should go third'
+                );
+                done = true;
+            },
+            error => fail(error)
+        );
         tick();
         expect(done).toBe(true);
         flush();
@@ -123,35 +144,46 @@ describe('TokenNetworkSelectorComponent', () => {
     it('should show an error if the input is empty', () => {
         mockInput('');
         fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe(`Please select a token network`);
+        expect(errorMessage(fixture.debugElement)).toBe(
+            `Please select a token network`
+        );
     });
 
     it('should show an error if the error is not 42 characters long', () => {
         mockInput('0x34234');
         fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe(`Invalid token network address length`);
+        expect(errorMessage(fixture.debugElement)).toBe(
+            `Invalid token network address length`
+        );
     });
-
 
     it('should show an error if the address is not valid', () => {
         mockInput('abbfosdaiudaisduaosiduaoisduaoisdu23423423');
         fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe('This is not a valid token network address.');
+        expect(errorMessage(fixture.debugElement)).toBe(
+            'This is not a valid token network address.'
+        );
     });
 
     it('should show an error if network not in registered networks', () => {
         const address = '0xc778417E063141139Fce010982780140Aa0cD5Ab';
         mockInput(address);
         fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe('This address does not belong to a registered token network');
+        expect(errorMessage(fixture.debugElement)).toBe(
+            'This address does not belong to a registered token network'
+        );
     });
 
     it('should show error when address is not in checksum format', () => {
         mockConfig.setIsChecksum(false);
-        mockConfig.updateChecksumAddress('0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195');
+        mockConfig.updateChecksumAddress(
+            '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195'
+        );
         mockInput('0xeb7f4bbaa1714f3e5a12ff8b681908d7b98bd195');
         fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe('Address is not in checksum format: 0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195');
+        expect(errorMessage(fixture.debugElement)).toBe(
+            'Address is not in checksum format: 0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195'
+        );
     });
 
     it('should update form control value properly if a truthy value is passed', () => {

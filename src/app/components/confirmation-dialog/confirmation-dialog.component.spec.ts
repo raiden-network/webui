@@ -12,17 +12,14 @@ describe('ConfirmationDialogComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                ConfirmationDialogComponent
-            ],
+            declarations: [ConfirmationDialogComponent],
             providers: [
                 TestProviders.MockMatDialogData(),
-                TestProviders.MockMatDialogRef(jasmine.createSpyObj('MatDialogRef', ['close']))
+                TestProviders.MockMatDialogRef(
+                    jasmine.createSpyObj('MatDialogRef', ['close'])
+                )
             ],
-            imports: [
-                MaterialComponentsModule,
-                ReactiveFormsModule
-            ]
+            imports: [MaterialComponentsModule, ReactiveFormsModule]
         }).compileComponents();
     }));
 
@@ -36,7 +33,7 @@ describe('ConfirmationDialogComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should call return true when confirmed', function () {
+    it('should call return true when confirmed', function() {
         const matDialogRef = TestBed.get(MatDialogRef);
         component.confirm();
         expect(matDialogRef.close).toHaveBeenCalledTimes(1);

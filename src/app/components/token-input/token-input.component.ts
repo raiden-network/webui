@@ -13,8 +13,10 @@ import {
 } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material';
 import { BigNumber } from 'bignumber.js';
-import { amountFromDecimal, amountToDecimal } from '../../utils/amount.converter';
-
+import {
+    amountFromDecimal,
+    amountToDecimal
+} from '../../utils/amount.converter';
 
 @Component({
     selector: 'app-token-input',
@@ -34,7 +36,6 @@ import { amountFromDecimal, amountToDecimal } from '../../utils/amount.converter
     ]
 })
 export class TokenInputComponent implements ControlValueAccessor, Validator {
-
     @Input() allowZero: boolean;
     @Input() placeholder: string;
     @Input() errorPlaceholder: string;
@@ -95,7 +96,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     }
 
     minimumAmount(): string {
-        return (1 / (10 ** this._decimals)).toFixed(this._decimals);
+        return (1 / 10 ** this._decimals).toFixed(this._decimals);
     }
 
     public precise(value) {
@@ -131,7 +132,10 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
 
             amount = number.toFixed(fixedPoints);
         } else {
-            amount = amountFromDecimal(currentAmount, this._decimals).toString();
+            amount = amountFromDecimal(
+                currentAmount,
+                this._decimals
+            ).toString();
         }
 
         this.inputControl.setValue(amount);
@@ -146,8 +150,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         this.inputControl.registerOnChange(fn);
     }
 
-    registerOnValidatorChange(fn: () => void): void {
-    }
+    registerOnValidatorChange(fn: () => void): void {}
 
     setDisabledState(isDisabled: boolean): void {
         if (isDisabled) {
@@ -162,7 +165,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
             return null;
         }
         if (!this.inputControl.value) {
-            return {empty: true};
+            return { empty: true };
         }
         return this.inputControl.errors;
     }
@@ -171,7 +174,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         if (!obj) {
             return;
         }
-        this.inputControl.setValue(obj, {emitEvent: false});
+        this.inputControl.setValue(obj, { emitEvent: false });
     }
 
     private getDecimalPart(currentAmount) {

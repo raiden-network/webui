@@ -11,7 +11,6 @@ import { BatchManager } from './batch-manager';
     providedIn: 'root'
 })
 export class TokenInfoRetrieverService {
-
     private readonly web3: Web3;
     private readonly tokenContract: Contract;
     private readonly batchManager: BatchManager;
@@ -35,15 +34,23 @@ export class TokenInfoRetrieverService {
     async createBatch(
         tokenAddresses: string[],
         raidenAddress: string,
-        userTokens: { [address: string]: UserToken | null }): Promise<{ [address: string]: UserToken }> {
+        userTokens: { [address: string]: UserToken | null }
+    ): Promise<{ [address: string]: UserToken }> {
         const batchManager = this.batchManager;
 
-        const map: { [index: number]: { method: string; address: string } } = {};
+        const map: {
+            [index: number]: { method: string; address: string };
+        } = {};
 
-        function add(methods, nameProperty: string, tokenAddress: string, defaultValue?: any) {
+        function add(
+            methods,
+            nameProperty: string,
+            tokenAddress: string,
+            defaultValue?: any
+        ) {
             const index = batchManager.add({
                 request: methods[nameProperty]().call.request(),
-                defaultValue: defaultValue,
+                defaultValue: defaultValue
             });
 
             map[index - 1] = {
@@ -91,13 +98,17 @@ export class TokenInfoRetrieverService {
                 token = TokenInfoRetrieverService.createToken(element.address);
             }
 
-            const expectedType = typeof token[element.method !== 'balanceOf' ? element.method : 'balance'];
+            const expectedType = typeof token[
+                element.method !== 'balanceOf' ? element.method : 'balance'
+            ];
 
             if (expectedType === 'number') {
                 value = Number(value);
             }
 
-            token[element.method !== 'balanceOf' ? element.method : 'balance'] = value;
+            token[
+                element.method !== 'balanceOf' ? element.method : 'balance'
+            ] = value;
             userTokens[element.address] = token;
         });
 

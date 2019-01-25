@@ -9,7 +9,6 @@ import { RegisteredNetworkValidatorDirective } from './registered-network-valida
 import { TestProviders } from '../../testing/test-providers';
 
 describe('RegisteredNetworkValidatorDirective', () => {
-
     let directive: RegisteredNetworkValidatorDirective;
 
     const connectedToken: UserToken = {
@@ -30,7 +29,7 @@ describe('RegisteredNetworkValidatorDirective', () => {
         symbol: 'ATT',
         name: 'Another Test Token',
         decimals: 0,
-        balance: 400,
+        balance: 400
     };
 
     const notOwnedToken: UserToken = {
@@ -38,7 +37,7 @@ describe('RegisteredNetworkValidatorDirective', () => {
         symbol: 'ATT2',
         name: 'Another Test Token2',
         decimals: 18,
-        balance: 0,
+        balance: 0
     };
 
     const tokens = [notOwnedToken, connectedToken, ownedToken];
@@ -49,9 +48,7 @@ describe('RegisteredNetworkValidatorDirective', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 SharedService
             ],
-            imports: [
-                HttpClientTestingModule
-            ]
+            imports: [HttpClientTestingModule]
         }).compileComponents();
     }));
 
@@ -61,14 +58,17 @@ describe('RegisteredNetworkValidatorDirective', () => {
         directive = new RegisteredNetworkValidatorDirective(object);
     });
 
-
     it('should create an instance', () => {
         expect(directive).toBeTruthy();
     });
 
     it('should return null if the token is in the registered tokens', fakeAsync(() => {
-        const control: FormControl = new FormControl('0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195');
-        const validation: Observable<ValidationErrors | null> = directive.validate(control) as Observable<ValidationErrors | null>;
+        const control: FormControl = new FormControl(
+            '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195'
+        );
+        const validation: Observable<ValidationErrors | null> = directive.validate(
+            control
+        ) as Observable<ValidationErrors | null>;
         validation.subscribe(value => {
             expect(value).toBe(null);
             flush();
@@ -78,8 +78,12 @@ describe('RegisteredNetworkValidatorDirective', () => {
     }));
 
     it('should return a validation error if the token address is not registered', fakeAsync(() => {
-        const control: FormControl = new FormControl('0xc778417E063141139Fce010982780140Aa0cD5Ab');
-        const validation: Observable<ValidationErrors | null> = directive.validate(control) as Observable<ValidationErrors | null>;
+        const control: FormControl = new FormControl(
+            '0xc778417E063141139Fce010982780140Aa0cD5Ab'
+        );
+        const validation: Observable<ValidationErrors | null> = directive.validate(
+            control
+        ) as Observable<ValidationErrors | null>;
         validation.subscribe(value => {
             expect(value['nonRegistered']).toBe(true);
             flush();

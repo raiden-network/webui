@@ -13,7 +13,8 @@ import {
     MatInputModule,
     MatListModule,
     MatMenuModule,
-    MatPaginatorModule, MatProgressBarModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule,
     MatRadioModule,
     MatRippleModule,
@@ -51,10 +52,7 @@ import {
         MatRadioModule,
         MatCheckboxModule
     ],
-    imports: [
-        CommonModule
-    ],
+    imports: [CommonModule],
     declarations: []
 })
-export class MaterialComponentsModule {
-}
+export class MaterialComponentsModule {}

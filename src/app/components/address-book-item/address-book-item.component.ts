@@ -1,11 +1,27 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChange, SimpleChanges } from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output,
+    SimpleChange,
+    SimpleChanges
+} from '@angular/core';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { Address } from '../../models/address';
-import { ConfirmationDialogComponent, ConfirmationDialogPayload } from '../confirmation-dialog/confirmation-dialog.component';
+import {
+    ConfirmationDialogComponent,
+    ConfirmationDialogPayload
+} from '../confirmation-dialog/confirmation-dialog.component';
 import { flatMap } from 'rxjs/operators';
 import { EMPTY, of } from 'rxjs';
 import { MatDialog } from '@angular/material';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    Validators
+} from '@angular/forms';
 
 @Component({
     selector: 'app-address-book-item',
@@ -13,7 +29,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
     styleUrls: ['./address-book-item.component.css']
 })
 export class AddressBookItemComponent implements OnChanges {
-
     @Input() address: Address;
     @Input() editMode = false;
     @Output() edit: EventEmitter<boolean> = new EventEmitter();
@@ -22,28 +37,29 @@ export class AddressBookItemComponent implements OnChanges {
     @Output() delete: EventEmitter<Address> = new EventEmitter();
 
     readonly form: FormGroup = this.fb.group({
-        label: new FormControl({
-            value: '',
-            disabled: true
-        }, Validators.required)
+        label: new FormControl(
+            {
+                value: '',
+                disabled: true
+            },
+            Validators.required
+        )
     });
 
     constructor(
         private identiconCache: IdenticonCacheService,
         public dialog: MatDialog,
         private fb: FormBuilder
-    ) {
-
-    }
+    ) {}
 
     toggleEdit() {
         this.editMode = !this.editMode;
         this.edit.emit(this.editMode);
         const control = this.form.get('label');
         if (this.editMode) {
-            control.enable({onlySelf: true});
+            control.enable({ onlySelf: true });
         } else {
-            control.disable({onlySelf: true});
+            control.disable({ onlySelf: true });
         }
     }
 
@@ -55,8 +71,10 @@ export class AddressBookItemComponent implements OnChanges {
         const address = this.address;
         const payload: ConfirmationDialogPayload = {
             title: 'Delete Address',
-            message: `Are you sure you want to delete the entry <b>${address.label}</b> ` +
-                `for address <b>${address.address}</b>.`
+            message:
+                `Are you sure you want to delete the entry <b>${
+                    address.label
+                }</b> ` + `for address <b>${address.address}</b>.`
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
@@ -72,7 +90,8 @@ export class AddressBookItemComponent implements OnChanges {
             }
         });
 
-        dialog.afterClosed()
+        dialog
+            .afterClosed()
             .pipe(completeIfCancel)
             .subscribe(() => this.delete.emit(this.address));
     }
@@ -96,9 +115,9 @@ export class AddressBookItemComponent implements OnChanges {
         if (changes.hasOwnProperty('editMode')) {
             const control = this.form.get('label');
             if (changes['editMode'].currentValue) {
-                control.enable({onlySelf: true});
+                control.enable({ onlySelf: true });
             } else {
-                control.disable({onlySelf: true});
+                control.disable({ onlySelf: true });
             }
         }
 
