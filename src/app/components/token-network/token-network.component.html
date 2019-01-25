@@ -106,7 +106,8 @@
                      fxFlex="row">{{token.symbol}}
                 </div>
                 <div class="token-network-name"
-                     fxFlex="row">{{token.name}}
+                     matTooltip="{{token.name}}"
+                     fxFlex="row">{{token.name | ellipsis: 27}}
                 </div>
             </div>
             <div class="can-shrink" fxLayout="column" fxFlex="1 2 100%" fxLayoutAlign="center" fxLayoutGap="2px">

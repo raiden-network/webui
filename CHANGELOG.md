@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Changed
+- [#8] Fixes truncation of long token network names.
 - [#55] WebUI does not show notification when user opens their first channel.
 - [#43] Changes the layout in tokens/channels to make only the entries scrollable.
 
@@ -41,3 +42,4 @@ token network.
 [#31]: https://github.com/raiden-network/webui/issues/31
 [#13]: https://github.com/raiden-network/webui/issues/13
 [#9]: https://github.com/raiden-network/webui/issues/9
+[#8]: https://github.com/raiden-network/webui/issues/8
