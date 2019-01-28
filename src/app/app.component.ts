@@ -3,7 +3,7 @@ import { default as makeBlockie } from 'ethereum-blockies-base64';
 import { Subscription } from 'rxjs';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
-import { SharedService } from './services/shared.service';
+import { ConnectivityStatus, SharedService } from './services/shared.service';
 
 @Component({
     selector: 'app-root',
@@ -51,5 +51,13 @@ export class AppComponent implements OnInit, OnDestroy {
         } else {
             return '';
         }
+    }
+
+    hasRpcError(): boolean {
+        return this.sharedService.status === ConnectivityStatus.RPC_ERROR;
+    }
+
+    attemptConnection() {
+        this.raidenService.attemptConnection();
     }
 }

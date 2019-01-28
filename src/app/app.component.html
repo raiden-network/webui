@@ -121,6 +121,16 @@
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content class="container-content">
-        <router-outlet></router-outlet>
+        <router-outlet *ngIf="!hasRpcError(); else rpc_error"></router-outlet>
+        <ng-template #rpc_error>
+            <app-error
+                errorTitle="JSON RPC connection error!"
+                errorDescription="A connection with the Web3 provider could not be established. \n
+                    Please try again."
+                buttonText="Retry"
+                [errorStacktrace]="sharedService.getStackTrace()"
+                (buttonClicked)="attemptConnection($event)"
+            ></app-error>
+        </ng-template>
     </mat-sidenav-content>
 </mat-sidenav-container>

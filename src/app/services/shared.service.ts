@@ -3,6 +3,11 @@ import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { scan } from 'rxjs/operators';
 
+export enum ConnectivityStatus {
+    UNDEFINED,
+    RPC_ERROR
+}
+
 export class UiMessage {
     readonly title: string;
     readonly description: string;
@@ -17,11 +22,15 @@ export class UiMessage {
 export class SharedService {
     public httpTimeout: number;
     private requestsSubject = new BehaviorSubject<number>(0);
+
+    private _status: ConnectivityStatus = ConnectivityStatus.UNDEFINED;
+
     public readonly pendingRequests: Observable<
         number
     > = this.requestsSubject
         .asObservable()
         .pipe(scan((acc, value) => Math.max(acc + value, 0), 0));
+    private _stackTrace: Error;
 
     constructor(@Inject(Injector) private injector: Injector) {}
 
@@ -45,11 +54,31 @@ export class SharedService {
         this.toastrService.warning(message.description, message.title);
     }
 
+    public set status(value: ConnectivityStatus) {
+        this._status = value;
+    }
+
+    public get status(): ConnectivityStatus {
+        return this._status;
+    }
+
     requestStarted() {
         this.requestsSubject.next(+1);
     }
 
     requestFinished() {
         this.requestsSubject.next(-1);
+    }
+
+    setStackTrace(stackTrace: Error | null) {
+        this._stackTrace = stackTrace;
+    }
+
+    getStackTrace(): string {
+        if (this._stackTrace) {
+            return this._stackTrace.stack;
+        } else {
+            return null;
+        }
     }
 }

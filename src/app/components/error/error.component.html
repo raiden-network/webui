@@ -1,0 +1,37 @@
+<div class="error" fxLayout="row" fxLayoutGap="2rem">
+    <div fxLayout="column" fxLayoutAlign="start center">
+        <div class="icon">
+            <mat-icon>warning</mat-icon>
+        </div>
+    </div>
+    <div class="mat-typography" fxLayout="column" fxLayoutGap="1.5rem">
+        <div fxLayout="row" class="title">
+            {{ errorTitle }}
+        </div>
+        <div class="description" fxLayout="row">
+            {{ errorDescription }}
+        </div>
+
+        <div
+            *ngIf="errorStacktrace && showError"
+            class="stacktrace"
+            fxLayout="row"
+        >
+            <pre>{{ errorStacktrace }}</pre>
+        </div>
+
+        <div fxLayout="row" *ngIf="buttonText">
+            <button
+                *ngIf="errorStacktrace"
+                mat-button
+                color="accent"
+                (click)="showError = !showError"
+            >
+                {{ (showError ? 'Hide Error' : 'Show Error') | uppercase }}
+            </button>
+            <button mat-stroked-button color="accent" (click)="clicked()">
+                {{ buttonText | uppercase }}
+            </button>
+        </div>
+    </div>
+</div>

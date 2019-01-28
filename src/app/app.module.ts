@@ -41,6 +41,7 @@ import { DragUploadDirective } from './directives/drag-upload.directive';
 import { StatusPipe } from './pipes/status.pipe';
 import 'hammerjs';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
+import { ErrorComponent } from './components/error/error.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -85,7 +86,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         AddressBookItemComponent,
         DragUploadDirective,
         StatusPipe,
-        FileUploadComponent
+        FileUploadComponent,
+        ErrorComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
