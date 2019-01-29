@@ -11,13 +11,14 @@ import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenConfig } from './services/raiden.config';
 import { RaidenService } from './services/raiden.service';
 import { SharedService } from './services/shared.service';
+import { ErrorComponent } from './components/error/error.component';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
     let app: AppComponent;
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [AppComponent],
+            declarations: [AppComponent, ErrorComponent],
             providers: [
                 {
                     provide: RaidenConfig,

@@ -8,8 +8,10 @@
         <div fxLayout="row" class="title">
             {{ errorTitle }}
         </div>
-        <div class="description" fxLayout="row">
-            {{ errorDescription }}
+        <div class="description">
+            <div fxLayout="row" *ngFor="let row of descriptionRows">
+                {{ row }}
+            </div>
         </div>
 
         <div
