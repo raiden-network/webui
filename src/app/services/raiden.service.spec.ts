@@ -7,7 +7,7 @@ import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { Channel } from '../models/channel';
 import { UserToken } from '../models/usertoken';
-import { RaidenConfig } from './raiden.config';
+import { RaidenConfig, Web3Factory } from './raiden.config';
 
 import { RaidenService } from './raiden.service';
 import { SharedService } from './shared.service';
@@ -57,7 +57,8 @@ describe('RaidenService', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 RaidenService,
                 SharedService,
-                TokenInfoRetrieverService
+                TokenInfoRetrieverService,
+                Web3Factory
             ]
         });
 
@@ -71,7 +72,6 @@ describe('RaidenService', () => {
             TestBed.get(TokenInfoRetrieverService),
             'createBatch'
         );
-
         spyOn(sharedService, 'error');
         spyOn(service, 'raidenAddress$').and.returnValue(
             of('0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C')
@@ -200,5 +200,48 @@ describe('RaidenService', () => {
 
         tick();
         flush();
+    }));
+
+    it('should show an info message if attempted connection is successful', fakeAsync(function() {
+        const config: RaidenConfig = TestBed.get(RaidenConfig);
+        const loadSpy = spyOn(config, 'load');
+        loadSpy.and.returnValue(Promise.resolve(true));
+        const infoSpy = spyOn(sharedService, 'info');
+
+        service.attemptConnection();
+        tick();
+        expect(infoSpy).toHaveBeenCalledTimes(1);
+        expect(infoSpy).toHaveBeenCalledWith({
+            title: 'JSON RPC Connection',
+            description: 'JSON-RPC connection established successfully'
+        });
+    }));
+
+    it('should show an error message if attempted connection is unsuccessful', fakeAsync(function() {
+        const config: RaidenConfig = TestBed.get(RaidenConfig);
+        const loadSpy = spyOn(config, 'load');
+        loadSpy.and.returnValue(Promise.resolve(false));
+
+        service.attemptConnection();
+        tick();
+        expect(sharedService.error).toHaveBeenCalledTimes(1);
+        expect(sharedService.error).toHaveBeenCalledWith({
+            title: 'JSON RPC Connection',
+            description: 'Could not establish a JSON-RPC connection'
+        });
+    }));
+
+    it('should show an error message if attempted connection is load fails', fakeAsync(function() {
+        const config: RaidenConfig = TestBed.get(RaidenConfig);
+        const loadSpy = spyOn(config, 'load');
+        loadSpy.and.callFake(() => Promise.reject(new Error('failed')));
+
+        service.attemptConnection();
+        tick();
+        expect(sharedService.error).toHaveBeenCalledTimes(1);
+        expect(sharedService.error).toHaveBeenCalledWith({
+            title: 'JSON RPC Connection',
+            description: 'Could not establish a JSON-RPC connection'
+        });
     }));
 });

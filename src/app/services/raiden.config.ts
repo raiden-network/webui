@@ -35,6 +35,12 @@ function override(object, methodName, callback) {
     object[methodName] = callback(object[methodName]);
 }
 
+export class Web3Factory {
+    create(provider: Provider): Web3 {
+        return new Web3(provider);
+    }
+}
+
 @Injectable()
 export class RaidenConfig {
     public config: RDNConfig = default_config;
@@ -43,7 +49,8 @@ export class RaidenConfig {
 
     constructor(
         private http: HttpClient,
-        private sharedService: SharedService
+        private sharedService: SharedService,
+        private web3Factory: Web3Factory
     ) {}
 
     private _batchManager: BatchManager;
@@ -65,16 +72,16 @@ export class RaidenConfig {
     }
 
     private async setupWeb3() {
-        this.web3 = new Web3(this.provider(2000));
+        this.web3 = this.web3Factory.create(this.provider(2000));
         // make a simple test call to web3
 
         try {
             await this.web3.eth.net.getId();
-            this.web3 = new Web3(this.provider());
+            this.web3 = this.web3Factory.create(this.provider());
             this.createBatchManager();
         } catch (e) {
             this.config.web3 = this.config.web3_fallback;
-            this.web3 = new Web3(this.provider());
+            this.web3 = this.web3Factory.create(this.provider());
             this.createBatchManager();
             await this.web3.eth.net.getId();
         }

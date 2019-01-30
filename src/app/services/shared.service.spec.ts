@@ -1,6 +1,6 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
-import { SharedService } from './shared.service';
+import { ConnectivityStatus, SharedService } from './shared.service';
 
 describe('SharedService', () => {
     beforeEach(() => {
@@ -9,7 +9,21 @@ describe('SharedService', () => {
         });
     });
 
-    it('should ...', inject([SharedService], (service: SharedService) => {
+    it('should create', inject([SharedService], (service: SharedService) => {
         expect(service).toBeTruthy();
     }));
+
+    it('should have undefined status by default', inject(
+        [SharedService],
+        (service: SharedService) => {
+            expect(service.status).toBe(ConnectivityStatus.UNDEFINED);
+        }
+    ));
+
+    it('should have falsy stacktrace', inject(
+        [SharedService],
+        (service: SharedService) => {
+            expect(service.getStackTrace()).toBeFalsy();
+        }
+    ));
 });
