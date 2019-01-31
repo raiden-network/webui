@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentType } from './enviroment-type.enum';
-import { ConnectivityStatus, SharedService } from './shared.service';
 // @ts-ignore
 import * as Web3 from 'web3';
 import { BatchManager } from './batch-manager';
 import { HttpProvider, Provider } from 'web3/providers';
+import { SharedService } from './shared.service';
 
 interface RDNConfig {
     raiden: string;
@@ -65,8 +65,7 @@ export class RaidenConfig {
             await this.setupWeb3();
             return true;
         } catch (e) {
-            this.sharedService.status = ConnectivityStatus.RPC_ERROR;
-            this.sharedService.setStackTrace(e);
+            this.sharedService.displayableError = e;
             return false;
         }
     }

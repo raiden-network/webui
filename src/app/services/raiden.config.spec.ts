@@ -5,12 +5,11 @@ import {
     HttpClientTestingModule,
     HttpTestingController
 } from '@angular/common/http/testing';
-import { ConnectivityStatus, SharedService } from './shared.service';
+import { SharedService } from './shared.service';
 import { EnvironmentType } from './enviroment-type.enum';
 // @ts-ignore
 import * as Web3 from 'web3';
 import { Provider } from 'web3/providers';
-import Spy = jasmine.Spy;
 
 class TestWeb3Factory implements Web3Factory {
     private _calls = 0;
@@ -48,9 +47,7 @@ describe('RaidenConfig', () => {
     let testingController: HttpTestingController;
     let raidenConfig: RaidenConfig;
     let factory: TestWeb3Factory;
-
-    let statusSpy: Spy;
-    let setStackTraceSpy: Spy;
+    let sharedService: SharedService;
 
     const url = 'http://localhost:5001/assets/config/config.production.json';
 
@@ -80,9 +77,7 @@ describe('RaidenConfig', () => {
         testingController = TestBed.get(HttpTestingController);
         raidenConfig = TestBed.get(RaidenConfig);
 
-        const sharedService: SharedService = TestBed.get(SharedService);
-        setStackTraceSpy = spyOn(sharedService, 'setStackTrace');
-        statusSpy = spyOnProperty(sharedService, 'status', 'set');
+        sharedService = TestBed.get(SharedService);
     });
 
     it('should be created', inject([RaidenConfig], (service: RaidenConfig) => {
@@ -127,8 +122,7 @@ describe('RaidenConfig', () => {
             environment_type: EnvironmentType.DEVELOPMENT
         });
 
-        expect(statusSpy).toHaveBeenCalledTimes(0);
-        expect(setStackTraceSpy).toHaveBeenCalledTimes(0);
+        expect(sharedService.getStackTrace()).toBe(null);
         expect(factory.calls()).toBe(2);
         flush();
     }));
@@ -168,8 +162,7 @@ describe('RaidenConfig', () => {
             environment_type: EnvironmentType.PRODUCTION
         });
 
-        expect(statusSpy).toHaveBeenCalledTimes(0);
-        expect(setStackTraceSpy).toHaveBeenCalledTimes(0);
+        expect(sharedService.getStackTrace()).toBe(null);
         expect(factory.calls()).toBe(2);
     }));
 
@@ -197,8 +190,7 @@ describe('RaidenConfig', () => {
 
         tick();
 
-        expect(statusSpy).toHaveBeenCalledTimes(0);
-        expect(setStackTraceSpy).toHaveBeenCalledTimes(0);
+        expect(sharedService.getStackTrace()).toBe(null);
         expect(factory.calls()).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback
@@ -230,9 +222,7 @@ describe('RaidenConfig', () => {
 
         tick();
 
-        expect(statusSpy).toHaveBeenCalledTimes(1);
-        expect(statusSpy).toHaveBeenCalledWith(ConnectivityStatus.RPC_ERROR);
-        expect(setStackTraceSpy).toHaveBeenCalledTimes(1);
+        expect(sharedService.getStackTrace()).toBeTruthy();
         expect(factory.calls()).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback
