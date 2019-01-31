@@ -3,6 +3,10 @@ import * as Web3 from 'web3';
 import Utils from 'web3/utils';
 import { RaidenConfig } from '../app/services/raiden.config';
 import { BatchManager } from '../app/services/batch-manager';
+import { SharedService } from '../app/services/shared.service';
+import { HttpClient } from '@angular/common/http';
+import { Provider } from 'web3/providers';
+import { stub } from './stub';
 
 class MockWeb3 extends Web3 {
     isChecksum = false;
@@ -12,37 +16,50 @@ class MockWeb3 extends Web3 {
         super();
 
         const mockWeb3 = this;
-        this.eth.getBlockNumber = function () {
+        this.eth.getBlockNumber = function() {
             return Promise.resolve(3694423);
         };
 
         const mockUtils = {
-            checkAddressChecksum: function () {
+            checkAddressChecksum: function() {
                 return mockWeb3.isChecksum;
             },
-            toChecksumAddress: function () {
+            toChecksumAddress: function() {
                 return mockWeb3.checksumAddress;
             }
         };
 
         // @ts-ignore
         this.utils = Object.assign(mockUtils, super.utils);
-
     }
 
     utils: Utils;
 }
 
+// noinspection JSUnusedLocalSymbols
+const mockProvider = {
+    web3: new MockWeb3(),
+    create(provider: Provider): Web3 {
+        return this.web3;
+    }
+};
+
 export class MockConfig extends RaidenConfig {
-    public web3: Web3 = new MockWeb3();
-    private testBatchManager: BatchManager = new BatchManager(this.web3.currentProvider);
+    public web3: Web3 = mockProvider.web3;
+    private testBatchManager: BatchManager = new BatchManager(
+        this.web3.currentProvider
+    );
+
+    constructor() {
+        super(stub<HttpClient>(), stub<SharedService>(), mockProvider);
+    }
 
     get batchManager(): BatchManager {
         return this.testBatchManager;
     }
 
     private get mock(): MockWeb3 {
-        return (this.web3 as MockWeb3);
+        return this.web3 as MockWeb3;
     }
 
     updateChecksumAddress(address: string): void {

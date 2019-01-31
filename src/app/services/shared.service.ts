@@ -17,11 +17,13 @@ export class UiMessage {
 export class SharedService {
     public httpTimeout: number;
     private requestsSubject = new BehaviorSubject<number>(0);
+
     public readonly pendingRequests: Observable<
         number
     > = this.requestsSubject
         .asObservable()
         .pipe(scan((acc, value) => Math.max(acc + value, 0), 0));
+    public displayableError: Error;
 
     constructor(@Inject(Injector) private injector: Injector) {}
 
@@ -51,5 +53,13 @@ export class SharedService {
 
     requestFinished() {
         this.requestsSubject.next(-1);
+    }
+
+    getStackTrace(): string {
+        if (this.displayableError) {
+            return this.displayableError.stack;
+        } else {
+            return null;
+        }
     }
 }

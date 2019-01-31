@@ -52,4 +52,12 @@ export class AppComponent implements OnInit, OnDestroy {
             return '';
         }
     }
+
+    hasRpcError(): boolean {
+        return this.sharedService.getStackTrace() !== null;
+    }
+
+    attemptConnection() {
+        this.raidenService.attemptConnection();
+    }
 }

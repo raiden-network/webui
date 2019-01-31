@@ -1,0 +1,60 @@
+:host {
+    height: 100%;
+}
+
+$circle_width: 8rem;
+$icon_width: $circle_width/2;
+
+.error {
+    margin-left: 4rem;
+    margin-right: 4rem;
+    margin-top: 8rem;
+}
+
+.error .title {
+    font-weight: 500;
+    font-size: 1.5rem;
+    color: rgba(0, 0, 0, 0.75);
+}
+
+.error .icon {
+    width: $circle_width;
+    height: $circle_width;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error .icon mat-icon {
+    font-size: $icon_width;
+    width: $icon_width;
+    height: $icon_width;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.error .description {
+    font-size: 1rem;
+    font-weight: 300;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.error .stacktrace {
+    height: 400px;
+    width: 600px;
+    overflow-y: scroll;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+}
+
+.error .stacktrace pre {
+    padding: 1rem;
+    font-family: 'Roboto Mono', monospace;
+    margin-top: 1rem;
+    font-size: 12px;
+}
+
+button {
+    margin-top: 2rem;
+}

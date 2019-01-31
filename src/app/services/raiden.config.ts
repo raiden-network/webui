@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentType } from './enviroment-type.enum';
-import { SharedService } from './shared.service';
 // @ts-ignore
 import * as Web3 from 'web3';
 import { BatchManager } from './batch-manager';
 import { HttpProvider, Provider } from 'web3/providers';
+import { SharedService } from './shared.service';
 
 interface RDNConfig {
     raiden: string;
@@ -35,6 +35,12 @@ function override(object, methodName, callback) {
     object[methodName] = callback(object[methodName]);
 }
 
+export class Web3Factory {
+    create(provider: Provider): Web3 {
+        return new Web3(provider);
+    }
+}
+
 @Injectable()
 export class RaidenConfig {
     public config: RDNConfig = default_config;
@@ -43,7 +49,8 @@ export class RaidenConfig {
 
     constructor(
         private http: HttpClient,
-        private sharedService: SharedService
+        private sharedService: SharedService,
+        private web3Factory: Web3Factory
     ) {}
 
     private _batchManager: BatchManager;
@@ -52,37 +59,44 @@ export class RaidenConfig {
         return this._batchManager;
     }
 
-    load(url: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            this.http.get<RDNConfig>(url).subscribe(config => {
-                this.config = Object.assign({}, default_config, config);
-                this.api = this.config.raiden;
-                this.sharedService.httpTimeout = this.config.http_timeout;
+    async load(url: string): Promise<boolean> {
+        await this.loadConfiguration(url);
+        try {
+            await this.setupWeb3();
+            return true;
+        } catch (e) {
+            this.sharedService.displayableError = e;
+            return false;
+        }
+    }
 
-                this.web3 = new Web3(this.provider(2000));
-                // make a simple test call to web3
+    private async setupWeb3() {
+        this.web3 = this.web3Factory.create(this.provider(2000));
+        // make a simple test call to web3
 
-                this.web3.eth.net
-                    .getId()
-                    .catch(reason => {
-                        console.error(
-                            `Invalid web3 endpoint, switching to fallback ${
-                                this.config.web3_fallback
-                            }`,
-                            reason
-                        );
-                        this.config.web3 = this.config.web3_fallback;
-                        this.web3 = new Web3(this.provider());
-                        this.createBatchManager();
-                        reject(reason);
-                    })
-                    .then(() => {
-                        this.web3 = new Web3(this.provider());
-                        this.createBatchManager();
-                        resolve();
-                    });
-            });
-        });
+        try {
+            await this.web3.eth.net.getId();
+            this.web3 = this.web3Factory.create(this.provider());
+            this.createBatchManager();
+        } catch (e) {
+            this.config.web3 = this.config.web3_fallback;
+            this.web3 = this.web3Factory.create(this.provider());
+            this.createBatchManager();
+            await this.web3.eth.net.getId();
+        }
+    }
+
+    private async loadConfiguration(url: string) {
+        let rdnConfig: RDNConfig;
+        try {
+            rdnConfig = await this.http.get<RDNConfig>(url).toPromise();
+        } catch (e) {
+            rdnConfig = default_config;
+        }
+
+        this.config = Object.assign({}, default_config, rdnConfig);
+        this.api = this.config.raiden;
+        this.sharedService.httpTimeout = this.config.http_timeout;
     }
 
     private provider(timeout?: number): Provider {

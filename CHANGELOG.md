@@ -1,7 +1,8 @@
 # Changelog
 
 ## [Unreleased]
-### Changed
+### Added
+- [#49] Adds error screen for JSON RPC connection failure.
 
 ## [0.8.0] - 2019-01-25
 ### Changed
@@ -39,6 +40,7 @@ token network.
 
 [#66]: https://github.com/raiden-network/webui/issues/66
 [#55]: https://github.com/raiden-network/webui/issues/55
+[#49]: https://github.com/raiden-network/webui/issues/49
 [#48]: https://github.com/raiden-network/webui/issues/48
 [#44]: https://github.com/raiden-network/webui/issues/44
 [#43]: https://github.com/raiden-network/webui/issues/43

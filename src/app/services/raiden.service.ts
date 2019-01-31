@@ -23,6 +23,7 @@ import { EnvironmentType } from './enviroment-type.enum';
 import { RaidenConfig } from './raiden.config';
 import { SharedService } from './shared.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -468,5 +469,26 @@ export class RaidenService {
                 typeof errMsg === 'string' ? errMsg : JSON.stringify(errMsg)
         });
         return throwError(errMsg);
+    }
+
+    attemptConnection() {
+        const onResult = (success: boolean) => {
+            if (success) {
+                this.sharedService.info({
+                    title: 'JSON RPC Connection',
+                    description: 'JSON-RPC connection established successfully'
+                });
+            } else {
+                this.sharedService.error({
+                    title: 'JSON RPC Connection',
+                    description: 'Could not establish a JSON-RPC connection'
+                });
+            }
+        };
+
+        this.raidenConfig
+            .load(environment.configFile)
+            .then(onResult)
+            .catch(() => onResult(false));
     }
 }

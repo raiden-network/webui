@@ -11,8 +11,7 @@ export class TestProviders {
     static HammerJSProvider(): Provider {
         return {
             provide: HAMMER_LOADER,
-            useValue: () => new Promise(() => {
-            })
+            useValue: () => new Promise(() => {})
         };
     }
 
