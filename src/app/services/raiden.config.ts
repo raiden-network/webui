@@ -43,7 +43,7 @@ export class Web3Factory {
 
 @Injectable()
 export class RaidenConfig {
-    public config: RDNConfig = default_config;
+    public config: RDNConfig = Object.assign({}, default_config);
     public api: string;
     public web3: Web3;
 
@@ -91,7 +91,7 @@ export class RaidenConfig {
         try {
             rdnConfig = await this.http.get<RDNConfig>(url).toPromise();
         } catch (e) {
-            rdnConfig = default_config;
+            rdnConfig = Object.assign({}, default_config);
         }
 
         this.config = Object.assign({}, default_config, rdnConfig);

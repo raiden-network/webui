@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { TokenInputComponent } from '../token-input/token-input.component';
 
 import { ConnectionManagerDialogComponent } from './connection-manager-dialog.component';
 import { By } from '@angular/platform-browser';
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('ConnectionManagerDialogComponent', () => {
     let component: ConnectionManagerDialogComponent;
@@ -19,14 +19,9 @@ describe('ConnectionManagerDialogComponent', () => {
                 TokenInputComponent
             ],
             providers: [
-                {
-                    provide: MAT_DIALOG_DATA,
-                    useValue: {}
-                },
-                {
-                    provide: MatDialogRef,
-                    useValue: {}
-                }
+                TestProviders.HammerJSProvider(),
+                TestProviders.MockMatDialogData(),
+                TestProviders.MockMatDialogRef()
             ],
             imports: [
                 MaterialComponentsModule,
