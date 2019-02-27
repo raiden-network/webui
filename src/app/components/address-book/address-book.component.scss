@@ -3,3 +3,10 @@
 :host {
     height: 100%;
 }
+
+$mobile-identicon-size: 60px;
+
+.mobile {
+    width: $mobile-identicon-size;
+    height: $mobile-identicon-size;
+}

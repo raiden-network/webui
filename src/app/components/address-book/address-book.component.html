@@ -2,9 +2,11 @@
     class="page-container"
     fxLayout="column"
     fxFlex="90"
+    fxFlex.xs="96"
     fxFlex.lg="70"
     fxFlex.xl="60"
     fxFlexOffset="5"
+    fxFlexOffset.xs="2"
     fxFlexOffset.xl="20"
     fxFlexOffset.lg="15"
 >
@@ -23,6 +25,7 @@
                     fxLayoutAlign="center center"
                 >
                     <img
+                        ngClass.xs="mobile"
                         class="identicon no-margin"
                         *ngIf="
                             form.get('address').value &&
@@ -113,9 +116,9 @@
                         (click)="uploader.showDropArea = !uploader.showDropArea"
                         matTooltip="Opens the drop area where you can drag the file to import"
                     >
-                        <mat-icon aria-label="Import icon"
-                            >cloud_upload</mat-icon
-                        >
+                        <mat-icon aria-label="Import icon">
+                            cloud_upload
+                        </mat-icon>
                     </button>
                 </div>
 

@@ -25,9 +25,10 @@ a.active {
     background-color: black !important;
 }
 
+$sidenav-top: 56px;
 .sidenav-container {
     position: absolute;
-    top: 60px;
+    top: $sidenav-top;
     left: 0;
     right: 0;
     bottom: 0;
@@ -35,6 +36,7 @@ a.active {
 
 mat-sidenav-content {
     height: 100%;
+    padding-top: 20px;
 }
 
 .toolbar-spacer {
@@ -47,4 +49,12 @@ mat-nav-list a {
 
 .account {
     font-size: medium;
+}
+
+.favicon-mobile {
+    height: 25px;
+}
+
+.favicon {
+    height: 40px;
 }

@@ -38,6 +38,8 @@ import { ChannelTableComponent } from './channel-table.component';
 import { StatusPipe } from '../../pipes/status.pipe';
 import Spy = jasmine.Spy;
 import { TestProviders } from '../../../testing/test-providers';
+import { PageHeaderComponent } from '../page-header/page-header.component';
+import { ChannelActionsComponent } from '../channel-actions/channel-actions.component';
 
 describe('ChannelTableComponent', () => {
     let component: ChannelTableComponent;
@@ -53,6 +55,8 @@ describe('ChannelTableComponent', () => {
                 OpenDialogComponent,
                 TokenInputComponent,
                 AddressInputComponent,
+                PageHeaderComponent,
+                ChannelActionsComponent,
                 TokenPipe,
                 EllipsisPipe,
                 KeysPipe,

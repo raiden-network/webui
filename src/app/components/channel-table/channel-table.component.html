@@ -2,87 +2,29 @@
     class="page-container"
     fxLayout="column"
     fxFlex="90"
+    fxFlex.xs="96"
     fxFlex.lg="70"
     fxFlex.xl="60"
     fxFlexOffset="5"
+    fxFlexOffset.xs="2"
     fxFlexOffset.xl="20"
     fxFlexOffset.lg="15"
 >
-    <mat-card class="page-header">
-        <div fxLayout="row">
-            <mat-card-title fxLayoutAlign="start" fxFlex="50">
-                Channels: {{ totalChannels }}
-            </mat-card-title>
-            <div fxLayout="row" fxLayoutAlign="end" fxFlex="50">
-                <button
-                    mat-icon-button
-                    color="accent"
-                    (click)="onOpenChannel()"
-                    matTooltip="Open Channel"
-                >
-                    <mat-icon aria-label="Register a new token"
-                        >add_circle</mat-icon
-                    >
-                </button>
-            </div>
-        </div>
-
-        <mat-card-content fxLayout="row" fxLayoutGap="20px">
-            <mat-icon fxLayout="column" fxFlexAlign="center">search</mat-icon>
-            <mat-form-field
-                class="full-width-form-field"
-                fxFlex="45"
-                fxLayout="column"
-            >
-                <input
-                    matInput
-                    type="text"
-                    placeholder="Filter"
-                    [(ngModel)]="filter"
-                    (keyup)="applyKeywordFilter()"
-                />
-                <button
-                    mat-button
-                    *ngIf="filter"
-                    matSuffix
-                    mat-icon-button
-                    aria-label="Clear"
-                    (click)="clearFilter()"
-                >
-                    <mat-icon>close</mat-icon>
-                </button>
-            </mat-form-field>
-            <mat-icon fxLayout="column" fxFlexAlign="center">sort</mat-icon>
-            <mat-form-field
-                class="full-width-form-field"
-                fxLayout="column"
-                fxFlex="45"
-            >
-                <mat-select
-                    placeholder="Sort by"
-                    [(value)]="sorting"
-                    (selectionChange)="applyFilters($event.value)"
-                >
-                    <mat-option
-                        *ngFor="let option of sortingOptions"
-                        [value]="option.value"
-                        >{{ option.label }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <button
-                mat-icon-button
-                (click)="changeOrder()"
-                matTooltip="Change the sorting order"
-            >
-                <mat-icon aria-label="Change sorting order">
-                    {{
-                        ascending ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
-                    }}
-                </mat-icon>
-            </button>
-        </mat-card-content>
-    </mat-card>
+    <app-page-header
+        (added)="onOpenChannel()"
+        (cleared)="clearFilter()"
+        (filtered)="this.filter = $event; applyKeywordFilter()"
+        (ordered)="changeOrder()"
+        (sorted)="applyFilters($event)"
+        [ascending]="ascending"
+        [keyword]="filter"
+        [showButton]="true"
+        [sortingOptions]="sortingOptions"
+        [sorting]="sorting"
+        [total]="totalChannels"
+        label="Channels"
+    >
+    </app-page-header>
 
     <mat-paginator
         class="mat-elevation-z1 page-paginator"
@@ -141,137 +83,138 @@
         <mat-card
             *ngFor="let channel of visibleChannels; trackBy: trackByFn"
             [id]="'channel_' + channel.channel_identifier"
-            class="card"
+            ngClass.gt-xs="card"
+            ngClass.xs="card-mobile"
             [@flyInOut]="'in'"
-            fxLayout="row"
-            fxLayoutGap="15px"
         >
-            <div fxLayout="column" class="channel-id" fxLayoutAlign="center">
-                {{ channel.channel_identifier }}
-            </div>
-
-            <div fxLayout="column" fxFlex="0 0 4em" fxLayoutAlign="center">
-                <img
-                    class="identicon no-margin"
-                    [src]="identicon(channel)"
-                    alt="Identicon of the partner address"
-                />
-            </div>
-            <div
-                class="can-shrink"
-                fxLayout="column"
-                fxFlex="1 1 100%"
-                fxLayoutAlign="center"
-                fxLayoutGap="2px"
-            >
+            <mat-card-content fxLayout="row" fxLayoutGap="15px">
                 <div
-                    fxLayout="row"
-                    *ngIf="
-                        addressLabel(channel.partner_address);
-                        else partner_label
-                    "
-                    class="item-label truncate"
+                    fxLayout="column"
+                    class="channel-id"
+                    fxLayoutAlign="center"
                 >
-                    {{ addressLabel(channel.partner_address) }}
+                    {{ channel.channel_identifier }}
                 </div>
 
-                <ng-template #partner_label>
-                    <div class="item-label" fxLayout="row">Partner</div>
-                </ng-template>
-                <div fxLayout="row" class="truncate item-info">
-                    <span fxLayout="column" class="truncate address">{{
-                        channel.partner_address
-                    }}</span>
-                    <span fxLayout="column">
-                        <button
-                            class="clipboard-button"
-                            mat-icon-button
-                            ngxClipboard
-                            [cbContent]="channel.partner_address"
-                        >
-                            <mat-icon aria-label="Copy address to clipboard"
-                                >content_copy</mat-icon
+                <div fxLayout="column" fxFlex="0 0 4em" fxLayoutAlign="center">
+                    <img
+                        class="identicon no-margin"
+                        [src]="identicon(channel)"
+                        alt="Identicon of the partner address"
+                    />
+                </div>
+                <div
+                    class="can-shrink"
+                    fxLayout="column"
+                    fxFlex="1 1 100%"
+                    fxLayoutAlign="center"
+                    fxLayoutGap="2px"
+                >
+                    <div
+                        fxLayout="row"
+                        *ngIf="
+                            addressLabel(channel.partner_address);
+                            else partner_label
+                        "
+                        class="item-label truncate"
+                    >
+                        {{ addressLabel(channel.partner_address) }}
+                    </div>
+
+                    <ng-template #partner_label>
+                        <div class="item-label" fxLayout="row">Partner</div>
+                    </ng-template>
+                    <div fxLayout="row" class="truncate item-info">
+                        <span fxLayout="column" class="truncate address">{{
+                            channel.partner_address
+                        }}</span>
+                        <span fxLayout="column">
+                            <button
+                                class="clipboard-button"
+                                mat-icon-button
+                                ngxClipboard
+                                [cbContent]="channel.partner_address"
                             >
-                        </button>
-                    </span>
+                                <mat-icon
+                                    aria-label="Copy address to clipboard"
+                                >
+                                    content_copy
+                                </mat-icon>
+                            </button>
+                        </span>
+                    </div>
+
+                    <div class="item-label" fxLayout="row">Balance</div>
+                    <div class="item-info" fxLayout="row">
+                        <span>{{
+                            channel.balance
+                                | decimal: channel.userToken.decimals
+                        }}</span>
+                        <sup
+                            matTooltip="{{ channel.userToken | token }}"
+                            matTooltipPosition="above"
+                            class="token-symbol space gray"
+                        >
+                            {{ channel.userToken.symbol }}
+                        </sup>
+                    </div>
+                    <div class="channel-status" fxLayout="row">
+                        <span class="item-label">Status:</span>
+                        <span class="light space">{{
+                            channel.state | status
+                        }}</span>
+                    </div>
                 </div>
 
-                <div class="item-label" fxLayout="row">Balance</div>
-                <div class="item-info" fxLayout="row">
-                    <span>{{
-                        channel.balance | decimal: channel.userToken.decimals
-                    }}</span>
-                    <sup
-                        matTooltip="{{ channel.userToken | token }}"
-                        matTooltipPosition="above"
-                        class="token-symbol space gray"
-                    >
-                        {{ channel.userToken.symbol }}
-                    </sup>
+                <div
+                    fxLayout="column"
+                    fxShow
+                    fxHide.xs
+                    fxFlex="0 0 5em"
+                    fxLayoutAlign="start"
+                >
+                    <app-channel-actions
+                        [channel]="channel"
+                        (openCloseDialog)="onClose(channel)"
+                        (openPayDialog)="onPay(channel)"
+                        (openDepositDialog)="onDeposit(channel)"
+                    ></app-channel-actions>
                 </div>
-                <div class="channel-status" fxLayout="row">
-                    <span class="item-label">Status:</span>
-                    <span class="light space">{{
-                        channel.state | status
-                    }}</span>
-                </div>
-            </div>
-
-            <div fxLayout="column" fxFlex="0 0 5em" fxLayoutAlign="start">
-                <button
-                    class="match-parent-width"
-                    id="pay-button"
-                    mat-raised-button
-                    color="accent"
-                    [disabled]="
-                        channel.state !== 'opened' || channel.balance == 0
-                    "
-                    (click)="onPay(channel)"
+                <div
+                    fxLayout="column"
+                    fxFlex="0 0 40px"
+                    fxLayoutAlign="start end"
                 >
-                    {{ 'Pay' | uppercase }}
-                </button>
-                <button
-                    class="match-parent-width"
-                    id="deposit-button"
-                    mat-button
-                    color="accent"
-                    [disabled]="channel.state !== 'opened'"
-                    (click)="onDeposit(channel)"
-                >
-                    {{ 'Deposit' | uppercase }}
-                </button>
-                <button
-                    class="match-parent-width"
-                    id="close-button"
-                    mat-button
-                    color="accent"
-                    [disabled]="channel.state !== 'opened'"
-                    (click)="onClose(channel)"
-                >
-                    {{ 'Close' | uppercase }}
-                </button>
-            </div>
-            <div fxLayout="column" fxFlex="0 0 40px" fxLayoutAlign="start end">
-                <button
-                    mat-icon-button
-                    color="accent"
-                    [matMenuTriggerFor]="menu"
-                >
-                    <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
                     <button
-                        mat-menu-item
-                        [routerLink]="['/payments']"
-                        [queryParams]="{
-                            token_address: channel.token_address,
-                            partner_address: channel.partner_address
-                        }"
+                        mat-icon-button
+                        color="accent"
+                        [matMenuTriggerFor]="menu"
                     >
-                        <span>Payment History</span>
+                        <mat-icon>more_vert</mat-icon>
                     </button>
-                </mat-menu>
-            </div>
+                    <mat-menu #menu="matMenu">
+                        <button
+                            mat-menu-item
+                            [routerLink]="['/payments']"
+                            [queryParams]="{
+                                token_address: channel.token_address,
+                                partner_address: channel.partner_address
+                            }"
+                        >
+                            <span>Payment History</span>
+                        </button>
+                    </mat-menu>
+                </div>
+            </mat-card-content>
+
+            <app-channel-actions
+                fxHide
+                fxShow.xs
+                [channel]="channel"
+                (openCloseDialog)="onClose(channel)"
+                (openPayDialog)="onPay(channel)"
+                (openDepositDialog)="onDeposit(channel)"
+            ></app-channel-actions>
         </mat-card>
     </div>
 </div>

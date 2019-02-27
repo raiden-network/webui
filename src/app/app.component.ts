@@ -4,11 +4,12 @@ import { Subscription } from 'rxjs';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
 import { SharedService } from './services/shared.service';
+import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css']
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
     public title = 'Raiden';
@@ -16,12 +17,30 @@ export class AppComponent implements OnInit, OnDestroy {
 
     pendingRequests = 0;
     private sub: Subscription;
+    private _menuOpen: boolean;
 
     constructor(
         private sharedService: SharedService,
         private raidenService: RaidenService,
-        private channelPollingService: ChannelPollingService
+        private channelPollingService: ChannelPollingService,
+        private media: MediaObserver
     ) {}
+
+    get menuOpen(): boolean {
+        if (!this.isMobile()) {
+            return true;
+        } else {
+            return this._menuOpen;
+        }
+    }
+
+    toggleMenu() {
+        this._menuOpen = !this._menuOpen;
+    }
+
+    isMobile(): boolean {
+        return this.media.isActive('xs');
+    }
 
     ngOnInit() {
         this.raidenService.raidenAddress$.subscribe(
@@ -59,5 +78,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     attemptConnection() {
         this.raidenService.attemptConnection();
+    }
+
+    closeMenu() {
+        this._menuOpen = false;
     }
 }

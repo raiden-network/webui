@@ -51,7 +51,11 @@
 }
 
 .card {
-    min-height: 9em;
+    min-height: 7em;
+}
+
+.card-mobile {
+    min-height: 14rem;
 }
 
 .truncate {

@@ -1,0 +1,108 @@
+<mat-card class="page-header">
+    <div fxLayout="row">
+        <mat-card-title fxLayoutAlign="start" fxFlex="50">
+            {{ label }}: {{ total }}
+        </mat-card-title>
+        <div fxLayout="row" fxLayoutAlign="end" fxFlex="50">
+            <button
+                *ngIf="showButton"
+                id="token-registration"
+                mat-icon-button
+                color="accent"
+                (click)="add()"
+                [matTooltip]="buttonDescription"
+            >
+                <mat-icon>
+                    add_circle
+                </mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <mat-card-content fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px">
+        <div
+            fxLayout="column"
+            fxFlex="50"
+            fxLayout.lt-sm="row"
+            fxFlex.lt-sm="100"
+        >
+            <div
+                fxLayout="row"
+                fxLayoutGap="15px"
+                fxFlex="100"
+                fxLayoutAlign.lt-sm="center"
+            >
+                <mat-icon fxLayout="column" fxFlexAlign="center">
+                    search
+                </mat-icon>
+                <mat-form-field
+                    class="full-width-form-field"
+                    fxFlex="1 1 auto"
+                    fxLayout="column"
+                >
+                    <input
+                        matInput
+                        type="text"
+                        placeholder="Filter"
+                        [(ngModel)]="keyword"
+                        (keyup)="filter()"
+                    />
+                    <button
+                        mat-button
+                        *ngIf="keyword"
+                        matSuffix
+                        mat-icon-button
+                        aria-label="Clear"
+                        (click)="clear()"
+                    >
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div
+            fxLayout="column"
+            fxFlex="50"
+            fxLayout.lt-sm="row"
+            fxFlex.lt-sm="100"
+        >
+            <div fxLayout="row" fxLayoutGap="15px" fxFlex="100">
+                <mat-icon fxLayout="column" fxFlexAlign="center">
+                    sort
+                </mat-icon>
+                <mat-form-field
+                    class="full-width-form-field"
+                    fxLayout="column"
+                    fxFlex="1 1 auto"
+                >
+                    <mat-select
+                        placeholder="Sort by"
+                        [(value)]="sorting"
+                        (selectionChange)="sort($event.value)"
+                    >
+                        <mat-option
+                            *ngFor="let option of sortingOptions"
+                            [value]="option.value"
+                            >{{ option.label }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button
+                    mat-icon-button
+                    (click)="order()"
+                    fxFlexAlign="center"
+                    matTooltip="Change the sorting order"
+                >
+                    <mat-icon aria-label="Change sorting order"
+                        >{{
+                            ascending
+                                ? 'keyboard_arrow_up'
+                                : 'keyboard_arrow_down'
+                        }}
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

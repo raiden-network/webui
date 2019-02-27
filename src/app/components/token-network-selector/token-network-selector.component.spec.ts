@@ -116,13 +116,13 @@ describe('TokenNetworkSelectorComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should order filtered tokens first by connected, then owned and last not owned', fakeAsync(() => {
+    it('should order filtered tokens first by connection, then owned and last not owned', fakeAsync(() => {
         let done = false;
         component.filteredOptions$.subscribe(
             value => {
                 expect(value[0].address).toBe(
                     connectedToken.address,
-                    'connected token should go first'
+                    'connection token should go first'
                 );
                 expect(value[1].address).toBe(
                     ownedToken.address,

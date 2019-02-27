@@ -1,0 +1,30 @@
+<button
+    class="match-parent-width"
+    id="pay-button"
+    mat-raised-button
+    color="accent"
+    [disabled]="channel.state !== 'opened' || channel.balance == 0"
+    (click)="openPayDialog.emit(true)"
+>
+    {{ 'Pay' | uppercase }}
+</button>
+<button
+    class="match-parent-width"
+    id="deposit-button"
+    mat-button
+    color="accent"
+    [disabled]="channel.state !== 'opened'"
+    (click)="openDepositDialog.emit(true)"
+>
+    {{ 'Deposit' | uppercase }}
+</button>
+<button
+    class="match-parent-width"
+    id="close-button"
+    mat-button
+    color="accent"
+    [disabled]="channel.state !== 'opened'"
+    (click)="openCloseDialog.emit(true)"
+>
+    {{ 'Close' | uppercase }}
+</button>
