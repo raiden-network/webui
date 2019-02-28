@@ -1,5 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SortingData } from '../../models/sorting.data';
+import { MediaObserver } from '@angular/flex-layout';
+import { MatDialog } from '@angular/material';
+import {
+    FilterDialogComponent,
+    FilterDialogPayload
+} from '../dialogs/filter-dialog/filter-dialog.component';
+import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
+import {
+    SortDialogComponent,
+    SortDialogPayload
+} from '../dialogs/sort-dialog/sort-dialog.component';
 
 @Component({
     selector: 'app-page-header',
@@ -22,7 +33,11 @@ export class PageHeaderComponent implements OnInit {
     @Output() sorted: EventEmitter<number> = new EventEmitter();
     @Output() ordered: EventEmitter<void> = new EventEmitter();
 
-    constructor() {}
+    constructor(private media: MediaObserver, public dialog: MatDialog) {}
+
+    isMobile(): boolean {
+        return this.media.isActive('xs');
+    }
 
     ngOnInit() {}
 
@@ -34,8 +49,64 @@ export class PageHeaderComponent implements OnInit {
         this.filtered.emit(this.keyword);
     }
 
+    openFilterDialog() {
+        const payload: FilterDialogPayload = {
+            keyword: this.keyword
+        };
+
+        const dialogRef = this.dialog.open(FilterDialogComponent, {
+            width: '300px',
+            data: payload
+        });
+
+        dialogRef.afterClosed().subscribe(value => {
+            if (!value) {
+                return;
+            }
+
+            const result = value as FilterDialogPayload;
+            if (!result.keyword) {
+                this.clear();
+            } else {
+                this.keyword = result.keyword;
+                this.filter();
+            }
+        });
+    }
+
     sort(sorting: number) {
         this.sorted.emit(sorting);
+    }
+
+    openSortDialog() {
+        const payload: SortDialogPayload = {
+            ascending: this.ascending,
+            sorting: this.sorting,
+            sortingOptions: this.sortingOptions
+        };
+
+        const dialogRef = this.dialog.open(SortDialogComponent, {
+            width: '300px',
+            data: payload
+        });
+
+        dialogRef.afterClosed().subscribe(value => {
+            if (!value) {
+                return;
+            }
+
+            const result = value as SortDialogPayload;
+
+            if (this.sorting !== result.sorting) {
+                this.sorting = result.sorting;
+                this.sort(this.sorting);
+            }
+
+            if (this.ascending !== result.ascending) {
+                this.ascending = result.ascending;
+                this.order();
+            }
+        });
     }
 
     clear() {

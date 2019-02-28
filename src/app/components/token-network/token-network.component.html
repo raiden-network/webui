@@ -2,11 +2,11 @@
     class="page-container"
     fxLayout="column"
     fxFlex="90"
-    fxFlex.xs="96"
+    fxFlex.xs="98"
     fxFlex.lg="70"
     fxFlex.xl="60"
     fxFlexOffset="5"
-    fxFlexOffset.xs="2"
+    fxFlexOffset.xs="1"
     fxFlexOffset.xl="20"
     fxFlexOffset.lg="15"
 >
@@ -27,7 +27,7 @@
     </app-page-header>
 
     <mat-paginator
-        class="mat-elevation-z1 page-paginator"
+        class="mat-card page-paginator"
         fxLayout="row"
         fxLayoutAlign="end"
         [length]="totalTokens"
@@ -65,6 +65,7 @@
         class="page-list"
         fxLayout="column"
         fxLayoutGap="15px"
+        fxLayoutGap.xs="8px"
         *ngIf="totalTokens > 0"
     >
         <mat-card

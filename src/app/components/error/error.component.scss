@@ -75,7 +75,6 @@ $icon_width_mobile: $circle_width_mobile/2;
     @include respond-to(handhelds) {
         width: 320px;
     }
-
 }
 
 .error .stacktrace pre {

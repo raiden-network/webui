@@ -1,16 +1,43 @@
 <mat-card class="page-header">
     <div fxLayout="row">
-        <mat-card-title fxLayoutAlign="start" fxFlex="50">
+        <mat-card-title fxFlex="50" fxLayoutAlign="start center">
             {{ label }}: {{ total }}
         </mat-card-title>
-        <div fxLayout="row" fxLayoutAlign="end" fxFlex="50">
+        <div *ngIf="isMobile()" fxFlex.xs="16" fxLayoutAlign="end center">
+            <!--suppress Angular2ExpressionType -->
             <button
+                (click)="openFilterDialog()"
+                aria-label="Search"
+                [color]="keyword ? 'activated' : 'accent'"
+                mat-icon-button
+                matTooltip="Search"
+            >
+                <mat-icon>
+                    search
+                </mat-icon>
+            </button>
+        </div>
+        <div *ngIf="isMobile()" fxFlex.xs="16" fxLayoutAlign="end center">
+            <button
+                (click)="openSortDialog()"
+                aria-label="Filter"
+                color="accent"
+                mat-icon-button
+                matTooltip="Sort"
+            >
+                <mat-icon>
+                    sort
+                </mat-icon>
+            </button>
+        </div>
+        <div fxFlex="50" fxFlex.xs="16" fxLayoutAlign="end center">
+            <button
+                (click)="add()"
                 *ngIf="showButton"
+                [matTooltip]="buttonDescription"
+                color="accent"
                 id="token-registration"
                 mat-icon-button
-                color="accent"
-                (click)="add()"
-                [matTooltip]="buttonDescription"
             >
                 <mat-icon>
                     add_circle
@@ -19,20 +46,25 @@
         </div>
     </div>
 
-    <mat-card-content fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px">
+    <mat-card-content
+        *ngIf="!isMobile()"
+        fxLayout="row"
+        fxLayout.lt-sm="column"
+        fxLayoutGap="20px"
+    >
         <div
-            fxLayout="column"
             fxFlex="50"
-            fxLayout.lt-sm="row"
             fxFlex.lt-sm="100"
+            fxLayout="column"
+            fxLayout.lt-sm="row"
         >
             <div
-                fxLayout="row"
-                fxLayoutGap="15px"
                 fxFlex="100"
+                fxLayout="row"
                 fxLayoutAlign.lt-sm="center"
+                fxLayoutGap="15px"
             >
-                <mat-icon fxLayout="column" fxFlexAlign="center">
+                <mat-icon fxFlexAlign="center" fxLayout="column">
                     search
                 </mat-icon>
                 <mat-form-field
@@ -41,19 +73,19 @@
                     fxLayout="column"
                 >
                     <input
-                        matInput
-                        type="text"
-                        placeholder="Filter"
-                        [(ngModel)]="keyword"
                         (keyup)="filter()"
+                        [(ngModel)]="keyword"
+                        matInput
+                        placeholder="Filter"
+                        type="text"
                     />
                     <button
-                        mat-button
-                        *ngIf="keyword"
-                        matSuffix
-                        mat-icon-button
-                        aria-label="Clear"
                         (click)="clear()"
+                        *ngIf="keyword"
+                        aria-label="Clear"
+                        mat-button
+                        mat-icon-button
+                        matSuffix
                     >
                         <mat-icon>close</mat-icon>
                     </button>
@@ -62,24 +94,24 @@
         </div>
 
         <div
-            fxLayout="column"
             fxFlex="50"
-            fxLayout.lt-sm="row"
             fxFlex.lt-sm="100"
+            fxLayout="column"
+            fxLayout.lt-sm="row"
         >
-            <div fxLayout="row" fxLayoutGap="15px" fxFlex="100">
-                <mat-icon fxLayout="column" fxFlexAlign="center">
+            <div fxFlex="100" fxLayout="row" fxLayoutGap="15px">
+                <mat-icon fxFlexAlign="center" fxLayout="column">
                     sort
                 </mat-icon>
                 <mat-form-field
                     class="full-width-form-field"
-                    fxLayout="column"
                     fxFlex="1 1 auto"
+                    fxLayout="column"
                 >
                     <mat-select
-                        placeholder="Sort by"
-                        [(value)]="sorting"
                         (selectionChange)="sort($event.value)"
+                        [(value)]="sorting"
+                        placeholder="Sort by"
                     >
                         <mat-option
                             *ngFor="let option of sortingOptions"
@@ -89,9 +121,9 @@
                     </mat-select>
                 </mat-form-field>
                 <button
-                    mat-icon-button
                     (click)="order()"
                     fxFlexAlign="center"
+                    mat-icon-button
                     matTooltip="Change the sorting order"
                 >
                     <mat-icon aria-label="Change sorting order"
@@ -105,4 +137,6 @@
             </div>
         </div>
     </mat-card-content>
+
+    <mat-card-actions *ngIf="isMobile()"></mat-card-actions>
 </mat-card>

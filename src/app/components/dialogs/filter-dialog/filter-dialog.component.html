@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Filter</h1>
+<div mat-dialog-content>
+    <mat-form-field
+        class="full-width-form-field"
+        fxFlex="1 1 auto"
+        fxLayout="column"
+    >
+        <input
+            [(ngModel)]="keyword"
+            matInput
+            placeholder="Filter"
+            type="text"
+        />
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button (click)="clear()">Clear</button>
+    <button mat-button (click)="apply()">Confirm</button>
+</div>

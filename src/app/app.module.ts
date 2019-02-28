@@ -49,6 +49,8 @@ import { ErrorComponent } from './components/error/error.component';
 import { TokenNetworkActionsComponent } from './components/token-network-actions/token-network-actions.component';
 import { ChannelActionsComponent } from './components/channel-actions/channel-actions.component';
 import { PageHeaderComponent } from './components/page-header/page-header.component';
+import { FilterDialogComponent } from './components/dialogs/filter-dialog/filter-dialog.component';
+import { SortDialogComponent } from './components/dialogs/sort-dialog/sort-dialog.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -97,7 +99,9 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ErrorComponent,
         TokenNetworkActionsComponent,
         ChannelActionsComponent,
-        PageHeaderComponent
+        PageHeaderComponent,
+        FilterDialogComponent,
+        SortDialogComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
@@ -140,7 +144,9 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         PaymentDialogComponent,
         ConfirmationDialogComponent,
         DepositDialogComponent,
-        OpenDialogComponent
+        OpenDialogComponent,
+        FilterDialogComponent,
+        SortDialogComponent
     ],
     bootstrap: [AppComponent]
 })

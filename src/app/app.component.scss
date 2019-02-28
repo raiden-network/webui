@@ -1,3 +1,4 @@
+@import '../sass/mixins';
 .rn {
     color: white !important;
 }
@@ -37,6 +38,9 @@ $sidenav-top: 56px;
 mat-sidenav-content {
     height: 100%;
     padding-top: 20px;
+    @include respond-to(handhelds) {
+        padding-top: 6px;
+    }
 }
 
 .toolbar-spacer {
