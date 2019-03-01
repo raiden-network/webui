@@ -24,7 +24,9 @@ export class AppComponent implements OnInit, OnDestroy {
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService,
         private media: MediaObserver
-    ) {}
+    ) {
+        this._menuOpen = false;
+    }
 
     get menuOpen(): boolean {
         if (!this.isMobile()) {

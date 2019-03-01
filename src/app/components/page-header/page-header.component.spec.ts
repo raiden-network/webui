@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TestProviders } from '../../../testing/test-providers';
 import { MatDialog } from '@angular/material';
-import { MockMatchMedia } from '@angular/flex-layout';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import Spy = jasmine.Spy;
 
@@ -150,5 +149,14 @@ describe('PageHeaderComponent', () => {
 
         expect(component.ascending).toBe(false);
         expect(component.sorting).toBe(1);
+    });
+
+    it('should emit an added even when added is called', function() {
+        component.add();
+        expect(added).toHaveBeenCalledTimes(1);
+        expect(cleared).toHaveBeenCalledTimes(0);
+        expect(filtered).toHaveBeenCalledTimes(0);
+        expect(sorted).toHaveBeenCalledTimes(0);
+        expect(ordered).toHaveBeenCalledTimes(0);
     });
 });
