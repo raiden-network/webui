@@ -1,12 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { SortingData } from '../../models/sorting.data';
+import { SortingData } from '../../../models/sorting.data';
 import { MediaObserver } from '@angular/flex-layout';
 import { MatDialog } from '@angular/material';
 import {
     FilterDialogComponent,
     FilterDialogPayload
 } from '../dialogs/filter-dialog/filter-dialog.component';
-import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import {
     SortDialogComponent,
     SortDialogPayload

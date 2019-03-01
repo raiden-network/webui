@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PageHeaderComponent } from './page-header.component';
-import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
+import { MaterialComponentsModule } from '../../../modules/material-components/material-components.module';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { TestProviders } from '../../../testing/test-providers';
+import { TestProviders } from '../../../../testing/test-providers';
 import { MatDialog } from '@angular/material';
-import { MockMatDialog } from '../../../testing/mock-mat-dialog';
+import { MockMatDialog } from '../../../../testing/mock-mat-dialog';
 import Spy = jasmine.Spy;
 
 describe('PageHeaderComponent', () => {

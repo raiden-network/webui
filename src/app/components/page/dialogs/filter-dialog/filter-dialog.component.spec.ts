@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FilterDialogComponent } from './filter-dialog.component';
-import { MaterialComponentsModule } from '../../../modules/material-components/material-components.module';
+import { MaterialComponentsModule } from '../../../../modules/material-components/material-components.module';
 import { FormsModule } from '@angular/forms';
-import { TestProviders } from '../../../../testing/test-providers';
+import { TestProviders } from '../../../../../testing/test-providers';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import Spy = jasmine.Spy;
 

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { SortingData } from '../../../models/sorting.data';
+import { SortingData } from '../../../../models/sorting.data';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 export interface SortDialogPayload {

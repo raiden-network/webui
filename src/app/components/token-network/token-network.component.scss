@@ -1,4 +1,6 @@
-@import '../../../sass/pages';
+:host {
+    height: 100%;
+}
 
 .button-pane button {
     margin-right: 0.5em;
@@ -20,6 +22,6 @@
     font-weight: 500;
 }
 
-:host {
+app-page-base {
     height: 100%;
 }

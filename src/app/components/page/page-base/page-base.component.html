@@ -1,0 +1,62 @@
+<div
+    class="page-container"
+    fxLayout="column"
+    fxFlex="90"
+    fxFlex.xs="96"
+    fxFlex.lg="70"
+    fxFlex.xl="60"
+    fxFlexOffset="5"
+    fxFlexOffset.xs="2"
+    fxFlexOffset.xl="20"
+    fxFlexOffset.lg="15"
+>
+    <ng-content select="app-page-header"></ng-content>
+
+    <mat-paginator
+        class="mat-card page-paginator"
+        fxLayout="row"
+        fxLayoutAlign="end"
+        fxLayoutAlign.xs="space-evenly"
+        [length]="totalElements"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPageEvent($event)"
+    >
+    </mat-paginator>
+
+    <ng-content></ng-content>
+
+    <div
+        class="match-parent-height"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        *ngIf="hasNoItems()"
+    >
+        <mat-icon color="primary">info</mat-icon>
+        <h2 class="mat-title">{{ noItemsMessage }}!</h2>
+    </div>
+
+    <div
+        class="match-parent-height"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        *ngIf="isLoading()"
+    >
+        <mat-progress-spinner
+            [diameter]="60"
+            [color]="'primary'"
+            [mode]="'indeterminate'"
+        >
+        </mat-progress-spinner>
+    </div>
+
+    <div
+        class="page-list"
+        fxLayout="column"
+        fxLayoutGap="15px"
+        fxLayoutGap.xs="8px"
+        *ngIf="totalElements > 0"
+    >
+        <ng-content select="app-page-item"></ng-content>
+    </div>
+</div>

@@ -1,11 +1,7 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-    BrowserModule,
-    HAMMER_GESTURE_CONFIG,
-    HammerGestureConfig
-} from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -43,14 +39,15 @@ import { LocalStorageAdapter } from './adapters/local-storage-adapter';
 import { AddressBookItemComponent } from './components/address-book-item/address-book-item.component';
 import { DragUploadDirective } from './directives/drag-upload.directive';
 import { StatusPipe } from './pipes/status.pipe';
-import * as Hammer from 'hammerjs';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { ErrorComponent } from './components/error/error.component';
 import { TokenNetworkActionsComponent } from './components/token-network-actions/token-network-actions.component';
 import { ChannelActionsComponent } from './components/channel-actions/channel-actions.component';
-import { PageHeaderComponent } from './components/page-header/page-header.component';
-import { FilterDialogComponent } from './components/dialogs/filter-dialog/filter-dialog.component';
-import { SortDialogComponent } from './components/dialogs/sort-dialog/sort-dialog.component';
+import { PageHeaderComponent } from './components/page/page-header/page-header.component';
+import { FilterDialogComponent } from './components/page/dialogs/filter-dialog/filter-dialog.component';
+import { SortDialogComponent } from './components/page/dialogs/sort-dialog/sort-dialog.component';
+import { PageBaseComponent } from './components/page/page-base/page-base.component';
+import { PageItemComponent } from './components/page/page-item/page-item.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -101,7 +98,9 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ChannelActionsComponent,
         PageHeaderComponent,
         FilterDialogComponent,
-        SortDialogComponent
+        SortDialogComponent,
+        PageBaseComponent,
+        PageItemComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

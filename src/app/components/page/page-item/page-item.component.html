@@ -1,0 +1,22 @@
+<mat-card
+    class="data"
+    ngClass.gt-xs="card"
+    ngClass.xs="card-mobile"
+    [@flyInOut]="'in'"
+>
+    <mat-card-content fxLayout="row" fxLayoutGap="30px">
+        <ng-content></ng-content>
+
+        <div
+            fxShow
+            fxHide.xs
+            fxLayout="column"
+            fxFlex="0 0 8.5em"
+            fxLayoutAlign="center center"
+        >
+            <ng-content select=".actions"></ng-content>
+        </div>
+    </mat-card-content>
+
+    <ng-content select=".actions" fxHide fxShow.xs></ng-content>
+</mat-card>

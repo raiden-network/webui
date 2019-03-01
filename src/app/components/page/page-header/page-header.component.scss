@@ -1,0 +1,12 @@
+@import '../../../../sass/mixins';
+@import '../../../../sass/page_variables';
+
+.page-header {
+    margin-left: $page-margin;
+    margin-right: $page-margin;
+
+    @include respond-to(handhelds) {
+        margin-left: 2px;
+        margin-right: 2px;
+    }
+}

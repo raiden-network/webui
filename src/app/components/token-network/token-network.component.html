@@ -1,14 +1,9 @@
-<div
-    class="page-container"
-    fxLayout="column"
-    fxFlex="90"
-    fxFlex.xs="98"
-    fxFlex.lg="70"
-    fxFlex.xl="60"
-    fxFlexOffset="5"
-    fxFlexOffset.xs="1"
-    fxFlexOffset.xl="20"
-    fxFlexOffset.lg="15"
+<app-page-base
+    (pageChanged)="onPageEvent($event)"
+    [pageSize]="pageSize"
+    [refreshing]="refreshing"
+    [totalElements]="totalTokens"
+    noItemsMessage="No tokens found!"
 >
     <app-page-header
         (added)="showRegisterDialog()"
@@ -26,143 +21,61 @@
     >
     </app-page-header>
 
-    <mat-paginator
-        class="mat-card page-paginator"
-        fxLayout="row"
-        fxLayoutAlign="end"
-        [length]="totalTokens"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="pageSizeOptions"
-        (page)="onPageEvent($event)"
-    >
-    </mat-paginator>
-
-    <div
-        class="match-parent-height"
-        fxLayout="column"
-        fxLayoutAlign="center center"
-        *ngIf="totalTokens == 0 && !refreshing"
-    >
-        <mat-icon color="primary">info</mat-icon>
-        <h2 class="mat-title">No tokens found!</h2>
-    </div>
-
-    <div
-        class="match-parent-height"
-        fxLayout="column"
-        fxLayoutAlign="center center"
-        *ngIf="totalTokens == 0 && refreshing"
-    >
-        <mat-progress-spinner
-            [diameter]="60"
-            [color]="'primary'"
-            [mode]="'indeterminate'"
+    <app-page-item *ngFor="let token of visibleTokens; trackBy: trackByFn">
+        <div fxLayout="column" fxFlex="0 0 8em" fxLayoutAlign="center center">
+            <div class="token-network-symbol" fxFlexOffset="10" fxFlex="row">
+                {{ token.symbol }}
+            </div>
+            <div
+                class="token-network-name"
+                matTooltip="{{ token.name }}"
+                fxFlex="row"
+            >
+                {{ token.name | ellipsis: 27 }}
+            </div>
+        </div>
+        <div
+            class="can-shrink"
+            fxLayout="column"
+            fxFlex="1 2 100%"
+            fxLayoutAlign="center"
+            fxLayoutGap="2px"
         >
-        </mat-progress-spinner>
-    </div>
-
-    <div
-        class="page-list"
-        fxLayout="column"
-        fxLayoutGap="15px"
-        fxLayoutGap.xs="8px"
-        *ngIf="totalTokens > 0"
-    >
-        <mat-card
-            *ngFor="let token of visibleTokens; trackBy: trackByFn"
-            ngClass.gt-xs="card"
-            ngClass.xs="card-mobile"
-            [@flyInOut]="'in'"
-        >
-            <mat-card-content fxLayout="row" fxLayoutGap="30px">
-                <div
-                    fxLayout="column"
-                    fxFlex="0 0 8em"
-                    fxLayoutAlign="center center"
-                >
-                    <div
-                        class="token-network-symbol"
-                        fxFlexOffset="10"
-                        fxFlex="row"
+            <div class="item-label" fxLayout="row">Address</div>
+            <div
+                class="item-info"
+                fxLayout="row"
+                fxLayoutGap="4px"
+                fxLayoutAlign="start center"
+            >
+                <span class="address truncate" [matTooltip]="token.address">
+                    {{ token.address }}
+                </span>
+                <span>
+                    <button
+                        mat-icon-button
+                        ngxClipboard
+                        [cbContent]="token.address"
                     >
-                        {{ token.symbol }}
-                    </div>
-                    <div
-                        class="token-network-name"
-                        matTooltip="{{ token.name }}"
-                        fxFlex="row"
-                    >
-                        {{ token.name | ellipsis: 27 }}
-                    </div>
-                </div>
-                <div
-                    class="can-shrink"
-                    fxLayout="column"
-                    fxFlex="1 2 100%"
-                    fxLayoutAlign="center"
-                    fxLayoutGap="2px"
-                >
-                    <div class="item-label" fxLayout="row">Address</div>
-                    <div
-                        class="item-info"
-                        fxLayout="row"
-                        fxLayoutGap="4px"
-                        fxLayoutAlign="start center"
-                    >
-                        <span
-                            class="address truncate"
-                            [matTooltip]="token.address"
-                        >
-                            {{ token.address }}
-                        </span>
-                        <span>
-                            <button
-                                mat-icon-button
-                                ngxClipboard
-                                [cbContent]="token.address"
-                            >
-                                <mat-icon
-                                    aria-label="Copy address to clipboard"
-                                >
-                                    content_copy
-                                </mat-icon>
-                            </button>
-                        </span>
-                    </div>
-                    <div class="item-label" fxLayout="row">Balance</div>
-                    <div class="item-info" fxLayout="row">
-                        {{ token.balance | decimal: token.decimals }}
-                    </div>
-                </div>
-
-                <div
-                    fxShow
-                    fxHide.xs
-                    fxLayout="column"
-                    fxFlex="0 0 8.5em"
-                    fxLayoutAlign="center center"
-                >
-                    <app-token-network-actions
-                        [connection]="token.connected"
-                        (openConnectionManagerDialog)="
-                            showConnectionManagerDialog(token, $event)
-                        "
-                        (openLeaveNetworkDialog)="showLeaveDialog(token)"
-                        (openPaymentDialog)="showPaymentDialog(token)"
-                    ></app-token-network-actions>
-                </div>
-            </mat-card-content>
-
-            <app-token-network-actions
-                fxHide
-                fxShow.xs
-                [connection]="token.connected"
-                (openConnectionManagerDialog)="
-                    showConnectionManagerDialog(token, $event)
-                "
-                (openLeaveNetworkDialog)="showLeaveDialog(token)"
-                (openPaymentDialog)="showPaymentDialog(token)"
-            ></app-token-network-actions>
-        </mat-card>
-    </div>
-</div>
+                        <mat-icon aria-label="Copy address to clipboard">
+                            content_copy
+                        </mat-icon>
+                    </button>
+                </span>
+            </div>
+            <div class="item-label" fxLayout="row">Balance</div>
+            <div class="item-info" fxLayout="row">
+                {{ token.balance | decimal: token.decimals }}
+            </div>
+        </div>
+        <app-token-network-actions
+            class="actions"
+            [connection]="token.connected"
+            (openConnectionManagerDialog)="
+                showConnectionManagerDialog(token, $event)
+            "
+            (openLeaveNetworkDialog)="showLeaveDialog(token)"
+            (openPaymentDialog)="showPaymentDialog(token)"
+        ></app-token-network-actions>
+    </app-page-item>
+</app-page-base>

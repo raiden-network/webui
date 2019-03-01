@@ -38,7 +38,7 @@ import { ChannelTableComponent } from './channel-table.component';
 import { StatusPipe } from '../../pipes/status.pipe';
 import Spy = jasmine.Spy;
 import { TestProviders } from '../../../testing/test-providers';
-import { PageHeaderComponent } from '../page-header/page-header.component';
+import { PageHeaderComponent } from '../page/page-header/page-header.component';
 import { ChannelActionsComponent } from '../channel-actions/channel-actions.component';
 
 describe('ChannelTableComponent', () => {
