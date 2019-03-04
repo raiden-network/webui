@@ -15,7 +15,12 @@ export class AppComponent implements OnInit, OnDestroy {
     public title = 'Raiden';
     public raidenAddress;
 
-    pendingRequests = 0;
+    private _pendingRequests = 0;
+
+    get pendingRequests(): string {
+        return this._pendingRequests.toString();
+    }
+
     private sub: Subscription;
     private _menuOpen: boolean;
 
@@ -51,7 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.sub = this.sharedService.pendingRequests.subscribe(
             pendingRequests => {
                 setTimeout(() => {
-                    this.pendingRequests = pendingRequests;
+                    this._pendingRequests = pendingRequests;
                 });
             }
         );

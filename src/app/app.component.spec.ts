@@ -14,6 +14,7 @@ import { SharedService } from './services/shared.service';
 import { ErrorComponent } from './components/error/error.component';
 import { MediaObserver } from '@angular/flex-layout';
 import Spy = jasmine.Spy;
+import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -22,7 +23,11 @@ describe('AppComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [AppComponent, ErrorComponent],
+            declarations: [
+                AppComponent,
+                ErrorComponent,
+                NavigationEntryComponent
+            ],
             providers: [
                 {
                     provide: RaidenConfig,

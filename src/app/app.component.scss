@@ -7,14 +7,6 @@ a.active {
     color: #1f86e8 !important;
 }
 
-.navigation-icon {
-    display: block;
-    max-height: 25px;
-    max-width: 25px;
-    height: auto;
-    width: auto;
-}
-
 .toolbar {
     position: fixed;
     top: 0;
@@ -45,10 +37,6 @@ mat-sidenav-content {
 
 .toolbar-spacer {
     flex: 1 1 auto;
-}
-
-mat-nav-list a {
-    margin-top: 40px;
 }
 
 .account {

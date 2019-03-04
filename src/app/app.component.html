@@ -16,7 +16,7 @@
             ngClass.gt-xs="favicon"
         />
     </span>
-    <span fxShow fxHide.xs>
+    <span *ngIf="!isMobile()">
         <a class="rn" target="_blank" href="http://raiden.network/">
             Raiden Network
         </a>
@@ -52,96 +52,36 @@
         role="navigation"
     >
         <mat-nav-list>
-            <a
-                (click)="closeMenu()"
-                fxLayoutAlign="center center"
-                mat-list-item
-                routerLink="/home"
-                routerLinkActive="active"
-            >
-                <div
-                    fxLayout="column"
-                    fxLayoutAlign="center center"
-                    fxFlexOffset="0.2em"
-                >
-                    <mat-icon class="navigation-icon" fxLayout="row">
-                        home
-                    </mat-icon>
-                    <div class="mat-small" fxLayout="row">Home</div>
-                </div>
-            </a>
-            <a
-                (click)="closeMenu()"
-                fxLayoutAlign="center center"
-                mat-list-item
-                routerLink="/tokens"
-                routerLinkActive="active"
-            >
-                <div
-                    fxLayout="column"
-                    fxLayoutAlign="center center"
-                    fxFlexOffset="0.2em"
-                >
-                    <mat-icon class="navigation-icon" fxLayout="row">
-                        toll
-                    </mat-icon>
-                    <div class="mat-small" fxLayout="row">Tokens</div>
-                </div>
-            </a>
-            <a
-                (click)="closeMenu()"
-                fxLayoutAlign="center center"
-                mat-list-item
-                routerLink="/channels"
-                routerLinkActive="active"
-            >
-                <div
-                    fxLayout="column"
-                    fxLayoutAlign="center center"
-                    fxFlexOffset="0.2em"
-                >
-                    <mat-icon class="navigation-icon" fxLayout="row">
-                        compare_arrows
-                    </mat-icon>
-                    <div class="mat-small" fxLayout="row">Channels</div>
-                </div>
-            </a>
-            <a
-                (click)="closeMenu()"
-                fxLayoutAlign="center center"
-                mat-list-item
-                routerLink="/address-book"
-                routerLinkActive="active"
-            >
-                <div
-                    fxLayout="column"
-                    fxLayoutAlign="center center"
-                    fxFlexOffset="0.2em"
-                >
-                    <mat-icon class="navigation-icon" fxLayout="row">
-                        contacts
-                    </mat-icon>
-                    <div class="mat-small" fxLayout="row">Address Book</div>
-                </div>
-            </a>
-            <a
-                (click)="closeMenu()"
-                fxLayoutAlign="center center"
-                mat-list-item
-                routerLink="/license"
-                routerLinkActive="active"
-            >
-                <div
-                    fxLayout="column"
-                    fxLayoutAlign="center center"
-                    fxFlexOffset="0.2em"
-                >
-                    <mat-icon class="navigation-icon" fxLayout="row">
-                        info
-                    </mat-icon>
-                    <div class="mat-small" fxLayout="row">About</div>
-                </div>
-            </a>
+            <app-navigation-entry
+                (clicked)="closeMenu()"
+                icon="home"
+                text="Home"
+                route="/home"
+            ></app-navigation-entry>
+            <app-navigation-entry
+                (clicked)="closeMenu()"
+                icon="toll"
+                text="Tokens"
+                route="/tokens"
+            ></app-navigation-entry>
+            <app-navigation-entry
+                (clicked)="closeMenu()"
+                icon="compare_arrows"
+                text="Channels"
+                route="/channels"
+            ></app-navigation-entry>
+            <app-navigation-entry
+                (clicked)="closeMenu()"
+                icon="contacts"
+                text="Address Book"
+                route="/address-book"
+            ></app-navigation-entry>
+            <app-navigation-entry
+                (clicked)="closeMenu()"
+                icon="info"
+                text="About"
+                route="/license"
+            ></app-navigation-entry>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content class="container-content">
@@ -153,7 +93,7 @@
                     Please try again."
                 buttonText="Retry"
                 [errorStacktrace]="sharedService.getStackTrace()"
-                (buttonClicked)="attemptConnection($event)"
+                (buttonClicked)="attemptConnection()"
             ></app-error>
         </ng-template>
     </mat-sidenav-content>

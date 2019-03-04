@@ -48,6 +48,7 @@ import { FilterDialogComponent } from './components/page/dialogs/filter-dialog/f
 import { SortDialogComponent } from './components/page/dialogs/sort-dialog/sort-dialog.component';
 import { PageBaseComponent } from './components/page/page-base/page-base.component';
 import { PageItemComponent } from './components/page/page-item/page-item.component';
+import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -100,7 +101,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         FilterDialogComponent,
         SortDialogComponent,
         PageBaseComponent,
-        PageItemComponent
+        PageItemComponent,
+        NavigationEntryComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
