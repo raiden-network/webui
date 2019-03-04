@@ -40,6 +40,8 @@ import Spy = jasmine.Spy;
 import { TestProviders } from '../../../testing/test-providers';
 import { PageHeaderComponent } from '../page/page-header/page-header.component';
 import { ChannelActionsComponent } from '../channel-actions/channel-actions.component';
+import { PageBaseComponent } from '../page/page-base/page-base.component';
+import { PageItemComponent } from '../page/page-item/page-item.component';
 
 describe('ChannelTableComponent', () => {
     let component: ChannelTableComponent;
@@ -56,6 +58,8 @@ describe('ChannelTableComponent', () => {
                 TokenInputComponent,
                 AddressInputComponent,
                 PageHeaderComponent,
+                PageBaseComponent,
+                PageItemComponent,
                 ChannelActionsComponent,
                 TokenPipe,
                 EllipsisPipe,
