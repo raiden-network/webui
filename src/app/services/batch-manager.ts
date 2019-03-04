@@ -40,13 +40,10 @@ export class Validator {
 }
 
 export class BatchManager {
-    constructor(moduleInstance: AbstractWeb3Module) {
-        this.moduleInstance = moduleInstance;
-    }
     private static BATCH_LIMIT = 800;
-
     private requests: Array<BatchRequest> = [];
-    private moduleInstance: AbstractWeb3Module;
+
+    constructor(private moduleInstance: AbstractWeb3Module) {}
 
     private static defaultOrThrow(defaultValue: any, error: Error): any {
         if (defaultValue === undefined) {
