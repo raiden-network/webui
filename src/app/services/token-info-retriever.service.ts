@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import Contract from 'web3/eth/contract';
+import { Contract } from 'web3-eth-contract';
 import { UserToken } from '../models/usertoken';
 import { RaidenConfig } from './raiden.config';
 import { tokenabi } from './tokenabi';
-// @ts-ignore
-import * as Web3 from 'web3';
+import Web3 from 'web3';
 import { BatchManager } from './batch-manager';
 
 @Injectable({
@@ -17,7 +16,7 @@ export class TokenInfoRetrieverService {
 
     constructor(private raidenConfig: RaidenConfig) {
         this.web3 = this.raidenConfig.web3;
-        this.tokenContract = new this.web3.eth.Contract(tokenabi) as Contract;
+        this.tokenContract = new this.web3.eth.Contract(tokenabi);
         this.batchManager = this.raidenConfig.batchManager;
     }
 
@@ -71,7 +70,6 @@ export class TokenInfoRetrieverService {
                 add(methods, 'decimals', tokenAddress, 18);
             }
 
-            // @ts-ignore
             const request = methods.balanceOf(raidenAddress).call.request();
 
             const balanceIndex = this.batchManager.add({
@@ -98,17 +96,19 @@ export class TokenInfoRetrieverService {
                 token = TokenInfoRetrieverService.createToken(element.address);
             }
 
-            const expectedType = typeof token[
-                element.method !== 'balanceOf' ? element.method : 'balance'
-            ];
+            const method =
+                element.method !== 'balanceOf' ? element.method : 'balance';
+            const expectedType = typeof token[method];
+
+            if (typeof value === 'object') {
+                value = value[method] || value['0'];
+            }
 
             if (expectedType === 'number') {
                 value = Number(value);
             }
 
-            token[
-                element.method !== 'balanceOf' ? element.method : 'balance'
-            ] = value;
+            token[method] = value;
             userTokens[element.address] = token;
         });
 

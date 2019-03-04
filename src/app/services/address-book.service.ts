@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Address, Addresses } from '../models/address';
 import { LocalStorageAdapter } from '../adapters/local-storage-adapter';
-// @ts-ignore
-import * as Web3 from 'web3';
+import * as Utils from 'web3-utils';
 import { addressSchema } from '../models/address-schema';
 import * as Ajv from 'ajv';
 import { ValidateFunction } from 'ajv';
@@ -14,23 +13,21 @@ export class AddressBookService {
     private static ADDRESS_BOOK_KEY = 'raiden__address_book';
 
     private storage: Storage;
-    private web3: Web3;
     private readonly schema: ValidateFunction;
 
     constructor(localStorageAdapter: LocalStorageAdapter) {
         this.storage = localStorageAdapter.localStorage;
-        this.web3 = new Web3();
 
         const validator = new Ajv({ allErrors: true });
         this.schema = validator.compile(addressSchema);
     }
 
     public save(address: Address) {
-        if (!this.web3.utils.isAddress(address.address)) {
+        if (!Utils.isAddress(address.address)) {
             throw Error(`${address.address} is not an ethereum address`);
         }
 
-        if (!this.web3.utils.checkAddressChecksum(address.address)) {
+        if (!Utils.checkAddressChecksum(address.address)) {
             throw Error(`${address.address} is not in checksum format`);
         }
 

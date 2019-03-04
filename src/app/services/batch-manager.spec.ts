@@ -1,196 +1,56 @@
-import { BatchManager } from './batch-manager';
-import { hexToString } from 'web3-utils';
-import { formatters } from 'web3-core-helpers';
+import { BatchManager, Validator } from './batch-manager';
+import { HttpProvider } from 'web3-providers/types';
+import { stub } from '../../testing/stub';
+import { AbstractWeb3Module } from 'web3-core/types';
+import { AbstractMethod } from 'web3-core-method/types';
 import Spy = jasmine.Spy;
-
-interface JsonRPCRequest {
-    format?: any;
-    jsonrpc: string;
-    method: string;
-    params: any[];
-    id: number;
-}
-
-interface JsonRPCResponse {
-    jsonrpc: string;
-    id: number;
-    result?: any;
-    error?: RPRCResponseError;
-}
-
-interface RPRCResponseError {
-    code: number;
-    message: string;
-}
-
-interface Provider {
-    send(
-        payload: JsonRPCRequest,
-        callback: (e: Error, val: JsonRPCResponse) => void
-    ): any;
-}
-
-export class FakeHttpProvider implements Provider {
-    private countId = 1;
-
-    private response = [];
-    private error = [];
-
-    public send(
-        payload: JsonRPCRequest,
-        callback: (e: Error, val: JsonRPCResponse) => void
-    ): any {
-        if (payload.id) {
-            this.countId = payload.id;
-        }
-
-        if (!(payload instanceof Array) || !(payload instanceof Object)) {
-            throw Error('payload should be either object or array');
-        }
-
-        const response = this.getResponseOrError('response', payload);
-        const error = this.getResponseOrError('error', payload);
-
-        // @ts-ignore
-        setTimeout(() => callback(error, response), 1);
-    }
-
-    public getResponseOrError(
-        type: any,
-        payload: any | Array<any>
-    ): JsonRPCResponse | JsonRPCResponse[] {
-        let response: JsonRPCResponse | JsonRPCResponse[];
-
-        if (type === 'error') {
-            response = this.error.shift();
-        } else {
-            response = this.response.shift() || this.getResponseStub();
-        }
-
-        if (response) {
-            if (response instanceof Array) {
-                let currentResponse: JsonRPCResponse[];
-
-                if (response.length > payload.length) {
-                    currentResponse = response.slice(0, payload.length);
-                    this.response.push(
-                        response.slice(payload.length, response.length)
-                    );
-                } else {
-                    currentResponse = response;
-                }
-
-                response = currentResponse.map((resp, index) => {
-                    resp.id = payload[index]
-                        ? payload[index].id
-                        : this.countId++;
-                    return resp;
-                });
-            } else {
-                response.id = payload.id;
-            }
-        }
-
-        return response;
-    }
-
-    public injectBatchResults(
-        results: Array<any>,
-        error: boolean = false,
-        errorIndex: number = -1
-    ) {
-        this.response.push(
-            results.map((value, index) => {
-                let response: JsonRPCResponse;
-
-                if (error || errorIndex === index) {
-                    response = this.getErrorStub();
-                    response.error = value;
-                } else {
-                    response = this.getResponseStub();
-                    response.result = value;
-                }
-
-                return response;
-            })
-        );
-    }
-
-    public injectResult(result: string) {
-        const response = this.getResponseStub();
-        response.result = result;
-        this.response.push(response);
-    }
-
-    public injectInvalidResponse(response: object) {
-        this.response.push(response);
-    }
-
-    public injectError(error: any) {
-        const errorStub = this.getErrorStub();
-        errorStub.error = error;
-        this.error.push(errorStub);
-    }
-
-    private getResponseStub(): JsonRPCResponse {
-        const countId = this.countId;
-        return {
-            jsonrpc: '2.0',
-            id: countId,
-            result: null
-        };
-    }
-
-    private getErrorStub(): JsonRPCResponse {
-        const countId = this.countId;
-        return {
-            jsonrpc: '2.0',
-            id: countId,
-            error: {
-                code: 50010,
-                message: 'Invalid Response?'
-            }
-        };
-    }
-}
-
-function getEthCallStub(): JsonRPCRequest {
-    return {
-        jsonrpc: '2.0',
-        id: 3,
-        method: 'eth_call',
-        params: [
-            {
-                data: '0x06fdde03',
-                to: '0xa72fe7fe1f1323586a80c6b631202bb15b0419ab'
-            },
-            'latest'
-        ]
-    };
-}
-
-function getRPCResult(): string {
-    return '0x0';
-}
 
 describe('BatchManager', () => {
     let batchManager: BatchManager;
-    let httpProvider: FakeHttpProvider;
-    let providerSpy: Spy;
+    let provider: HttpProvider;
+    let moduleInstanceMock: AbstractWeb3Module;
+    let abstractMethod: AbstractMethod;
+    let sendBatch: Spy;
+    let afterExecution: Spy;
+    let count: number;
+
+    function getResponseStub(): Object {
+        const countId = count++;
+        return {
+            jsonrpc: '2.0',
+            id: countId,
+            result: undefined
+        };
+    }
 
     beforeEach(() => {
-        httpProvider = new FakeHttpProvider();
+        count = 0;
+        provider = jasmine.createSpyObj('HttpProvider', ['send', 'sendBatch']);
+        sendBatch = provider.sendBatch as Spy;
+
+        abstractMethod = jasmine.createSpyObj('AbstractMethod', [
+            'afterExecution',
+            'callback'
+        ]);
+
+        abstractMethod.rpcMethod = 'rpc_method';
+        abstractMethod.parameters = [true];
+        afterExecution = abstractMethod.afterExecution as Spy;
+
+        moduleInstanceMock = stub<AbstractWeb3Module>();
         // @ts-ignore
-        batchManager = new BatchManager(httpProvider);
-        providerSpy = spyOn(httpProvider, 'send');
-        providerSpy.and.callThrough();
+        moduleInstanceMock.currentProvider = provider;
+        batchManager = new BatchManager(moduleInstanceMock);
     });
 
     it('should throw an exception if there is at least one error in the batch', async () => {
-        batchManager.add({ request: getEthCallStub() });
-        batchManager.add({ request: getEthCallStub() });
-        httpProvider.injectResult(getRPCResult());
-        httpProvider.injectError('err');
+        sendBatch.and.returnValue(
+            Promise.resolve([getResponseStub(), getResponseStub()])
+        );
+        afterExecution.and.returnValues('1').and.throwError('failed');
+
+        batchManager.add({ request: abstractMethod });
+        batchManager.add({ request: abstractMethod });
 
         try {
             await batchManager.execute();
@@ -201,10 +61,12 @@ describe('BatchManager', () => {
     });
 
     it('should process small batch and have the results', async () => {
-        httpProvider.injectBatchResults([getRPCResult(), getRPCResult()]);
-
-        batchManager.add({ request: getEthCallStub() });
-        batchManager.add({ request: getEthCallStub() });
+        sendBatch.and.returnValue(
+            Promise.resolve([getResponseStub(), getResponseStub()])
+        );
+        afterExecution.and.returnValues(1, 3);
+        batchManager.add({ request: abstractMethod });
+        batchManager.add({ request: abstractMethod });
 
         const result = await batchManager.execute();
 
@@ -213,19 +75,16 @@ describe('BatchManager', () => {
     });
 
     it('should only call through the http provider for the batch', async () => {
-        const results = [];
-
+        const responseItems = [];
         const batchSize = 800;
 
         for (let i = 0; i < batchSize; i++) {
-            const ethCallStub = getEthCallStub();
-            ethCallStub.id = i + 1;
-            batchManager.add({ request: ethCallStub });
-
-            results.push(getRPCResult());
+            batchManager.add({ request: abstractMethod });
+            responseItems.push(getResponseStub());
         }
 
-        httpProvider.injectBatchResults(results);
+        afterExecution.and.returnValue('test');
+        sendBatch.and.returnValue(Promise.resolve(responseItems));
 
         const result = await batchManager.execute();
 
@@ -234,23 +93,22 @@ describe('BatchManager', () => {
             batchSize,
             'there should be 800 results in the batch'
         );
-        expect(httpProvider.send).toHaveBeenCalledTimes(1);
+        expect(provider.sendBatch).toHaveBeenCalledTimes(1);
+        expect(provider.send).toHaveBeenCalledTimes(0);
     });
 
     it('should internally split the batch if more than 800 requests are batched', async () => {
-        const results = [];
-
+        const responseItems = [];
         const batchSize = 1600;
 
         for (let i = 0; i < batchSize; i++) {
-            const ethCallStub = getEthCallStub();
-            ethCallStub.id = i + 1;
-            batchManager.add({ request: ethCallStub });
-
-            results.push(getRPCResult());
+            batchManager.add({ request: abstractMethod });
+            responseItems.push(getResponseStub());
         }
 
-        httpProvider.injectBatchResults(results);
+        sendBatch.and.returnValue(Promise.resolve(responseItems));
+
+        afterExecution.and.returnValue('test');
 
         const result = await batchManager.execute();
 
@@ -259,13 +117,14 @@ describe('BatchManager', () => {
             batchSize,
             'there should be 1600 results in response'
         );
-        expect(httpProvider.send).toHaveBeenCalledTimes(2);
+        expect(provider.sendBatch).toHaveBeenCalledTimes(2);
+        expect(provider.send).toHaveBeenCalledTimes(0);
     });
 
     it('should fail on Error', async () => {
-        const ethCallStub = getEthCallStub();
-        batchManager.add({ request: ethCallStub });
-        httpProvider.injectBatchResults([getRPCResult()], true);
+        batchManager.add({ request: abstractMethod });
+
+        afterExecution.and.throwError('failed');
 
         try {
             await batchManager.execute();
@@ -276,75 +135,38 @@ describe('BatchManager', () => {
     });
 
     it('should fail on an invalid response', async () => {
-        const ethCallStub = getEthCallStub();
-        batchManager.add({ request: ethCallStub });
-        httpProvider.injectInvalidResponse({
-            jsonrpc: '2.0',
-            id: 2
+        batchManager.add({ request: abstractMethod });
+        const response = {
+            jsonrpc: '2.0'
+        };
+        sendBatch.and.returnValue(Promise.resolve(response));
+        afterExecution.and.callFake(() => {
+            throw Validator.validate(response);
         });
 
         try {
             await batchManager.execute();
             fail('there should be no result');
         } catch (e) {
-            expect(e).toMatch('Invalid JSON RPC response');
-        }
-    });
-
-    it('should ignore failure if there is a default value and the formatter throws', async () => {
-        const ethCallStub = getEthCallStub();
-        ethCallStub.format = function() {
-            throw Error('format failed');
-        };
-        batchManager.add({
-            request: ethCallStub,
-            defaultValue: ''
-        });
-
-        httpProvider.injectBatchResults([
-            '0x4d4b520000000000000000000000000000000000000000000000000000000000'
-        ]);
-
-        const result = await batchManager.execute();
-
-        expect(result.length).toBe(1);
-        expect(result[0]).toBe('');
-    });
-
-    it('should fail if there is no default value and the formatter throws', async () => {
-        const ethCallStub = getEthCallStub();
-        ethCallStub.format = function() {
-            throw Error('format failed');
-        };
-        batchManager.add({
-            request: ethCallStub
-        });
-
-        httpProvider.injectBatchResults([
-            '0x4d4b520000000000000000000000000000000000000000000000000000000000'
-        ]);
-
-        try {
-            await batchManager.execute();
-            fail('there should be no result');
-        } catch (e) {
-            expect(e).toBeTruthy();
-            expect(e.message).toMatch('format failed');
+            expect(e).toMatch('Validation error: Undefined JSON-RPC result');
         }
     });
 
     it('should not fail the whole batch if there is an error response but the request has a default value', async function() {
         batchManager.add({
-            request: getEthCallStub(),
+            request: abstractMethod,
             defaultValue: ''
         });
 
         batchManager.add({
-            request: getEthCallStub(),
+            request: abstractMethod,
             defaultValue: ''
         });
 
-        httpProvider.injectBatchResults(['test'], false, 1);
+        afterExecution.and.returnValues('test', '');
+        const errorStub = getResponseStub();
+        delete errorStub['result'];
+        sendBatch.and.returnValues(getResponseStub(), errorStub);
 
         const result = await batchManager.execute();
 
@@ -355,17 +177,28 @@ describe('BatchManager', () => {
 
     it('should not fail the whole batch if there is an invalid response but the request has a default value', async function() {
         batchManager.add({
-            request: getEthCallStub(),
+            request: abstractMethod,
             defaultValue: ''
         });
 
         batchManager.add({
-            request: getEthCallStub(),
+            request: abstractMethod,
             defaultValue: ''
         });
 
-        httpProvider.injectBatchResults(['test']);
-        httpProvider.injectInvalidResponse({ not_valid_response: true });
+        const stub1 = getResponseStub();
+        const stub2 = { not_valid_response: true };
+
+        sendBatch.and.returnValue(Promise.resolve([stub1, stub2]));
+
+        let calls = 0;
+        afterExecution.and.callFake(() => {
+            if (calls === 0) {
+                calls++;
+                return 'test';
+            }
+            throw Validator.validate(stub2);
+        });
 
         const result = await batchManager.execute();
 

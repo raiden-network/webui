@@ -1,4 +1,6 @@
-export const tokenabi = [
+import { AbiItem } from 'web3-utils/types';
+
+export const tokenabi: AbiItem[] = [
     {
         constant: true,
         inputs: [],
@@ -115,7 +117,6 @@ export const tokenabi = [
     },
     { payable: false, type: 'fallback' },
     {
-        anonymous: false,
         inputs: [
             { indexed: true, name: '_from', type: 'address' },
             { indexed: true, name: '_to', type: 'address' },
@@ -125,7 +126,6 @@ export const tokenabi = [
         type: 'event'
     },
     {
-        anonymous: false,
         inputs: [
             { indexed: true, name: '_owner', type: 'address' },
             { indexed: true, name: '_spender', type: 'address' },

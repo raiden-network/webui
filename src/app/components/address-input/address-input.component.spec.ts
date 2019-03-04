@@ -15,8 +15,6 @@ import { AddressBookService } from '../../services/address-book.service';
 import { Address } from '../../models/address';
 import { errorMessage, mockInput } from '../../../testing/interaction-helper';
 
-// @ts-ignore
-import * as Web3 from 'web3';
 import { TestProviders } from '../../../testing/test-providers';
 
 describe('AddressInputComponent', () => {
@@ -42,9 +40,6 @@ describe('AddressInputComponent', () => {
                 NoopAnimationsModule
             ]
         }).compileComponents();
-
-        const config = TestBed.get(RaidenConfig) as MockConfig;
-        config.web3 = new Web3();
 
         mockAddressBookService = TestBed.get(AddressBookService);
     }));

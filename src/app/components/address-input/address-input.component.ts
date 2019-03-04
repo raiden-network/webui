@@ -15,6 +15,7 @@ import { AddressBookService } from '../../services/address-book.service';
 import { Address } from '../../models/address';
 import { flatMap, map, startWith } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { checkAddressChecksum, toChecksumAddress } from 'web3-utils';
 
 @Component({
     selector: 'app-address-input',
@@ -92,7 +93,7 @@ export class AddressInputComponent
     }
 
     checksum(): string {
-        return this.raidenService.toChecksumAddress(this.addressFc.value);
+        return toChecksumAddress(this.addressFc.value);
     }
 
     registerOnValidatorChange(fn: () => void): void {}
@@ -112,7 +113,7 @@ export class AddressInputComponent
             } else if (
                 controlValue &&
                 controlValue.length === 42 &&
-                !raidenService.checkChecksumAddress(controlValue)
+                !checkAddressChecksum(controlValue)
             ) {
                 return { notChecksumAddress: true };
             } else {

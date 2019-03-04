@@ -12,7 +12,6 @@ import {
     tap,
     toArray
 } from 'rxjs/operators';
-import { Block } from 'web3/eth/types';
 import { Channel } from '../models/channel';
 import { Connections } from '../models/connection';
 import { PaymentEvent } from '../models/payment-event';
@@ -24,6 +23,7 @@ import { RaidenConfig } from './raiden.config';
 import { SharedService } from './shared.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { environment } from '../../environments/environment';
+import { Block } from 'web3-eth/types';
 
 @Injectable({
     providedIn: 'root'
@@ -71,14 +71,6 @@ export class RaidenService {
 
     getBlockNumber(): Observable<number> {
         return fromPromise(this.raidenConfig.web3.eth.getBlockNumber());
-    }
-
-    public checkChecksumAddress(address: string): boolean {
-        return this.raidenConfig.web3.utils.checkAddressChecksum(address);
-    }
-
-    public toChecksumAddress(address: string): string {
-        return this.raidenConfig.web3.utils.toChecksumAddress(address);
     }
 
     public getChannels(): Observable<Array<Channel>> {
