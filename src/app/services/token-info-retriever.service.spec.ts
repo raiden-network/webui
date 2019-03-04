@@ -5,10 +5,12 @@ import { RaidenConfig } from './raiden.config';
 import { SharedService } from './shared.service';
 
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
-import { BatchManager, BatchRequest } from './batch-manager';
+import { BatchManager } from './batch-manager';
 import { UserToken } from '../models/usertoken';
 import Spy = jasmine.Spy;
 import { TestProviders } from '../../testing/test-providers';
+import { AbiItem } from 'web3-utils/types';
+import { ContractOptions } from 'web3-eth-contract/types';
 
 describe('TokenInfoRetriever', () => {
     let service: TokenInfoRetrieverService;
@@ -28,7 +30,8 @@ describe('TokenInfoRetriever', () => {
         const config = TestBed.get(RaidenConfig);
 
         function createMethod(name: string) {
-            return function method() {
+            // noinspection JSUnusedLocalSymbols
+            return function method(any?: any) {
                 return {
                     call: {
                         request: () => {
@@ -39,8 +42,14 @@ describe('TokenInfoRetriever', () => {
             };
         }
 
-        config.web3.eth.Contract = () => {
+        // noinspection JSUnusedLocalSymbols
+        config.web3.eth.Contract = function(
+            jsonInterface: AbiItem[] | AbiItem,
+            address?: string,
+            options?: ContractOptions
+        ) {
             return {
+                address: undefined,
                 options: {},
                 methods: {
                     name: createMethod('name'),
@@ -104,10 +113,10 @@ describe('TokenInfoRetriever', () => {
 
         const calls = addSpy.calls;
 
-        expect((calls.argsFor(0)[0] as BatchRequest).request).toBe('name');
-        expect((calls.argsFor(1)[0] as BatchRequest).request).toBe('symbol');
-        expect((calls.argsFor(2)[0] as BatchRequest).request).toBe('decimals');
-        expect((calls.argsFor(3)[0] as BatchRequest).request).toBe('balanceOf');
+        expect(calls.argsFor(0)[0].request).toBe('name');
+        expect(calls.argsFor(1)[0].request).toBe('symbol');
+        expect(calls.argsFor(2)[0].request).toBe('decimals');
+        expect(calls.argsFor(3)[0].request).toBe('balanceOf');
 
         const userToken = tokens['0x0f114A1E9Db192502E7856309cc899952b3db1ED'];
 
@@ -149,7 +158,7 @@ describe('TokenInfoRetriever', () => {
 
         const calls = addSpy.calls;
 
-        expect((calls.argsFor(0)[0] as BatchRequest).request).toBe('balanceOf');
+        expect(calls.argsFor(0)[0].request).toBe('balanceOf');
 
         const userToken = tokens['0x0f114A1E9Db192502E7856309cc899952b3db1ED'];
 

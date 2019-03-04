@@ -20,6 +20,7 @@ import { flatMap, map, share, startWith } from 'rxjs/operators';
 import { UserToken } from '../../models/usertoken';
 import { RaidenService } from '../../services/raiden.service';
 import { amountToDecimal } from '../../utils/amount.converter';
+import { checkAddressChecksum, toChecksumAddress } from 'web3-utils';
 
 @Component({
     selector: 'app-token-network-selector',
@@ -42,9 +43,7 @@ export class TokenNetworkSelectorComponent
     implements OnInit, ControlValueAccessor, Validator {
     @Output() valueChanged = new EventEmitter<UserToken>();
     public filteredOptions$: Observable<UserToken[]>;
-    readonly tokenFc = new FormControl('', [
-        this.addressValidatorFn(this.raidenService)
-    ]);
+    readonly tokenFc = new FormControl('', [this.addressValidatorFn()]);
     private tokens$: Observable<UserToken[]>;
 
     constructor(private raidenService: RaidenService) {}
@@ -109,7 +108,7 @@ export class TokenNetworkSelectorComponent
     }
 
     checksum(): string {
-        return this.raidenService.toChecksumAddress(this.tokenFc.value);
+        return toChecksumAddress(this.tokenFc.value);
     }
 
     // noinspection JSMethodCanBeStatic
@@ -149,13 +148,13 @@ export class TokenNetworkSelectorComponent
         );
     }
 
-    private addressValidatorFn(raidenService: RaidenService): ValidatorFn {
+    private addressValidatorFn(): ValidatorFn {
         return (control: AbstractControl) => {
             const controlValue = control.value;
             if (
                 controlValue &&
                 controlValue.length === 42 &&
-                !raidenService.checkChecksumAddress(controlValue)
+                !checkAddressChecksum(controlValue)
             ) {
                 return { notChecksumAddress: true };
             } else {

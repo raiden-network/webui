@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentType } from './enviroment-type.enum';
-// @ts-ignore
-import * as Web3 from 'web3';
 import { BatchManager } from './batch-manager';
-import { HttpProvider, Provider } from 'web3/providers';
 import { SharedService } from './shared.service';
+import { HttpProvider } from 'web3-providers/types';
+import Web3 from 'web3';
 
 interface RDNConfig {
     raiden: string;
@@ -31,12 +30,9 @@ const default_config: RDNConfig = {
     environment_type: EnvironmentType.DEVELOPMENT
 };
 
-function override(object, methodName, callback) {
-    object[methodName] = callback(object[methodName]);
-}
-
 export class Web3Factory {
-    create(provider: Provider): Web3 {
+    // noinspection JSMethodCanBeStatic
+    create(provider: HttpProvider): Web3 {
         return new Web3(provider);
     }
 }
@@ -59,6 +55,10 @@ export class RaidenConfig {
         return this._batchManager;
     }
 
+    private static isAbsolute(url: string) {
+        return url.match(/^[a-zA-Z]+:\/\//);
+    }
+
     async load(url: string): Promise<boolean> {
         await this.loadConfiguration(url);
         try {
@@ -70,9 +70,9 @@ export class RaidenConfig {
         }
     }
 
-    private async setupWeb3() {
-        this.web3 = this.web3Factory.create(this.provider(2000));
-        // make a simple test call to web3
+    private async setupWeb3(): Promise<void> {
+        const provider = this.provider(2000);
+        this.web3 = this.web3Factory.create(provider);
 
         try {
             await this.web3.eth.net.getId();
@@ -99,39 +99,19 @@ export class RaidenConfig {
         this.sharedService.httpTimeout = this.config.http_timeout;
     }
 
-    private provider(timeout?: number): Provider {
-        return this.monkeyPatchProvider(
-            new Web3.providers.HttpProvider(this.config.web3, timeout)
-        );
+    private provider(timeout?: number): HttpProvider {
+        let host = this.config.web3;
+        if (
+            !RaidenConfig.isAbsolute(this.config.web3) &&
+            /^\/\w/.test(this.config.web3)
+        ) {
+            host = `${window.location.origin}${this.config.web3}`;
+        }
+
+        return new Web3.providers.HttpProvider(host, { timeout });
     }
 
     private createBatchManager() {
-        this._batchManager = new BatchManager(this.web3.currentProvider);
-    }
-
-    // TODO: Workaround for https://github.com/ethereum/web3.js/issues/1803 it should be immediately removed
-    // as soon as the issue is fixed upstream.
-    // Issue is also documented here https://github.com/ethereum/web3.js/issues/1802
-    private monkeyPatchProvider(httpProvider: HttpProvider) {
-        override(httpProvider, '_prepareRequest', function() {
-            return function() {
-                const request = new XMLHttpRequest();
-
-                request.open('POST', this.host, true);
-                request.setRequestHeader('Content-Type', 'application/json');
-                request.timeout =
-                    this.timeout && this.timeout !== 1 ? this.timeout : 0;
-
-                if (this.headers) {
-                    this.headers.forEach(function(header) {
-                        request.setRequestHeader(header.name, header.value);
-                    });
-                }
-
-                return request;
-            };
-        });
-
-        return httpProvider;
+        this._batchManager = new BatchManager(this.web3);
     }
 }

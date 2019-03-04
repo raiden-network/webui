@@ -1,11 +1,10 @@
-// @ts-ignore
-import * as Web3 from 'web3';
-import Utils from 'web3/utils';
+import Web3 from 'web3';
+import { Utils } from 'web3-utils';
+import { HttpProvider } from 'web3-providers';
 import { RaidenConfig } from '../app/services/raiden.config';
 import { BatchManager } from '../app/services/batch-manager';
 import { SharedService } from '../app/services/shared.service';
 import { HttpClient } from '@angular/common/http';
-import { Provider } from 'web3/providers';
 import { stub } from './stub';
 
 class MockWeb3 extends Web3 {
@@ -13,7 +12,7 @@ class MockWeb3 extends Web3 {
     checksumAddress = '';
 
     constructor() {
-        super();
+        super(new HttpProvider('http://localhost:8485'));
 
         const mockWeb3 = this;
         this.eth.getBlockNumber = function() {
@@ -39,7 +38,7 @@ class MockWeb3 extends Web3 {
 // noinspection JSUnusedLocalSymbols
 const mockProvider = {
     web3: new MockWeb3(),
-    create(provider: Provider): Web3 {
+    create(provider: HttpProvider): Web3 {
         return this.web3;
     }
 };
@@ -47,7 +46,7 @@ const mockProvider = {
 export class MockConfig extends RaidenConfig {
     public web3: Web3 = mockProvider.web3;
     private testBatchManager: BatchManager = new BatchManager(
-        this.web3.currentProvider
+        this.web3
     );
 
     constructor() {

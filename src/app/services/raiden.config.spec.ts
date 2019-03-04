@@ -7,72 +7,73 @@ import {
 } from '@angular/common/http/testing';
 import { SharedService } from './shared.service';
 import { EnvironmentType } from './enviroment-type.enum';
-// @ts-ignore
-import * as Web3 from 'web3';
-import { Provider } from 'web3/providers';
-
-class TestWeb3Factory implements Web3Factory {
-    private _calls = 0;
-    private _failed = [];
-
-    create(provider: Provider): Web3 {
-        this._calls++;
-        const web3 = new Web3(provider);
-        const real = web3.eth.net.getId;
-        const reset = () => (web3.eth.net.getId = real);
-
-        const factory = this;
-        web3.eth.net.getId = async function() {
-            reset();
-            const failed = factory._failed;
-            const current = factory._calls;
-            if (failed.findIndex(value => value === current) >= 0) {
-                throw new Error('failed');
-            }
-            return 1;
-        };
-        return web3;
-    }
-
-    calls() {
-        return this._calls;
-    }
-
-    addFailedChainIdCall(call: number) {
-        this._failed.push(call);
-    }
-}
+import Web3 from 'web3';
+import { HttpProvider } from 'web3-providers/types';
+import Spy = jasmine.Spy;
 
 describe('RaidenConfig', () => {
     let testingController: HttpTestingController;
     let raidenConfig: RaidenConfig;
-    let factory: TestWeb3Factory;
     let sharedService: SharedService;
+    let tracking: { current: number; failed: number[] };
+    let httpProvider: HttpProvider;
+    let send: Spy;
+    let create: Spy;
 
     const url = 'http://localhost:5001/assets/config/config.production.json';
 
-    const configuration = {
-        raiden: 'http://localhost:5001/api/v1',
-        reveal_timeout: 20,
-        settle_timeout: 600,
-        web3: 'http://localhost:8485',
-        environment_type: 'production'
+    let configuration: {
+        settle_timeout: number;
+        raiden: string;
+        web3: string;
+        reveal_timeout: number;
+        environment_type: string;
     };
 
     beforeEach(() => {
-        factory = new TestWeb3Factory();
+        configuration = {
+            raiden: 'http://localhost:5001/api/v1',
+            reveal_timeout: 20,
+            settle_timeout: 600,
+            web3: 'http://localhost:8485',
+            environment_type: 'production'
+        };
+
+        tracking = {
+            failed: [],
+            current: 0
+        };
 
         TestBed.configureTestingModule({
             imports: [HttpClientModule, HttpClientTestingModule],
-            providers: [
-                RaidenConfig,
-                SharedService,
-                {
-                    provide: Web3Factory,
-                    useValue: factory
-                }
-            ]
+            providers: [RaidenConfig, SharedService, Web3Factory]
         });
+
+        const web3Factory: Web3Factory = TestBed.get(Web3Factory);
+        const fake = async (method: string) => {
+            if (method !== 'net_version') {
+                throw new Error('not mocked');
+            }
+
+            const failed = tracking.failed;
+            const current = tracking.current;
+
+            if (failed.findIndex(value => value === current) >= 0) {
+                throw new Error(`Connection error: Timeout exceeded`);
+            } else {
+                // @ts-ignore
+                return 1;
+            }
+        };
+
+        create = spyOn(web3Factory, 'create').and.callFake(
+            (provider: HttpProvider) => {
+                httpProvider = provider;
+                tracking.current++;
+                send = spyOn(provider, 'send').and.callFake(fake);
+                return new Web3(provider);
+            }
+        );
 
         testingController = TestBed.get(HttpTestingController);
         raidenConfig = TestBed.get(RaidenConfig);
@@ -82,6 +83,35 @@ describe('RaidenConfig', () => {
 
     it('should be created', inject([RaidenConfig], (service: RaidenConfig) => {
         expect(service).toBeTruthy();
+    }));
+
+    it('should translate a relative path url to absolute path', fakeAsync(function() {
+        configuration.web3 = '/web3';
+        raidenConfig
+            .load(url)
+            .then(value => {
+                expect(value).toBe(true);
+            })
+            .catch(e => {
+                console.error(e);
+                fail('it should not fail');
+            });
+
+        testingController
+            .expectOne({
+                url: url,
+                method: 'GET'
+            })
+            .flush(configuration, {
+                status: 200,
+                statusText: ''
+            });
+
+        tick();
+
+        expect(raidenConfig.config.web3).toBe('/web3');
+        expect(httpProvider.host).toMatch('http://.*/web3');
+        flush();
     }));
 
     it('should use the default configuration if loading fails', fakeAsync(function() {
@@ -123,7 +153,7 @@ describe('RaidenConfig', () => {
         });
 
         expect(sharedService.getStackTrace()).toBe(null);
-        expect(factory.calls()).toBe(2);
+        expect(tracking.current).toBe(2);
         flush();
     }));
 
@@ -163,11 +193,12 @@ describe('RaidenConfig', () => {
         });
 
         expect(sharedService.getStackTrace()).toBe(null);
-        expect(factory.calls()).toBe(2);
+        expect(tracking.current).toBe(2);
     }));
 
     it('should fallback if the primary web3 endpoint fails', fakeAsync(function() {
-        factory.addFailedChainIdCall(1);
+        tracking.failed.push(1);
+
         raidenConfig
             .load(url)
             .then(value => {
@@ -191,15 +222,14 @@ describe('RaidenConfig', () => {
         tick();
 
         expect(sharedService.getStackTrace()).toBe(null);
-        expect(factory.calls()).toBe(2);
+        expect(tracking.current).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback
         );
     }));
 
     it('should return false and set error on the promise if both web3 endpoints fail', fakeAsync(function() {
-        factory.addFailedChainIdCall(1);
-        factory.addFailedChainIdCall(2);
+        tracking.failed.push(1, 2);
         raidenConfig
             .load(url)
             .then(value => {
@@ -223,7 +253,7 @@ describe('RaidenConfig', () => {
         tick();
 
         expect(sharedService.getStackTrace()).toBeTruthy();
-        expect(factory.calls()).toBe(2);
+        expect(tracking.current).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback
         );
