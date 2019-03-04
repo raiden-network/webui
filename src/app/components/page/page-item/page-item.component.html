@@ -4,19 +4,29 @@
     ngClass.xs="card-mobile"
     [@flyInOut]="'in'"
 >
-    <mat-card-content fxLayout="row" fxLayoutGap="30px">
+    <mat-card-content
+        fxLayout="row"
+        fxLayoutGap.gt-xs="30px"
+        fxLayoutGap.xs="8px"
+    >
         <ng-content></ng-content>
 
         <div
-            fxShow
-            fxHide.xs
+            *ngIf="!isMobile()"
             fxLayout="column"
             fxFlex="0 0 8.5em"
             fxLayoutAlign="center center"
         >
-            <ng-content select=".actions"></ng-content>
+            <ng-container *ngTemplateOutlet="tempOutlet"></ng-container>
         </div>
+        <ng-content select=".overflow"></ng-content>
     </mat-card-content>
 
-    <ng-content select=".actions" fxHide fxShow.xs></ng-content>
+    <div *ngIf="isMobile()">
+        <ng-container *ngTemplateOutlet="tempOutlet"></ng-container>
+    </div>
+
+    <ng-template #tempOutlet>
+        <ng-content select=".actions"></ng-content>
+    </ng-template>
 </mat-card>
