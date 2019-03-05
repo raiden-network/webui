@@ -2,7 +2,7 @@
     (pageChanged)="onPageEvent($event)"
     [pageSize]="pageSize"
     [totalElements]="totalAddresses"
-    noItemsMessage="No addresses found!"
+    noItemsMessage="No addresses found"
 >
     <mat-card class="page-header" pageHeader>
         <mat-card-title>Address Book</mat-card-title>
@@ -14,6 +14,7 @@
                 fxLayoutGap="14px"
             >
                 <app-address-input
+                    id="addresses-address"
                     [displayIdenticon]="true"
                     errorPlaceholder="Contact"
                     formControlName="address"

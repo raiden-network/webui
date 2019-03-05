@@ -16,6 +16,12 @@ import { DebugElement } from '@angular/core';
 import { TestProviders } from '../../../testing/test-providers';
 import { createTestAddresses } from '../../../testing/test-data';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
+import { PageBaseComponent } from '../page/page-base/page-base.component';
+import { AddressInputComponent } from '../address-input/address-input.component';
+import { PageItemComponent } from '../page/page-item/page-item.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SharedService } from '../../services/shared.service';
+import { of } from 'rxjs/internal/observable/of';
 
 describe('AddressBookComponent', () => {
     let component: AddressBookComponent;
@@ -44,18 +50,24 @@ describe('AddressBookComponent', () => {
             declarations: [
                 AddressBookComponent,
                 AddressBookItemComponent,
+                PageBaseComponent,
+                PageItemComponent,
+                AddressInputComponent,
                 FileUploadComponent,
                 DragUploadDirective
             ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
-                ReactiveFormsModule
+                ReactiveFormsModule,
+                HttpClientTestingModule
             ],
             providers: [
                 TestProviders.HammerJSProvider(),
                 TestProviders.AddressBookStubProvider(),
-                TestProviders.MockMatDialog()
+                TestProviders.MockMatDialog(),
+                TestProviders.MockRaidenConfigProvider(),
+                SharedService
             ]
         }).compileComponents();
         serviceStub = TestBed.get(AddressBookService);
@@ -64,6 +76,7 @@ describe('AddressBookComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(AddressBookComponent);
         component = fixture.componentInstance;
+        spyOnProperty(component, 'isMobile$', 'get').and.returnValue(of(false));
     });
 
     it('should create', () => {
@@ -121,7 +134,7 @@ describe('AddressBookComponent', () => {
 
         mockInput(
             fixture.debugElement,
-            '#addresses-address',
+            `input[placeholder='Address']`,
             '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
         );
         mockInput(fixture.debugElement, '#addresses-label', 'Test Node');
