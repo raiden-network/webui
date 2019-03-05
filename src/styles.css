@@ -71,3 +71,7 @@
 .toast-container {
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+app-page-base {
+    height: 100%;
+}

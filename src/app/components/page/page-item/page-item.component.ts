@@ -1,11 +1,14 @@
 import {
     ChangeDetectionStrategy,
     Component,
+    Input,
     OnInit,
     ViewEncapsulation
 } from '@angular/core';
 import { Animations } from '../../../animations/animations';
 import { MediaObserver } from '@angular/flex-layout';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-page-item',
@@ -16,11 +19,14 @@ import { MediaObserver } from '@angular/flex-layout';
     animations: Animations.flyout
 })
 export class PageItemComponent implements OnInit {
+    @Input() showActions = true;
     constructor(private mediaObserver: MediaObserver) {}
 
     ngOnInit() {}
 
-    isMobile(): boolean {
-        return this.mediaObserver.isActive('xs');
+    get isMobile$(): Observable<boolean> {
+        return this.mediaObserver.media$.pipe(map(change => {
+            return change.mqAlias === 'xs';
+        }));
     }
 }

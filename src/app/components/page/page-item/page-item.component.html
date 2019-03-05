@@ -12,7 +12,7 @@
         <ng-content></ng-content>
 
         <div
-            *ngIf="!isMobile()"
+            *ngIf="!(isMobile$ | async)"
             fxLayout="column"
             fxFlex="0 0 8.5em"
             fxLayoutAlign="center center"
@@ -22,7 +22,7 @@
         <ng-content select=".overflow"></ng-content>
     </mat-card-content>
 
-    <div *ngIf="isMobile()">
+    <div *ngIf="isMobile$ | async">
         <ng-container *ngTemplateOutlet="tempOutlet"></ng-container>
     </div>
 
