@@ -3,12 +3,13 @@
         <mat-card-title fxFlex="50" fxLayoutAlign="start center">
             {{ label }}: {{ total }}
         </mat-card-title>
-        <div *ngIf="isMobile()" fxFlex.xs="16" fxLayoutAlign="end center">
+        <div fxFlex="50" fxLayoutAlign="end center">
             <!--suppress Angular2ExpressionType -->
             <button
                 (click)="openFilterDialog()"
-                aria-label="Search"
+                *ngIf="isMobile()"
                 [color]="keyword ? 'activated' : 'accent'"
+                aria-label="Search"
                 mat-icon-button
                 matTooltip="Search"
             >
@@ -16,10 +17,9 @@
                     search
                 </mat-icon>
             </button>
-        </div>
-        <div *ngIf="isMobile()" fxFlex.xs="16" fxLayoutAlign="end center">
             <button
                 (click)="openSortDialog()"
+                *ngIf="isMobile()"
                 aria-label="Filter"
                 color="accent"
                 mat-icon-button
@@ -29,8 +29,6 @@
                     sort
                 </mat-icon>
             </button>
-        </div>
-        <div fxFlex="50" fxFlex.xs="16" fxLayoutAlign="end center">
             <button
                 (click)="add()"
                 *ngIf="showButton"

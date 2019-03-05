@@ -9,7 +9,7 @@
     height: 100%;
 }
 
-.page-container /deep/ .mat-card-title {
+.page-container .mat-card-title {
     @include respond-to(handhelds) {
         margin-bottom: 0 !important;
     }
@@ -44,7 +44,7 @@
     }
 }
 
-.page-paginator /deep/ .mat-paginator-range-label {
+.page-paginator .mat-paginator-range-label {
     @include respond-to(handhelds) {
         margin: 0 auto 0 3px !important;
     }

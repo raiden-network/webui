@@ -53,6 +53,7 @@ import {
 import { PageItemComponent } from './components/page/page-item/page-item.component';
 import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
 import { SortFilterPageHeaderComponent } from './components/page/sort-filter-page-header/sort-filter-page-header.component';
+import { AddAddressDialogComponent } from './components/add-address-dialog/add-address-dialog.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -108,7 +109,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         PageItemComponent,
         PageHeaderDirective,
         PageItemDirective,
-        NavigationEntryComponent
+        NavigationEntryComponent,
+        AddAddressDialogComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
@@ -153,7 +155,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         DepositDialogComponent,
         OpenDialogComponent,
         FilterDialogComponent,
-        SortDialogComponent
+        SortDialogComponent,
+        AddAddressDialogComponent
     ],
     bootstrap: [AppComponent]
 })

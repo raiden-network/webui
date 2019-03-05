@@ -25,8 +25,10 @@ export class PageItemComponent implements OnInit {
     ngOnInit() {}
 
     get isMobile$(): Observable<boolean> {
-        return this.mediaObserver.media$.pipe(map(change => {
-            return change.mqAlias === 'xs';
-        }));
+        return this.mediaObserver.media$.pipe(
+            map(change => {
+                return change.mqAlias === 'xs';
+            })
+        );
     }
 }

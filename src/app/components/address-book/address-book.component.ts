@@ -16,8 +16,10 @@ import {
     ConfirmationDialogComponent,
     ConfirmationDialogPayload
 } from '../confirmation-dialog/confirmation-dialog.component';
-import { flatMap } from 'rxjs/operators';
-import { EMPTY, of } from 'rxjs';
+import { flatMap, map } from 'rxjs/operators';
+import { EMPTY, Observable, of } from 'rxjs';
+import { MediaObserver } from '@angular/flex-layout';
+import { AddAddressDialogComponent } from '../add-address-dialog/add-address-dialog.component';
 
 @Component({
     selector: 'app-address-book',
@@ -52,7 +54,8 @@ export class AddressBookComponent implements OnInit {
         private fb: FormBuilder,
         private addressBookService: AddressBookService,
         private identiconService: IdenticonCacheService,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private mediaObserver: MediaObserver
     ) {}
 
     public readonly form: FormGroup = this.fb.group({
@@ -64,6 +67,14 @@ export class AddressBookComponent implements OnInit {
     totalAddresses: number;
     pageSize = 10;
     currentPage = 0;
+
+    get isMobile$(): Observable<boolean> {
+        return this.mediaObserver.media$.pipe(
+            map(change => {
+                return change.mqAlias === 'xs';
+            })
+        );
+    }
 
     get editedAddress(): string {
         return this._editedAddress;
@@ -124,6 +135,21 @@ export class AddressBookComponent implements OnInit {
         link.setAttribute('visibility', 'hidden');
         link.setAttribute('download', 'address-book');
         link.click();
+    }
+
+    openAddDialog() {
+        const dialog = this.dialog.open(AddAddressDialogComponent, {
+            width: '500px'
+        });
+
+        dialog.afterClosed().subscribe(value => {
+            if (!value) {
+                return;
+            }
+
+            this.addressBookService.save(value);
+            this.updateVisibleAddresses();
+        });
     }
 
     confirmDelete() {

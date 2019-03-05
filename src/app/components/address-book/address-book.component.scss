@@ -1,4 +1,4 @@
-@import '../../../sass/pages';
+@import '../../../sass/page_variables';
 
 :host {
     height: 100%;
@@ -9,4 +9,8 @@ $mobile-identicon-size: 60px;
 .mobile {
     width: $mobile-identicon-size;
     height: $mobile-identicon-size;
+}
+
+.page-header .mat-card-content {
+    margin-bottom: 0 !important;
 }

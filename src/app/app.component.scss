@@ -41,10 +41,12 @@ mat-sidenav-content {
 
 .account {
     font-size: medium;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 .favicon-mobile {
-    height: 25px;
+    height: 25px !important;
 }
 
 .favicon {

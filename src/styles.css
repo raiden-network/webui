@@ -27,6 +27,11 @@
     transition-delay: 3s;
 }
 
+.identicon.mobile {
+    height: 50px!important;
+    width: 50px!important;
+}
+
 .token-symbol {
     font-weight: 500;
     font-size: small;

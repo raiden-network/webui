@@ -1,7 +1,18 @@
-<div fxLayout="row" fxLayoutGap="40px">
-    <div fxLayout="column" fxFlex="0 0 4em" fxLayoutAlign="center">
+<div
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxLayoutGap="40px"
+    fxLayoutGap.xs="15px"
+>
+    <div
+        fxLayout="column"
+        fxFlex="0 0 4em"
+        fxLayoutAlign="center"
+        fxLayoutAlign.xs="center center"
+    >
         <img
             class="identicon"
+            ngClass.xs="mobile"
             [src]="identicon(address.address)"
             alt="Address identicon"
         />
@@ -40,7 +51,13 @@
         </div>
     </div>
 
-    <div fxLayout="column" fxFlex="0 0 1em" fxLayoutAlign="start end">
+    <div
+        fxLayout="column"
+        fxLayout.xs="row"
+        fxFlex="0 0 1em"
+        fxLayoutAlign="start end"
+        fxLayoutAlign.xs="end center"
+    >
         <div>
             <button
                 id="edit-address"

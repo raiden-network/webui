@@ -1,1 +1,14 @@
+@import 'mixins';
+
 $page-margin: 10px;
+$handheld-page-margin: 2px;
+
+.page-header {
+    margin-left: $page-margin;
+    margin-right: $page-margin;
+
+    @include respond-to(handhelds) {
+        margin-left: $handheld-page-margin;
+        margin-right: $handheld-page-margin;
+    }
+}
