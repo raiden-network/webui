@@ -6,6 +6,7 @@
     noItemsMessage="No tokens found!"
 >
     <app-page-header
+        pageHeader
         (added)="showRegisterDialog()"
         (cleared)="clearFilter()"
         (filtered)="this.filter = $event; applyKeywordFilter()"
@@ -21,7 +22,10 @@
     >
     </app-page-header>
 
-    <app-page-item *ngFor="let token of visibleTokens; trackBy: trackByFn">
+    <app-page-item
+        pageItem
+        *ngFor="let token of visibleTokens; trackBy: trackByFn"
+    >
         <div fxLayout="column" fxFlex="0 0 8em" fxLayoutAlign="center center">
             <div class="token-network-symbol" fxFlexOffset="10" fxFlex="row">
                 {{ token.symbol }}

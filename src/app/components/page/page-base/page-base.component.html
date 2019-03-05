@@ -10,7 +10,7 @@
     fxFlexOffset.xl="20"
     fxFlexOffset.lg="15"
 >
-    <ng-content select="app-page-header"></ng-content>
+    <ng-content select="[pageHeader]"></ng-content>
 
     <mat-paginator
         class="mat-card page-paginator"
@@ -57,6 +57,6 @@
         fxLayoutGap.xs="8px"
         *ngIf="totalElements > 0"
     >
-        <ng-content select="app-page-item"></ng-content>
+        <ng-content select="[pageItem]"></ng-content>
     </div>
 </div>

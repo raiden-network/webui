@@ -1,6 +1,7 @@
 import {
     ChangeDetectionStrategy,
     Component,
+    Directive,
     EventEmitter,
     Input,
     OnInit,
@@ -8,6 +9,16 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import { PageEvent } from '@angular/material';
+
+@Directive({
+    selector: '[pageHeader]'
+})
+export class PageHeaderDirective {}
+
+@Directive({
+    selector: '[pageItem]'
+})
+export class PageItemDirective {}
 
 @Component({
     selector: 'app-page-base',

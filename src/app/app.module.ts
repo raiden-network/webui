@@ -43,12 +43,16 @@ import { FileUploadComponent } from './components/file-upload/file-upload.compon
 import { ErrorComponent } from './components/error/error.component';
 import { TokenNetworkActionsComponent } from './components/token-network-actions/token-network-actions.component';
 import { ChannelActionsComponent } from './components/channel-actions/channel-actions.component';
-import { PageHeaderComponent } from './components/page/page-header/page-header.component';
 import { FilterDialogComponent } from './components/page/dialogs/filter-dialog/filter-dialog.component';
 import { SortDialogComponent } from './components/page/dialogs/sort-dialog/sort-dialog.component';
-import { PageBaseComponent } from './components/page/page-base/page-base.component';
+import {
+    PageBaseComponent,
+    PageHeaderDirective,
+    PageItemDirective
+} from './components/page/page-base/page-base.component';
 import { PageItemComponent } from './components/page/page-item/page-item.component';
 import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
+import { SortFilterPageHeaderComponent } from './components/page/sort-filter-page-header/sort-filter-page-header.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -97,11 +101,13 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ErrorComponent,
         TokenNetworkActionsComponent,
         ChannelActionsComponent,
-        PageHeaderComponent,
+        SortFilterPageHeaderComponent,
         FilterDialogComponent,
         SortDialogComponent,
         PageBaseComponent,
         PageItemComponent,
+        PageHeaderDirective,
+        PageItemDirective,
         NavigationEntryComponent
     ],
     imports: [

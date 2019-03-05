@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PageHeaderComponent } from './page-header.component';
+import { SortFilterPageHeaderComponent } from './sort-filter-page-header.component';
 import { MaterialComponentsModule } from '../../../modules/material-components/material-components.module';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -9,9 +9,9 @@ import { MatDialog } from '@angular/material';
 import { MockMatDialog } from '../../../../testing/mock-mat-dialog';
 import Spy = jasmine.Spy;
 
-describe('PageHeaderComponent', () => {
-    let component: PageHeaderComponent;
-    let fixture: ComponentFixture<PageHeaderComponent>;
+describe('SortFilterPageHeaderComponent', () => {
+    let component: SortFilterPageHeaderComponent;
+    let fixture: ComponentFixture<SortFilterPageHeaderComponent>;
     let dialog: MockMatDialog;
 
     let added: Spy;
@@ -22,7 +22,7 @@ describe('PageHeaderComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [PageHeaderComponent],
+            declarations: [SortFilterPageHeaderComponent],
             providers: [
                 TestProviders.MockMatDialog(),
                 TestProviders.HammerJSProvider()
@@ -37,7 +37,7 @@ describe('PageHeaderComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(PageHeaderComponent);
+        fixture = TestBed.createComponent(SortFilterPageHeaderComponent);
         component = fixture.componentInstance;
 
         added = spyOn(component.added, 'emit');

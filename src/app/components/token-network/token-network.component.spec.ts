@@ -17,7 +17,7 @@ import { TokenNetworkComponent } from './token-network.component';
 import { TestProviders } from '../../../testing/test-providers';
 import { EllipsisPipe } from '../../pipes/ellipsis.pipe';
 import { TokenNetworkActionsComponent } from '../token-network-actions/token-network-actions.component';
-import { PageHeaderComponent } from '../page/page-header/page-header.component';
+import { SortFilterPageHeaderComponent } from '../page/sort-filter-page-header/sort-filter-page-header.component';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { PageItemComponent } from '../page/page-item/page-item.component';
 
@@ -31,7 +31,7 @@ describe('TokenNetworkComponent', () => {
             declarations: [
                 TokenNetworkComponent,
                 TokenNetworkActionsComponent,
-                PageHeaderComponent,
+                SortFilterPageHeaderComponent,
                 PageBaseComponent,
                 PageItemComponent,
                 DecimalPipe,

@@ -6,6 +6,7 @@
     noItemsMessage="No channels found!"
 >
     <app-page-header
+        pageHeader
         (added)="onOpenChannel()"
         (cleared)="clearFilter()"
         (filtered)="this.filter = $event; applyKeywordFilter()"
@@ -35,6 +36,7 @@
     </div>
 
     <app-page-item
+        pageItem
         *ngFor="let channel of visibleChannels; trackBy: trackByFn"
         [id]="'channel_' + channel.channel_identifier"
     >

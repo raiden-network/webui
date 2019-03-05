@@ -13,10 +13,10 @@ import {
 
 @Component({
     selector: 'app-page-header',
-    templateUrl: './page-header.component.html',
-    styleUrls: ['./page-header.component.scss']
+    templateUrl: './sort-filter-page-header.component.html',
+    styleUrls: ['./sort-filter-page-header.component.scss']
 })
-export class PageHeaderComponent implements OnInit {
+export class SortFilterPageHeaderComponent implements OnInit {
     @Input() label: string;
     @Input() total: number;
     @Input() keyword: string;
