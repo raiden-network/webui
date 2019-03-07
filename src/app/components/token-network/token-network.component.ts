@@ -22,6 +22,7 @@ import {
 } from '../payment-dialog/payment-dialog.component';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { TokenSorting } from './token.sorting.enum';
+import { PageBaseComponent } from '../page/page-base/page-base.component';
 
 @Component({
     selector: 'app-token-network',
@@ -29,9 +30,10 @@ import { TokenSorting } from './token.sorting.enum';
     styleUrls: ['./token-network.component.scss']
 })
 export class TokenNetworkComponent implements OnInit, OnDestroy {
-    @Input() raidenAddress: string;
-
-    @ViewChild(MatPaginator) paginator: MatPaginator;
+    @Input()
+    raidenAddress: string;
+    @ViewChild(PageBaseComponent)
+    page: PageBaseComponent;
 
     public refreshing = true;
 
@@ -299,13 +301,13 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
 
     applyKeywordFilter() {
         this.applyFilters(this.sorting);
-        this.paginator.firstPage();
+        this.page.firstPage();
     }
 
     clearFilter() {
         this.filter = '';
         this.applyFilters(this.sorting);
-        this.paginator.firstPage();
+        this.page.firstPage();
     }
 
     private refreshTokens() {

@@ -6,9 +6,10 @@ import {
     Input,
     OnInit,
     Output,
+    ViewChild,
     ViewEncapsulation
 } from '@angular/core';
-import { PageEvent } from '@angular/material';
+import { MatPaginator, PageEvent } from '@angular/material';
 
 @Directive({
     selector: '[pageHeader]'
@@ -28,6 +29,8 @@ export class PageItemDirective {}
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PageBaseComponent implements OnInit {
+    @ViewChild(MatPaginator)
+    paginator: MatPaginator;
     @Input()
     totalElements: number;
     @Input()
@@ -56,5 +59,9 @@ export class PageBaseComponent implements OnInit {
 
     isLoading() {
         return this.totalElements === 0 && this.refreshing;
+    }
+
+    firstPage() {
+        this.paginator.firstPage();
     }
 }

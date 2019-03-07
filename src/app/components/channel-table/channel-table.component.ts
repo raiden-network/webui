@@ -39,6 +39,7 @@ import {
 import { ChannelSorting } from './channel.sorting.enum';
 import { AddressBookService } from '../../services/address-book.service';
 import { Addresses } from '../../models/address';
+import { PageBaseComponent } from '../page/page-base/page-base.component';
 
 @Component({
     selector: 'app-channel-table',
@@ -67,7 +68,8 @@ import { Addresses } from '../../models/address';
     ]
 })
 export class ChannelTableComponent implements OnInit, OnDestroy {
-    @ViewChild(MatPaginator) paginator: MatPaginator;
+    @ViewChild(PageBaseComponent)
+    page: PageBaseComponent;
 
     public channels$: Observable<Channel[]>;
     public amount: number;
@@ -147,13 +149,13 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
 
     applyKeywordFilter() {
         this.applyFilters(this.sorting);
-        this.paginator.firstPage();
+        this.page.firstPage();
     }
 
     clearFilter() {
         this.filter = '';
         this.applyFilters(this.sorting);
-        this.paginator.firstPage();
+        this.page.firstPage();
     }
 
     // noinspection JSMethodCanBeStatic
