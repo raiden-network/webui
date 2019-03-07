@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { default as makeBlockie } from 'ethereum-blockies-base64';
 import { Subscription } from 'rxjs';
 import { ChannelPollingService } from './services/channel-polling.service';
@@ -12,6 +12,9 @@ import { MediaObserver } from '@angular/flex-layout';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
+    @HostBinding('@.disabled')
+    public animationsDisabled = false;
+
     public title = 'Raiden';
     public raidenAddress;
 
@@ -64,6 +67,16 @@ export class AppComponent implements OnInit, OnDestroy {
             .channels()
             .subscribe();
         this.sub.add(pollingSubscription);
+
+        this.disableAnimationsOnAndroid();
+    }
+
+    private disableAnimationsOnAndroid() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const isAndroid = userAgent.indexOf('android') > -1;
+        if (isAndroid) {
+            this.animationsDisabled = true;
+        }
     }
 
     ngOnDestroy() {
