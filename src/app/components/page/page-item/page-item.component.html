@@ -1,7 +1,7 @@
 <mat-card
     class="data"
     ngClass.gt-xs="card"
-    ngClass.xs="card-mobile"
+    [ngClass.xs]="mobileClass"
     [@flyInOut]="'in'"
 >
     <mat-card-content fxLayout="row" fxLayoutGap="30px" fxLayoutGap.xs="8px">

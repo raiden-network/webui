@@ -20,6 +20,7 @@ import { Observable } from 'rxjs';
 })
 export class PageItemComponent implements OnInit {
     @Input() showActions = true;
+    @Input() mobileClass = 'card-mobile';
     constructor(private mediaObserver: MediaObserver) {}
 
     ngOnInit() {}

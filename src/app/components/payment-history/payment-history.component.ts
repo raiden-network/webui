@@ -25,7 +25,7 @@ interface PaymentHistoryParameters {
 @Component({
     selector: 'app-payment-history',
     templateUrl: './payment-history.component.html',
-    styleUrls: ['./payment-history.component.css'],
+    styleUrls: ['./payment-history.component.scss'],
     animations: [
         trigger('flyInOut', [
             state('in', style({ opacity: 1, transform: 'translateX(0)' })),
@@ -76,7 +76,7 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
                     token: token
                 };
             }),
-            tap(x => (this._decimals = x.token.decimals)),
+            tap(x => (this._decimals = x.token ? x.token.decimals : 0)),
             share()
         );
 
