@@ -2,6 +2,10 @@
     width: 100%;
 }
 
+.full-width-form-field .mat-form-field-wrapper {
+    width: 100%;
+}
+
 .full-width-form-field .mat-form-field-infix {
     width: 100%;
 }
