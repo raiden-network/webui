@@ -9,7 +9,7 @@
     height: 100%;
 }
 
-.page-container .mat-card-title {
+.page-container .action-header .mat-card-title {
     @include respond-to(handhelds) {
         margin-bottom: 0 !important;
     }
