@@ -32,10 +32,14 @@
     <app-page-item
         pageItem
         mobileClass="payment-event"
-        class="payment-event"
-        *ngFor="let historyEvent of visibleHistory; trackBy: trackByFn"
+        cardClass="payment-event-larger"
+        *ngFor="
+            let historyEvent of visibleHistory;
+            index as i;
+            trackBy: trackByFn
+        "
         [showActions]="false"
-        id="payment-event-{{ historyEvent.identifier }}"
+        id="payment-event-{{ i }}"
     >
         <div fxLayout="column" fxLayoutAlign="center">
             <span *ngIf="!isFailure(historyEvent.event) && historyEvent.target">
@@ -58,14 +62,6 @@
             fxFlex="0 0 4em"
         >
             {{ normalizeEvent(historyEvent.event) }}
-        </div>
-        <div
-            *ngIf="false"
-            fxLayout="column"
-            fxFlex="0 0 6em"
-            fxLayoutAlign="center"
-        >
-            {{ historyEvent.identifier | date: 'medium' }}
         </div>
         <div
             fxLayout="column"
@@ -92,6 +88,9 @@
                     historyEvent.amount | decimal: decimals
                 }}</span>
                 <span>tokens</span>
+            </div>
+            <div fxLayout="row" class="mat-caption">
+                {{ historyEvent.log_time }}
             </div>
         </div>
     </app-page-item>

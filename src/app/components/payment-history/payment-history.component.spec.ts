@@ -8,7 +8,6 @@ import {
     TestBed,
     tick
 } from '@angular/core/testing';
-import { MatCard } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
@@ -24,6 +23,8 @@ import { SharedService } from '../../services/shared.service';
 
 import { PaymentHistoryComponent } from './payment-history.component';
 import { TestProviders } from '../../../testing/test-providers';
+import { PageBaseComponent } from '../page/page-base/page-base.component';
+import { PageItemComponent } from '../page/page-item/page-item.component';
 
 describe('PaymentHistoryComponent', () => {
     let component: PaymentHistoryComponent;
@@ -50,81 +51,91 @@ describe('PaymentHistoryComponent', () => {
             event: 'EventPaymentSendFailed',
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             reason: 'insufficient funds',
-            identifier: 1536847754083
+            identifier: 1536847754083,
+            log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentReceivedSuccess',
             amount: 5,
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847755083
+            identifier: 1536847755083,
+            log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: 35,
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847756083
+            identifier: 1536847756083,
+            log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: 20,
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847757083
+            identifier: 1536847757083,
+            log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentReceivedSuccess',
             amount: 5,
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847758103
+            identifier: 1536847758103,
+            log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: 11,
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847759000
+            identifier: 1536847759000,
+            log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: 1,
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847760030
+            identifier: 1536847760030,
+            log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: 4,
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847760130
+            identifier: 1536847760130,
+            log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentReceivedSuccess',
             amount: 8,
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847760230
+            identifier: 1536847760230,
+            log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: 2,
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847760330
+            identifier: 1536847760330,
+            log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentReceivedSuccess',
             amount: 5,
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847760430
+            identifier: 1536847760430,
+            log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSendFailed',
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             reason: 'insufficient funds',
-            identifier: 1536847760442
+            identifier: 1536847760442,
+            log_time: '2019-03-07T18:19:13.976'
         }
     ];
 
-    function getVisibleEventCards(): DebugElement[] {
-        const historyList = fixture.debugElement.query(
-            By.css('#payment-history')
-        );
-        return historyList.queryAll(By.directive(MatCard));
+    function getVisibleItems(): DebugElement[] {
+        const historyList = fixture.debugElement.query(By.css('.page-list'));
+        return historyList.queryAll(By.directive(PageItemComponent));
     }
 
     const tokenNetwork = '0x0f114A1E9Db192502E7856309cc899952b3db1ED';
@@ -132,7 +143,13 @@ describe('PaymentHistoryComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [PaymentHistoryComponent, DecimalPipe, TokenPipe],
+            declarations: [
+                PaymentHistoryComponent,
+                PageBaseComponent,
+                PageItemComponent,
+                DecimalPipe,
+                TokenPipe
+            ],
             providers: [
                 SharedService,
                 TestProviders.HammerJSProvider(),
@@ -205,14 +222,14 @@ describe('PaymentHistoryComponent', () => {
             'Should not show the no payment message'
         );
 
-        const cards = getVisibleEventCards();
+        const cards = getVisibleItems();
         expect(cards.length).toBe(
             component.pageSize,
             'Should display a full page'
         );
 
         const id: string = cards[0].properties['id'];
-        expect(id).toBe('payment-event-1536847760442');
+        expect(id).toBe('payment-event-0');
         component.ngOnDestroy();
         flush();
     }));
@@ -230,11 +247,11 @@ describe('PaymentHistoryComponent', () => {
         tick();
         fixture.detectChanges();
 
-        const cards = getVisibleEventCards();
+        const cards = getVisibleItems();
         expect(cards.length).toBe(2);
 
-        const id: string = cards[0].properties['id'];
-        expect(id).toBe(`payment-event-${mockData[1].identifier}`);
+        const id: string = cards[1].properties['id'];
+        expect(id).toBe(`payment-event-1`);
 
         component.ngOnDestroy();
         flush();

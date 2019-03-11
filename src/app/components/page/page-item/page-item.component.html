@@ -1,6 +1,6 @@
 <mat-card
     class="data"
-    ngClass.gt-xs="card"
+    [ngClass.gt-xs]="cardClass"
     [ngClass.xs]="mobileClass"
     [@flyInOut]="'in'"
 >
