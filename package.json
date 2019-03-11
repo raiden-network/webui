@@ -5,7 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "npm run serve",
-    "serve": "ng serve --proxy-config proxy.config.json --base-href /ui/ --deploy-url /ui/ --host 0.0.0.0",
+    "serve": "ng serve --proxy-config proxy.config.json --base-href /ui/ --deploy-url /ui/",
+    "serve:all": "ng serve --proxy-config proxy.config.json --base-href /ui/ --deploy-url /ui/ --host 0.0.0.0",
     "build": "npm run build:prod",
     "build:dev": "ng build",
     "build:prod": "ng build --prod --aot",
