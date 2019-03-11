@@ -54,6 +54,7 @@ import { PageItemComponent } from './components/page/page-item/page-item.compone
 import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
 import { SortFilterPageHeaderComponent } from './components/page/sort-filter-page-header/sort-filter-page-header.component';
 import { AddAddressDialogComponent } from './components/add-address-dialog/add-address-dialog.component';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -141,6 +142,14 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
             useFactory: ConfigLoader,
             deps: [RaidenConfig],
             multi: true
+        },
+        {
+            provide: MAT_DIALOG_DEFAULT_OPTIONS,
+            useValue: Object.assign(new MatDialogConfig(), <MatDialogConfig>{
+                maxWidth: '90vw',
+                width: '500px',
+                autoFocus: false
+            })
         },
         RaidenService,
         TokenPipe,

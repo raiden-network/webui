@@ -54,7 +54,6 @@ export class SortFilterPageHeaderComponent implements OnInit {
         };
 
         const dialogRef = this.dialog.open(FilterDialogComponent, {
-            width: '300px',
             data: payload
         });
 
@@ -85,7 +84,6 @@ export class SortFilterPageHeaderComponent implements OnInit {
         };
 
         const dialogRef = this.dialog.open(SortDialogComponent, {
-            width: '300px',
             data: payload
         });
 

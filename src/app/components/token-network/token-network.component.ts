@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatPaginator, PageEvent } from '@angular/material';
+import { MatDialog, PageEvent } from '@angular/material';
 import { BehaviorSubject, EMPTY, Subscription } from 'rxjs';
 import { flatMap, switchMap, tap } from 'rxjs/operators';
 import { SortingData } from '../../models/sorting.data';
@@ -80,9 +80,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     }
 
     showRegisterDialog() {
-        const registerDialogRef = this.dialog.open(RegisterDialogComponent, {
-            width: '400px'
-        });
+        const registerDialogRef = this.dialog.open(RegisterDialogComponent);
 
         registerDialogRef
             .afterClosed()
@@ -157,7 +155,6 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         const joinDialogRef = this.dialog.open(
             ConnectionManagerDialogComponent,
             {
-                width: '480px',
                 data: payload
             }
         );
@@ -192,7 +189,6 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         };
 
         const paymentDialogRef = this.dialog.open(PaymentDialogComponent, {
-            width: '400px',
             data: payload
         });
 
@@ -225,7 +221,6 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
-            width: '500px',
             data: payload
         });
 

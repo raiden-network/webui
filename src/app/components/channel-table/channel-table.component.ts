@@ -6,7 +6,7 @@ import {
     trigger
 } from '@angular/animations';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatPaginator, PageEvent } from '@angular/material';
+import { MatDialog, PageEvent } from '@angular/material';
 import { EMPTY, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { flatMap } from 'rxjs/operators';
@@ -181,9 +181,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
-            width: '500px',
-            data: payload,
-            autoFocus: false
+            data: payload
         });
 
         dialog
@@ -211,7 +209,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         };
 
         const dialog = this.dialog.open(DepositDialogComponent, {
-            width: '500px',
             data: payload
         });
 
@@ -247,7 +244,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
-            width: '500px',
             data: payload
         });
 
@@ -278,7 +274,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         };
 
         const dialog = this.dialog.open(OpenDialogComponent, {
-            width: '500px',
             data: payload
         });
 

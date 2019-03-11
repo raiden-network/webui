@@ -78,7 +78,6 @@ export class AddressBookItemComponent implements OnChanges {
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
-            width: '500px',
             data: payload
         });
 
