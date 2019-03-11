@@ -32,8 +32,9 @@
 }
 
 .identicon.mobile {
-    height: 50px!important;
-    width: 50px!important;
+    height: 50px !important;
+    width: 50px !important;
+    margin: 2px !important;
 }
 
 .token-symbol {
