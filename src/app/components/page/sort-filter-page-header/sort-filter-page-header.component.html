@@ -1,0 +1,140 @@
+<mat-card class="page-header action-header">
+    <div fxLayout="row">
+        <mat-card-title fxFlex="50" fxLayoutAlign="start center">
+            {{ label }}: {{ total }}
+        </mat-card-title>
+        <div fxFlex="50" fxLayoutAlign="end center">
+            <!--suppress Angular2ExpressionType -->
+            <button
+                (click)="openFilterDialog()"
+                *ngIf="isMobile()"
+                [color]="keyword ? 'activated' : 'accent'"
+                aria-label="Search"
+                mat-icon-button
+                matTooltip="Search"
+            >
+                <mat-icon>
+                    search
+                </mat-icon>
+            </button>
+            <button
+                (click)="openSortDialog()"
+                *ngIf="isMobile()"
+                aria-label="Filter"
+                color="accent"
+                mat-icon-button
+                matTooltip="Sort"
+            >
+                <mat-icon>
+                    sort
+                </mat-icon>
+            </button>
+            <button
+                (click)="add()"
+                *ngIf="showButton"
+                [matTooltip]="buttonDescription"
+                color="accent"
+                id="token-registration"
+                mat-icon-button
+            >
+                <mat-icon>
+                    add_circle
+                </mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <mat-card-content
+        *ngIf="!isMobile()"
+        fxLayout="row"
+        fxLayout.lt-sm="column"
+        fxLayoutGap="20px"
+    >
+        <div
+            fxFlex="50"
+            fxFlex.lt-sm="100"
+            fxLayout="column"
+            fxLayout.lt-sm="row"
+        >
+            <div
+                fxFlex="100"
+                fxLayout="row"
+                fxLayoutAlign.lt-sm="center"
+                fxLayoutGap="15px"
+            >
+                <mat-icon fxFlexAlign="center" fxLayout="column">
+                    search
+                </mat-icon>
+                <mat-form-field
+                    class="full-width-form-field"
+                    fxFlex="1 1 auto"
+                    fxLayout="column"
+                >
+                    <input
+                        (keyup)="filter()"
+                        [(ngModel)]="keyword"
+                        matInput
+                        placeholder="Filter"
+                        type="text"
+                    />
+                    <button
+                        (click)="clear()"
+                        *ngIf="keyword"
+                        aria-label="Clear"
+                        mat-button
+                        mat-icon-button
+                        matSuffix
+                    >
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div
+            fxFlex="50"
+            fxFlex.lt-sm="100"
+            fxLayout="column"
+            fxLayout.lt-sm="row"
+        >
+            <div fxFlex="100" fxLayout="row" fxLayoutGap="15px">
+                <mat-icon fxFlexAlign="center" fxLayout="column">
+                    sort
+                </mat-icon>
+                <mat-form-field
+                    class="full-width-form-field"
+                    fxFlex="1 1 auto"
+                    fxLayout="column"
+                >
+                    <mat-select
+                        (selectionChange)="sort($event.value)"
+                        [(value)]="sorting"
+                        placeholder="Sort by"
+                    >
+                        <mat-option
+                            *ngFor="let option of sortingOptions"
+                            [value]="option.value"
+                            >{{ option.label }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button
+                    (click)="order()"
+                    fxFlexAlign="center"
+                    mat-icon-button
+                    matTooltip="Change the sorting order"
+                >
+                    <mat-icon aria-label="Change sorting order"
+                        >{{
+                            ascending
+                                ? 'keyboard_arrow_up'
+                                : 'keyboard_arrow_down'
+                        }}
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
+    </mat-card-content>
+
+    <mat-card-actions *ngIf="isMobile()"></mat-card-actions>
+</mat-card>

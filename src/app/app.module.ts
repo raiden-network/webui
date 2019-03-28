@@ -39,9 +39,22 @@ import { LocalStorageAdapter } from './adapters/local-storage-adapter';
 import { AddressBookItemComponent } from './components/address-book-item/address-book-item.component';
 import { DragUploadDirective } from './directives/drag-upload.directive';
 import { StatusPipe } from './pipes/status.pipe';
-import 'hammerjs';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { ErrorComponent } from './components/error/error.component';
+import { TokenNetworkActionsComponent } from './components/token-network-actions/token-network-actions.component';
+import { ChannelActionsComponent } from './components/channel-actions/channel-actions.component';
+import { FilterDialogComponent } from './components/page/dialogs/filter-dialog/filter-dialog.component';
+import { SortDialogComponent } from './components/page/dialogs/sort-dialog/sort-dialog.component';
+import {
+    PageBaseComponent,
+    PageHeaderDirective,
+    PageItemDirective
+} from './components/page/page-base/page-base.component';
+import { PageItemComponent } from './components/page/page-item/page-item.component';
+import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
+import { SortFilterPageHeaderComponent } from './components/page/sort-filter-page-header/sort-filter-page-header.component';
+import { AddAddressDialogComponent } from './components/add-address-dialog/add-address-dialog.component';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -87,7 +100,18 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         DragUploadDirective,
         StatusPipe,
         FileUploadComponent,
-        ErrorComponent
+        ErrorComponent,
+        TokenNetworkActionsComponent,
+        ChannelActionsComponent,
+        SortFilterPageHeaderComponent,
+        FilterDialogComponent,
+        SortDialogComponent,
+        PageBaseComponent,
+        PageItemComponent,
+        PageHeaderDirective,
+        PageItemDirective,
+        NavigationEntryComponent,
+        AddAddressDialogComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
@@ -119,6 +143,14 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
             deps: [RaidenConfig],
             multi: true
         },
+        {
+            provide: MAT_DIALOG_DEFAULT_OPTIONS,
+            useValue: Object.assign(new MatDialogConfig(), <MatDialogConfig>{
+                maxWidth: '90vw',
+                width: '500px',
+                autoFocus: false
+            })
+        },
         RaidenService,
         TokenPipe,
         LocalStorageAdapter,
@@ -130,7 +162,10 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         PaymentDialogComponent,
         ConfirmationDialogComponent,
         DepositDialogComponent,
-        OpenDialogComponent
+        OpenDialogComponent,
+        FilterDialogComponent,
+        SortDialogComponent,
+        AddAddressDialogComponent
     ],
     bootstrap: [AppComponent]
 })

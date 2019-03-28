@@ -5,4 +5,5 @@ export interface PaymentEvent {
     readonly event: string;
     readonly amount?: number;
     readonly identifier: number;
+    readonly log_time: string;
 }

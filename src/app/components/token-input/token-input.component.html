@@ -1,18 +1,26 @@
-<div fxLayout="row" [formGroup]="form" class="form">
+<div
+    [formGroup]="form"
+    class="form"
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxLayoutGap.xs="20px"
+>
     <mat-form-field
-        fxLayout="column"
-        fxFlex="1 1 auto"
         [hideRequiredMarker]="true"
+        fxFlex="1 1 auto"
+        fxLayout="column"
+        fxLayout.xs="row"
+        ngClass.xs="full-width-form-field"
     >
         <input
-            matInput
-            type="number"
-            [placeholder]="placeholder"
-            formControlName="amount"
-            [step]="step()"
             (input)="precise($event)"
-            min="0"
+            [placeholder]="placeholder"
             [required]="!allowZero"
+            [step]="step()"
+            formControlName="amount"
+            matInput
+            min="0"
+            type="number"
         />
 
         <mat-hint align="start">
@@ -42,12 +50,15 @@
     </mat-form-field>
 
     <mat-checkbox
-        fxLayout="column"
-        fxFlexAlign="center"
-        fxFlex="0 0 6.5em"
-        class="checkbox"
         (change)="onCheckChange($event)"
+        class="checkbox"
         formControlName="decimals"
+        fxFlex="0 0 6.5em"
+        fxFlex.xs="0 0 auto"
+        fxFlexAlign="center"
+        fxFlexAlign.xs="start"
+        fxLayout="column"
+        fxLayout.xs="row"
         matTooltip="Allows you to insert decimals, or integers representing the smallest denomination"
         matTooltipPosition="above"
     >

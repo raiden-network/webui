@@ -16,6 +16,10 @@ import { MockConfig } from '../../../testing/mock-config';
 import { TokenNetworkComponent } from './token-network.component';
 import { TestProviders } from '../../../testing/test-providers';
 import { EllipsisPipe } from '../../pipes/ellipsis.pipe';
+import { TokenNetworkActionsComponent } from '../token-network-actions/token-network-actions.component';
+import { SortFilterPageHeaderComponent } from '../page/sort-filter-page-header/sort-filter-page-header.component';
+import { PageBaseComponent } from '../page/page-base/page-base.component';
+import { PageItemComponent } from '../page/page-item/page-item.component';
 
 describe('TokenNetworkComponent', () => {
     let component: TokenNetworkComponent;
@@ -24,7 +28,15 @@ describe('TokenNetworkComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [TokenNetworkComponent, DecimalPipe, EllipsisPipe],
+            declarations: [
+                TokenNetworkComponent,
+                TokenNetworkActionsComponent,
+                SortFilterPageHeaderComponent,
+                PageBaseComponent,
+                PageItemComponent,
+                DecimalPipe,
+                EllipsisPipe
+            ],
             providers: [
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockRaidenConfigProvider(),

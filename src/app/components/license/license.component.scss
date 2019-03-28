@@ -1,0 +1,14 @@
+@import '../../../sass/mixins';
+:host {
+    height: 100%;
+    margin-bottom: 4px;
+}
+
+.license {
+    font-size: 1.1rem;
+    @include respond-to(handhelds) {
+        height: 100%;
+        font-size: 0.8rem;
+        margin-top: 10px;
+    }
+}

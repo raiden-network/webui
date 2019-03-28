@@ -206,4 +206,52 @@ describe('BatchManager', () => {
         expect(result[0]).toBe('test');
         expect(result[1]).toBe('');
     });
+
+    it('should return a validation error if the response contains an error', function() {
+        const validationResult = Validator.validate({
+            error: new Error('test error')
+        });
+
+        expect(validationResult instanceof Error).toBe(true);
+        expect((validationResult as Error).message).toContain('Node error');
+    });
+
+    it('should return a validation error if the response contains an error message', function() {
+        const validationResult = Validator.validate({
+            error: 'test error'
+        });
+
+        expect(validationResult instanceof Error).toBe(true);
+        expect((validationResult as Error).message).toContain('Node error');
+    });
+
+    it('should return a validation error if the response and payload ids mismatch', function() {
+        const validationResult = Validator.validate(
+            {
+                id: 1
+            },
+            { id: 2 }
+        );
+
+        expect(validationResult instanceof Error).toBe(true);
+        expect((validationResult as Error).message).toContain(
+            'Validation error: Invalid JSON-RPC response ID'
+        );
+    });
+
+    it('should return a validation error if the response is not an object', function() {
+        const validationResult = Validator.validate(1);
+        expect(validationResult instanceof Error).toBe(true);
+        expect((validationResult as Error).message).toContain(
+            'Validation error: Response should be of type Object'
+        );
+    });
+
+    it('should return true if the response is valid', function() {
+        const validationResult = Validator.validate(
+            { id: 1, result: '1' },
+            { id: 1 }
+        );
+        expect(validationResult).toBe(true);
+    });
 });

@@ -12,13 +12,22 @@ import { RaidenConfig } from './services/raiden.config';
 import { RaidenService } from './services/raiden.service';
 import { SharedService } from './services/shared.service';
 import { ErrorComponent } from './components/error/error.component';
+import { MediaObserver } from '@angular/flex-layout';
+import Spy = jasmine.Spy;
+import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
     let app: AppComponent;
+    let isActive: Spy;
+
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [AppComponent, ErrorComponent],
+            declarations: [
+                AppComponent,
+                ErrorComponent,
+                NavigationEntryComponent
+            ],
             providers: [
                 {
                     provide: RaidenConfig,
@@ -36,6 +45,9 @@ describe('AppComponent', () => {
                 NoopAnimationsModule
             ]
         }).compileComponents();
+
+        const mediaObserver = TestBed.get(MediaObserver);
+        isActive = spyOn(mediaObserver, 'isActive');
 
         fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
@@ -55,4 +67,20 @@ describe('AppComponent', () => {
         expect(app.title).toEqual('Raiden');
         fixture.destroy();
     }));
+
+    it('should have the menu always open if it is not mobile', function() {
+        isActive.and.returnValue(false);
+        expect(app.isMobile()).toBe(false);
+        expect(app.menuOpen).toBe(true);
+        app.closeMenu();
+        expect(app.menuOpen).toBe(true);
+    });
+
+    it('should allow the menu to be toggled on mobile devices', function() {
+        isActive.and.returnValue(true);
+        expect(app.isMobile()).toBe(true);
+        expect(app.menuOpen).toBe(false);
+        app.toggleMenu();
+        expect(app.menuOpen).toBe(true);
+    });
 });

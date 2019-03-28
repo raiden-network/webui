@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- [#60] Adds layout optimizations for mobile devices.
+
 ### Added
 - [#49] Adds error screen for JSON RPC connection failure.
 
@@ -39,6 +42,7 @@ token network.
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
 [#66]: https://github.com/raiden-network/webui/issues/66
+[#60]: https://github.com/raiden-network/webui/issues/60
 [#55]: https://github.com/raiden-network/webui/issues/55
 [#49]: https://github.com/raiden-network/webui/issues/49
 [#48]: https://github.com/raiden-network/webui/issues/48

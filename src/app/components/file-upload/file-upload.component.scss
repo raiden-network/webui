@@ -1,4 +1,5 @@
 @import '../../../webui-app-theme';
+@import '../../../sass/mixins';
 @import '~@angular/material/theming';
 
 $over-color: mat-color($webui-app-primary);
@@ -14,6 +15,10 @@ $border-radius: 5px;
     text-align: center;
     font-weight: 500;
     color: #bbb;
+
+    @include respond-to(handhelds) {
+        font-size: 13px;
+    }
 }
 
 .over {

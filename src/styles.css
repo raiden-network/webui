@@ -2,6 +2,10 @@
     width: 100%;
 }
 
+.full-width-form-field .mat-form-field-wrapper {
+    width: 100%;
+}
+
 .full-width-form-field .mat-form-field-infix {
     width: 100%;
 }
@@ -25,6 +29,12 @@
     box-shadow: inset rgba(255, 255, 255, 0.6) 0 2px 2px, inset rgba(0, 0, 0, 0.3) 0 -2px 6px;
     transition: border-radius 2.5s;
     transition-delay: 3s;
+}
+
+.identicon.mobile {
+    height: 50px !important;
+    width: 50px !important;
+    margin: 2px !important;
 }
 
 .token-symbol {
@@ -51,7 +61,11 @@
 }
 
 .card {
-    min-height: 9em;
+    min-height: 7em;
+}
+
+.card-mobile {
+    min-height: 14rem;
 }
 
 .truncate {
@@ -66,4 +80,8 @@
 
 .toast-container {
     font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+app-page-base {
+    height: 100%;
 }

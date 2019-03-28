@@ -1,67 +1,29 @@
-<div
-    class="page-container"
-    fxLayout="column"
-    fxFlex="90"
-    fxFlex.lg="70"
-    fxFlex.xl="60"
-    fxFlexOffset="5"
-    fxFlexOffset.xl="20"
-    fxFlexOffset.lg="15"
+<app-page-base
+    (pageChanged)="onPageEvent($event)"
+    [pageSize]="pageSize"
+    [totalElements]="totalAddresses"
+    noItemsMessage="No addresses found"
 >
-    <mat-card class="page-header">
+    <mat-card class="page-header action-header" pageHeader>
         <mat-card-title>Address Book</mat-card-title>
         <mat-card-content>
             <div
-                fxLayout="row"
-                fxLayout.lt-sm="column"
+                *ngIf="!(isMobile$ | async)"
                 [formGroup]="form"
+                fxLayout="row"
                 fxLayoutGap="14px"
             >
-                <div
+                <app-address-input
+                    id="addresses-address"
+                    [displayIdenticon]="true"
+                    errorPlaceholder="Contact"
+                    formControlName="address"
+                    fxFlex="50"
                     fxLayout="column"
-                    fxFlex="0 0 40px"
-                    fxLayoutAlign="center center"
-                >
-                    <img
-                        class="identicon no-margin"
-                        *ngIf="
-                            form.get('address').value &&
-                                form.get('address').valid;
-                            else placeholder
-                        "
-                        [src]="identicon(form.get('address').value)"
-                        alt="Address identicon"
-                    />
+                    placeholder="Address"
+                ></app-address-input>
 
-                    <ng-template #placeholder>
-                        <mat-icon>person</mat-icon>
-                    </ng-template>
-                </div>
-
-                <div fxLayout="column" fxFlex="auto">
-                    <mat-form-field
-                        hideRequiredMarker
-                        class="full-width-form-field"
-                    >
-                        <input
-                            id="addresses-address"
-                            matInput
-                            placeholder="Address"
-                            formControlName="address"
-                            required
-                        />
-                        <mat-error
-                            *ngIf="
-                                form.get('address').invalid &&
-                                (form.get('address').dirty ||
-                                    form.get('address').touched)
-                            "
-                        >
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div fxLayout="column" fxFlex="auto">
+                <div fxLayout="column" fxFlex="50">
                     <mat-form-field
                         hideRequiredMarker
                         class="full-width-form-field"
@@ -102,9 +64,20 @@
                     </button>
                 </div>
             </div>
-        </mat-card-content>
-        <mat-card-actions>
             <div fxLayout="row" fxLayoutAlign="end" class="action-buttons">
+                <div fxLayout="column" *ngIf="(isMobile$ | async)">
+                    <button
+                        (click)="openAddDialog()"
+                        id="open-add-dialog"
+                        mat-icon-button
+                        color="primary"
+                        matTooltip="Opens the dialog to add a new address"
+                    >
+                        <mat-icon aria-label="Import icon">
+                            add_circle
+                        </mat-icon>
+                    </button>
+                </div>
                 <div fxLayout="column">
                     <button
                         id="addresses-import"
@@ -113,9 +86,9 @@
                         (click)="uploader.showDropArea = !uploader.showDropArea"
                         matTooltip="Opens the drop area where you can drag the file to import"
                     >
-                        <mat-icon aria-label="Import icon"
-                            >cloud_upload</mat-icon
-                        >
+                        <mat-icon aria-label="Import icon">
+                            cloud_upload
+                        </mat-icon>
                     </button>
                 </div>
 
@@ -146,7 +119,7 @@
                     </button>
                 </div>
             </div>
-        </mat-card-actions>
+        </mat-card-content>
 
         <app-file-upload
             #uploader="file-upload"
@@ -154,47 +127,19 @@
         ></app-file-upload>
     </mat-card>
 
-    <mat-paginator
-        class="mat-elevation-z1 page-paginator"
-        fxLayout="row"
-        fxLayoutAlign="end"
-        [length]="totalAddresses"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="[10, 25, 50, 100]"
-        (page)="onPageEvent($event)"
+    <app-page-item
+        *ngFor="let address of visibleAddresses; trackBy: trackByFn"
+        [id]="'address_' + address.address"
+        [showActions]="false"
+        pageItem
     >
-    </mat-paginator>
-
-    <div
-        class="match-parent-height"
-        fxLayout="column"
-        fxLayoutAlign="center center"
-        *ngIf="totalAddresses == 0"
-    >
-        <mat-icon color="primary">info</mat-icon>
-        <h2 class="mat-title">No addresses found!</h2>
-    </div>
-
-    <div
-        class="page-list"
-        fxLayout="column"
-        fxLayoutGap="15px"
-        *ngIf="totalAddresses > 0"
-    >
-        <mat-card
-            *ngFor="let address of visibleAddresses; trackBy: trackByFn"
-            [id]="'address_' + address.address"
-            class="card"
-            [@flyInOut]="'in'"
-        >
-            <app-address-book-item
-                [address]="address"
-                [editMode]="editedAddress === address.address"
-                (edit)="setEdited(address.address)"
-                (cancelled)="cancelled()"
-                (delete)="deleteAddress($event)"
-                (update)="updateAddress($event)"
-            ></app-address-book-item>
-        </mat-card>
-    </div>
-</div>
+        <app-address-book-item
+            [address]="address"
+            [editMode]="editedAddress === address.address"
+            (edit)="setEdited(address.address)"
+            (cancelled)="cancelled()"
+            (delete)="deleteAddress($event)"
+            (update)="updateAddress($event)"
+        ></app-address-book-item>
+    </app-page-item>
+</app-page-base>

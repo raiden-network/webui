@@ -1,17 +1,10 @@
+@import '../sass/mixins';
 .rn {
     color: white !important;
 }
 
 a.active {
     color: #1f86e8 !important;
-}
-
-.navigation-icon {
-    display: block;
-    max-height: 25px;
-    max-width: 25px;
-    height: auto;
-    width: auto;
 }
 
 .toolbar {
@@ -25,9 +18,10 @@ a.active {
     background-color: black !important;
 }
 
+$sidenav-top: 56px;
 .sidenav-container {
     position: absolute;
-    top: 60px;
+    top: $sidenav-top;
     left: 0;
     right: 0;
     bottom: 0;
@@ -35,16 +29,26 @@ a.active {
 
 mat-sidenav-content {
     height: 100%;
+    padding-top: 20px;
+    @include respond-to(handhelds) {
+        padding-top: 6px;
+    }
 }
 
 .toolbar-spacer {
     flex: 1 1 auto;
 }
 
-mat-nav-list a {
-    margin-top: 40px;
-}
-
 .account {
     font-size: medium;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.favicon-mobile {
+    height: 25px !important;
+}
+
+.favicon {
+    height: 40px;
 }

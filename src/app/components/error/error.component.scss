@@ -1,3 +1,5 @@
+@import '../../../sass/mixins';
+
 :host {
     height: 100%;
 }
@@ -5,16 +7,24 @@
 $circle_width: 8rem;
 $icon_width: $circle_width/2;
 
+$circle_width_mobile: 4rem;
+$icon_width_mobile: $circle_width_mobile/2;
+
 .error {
     margin-left: 4rem;
     margin-right: 4rem;
     margin-top: 8rem;
+
+    @include respond-to(handhelds) {
+        margin: 1rem 1rem 2rem;
+    }
 }
 
 .error .title {
     font-weight: 500;
     font-size: 1.5rem;
     color: rgba(0, 0, 0, 0.75);
+    margin-bottom: 0.3rem;
 }
 
 .error .icon {
@@ -25,6 +35,11 @@ $icon_width: $circle_width/2;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @include respond-to(handhelds) {
+        width: $circle_width_mobile;
+        height: $circle_width_mobile;
+    }
 }
 
 .error .icon mat-icon {
@@ -32,12 +47,22 @@ $icon_width: $circle_width/2;
     width: $icon_width;
     height: $icon_width;
     color: rgba(0, 0, 0, 0.4);
+
+    @include respond-to(handhelds) {
+        font-size: $icon_width_mobile;
+        width: $icon_width_mobile;
+        height: $icon_width_mobile;
+    }
 }
 
 .error .description {
     font-size: 1rem;
     font-weight: 300;
     color: rgba(0, 0, 0, 0.7);
+
+    @include respond-to(handhelds) {
+        margin-bottom: 0.3rem;
+    }
 }
 
 .error .stacktrace {
@@ -46,6 +71,10 @@ $icon_width: $circle_width/2;
     overflow-y: scroll;
     border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 2px;
+
+    @include respond-to(handhelds) {
+        width: 320px;
+    }
 }
 
 .error .stacktrace pre {

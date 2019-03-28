@@ -7,7 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AddressBookItemComponent } from '../address-book-item/address-book-item.component';
 import { DragUploadDirective } from '../../directives/drag-upload.directive';
 import { AddressBookService } from '../../services/address-book.service';
-import { Address } from '../../models/address';
+import { Address, Addresses } from '../../models/address';
 import { MatDialog } from '@angular/material';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { By } from '@angular/platform-browser';
@@ -16,11 +16,20 @@ import { DebugElement } from '@angular/core';
 import { TestProviders } from '../../../testing/test-providers';
 import { createTestAddresses } from '../../../testing/test-data';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
+import { PageBaseComponent } from '../page/page-base/page-base.component';
+import { AddressInputComponent } from '../address-input/address-input.component';
+import { PageItemComponent } from '../page/page-item/page-item.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SharedService } from '../../services/shared.service';
+import { of } from 'rxjs/internal/observable/of';
+import Spy = jasmine.Spy;
+import { last } from 'rxjs/operators';
 
 describe('AddressBookComponent', () => {
     let component: AddressBookComponent;
     let fixture: ComponentFixture<AddressBookComponent>;
     let serviceStub: AddressBookService;
+    let mobileSpy: Spy;
 
     function getLabels(debugElement: DebugElement): string[] {
         return debugElement.children
@@ -44,18 +53,24 @@ describe('AddressBookComponent', () => {
             declarations: [
                 AddressBookComponent,
                 AddressBookItemComponent,
+                PageBaseComponent,
+                PageItemComponent,
+                AddressInputComponent,
                 FileUploadComponent,
                 DragUploadDirective
             ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
-                ReactiveFormsModule
+                ReactiveFormsModule,
+                HttpClientTestingModule
             ],
             providers: [
                 TestProviders.HammerJSProvider(),
                 TestProviders.AddressBookStubProvider(),
-                TestProviders.MockMatDialog()
+                TestProviders.MockMatDialog(),
+                TestProviders.MockRaidenConfigProvider(),
+                SharedService
             ]
         }).compileComponents();
         serviceStub = TestBed.get(AddressBookService);
@@ -64,6 +79,11 @@ describe('AddressBookComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(AddressBookComponent);
         component = fixture.componentInstance;
+        mobileSpy = spyOnProperty(
+            component,
+            'isMobile$',
+            'get'
+        ).and.returnValue(of(false));
     });
 
     it('should create', () => {
@@ -121,7 +141,7 @@ describe('AddressBookComponent', () => {
 
         mockInput(
             fixture.debugElement,
-            '#addresses-address',
+            `input[placeholder='Address']`,
             '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
         );
         mockInput(fixture.debugElement, '#addresses-label', 'Test Node');
@@ -294,5 +314,150 @@ describe('AddressBookComponent', () => {
         clickElement(debugElements[0], '#edit-address');
         fixture.detectChanges();
         expect(testAddresses[0].label).toBe('An Account');
+    });
+
+    it('should do nothing on mobile if the user cancels the add dialog', async function() {
+        mobileSpy.and.returnValue(of(true));
+
+        const testAddresses = [];
+        serviceStub.getArray = () => testAddresses;
+
+        const dialog = TestBed.get(MatDialog) as MockMatDialog;
+        dialog.cancelled = true;
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        clickElement(fixture.debugElement, '#open-add-dialog');
+
+        fixture.detectChanges();
+
+        const emptyText = (fixture.debugElement.query(By.css('h2.mat-title'))
+            .nativeElement as HTMLHeadElement).textContent;
+        const addressListElement = fixture.debugElement.query(
+            By.css('.page-list')
+        );
+        expect(addressListElement).toBeNull();
+        expect(emptyText).toBe('No addresses found!');
+    });
+
+    it('should save the entry and refresh on mobile if the user confirms the dialog', async function() {
+        mobileSpy.and.returnValue(of(true));
+
+        const testAddresses = [];
+        serviceStub.getArray = () => testAddresses;
+        serviceStub.save = function(address: Address) {
+            const index = testAddresses.findIndex(
+                value => value.address === address.address
+            );
+
+            if (index < 0) {
+                testAddresses.push(address);
+            } else {
+                testAddresses[index] = address;
+            }
+        };
+
+        const dialog = TestBed.get(MatDialog) as MockMatDialog;
+        dialog.returns = () => ({
+            address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
+            label: 'Test Node'
+        });
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        clickElement(fixture.debugElement, '#open-add-dialog');
+
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        expect(testAddresses.length).toBe(1);
+
+        expect(
+            fixture.debugElement.query(By.css('.page-list')).children.length
+        ).toBe(1);
+    });
+
+    it('should delete an address from the list when delete is called', async function() {
+        const testAddresses = createTestAddresses(2);
+        serviceStub.getArray = () => testAddresses;
+        serviceStub.save = function(address: Address) {
+            const index = testAddresses.findIndex(
+                value => value.address === address.address
+            );
+
+            if (index < 0) {
+                testAddresses.push(address);
+            } else {
+                testAddresses[index] = address;
+            }
+        };
+        serviceStub.delete = function(address: Address) {
+            const index = testAddresses.findIndex(
+                value => value.address === address.address
+            );
+
+            if (index > -1) {
+                testAddresses.splice(index, 1);
+            }
+        };
+
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        expect(testAddresses.length).toBe(2);
+
+        expect(
+            fixture.debugElement.query(By.css('.page-list')).children.length
+        ).toBe(2);
+
+        component.deleteAddress(testAddresses[0]);
+
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        expect(testAddresses.length).toBe(1);
+
+        expect(
+            fixture.debugElement.query(By.css('.page-list')).children.length
+        ).toBe(1);
+    });
+
+    it('should display the addresses when the user imports them', async function() {
+        const testAddresses: Address[] = [];
+        serviceStub.getArray = () => testAddresses;
+        serviceStub.store = function(addresses: Addresses) {
+            for (const address in addresses) {
+                if (!addresses.hasOwnProperty(address)) {
+                    continue;
+                }
+                testAddresses.push({
+                    address: address,
+                    label: addresses[address]
+                });
+            }
+        };
+
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        expect(testAddresses.length).toBe(0);
+
+        expect(fixture.debugElement.query(By.css('.page-list'))).toBe(null);
+
+        const testData = createTestAddresses(5);
+        const addressDict: Addresses = {};
+        testData.forEach(value => {
+            addressDict[value.address] = value.label;
+        });
+        component.importAddresses(addressDict);
+
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        expect(testAddresses.length).toBe(5);
+
+        expect(
+            fixture.debugElement.query(By.css('.page-list')).children.length
+        ).toBe(5);
     });
 });

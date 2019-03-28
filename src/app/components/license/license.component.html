@@ -1,7 +1,7 @@
 <div
-    class="mat-typography"
+    class="mat-typography match-parent-height"
     fxLayout="column"
-    fxFlexAlign="center"
+    fxLayoutAlign="center"
     fxFlex="50"
     fxFlex.gt-lg="40"
     fxFlex.sm="70"
@@ -11,15 +11,16 @@
     fxFlexOffset.sm="15"
     fxFlexOffset.xs="5"
 >
-    <div fxLayout="row">
-        <h1 class="mat-display-2">About this Software</h1>
-    </div>
-    <div fxLayout="column" class="license">
-        <p fxLayout="row">The MIT License (MIT)</p>
+    <div class="license">
+        <h1 ngClass="mat-display-2" ngClass.xs="headline">
+            About this Software
+        </h1>
 
-        <p fxLayout="row">Copyright (c) 2015-2018 Brainbot Labs Est.</p>
+        <p>The MIT License (MIT)</p>
 
-        <p fxLayout="row" class="justify">
+        <p>Copyright (c) 2015-2018 Brainbot Labs Est.</p>
+
+        <p class="justify">
             Permission is hereby granted, free of charge, to any person
             obtaining a copy of this software and associated documentation files
             (the "Software"), to deal in the Software without restriction,
@@ -29,12 +30,12 @@
             subject to the following conditions:
         </p>
 
-        <p fxLayout="row" class="justify">
+        <p class="justify">
             The above copyright notice and this permission notice shall be
             included in all copies or substantial portions of the Software.
         </p>
 
-        <p fxLayout="row" class="justify">
+        <p class="justify">
             THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
             EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
             MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND

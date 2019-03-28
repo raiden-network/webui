@@ -1,12 +1,5 @@
-import {
-    animate,
-    state,
-    style,
-    transition,
-    trigger
-} from '@angular/animations';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatPaginator, PageEvent } from '@angular/material';
+import { MatDialog, PageEvent } from '@angular/material';
 import { BehaviorSubject, EMPTY, Subscription } from 'rxjs';
 import { flatMap, switchMap, tap } from 'rxjs/operators';
 import { SortingData } from '../../models/sorting.data';
@@ -29,37 +22,18 @@ import {
 } from '../payment-dialog/payment-dialog.component';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { TokenSorting } from './token.sorting.enum';
+import { PageBaseComponent } from '../page/page-base/page-base.component';
 
 @Component({
     selector: 'app-token-network',
     templateUrl: './token-network.component.html',
-    styleUrls: ['./token-network.component.scss'],
-    animations: [
-        trigger('flyInOut', [
-            state('in', style({ opacity: 1, transform: 'translateX(0)' })),
-            transition('void => *', [
-                style({
-                    opacity: 0,
-                    transform: 'translateX(+100%)'
-                }),
-                animate('0.2s ease-in')
-            ]),
-            transition('* => void', [
-                animate(
-                    '0.2s 0.1s ease-out',
-                    style({
-                        opacity: 0,
-                        transform: 'translateX(100%)'
-                    })
-                )
-            ])
-        ])
-    ]
+    styleUrls: ['./token-network.component.scss']
 })
 export class TokenNetworkComponent implements OnInit, OnDestroy {
-    @Input() raidenAddress: string;
-
-    @ViewChild(MatPaginator) paginator: MatPaginator;
+    @Input()
+    raidenAddress: string;
+    @ViewChild(PageBaseComponent)
+    page: PageBaseComponent;
 
     public refreshing = true;
 
@@ -106,9 +80,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     }
 
     showRegisterDialog() {
-        const registerDialogRef = this.dialog.open(RegisterDialogComponent, {
-            width: '400px'
-        });
+        const registerDialogRef = this.dialog.open(RegisterDialogComponent);
 
         registerDialogRef
             .afterClosed()
@@ -183,7 +155,6 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         const joinDialogRef = this.dialog.open(
             ConnectionManagerDialogComponent,
             {
-                width: '480px',
                 data: payload
             }
         );
@@ -218,7 +189,6 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         };
 
         const paymentDialogRef = this.dialog.open(PaymentDialogComponent, {
-            width: '400px',
             data: payload
         });
 
@@ -251,7 +221,6 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
-            width: '500px',
             data: payload
         });
 
@@ -327,13 +296,13 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
 
     applyKeywordFilter() {
         this.applyFilters(this.sorting);
-        this.paginator.firstPage();
+        this.page.firstPage();
     }
 
     clearFilter() {
         this.filter = '';
         this.applyFilters(this.sorting);
-        this.paginator.firstPage();
+        this.page.firstPage();
     }
 
     private refreshTokens() {

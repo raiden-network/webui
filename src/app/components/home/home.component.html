@@ -1,5 +1,5 @@
 <div
-    class="mat-typography"
+    class="mat-typography match-parent-height"
     fxLayout="column"
     fxFlexAlign="center"
     fxFlex="60"
@@ -11,18 +11,14 @@
     fxFlexOffset.sm="15"
     fxFlexOffset.xs="5"
 >
-    <div fxLayout="row">
-        <h1 class="mat-display-2">Payment-Channel Network for Ethereum</h1>
-    </div>
-
-    <div fxLayout="row" class="information">
+    <div class="information">
+        <h1 ngClass="mat-display-2" ngClass.xs="headline">
+            Payment-Channel Network for Ethereum
+        </h1>
         <p>
             Raiden is a technology that leverages off-chain state networks to
             extend Ethereum with some nice properties for asset transfers:
         </p>
-    </div>
-
-    <div fxLayout="row" class="information">
         <ul>
             <li>
                 <strong>Scalable</strong>
@@ -66,9 +62,6 @@
                 </p>
             </li>
         </ul>
-    </div>
-
-    <div fxLayout="row" class="information">
         <p>
             <a target="_blank" href="http://raiden-network.readthedocs.io">
                 Click here

@@ -30,3 +30,7 @@ $dark-theme: mat-dark-theme($webui-app-primary, $webui-app-accent, $webui-app-wa
   $background: map-get($dark-theme, background);
   background-color: black;
 }
+
+.mat-activated {
+    color:mat-color($mat-blue, 800);
+}
