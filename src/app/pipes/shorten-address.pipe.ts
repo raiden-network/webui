@@ -4,7 +4,6 @@ import { Pipe, PipeTransform } from '@angular/core';
     name: 'shortenAddress'
 })
 export class ShortenAddressPipe implements PipeTransform {
-
     transform(value?: string, width: number = 12): string {
         const separator = '...';
         if (!value) {
@@ -20,5 +19,4 @@ export class ShortenAddressPipe implements PipeTransform {
             );
         }
     }
-
 }

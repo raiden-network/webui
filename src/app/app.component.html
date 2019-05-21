@@ -39,7 +39,9 @@
         >
             {{ raidenAddress | shortenAddress }}
         </span>
-        <span class="balance">{{ balance$ | async | displayDecimals }} ETH</span>
+        <span class="balance"
+            >{{ balance$ | async | displayDecimals }} ETH</span
+        >
     </div>
     <span style="width: 32px; margin-right: 25px">
         <img class="round identicon" [src]="identicon(raidenAddress)" />
