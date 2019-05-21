@@ -50,7 +50,7 @@ describe('RaidenConfig', () => {
         });
 
         const web3Factory: Web3Factory = TestBed.get(Web3Factory);
-        const fake = async (method: string) => {
+        const fake = async (method: string): Promise<object> => {
             if (method !== 'net_version') {
                 throw new Error('not mocked');
             }

@@ -85,3 +85,7 @@
 app-page-base {
     height: 100%;
 }
+
+.expanded-tooltip {
+    min-width: 260px;
+}

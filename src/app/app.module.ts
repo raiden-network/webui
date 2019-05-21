@@ -55,6 +55,8 @@ import { NavigationEntryComponent } from './components/navigation-entry/navigati
 import { SortFilterPageHeaderComponent } from './components/page/sort-filter-page-header/sort-filter-page-header.component';
 import { AddAddressDialogComponent } from './components/add-address-dialog/add-address-dialog.component';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material';
+import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
+import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -111,7 +113,9 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         PageHeaderDirective,
         PageItemDirective,
         NavigationEntryComponent,
-        AddAddressDialogComponent
+        AddAddressDialogComponent,
+        ShortenAddressPipe,
+        DisplayDecimalsPipe
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

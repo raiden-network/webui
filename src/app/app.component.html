@@ -22,9 +22,6 @@
         </a>
     </span>
     <span class="toolbar-spacer"></span>
-    <span class="truncate account">
-        {{ raidenAddress }}
-    </span>
     <span>
         <button mat-icon-button ngxClipboard [cbContent]="raidenAddress">
             <mat-icon aria-label="Copy address to clipboard">
@@ -32,9 +29,22 @@
             </mat-icon>
         </button>
     </span>
-    <span style="width: 36px; margin-right: 25px">
+    <div class="account-info">
+        <span
+            class="truncate account"
+            [matTooltip]="raidenAddress"
+            matTooltipClass="expanded-tooltip"
+            matTooltipShowDelay="600"
+            matTooltipPosition="before"
+        >
+            {{ raidenAddress | shortenAddress }}
+        </span>
+        <span class="balance">{{ balance$ | async | displayDecimals }} ETH</span>
+    </div>
+    <span style="width: 32px; margin-right: 25px">
         <img class="round identicon" [src]="identicon(raidenAddress)" />
     </span>
+
     <span
         [matBadge]="pendingRequests"
         style="margin-right: 10px"

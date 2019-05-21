@@ -14,6 +14,7 @@ import { SharedService } from './shared.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import Spy = jasmine.Spy;
 import { TestProviders } from '../../testing/test-providers';
+import BigNumber from 'bignumber.js';
 
 describe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
@@ -73,6 +74,7 @@ describe('RaidenService', () => {
             'createBatch'
         );
         spyOn(sharedService, 'error');
+        // @ts-ignore
         spyOn(service, 'raidenAddress$').and.returnValue(
             of('0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C')
         );
@@ -243,5 +245,47 @@ describe('RaidenService', () => {
             title: 'JSON RPC Connection',
             description: 'Could not establish a JSON-RPC connection'
         });
+    }));
+
+    it('should periodically poll the balance', fakeAsync(function() {
+        let count = 0;
+        const config: RaidenConfig = TestBed.get(RaidenConfig);
+
+        const eth = config.web3.eth;
+
+        // @ts-ignore
+        config.web3.eth = {
+            getBalance(address: string): Promise<string> {
+                return Promise.resolve(
+                    new BigNumber('2000000000000000000').toString()
+                );
+            }
+        };
+
+        tick(15000);
+
+        const subscription = service.balance$().subscribe(value => {
+            expect(value).toEqual('2');
+            count++;
+        });
+
+        const addressRequest = mockHttp.expectOne({
+            url: `${endpoint}/address`,
+            method: 'GET'
+        });
+
+        const body = {
+            our_address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+        };
+
+        addressRequest.flush(body, {
+            status: 200,
+            statusText: ''
+        });
+
+        flush();
+        expect(count).toEqual(1);
+        subscription.unsubscribe();
+        config.web3.eth = eth;
     }));
 });

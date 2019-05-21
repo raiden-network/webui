@@ -15,6 +15,8 @@ import { ErrorComponent } from './components/error/error.component';
 import { MediaObserver } from '@angular/flex-layout';
 import Spy = jasmine.Spy;
 import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
+import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
+import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -26,7 +28,9 @@ describe('AppComponent', () => {
             declarations: [
                 AppComponent,
                 ErrorComponent,
-                NavigationEntryComponent
+                NavigationEntryComponent,
+                ShortenAddressPipe,
+                DisplayDecimalsPipe
             ],
             providers: [
                 {
