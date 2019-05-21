@@ -5,6 +5,7 @@
 - [#60] Adds layout optimizations for mobile devices.
 
 ### Added
+- [#85] Adds account's eth balance on the header.
 - [#49] Adds error screen for JSON RPC connection failure.
 
 ## [0.8.0] - 2019-01-25
@@ -41,6 +42,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#85]: https://github.com/raiden-network/webui/issues/85
 [#66]: https://github.com/raiden-network/webui/issues/66
 [#60]: https://github.com/raiden-network/webui/issues/60
 [#55]: https://github.com/raiden-network/webui/issues/55
