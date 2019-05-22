@@ -67,8 +67,6 @@ For frequent contributors with write access to the repository we have a set of l
 
 It is the responsibility of the author to ask for at least one person to review their Pull Request. That person should know the area of the code being changed. If the chosen reviewer does not feel confident in the review, they can then ask for someone else to additionally look at the code.
 
-All the developers in the team should perform Pull Request reviews. Make it a habit to check [this](https://github.com/raiden-network/webui/pulls?q=is%3Apr+is%3Aopen+label%3A%22dev%3A+Please+Review%22) link often to help your fellow colleagues who have PRs open pending for review.
-
 We have a lot of tools that automatically check the quality of the code (eslint, prettier). All these are automatically ran by the CI. Therefore fixes related to linting are not usually part of PR reviews. Additionally reviewers are encouraged to not be nitpicky about the suggested changes they ask from the PR author. If something is indeed nitpicky then the reviewer is encouraged to state it beforehand. Example:
 
 > nitpick: I don't really think XYZ makes sense here. If possible it would be nice to have it changed to KLM
