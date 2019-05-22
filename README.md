@@ -1,100 +1,205 @@
-# Raiden WebUI
+<!-- PROJECT SHIELDS -->
 
-[![CircleCI](https://circleci.com/gh/raiden-network/webui/tree/master.svg?style=svg)](https://circleci.com/gh/raiden-network/webui/tree/master)
-[![Codecove](https://codecov.io/github/raiden-network/webui/coverage.svg?precision=2)](https://codecov.io/gh/raiden-network/webui)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+<h2 align="center">
+  <br/>
+  <a href='https://raiden.network/'><img 
+      width='400px' 
+      alt='' 
+      src="https://user-images.githubusercontent.com/35398162/54018436-ee3f6300-4188-11e9-9b4e-0666c44cda53.png" /></a>
+  <br/>
+  Raiden WebUI
+  <br/>
+</h2>
 
-* To install the dependencies please run.
+<h4 align="center">
+  
+</h4>
 
-> **npm install**.
+<p align="center">
+  <a href="#getting-started">Getting Started</a> ∙
+  <a href='#contact'>Contact</a>
+</p>
 
-This will install all the dependencies needed by Angular to run the project.
+<p align="center">
+  <a href="https://pypi.org/project/raiden-webui/">
+    <img alt="PyPI" src="https://img.shields.io/pypi/v/raiden-webui.svg">
+  </a>
+  <a href="https://circleci.com/gh/raiden-network/webui/tree/master">
+   <img src="https://circleci.com/gh/raiden-network/webui/tree/master.svg?style=svg" alt="CircleCI Badge">
+  </a>
+  <a href="https://codecov.io/gh/raiden-network/webui">
+    <img src="https://codecov.io/github/raiden-network/webui/coverage.svg?precision=2" alt="Codecov Badge">
+  </a>
+  <a href="https://github.com/prettier/prettier">
+    <img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="code style: prettier">
+  </a>
+  <a href="https://gitter.im/raiden-network/raiden">
+    <img src="https://badges.gitter.im/gitterHQ/gitter.png" alt="Gitter Raiden Badge">
+  </a>
+</p>
 
-* We make Cross domain requests to many servers including the Geth Server and Raiden API server we need to proxy our requests hence run the server in this way.
+Raiden WebUI is a simple web application that utilizes the Raiden REST API endpoints to
+allow the user to interact with token networks, make token payments, see the current status of open
+channels along with closing and settling channels to name some of the functionality.
 
-> **ng serve --proxy-config proxy.config.json --base-href /ui/ --deploy-url /ui/ --delete-output-path false**
+## Table of Contents
 
-You can read more about this [here](https://github.com/angular/angular-cli/blob/master/docs/documentation/stories/proxy.md)
+-   [About The Project](#about-the-project)
+-   [Getting Started](#getting-started)
+    -   [Learn about Raiden](#learn-about-raiden)
+    -   [Using the WebUI](#using-the-webui)
+    -   [Prerequisites](#prerequisites)
+    -   [Development](#development)
+        -   [Configuration](#configuration)
+        -   [Running WebUI](#running-webui)
+        -   [Python Package](#python-package)
+-   [Contributing](#contributing)
+-   [License](#license)
+-   [Contact](#contact)
 
-* If the `@angular/cli`'s `ng` command isn't available globally, you can find locally installed one at:
+## About The Project
 
-> **./node_modules/.bin/ng**
+The [Raiden Network](https://raiden.network/) is an off-chain scaling solution, enabling near-instant,
+low-fee and scalable payments. It’s complementary to the Ethereum blockchain and works with any ERC20 compatible token.
 
-* You can also run *serve* command with
+The Raiden client code is available [here](https://github.com/raiden-network/raiden) and has been
+[released for mainnet](https://medium.com/raiden-network/red-eyes-mainnet-release-announcement-d48235bbef3c) with a
+limited alpha release of the Raiden Network in December 2018.
 
-> **npm start**
+<p align="center">
+<a href="https://www.youtube.com/watch?v=ASWeFdHDK-E" target="_blank">
+<img 
+       width='360px' 
+       alt='' 
+       src="https://img.youtube.com/vi/ASWeFdHDK-E/0.jpg" />
+</a>
+</p>
 
-* You can build production-ready UI files with
+Raiden WebUI is build using the following technologies:
 
-**npm run build:prod**
+-   [Angular](https://angular.io/)
+-   [Angular Material](https://material.angular.io/)
+-   [Angular Flex-Layout](https://github.com/angular/flex-layout)
+-   [Web3.js](https://github.com/ethereum/web3.js/)
 
-It'll lay in the `raiden_webui/ui` subfolder.
+## Getting Started
 
-* Inside the folder src/assets/config we have a config.development.json. This file contains configuration details about host port etc for the raiden as well as geth because we query both the api servers simultaneously. We need to change this file so that it can pick up details according our local configuration.
+### Learn about Raiden
+
+If you didn't use Raiden before, you can
+
+-   Checkout the [developer portal](http://developer.raiden.network)
+-   Look at the [documentation](https://raiden-network.readthedocs.io/en/stable/index.html)
+-   Learn more by watching explanatory [videos](https://www.youtube.com/channel/UCoUP_hnjUddEvbxmtNCcApg)
+-   Read the blog posts on [Medium](https://medium.com/@raiden_network)
+
+### Using the WebUI
+
+If you want to know how to use the Raiden WebUI you can find a nice
+[tutorial](https://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#) on the Raiden Documentation.
+
+### Prerequisites
+
+If you are a just a user of the WebUI there is no need for you to do anything. A version of the WebUI is
+already bundled with each raiden release. The only thing you need to to to access the WebUI is for example to
+navigate to `http://127.0.0.1:5001` and interact with the Raiden WebUI.
+
+If you want to work on the WebUI codebase you need:
+
+-   Node >=10.13.0
+-   A working [Raiden client](https://raiden-network.readthedocs.io/en/stable/overview_and_guide.html).
+-   Git for version control.
+
+### Development
+
+Before you start working on the WebUI you need to install the WebUI's dependencies.
+
+```bash
+npm install
 ```
+
+#### Configuration
+
+Before you being to work on the WebUI you have to make sure that you have the proper configuration.
+Check if the [proxy configuration](./proxy.config.json) corresponds to your actual environment configuration.
+
+Since you will not be running the WebUI embedded into raiden you need to provide both the Ethereum RPC endpoint
+and the Raiden REST API endpoint to the `proxy.config.json`.
+
+By default the configurations looks like this:
+
+```json
 {
-  "raiden":
-  {
-    "host": "localhost",
-    "port": 5001,
-    "version": 1
-  },
-  "web3":
-  {
-    "host": "localhost",
-    "port": 8545
-  }
+    "/api": {
+        "target": "http://localhost:5001",
+        "proxyTimeout": 600000
+    },
+    "/web3": {
+        "target": "http://localhost:8545",
+        "pathRewrite": { "^/web3": "" },
+        "changeOrigin": true,
+        "proxyTimeout": 60000
+    }
 }
 ```
 
-* If we run geth and raiden locally these are additional configurations that we need to do on our local machine.
+The configuration assumes that the Ethereum RPC endpoint listens on `http://localhost:8545`
+and the Raiden REST API is on `http://localhost:5001`. If you are using a different configuration make sure
+to update the corresponding fields in the configuration.
 
-	1. Generate a genesis JSON file containing all the contracts, configurations.
-	> **python tools/config_builder.py full_genesis > mycustomgenesis.json**
+For example if you run raiden on port `5002` and you use Infura as your RPC provider you would have to
+modify the `proxy.config.json` to like like:
 
-	2. Initialise the Geth with the genesis file along with the data directory  
-	> **geth --datadir /home/user/privategeth init mycustomgenesis.json**
-
-	3. Start geth with this command
-	> geth --rpccorsdomain "*" --datadir /home/krishna/privategeth --networkid 123 --nodiscover --maxpeers 0 --rpc --mine 1
-
-	4. Start Raiden with the registry-contract-address and the discovery-contract-address generated in the last lines in the **mycustomgenesis.json**
-file.
-	```
-    raiden --eth-rpc-endpoint 127.0.0.1:8545 --registry-contract-address 7d73424a8256c0b2ba245e5d5a3de8820e45f390 --discovery-contract-address 08425d9df219f93d5763c3e85204cb5b4ce33aaa --keystore-path ~/privategeth/keystore --console
-    ```
-
- Attach an ipc connection with geth
- ```
- geth attach ipc:/home/krishna/privategeth/geth.ipc
- ```
-
- From the IPC console quickly check the ether and transfer Ether for a user.
- ```
- web3.fromWei(eth.getBalance(eth.accounts[0]), 'ether')
-
- eth.sendTransaction({from:eth.coinbase, to:eth.accounts[1], value: web3.toWei(10, "ether")})
-
+```json
+{
+    "/api": {
+        "target": "http://localhost:5002",
+        "proxyTimeout": 600000
+    },
+    "/web3": {
+        "target": "http://goerli.infura.io/v3/YOUR_API_KEY",
+        "pathRewrite": { "^/web3": "" },
+        "changeOrigin": true,
+        "proxyTimeout": 60000
+    }
+}
 ```
 
-# WebUI python package
+> **Info**: On development mode there is no way to guarantee that raiden and the RPC provider run on the same chain.
+> You have to be careful, because if you start for example Raiden on Rinkeby and pass Görli as the RPC endpoint, WebUI
+> will fail to work.
 
-The WebUI can be build as a python package that can then be consumed by raiden.
-The package provides a static that points to the location of the WebUI static content root directory.
+> **Important**: Modifications on `proxy.config.json` make sure never be part of your PR.
 
-The WebUI resources path can be imported in the following way:
- 
+#### Running WebUI
+
+After you are done with the configuration you can start the development server:
+
+```bash
+npm run serve
+```
+
+After the development server starts you have to navigate to `http://localhost:4200/ui`, in order to use the WebUI.
+
+#### Python package
+
+The WebUI is build as a python package and it's available on PyPI. This package is pinned as a dependency on Raiden.
+The PyPI package provides a precompiled version of the WebUI that is bundled with Raiden and can be used out of the box.
+
+The python package provides a static variable that points to the location of the WebUI static content root directory.
+This can be imported by raiden to expose the bundled WebUI resources:
+
 ```python
 from raiden_webui import RAIDEN_WEBUI_PATH
 ```
- 
-You can build the python package by calling:
+
+The package can build the python package by calling:
 
 ```bash
 python setup.py build sdist bdist_wheel
 ```
 
-This will call `npm build:prod` to build the static production version of the WebUI so 
+The command calls `npm build:prod` to build the static production version of the WebUI so
 that it can get included in the python package.
 
 If you need to install the package locally to your development virtual environment you can do
@@ -105,39 +210,32 @@ python setup.py build install
 ```
 
 In case you need to use the debug version of the WebUI with in your virtual environment you can also
-run: 
+run:
 
 ```bash
 python setup.py compile_webui -D install
-``` 
+```
 
-This will build the debug version of the WebUI to include in your package. 
+This will build the debug version of the WebUI to include in your package.
 
+## Contributing
 
-# Raiden WebUI
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.5.
+Also have a look at the [Raiden WebUI Development Guide](./CONTRIBUTING.md) for more info.
 
-## Development server
+## License
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Distributed under the [MIT License](./LICENSE).
 
-## Code scaffolding
+## Contact
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Dev Chat: [Gitter](https://gitter.im/raiden-network/raiden)
 
-## Build
+Twitter: [@raiden_network](https://twitter.com/raiden_network)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `raiden_webui/ui` directory. Use the `-prod` flag for a production build.
+Website: [Raiden Network](https://raiden.network/)
 
-## Running unit tests
+Mail: contact@raiden.network
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Project Link: [https://github.com/raiden-network/light-client](https://github.com/raiden-network/light-client)
