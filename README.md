@@ -67,13 +67,15 @@ The Raiden client code is available [here](https://github.com/raiden-network/rai
 limited alpha release of the Raiden Network in December 2018.
 
 <p align="center">
-<a href="https://www.youtube.com/watch?v=ASWeFdHDK-E" target="_blank">
-<img 
-       width='360px' 
-       alt='' 
-       src="https://img.youtube.com/vi/ASWeFdHDK-E/0.jpg" />
-</a>
+  <a href="https://www.youtube.com/watch?v=ASWeFdHDK-E" target="_blank">
+    <img
+      width="824px"
+      alt="Raiden WebUI"
+      src="./webui.png"
+    />
+  </a>
 </p>
+
 
 Raiden WebUI is build using the following technologies:
 
@@ -96,7 +98,7 @@ If you didn't use Raiden before, you can
 ### Using the WebUI
 
 If you want to know how to use the Raiden WebUI you can find a nice
-[tutorial](https://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#) on the Raiden Documentation.
+[tutorial](https://raiden-network.readthedocs.io/en/latest/webui_tutorial.html) on the Raiden Documentation.
 
 ### Prerequisites
 
@@ -107,7 +109,7 @@ navigate to `http://127.0.0.1:5001` and interact with the Raiden WebUI.
 If you want to work on the WebUI codebase you need:
 
 -   Node >=10.13.0
--   A working [Raiden client](https://raiden-network.readthedocs.io/en/stable/overview_and_guide.html).
+-   A working [Raiden client](https://raiden-network.readthedocs.io/en/latest/overview_and_guide.html).
 -   Git for version control.
 
 ### Development
