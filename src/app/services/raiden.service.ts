@@ -1,13 +1,14 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
-import { from, Observable, of, throwError, zip } from 'rxjs';
+import { from, interval, Observable, of, throwError, zip } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
     catchError,
-    first,
     flatMap,
     map,
+    share,
     shareReplay,
+    startWith,
     switchMap,
     tap,
     toArray
@@ -23,13 +24,14 @@ import { RaidenConfig } from './raiden.config';
 import { SharedService } from './shared.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { environment } from '../../environments/environment';
-import { Block } from 'web3-eth/types';
+import { fromWei } from 'web3-utils';
 
 @Injectable({
     providedIn: 'root'
 })
 export class RaidenService {
     readonly raidenAddress$: Observable<string>;
+    readonly balance$: Observable<string>;
     private userTokens: { [id: string]: UserToken | null } = {};
 
     constructor(
@@ -46,6 +48,21 @@ export class RaidenService {
                 catchError(error => this.handleError(error)),
                 shareReplay(1)
             );
+
+        const fetch: () => Observable<string> = () => {
+            return this.raidenAddress$.pipe(
+                flatMap(address =>
+                    fromPromise(this.raidenConfig.web3.eth.getBalance(address))
+                )
+            );
+        };
+
+        this.balance$ = interval(15000).pipe(
+            startWith(fetch),
+            flatMap(fetch),
+            map(value => fromWei(value, 'ether')),
+            share()
+        );
     }
 
     public get production(): boolean {
@@ -404,13 +421,6 @@ export class RaidenService {
                 ),
                 catchError(error => this.handleError(error))
             );
-    }
-
-    public blocknumberToDate(block: number): Observable<Date> {
-        return fromPromise(this.raidenConfig.web3.eth.getBlock(block)).pipe(
-            map((blk: Block) => new Date(blk.timestamp * 1000)),
-            first()
-        );
     }
 
     public getUserToken(tokenAddress: string): UserToken | null {

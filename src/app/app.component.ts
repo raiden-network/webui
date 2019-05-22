@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { default as makeBlockie } from 'ethereum-blockies-base64';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
 import { SharedService } from './services/shared.service';
@@ -17,6 +17,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     public title = 'Raiden';
     public raidenAddress;
+    public readonly balance$: Observable<string>;
 
     private _pendingRequests = 0;
 
@@ -34,6 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private media: MediaObserver
     ) {
         this._menuOpen = false;
+        this.balance$ = raidenService.balance$;
     }
 
     get menuOpen(): boolean {

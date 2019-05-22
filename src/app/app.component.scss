@@ -39,16 +39,30 @@ mat-sidenav-content {
     flex: 1 1 auto;
 }
 
-.account {
-    font-size: medium;
-    padding-left: 8px;
-    padding-right: 8px;
-}
-
 .favicon-mobile {
     height: 25px !important;
 }
 
 .favicon {
     height: 40px;
+}
+
+.account-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    padding-left: 8px;
+    padding-right: 8px;
+
+    .balance {
+        line-height: 20px;
+        font-weight: 300;
+        font-size: 14px;
+    }
+
+    .account {
+        font-size: 16px;
+        line-height: 22px;
+    }
 }
