@@ -1,7 +1,7 @@
 {
-  "raiden": "/api/v1",
-  "reveal_timeout": 10,
-  "settle_timeout": 500,
-  "web3": "http://localhost:8545",
-  "environment_type": "development"
+    "raiden": "/api/v1",
+    "reveal_timeout": 10,
+    "settle_timeout": 500,
+    "web3": "http://localhost:8545",
+    "environment_type": "development"
 }
