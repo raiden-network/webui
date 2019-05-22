@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private media: MediaObserver
     ) {
         this._menuOpen = false;
-        this.balance$ = raidenService.balance$();
+        this.balance$ = raidenService.balance$;
     }
 
     get menuOpen(): boolean {

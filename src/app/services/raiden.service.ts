@@ -31,6 +31,7 @@ import { fromWei } from 'web3-utils';
 })
 export class RaidenService {
     readonly raidenAddress$: Observable<string>;
+    readonly balance$: Observable<string>;
     private userTokens: { [id: string]: UserToken | null } = {};
 
     constructor(
@@ -47,6 +48,21 @@ export class RaidenService {
                 catchError(error => this.handleError(error)),
                 shareReplay(1)
             );
+
+        const fetch: () => Observable<string> = () => {
+            return this.raidenAddress$.pipe(
+                flatMap(address =>
+                    fromPromise(this.raidenConfig.web3.eth.getBalance(address))
+                )
+            );
+        };
+
+        this.balance$ = interval(15000).pipe(
+            startWith(fetch),
+            flatMap(fetch),
+            map(value => fromWei(value, 'ether')),
+            share()
+        );
     }
 
     public get production(): boolean {
@@ -60,22 +76,6 @@ export class RaidenService {
 
     public get raidenAddress(): string {
         return this._raidenAddress;
-    }
-
-    balance$(): Observable<string> {
-        const fetch: () => Observable<string> = () => {
-            return this.raidenAddress$.pipe(
-                flatMap(address =>
-                    fromPromise(this.raidenConfig.web3.eth.getBalance(address))
-                )
-            );
-        };
-        return interval(15000).pipe(
-            startWith(fetch),
-            flatMap(fetch),
-            map(value => fromWei(value, 'ether')),
-            share()
-        );
     }
 
     // noinspection JSMethodCanBeStatic

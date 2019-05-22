@@ -264,7 +264,7 @@ describe('RaidenService', () => {
 
         tick(15000);
 
-        const subscription = service.balance$().subscribe(value => {
+        const subscription = service.balance$.subscribe(value => {
             expect(value).toEqual('2');
             count++;
         });
