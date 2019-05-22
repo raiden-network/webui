@@ -41,7 +41,7 @@
     "ngx-toastr": "^9.1.1",
     "rxjs": "^6.4.0",
     "tslib": "^1.9.0",
-    "web3": "^1.0.0-beta.47",
+    "web3": "^1.0.0-beta.55",
     "zone.js": "^0.8.29"
   },
   "devDependencies": {

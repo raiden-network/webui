@@ -101,7 +101,9 @@ export class TokenInfoRetrieverService {
             const expectedType = typeof token[method];
 
             if (typeof value === 'object') {
-                value = value[method] || value['0'];
+                if (value._ethersType !== 'BigNumber') {
+                    value = value[method] || value['0'];
+                }
             }
 
             if (expectedType === 'number') {
