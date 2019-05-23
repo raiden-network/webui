@@ -10,27 +10,35 @@
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $webui-app-primary: mat-palette($mat-blue);
-$webui-app-accent:  mat-palette($mat-blue, A200, A100, A400);
+$webui-app-accent: mat-palette($mat-blue, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$webui-app-warn:    mat-palette($mat-red);
+$webui-app-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$webui-app-theme: mat-light-theme($webui-app-primary, $webui-app-accent, $webui-app-warn);
+$webui-app-theme: mat-light-theme(
+    $webui-app-primary,
+    $webui-app-accent,
+    $webui-app-warn
+);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($webui-app-theme);
 
-$dark-theme: mat-dark-theme($webui-app-primary, $webui-app-accent, $webui-app-warn);
+$dark-theme: mat-dark-theme(
+    $webui-app-primary,
+    $webui-app-accent,
+    $webui-app-warn
+);
 
 .dark-theme {
-  @include angular-material-theme($dark-theme);
-  $background: map-get($dark-theme, background);
-  background-color: black;
+    @include angular-material-theme($dark-theme);
+    $background: map-get($dark-theme, background);
+    background-color: black;
 }
 
 .mat-activated {
-    color:mat-color($mat-blue, 800);
+    color: mat-color($mat-blue, 800);
 }

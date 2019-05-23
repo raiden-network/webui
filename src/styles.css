@@ -26,7 +26,8 @@
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: 6.25%;
-    box-shadow: inset rgba(255, 255, 255, 0.6) 0 2px 2px, inset rgba(0, 0, 0, 0.3) 0 -2px 6px;
+    box-shadow: inset rgba(255, 255, 255, 0.6) 0 2px 2px,
+        inset rgba(0, 0, 0, 0.3) 0 -2px 6px;
     transition: border-radius 2.5s;
     transition-delay: 3s;
 }
@@ -43,7 +44,7 @@
 }
 
 .justify {
-    text-align: justify
+    text-align: justify;
 }
 
 .match-parent-height {
@@ -79,7 +80,7 @@
 }
 
 .toast-container {
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 app-page-base {

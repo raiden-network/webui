@@ -45,9 +45,7 @@ const mockProvider = {
 
 export class MockConfig extends RaidenConfig {
     public web3: Web3 = mockProvider.web3;
-    private testBatchManager: BatchManager = new BatchManager(
-        this.web3
-    );
+    private testBatchManager: BatchManager = new BatchManager(this.web3);
 
     constructor() {
         super(stub<HttpClient>(), stub<SharedService>(), mockProvider);

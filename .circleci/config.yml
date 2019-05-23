@@ -67,7 +67,7 @@ jobs:
     executor: base-executor
     steps:
       - attach_workspace: *attach_options
-      - run: node_modules/.bin/prettier --single-quote --check src/app/**/*
+      - run: npm run prettier:check
       - run: npm run lint
 
   test:
