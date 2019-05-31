@@ -61,6 +61,7 @@
     "karma-coverage-istanbul-reporter": "^2.0.4",
     "karma-jasmine": "^2.0.1",
     "karma-junit-reporter": "^1.2.0",
+    "node-sass": "^4.12.0",
     "prettier": "1.16.1",
     "protractor": "~5.4.1",
     "rxjs-tslint": "^0.1.5",
