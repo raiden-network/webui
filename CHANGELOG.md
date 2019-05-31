@@ -5,6 +5,7 @@
 - [#60] Adds layout optimizations for mobile devices.
 
 ### Added
+- [#79] Adds ens resolution support.
 - [#85] Adds account's eth balance on the header.
 - [#49] Adds error screen for JSON RPC connection failure.
 
@@ -36,13 +37,14 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v0.7.1...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v0.8.0...HEAD
 [0.8.0]: https://github.com/raiden-network/webui/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/raiden-network/webui/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
 [#85]: https://github.com/raiden-network/webui/issues/85
+[#79]: https://github.com/raiden-network/webui/issues/79
 [#66]: https://github.com/raiden-network/webui/issues/66
 [#60]: https://github.com/raiden-network/webui/issues/60
 [#55]: https://github.com/raiden-network/webui/issues/55
