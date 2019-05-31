@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
@@ -6,16 +6,24 @@ import {
     NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
     ValidationErrors,
-    Validator,
-    ValidatorFn
+    Validator
 } from '@angular/forms';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenService } from '../../services/raiden.service';
 import { AddressBookService } from '../../services/address-book.service';
 import { Address } from '../../models/address';
-import { flatMap, map, startWith } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
-import { checkAddressChecksum, toChecksumAddress } from 'web3-utils';
+import {
+    debounceTime,
+    flatMap,
+    map,
+    startWith,
+    tap,
+    switchMap,
+    partition
+} from 'rxjs/operators';
+import { merge, Observable, of, Subscription } from 'rxjs';
+import AddressUtils from '../../utils/address-utils';
+import { isAddressValid } from '../../shared/address.validator';
 
 @Component({
     selector: 'app-address-input',
@@ -35,17 +43,27 @@ import { checkAddressChecksum, toChecksumAddress } from 'web3-utils';
     ]
 })
 export class AddressInputComponent
-    implements ControlValueAccessor, Validator, OnInit {
+    implements ControlValueAccessor, Validator, OnInit, OnDestroy {
     @Input() placeholder: string;
     @Input() errorPlaceholder: string;
     @Input() displayIdenticon = false;
     @Input() userAccount = false;
 
-    readonly addressFc = new FormControl('', [
-        this.addressValidatorFn(this.raidenService)
-    ]);
+    searching = false;
+
+    private subscription: Subscription;
+    private _value = '';
+    private _errors: ValidationErrors | null = { emptyAddress: true };
+    readonly inputFieldFc = new FormControl('');
 
     filteredOptions$: Observable<Address[]>;
+    // noinspection JSUnusedLocalSymbols
+    private onChange = (address: string) => {};
+    private onTouch: any = () => {};
+
+    get address(): string {
+        return this._value;
+    }
 
     trackByFn(address: Address) {
         return address.address;
@@ -58,14 +76,103 @@ export class AddressInputComponent
     ) {}
 
     ngOnInit(): void {
-        if (!this.userAccount) {
-            return;
-        }
+        this.setupValidation();
 
-        this.filteredOptions$ = this.addressFc.valueChanges.pipe(
+        if (this.userAccount) {
+            this.setupFiltering();
+        }
+    }
+
+    private setupFiltering() {
+        this.filteredOptions$ = this.inputFieldFc.valueChanges.pipe(
             startWith(''),
             flatMap(value => this._filter(value))
         );
+    }
+
+    private setupValidation() {
+        const [ens, address] = partition((value: string | null | undefined) =>
+            AddressUtils.isDomain(value)
+        )(this.inputFieldFc.valueChanges);
+
+        const resolveOnEns = () =>
+            ens.pipe(
+                tap(() => (this.searching = true)),
+                debounceTime(800),
+                switchMap(value => this.raidenService.resolveEnsName(value)),
+                tap(() => (this.searching = false)),
+                map(value => {
+                    if (value) {
+                        return { value: value };
+                    } else {
+                        return {
+                            value: '',
+                            errors: {
+                                unableToResolveEns: true
+                            }
+                        };
+                    }
+                })
+            );
+
+        const handleAddress = () =>
+            address.pipe(
+                map((value: string) => {
+                    const errors = isAddressValid(
+                        value,
+                        this.raidenService.raidenAddress
+                    );
+                    if (errors) {
+                        value = '';
+                    }
+                    return {
+                        value: value,
+                        errors: errors
+                    };
+                })
+            );
+
+        this.subscription = merge(resolveOnEns(), handleAddress()).subscribe(
+            (value: InputResult) => {
+                this._value = value.value;
+                this._errors = value.errors;
+
+                this.onChange(value.value);
+
+                if (value.errors) {
+                    this.inputFieldFc.setErrors(value.errors);
+                } else {
+                    this.inputFieldFc.setErrors({
+                        unableToResolveEns: null,
+                        ownAddress: null,
+                        emptyAddress: null,
+                        invalidFormat: null,
+                        notChecksumAddress: null
+                    });
+                    this.inputFieldFc.updateValueAndValidity({
+                        emitEvent: false
+                    });
+                }
+            }
+        );
+    }
+
+    ngOnDestroy(): void {
+        const subscription = this.subscription;
+        if (subscription) {
+            subscription.unsubscribe();
+        }
+    }
+
+    hint(): string | null {
+        if (
+            AddressUtils.isChecksum(this._value) &&
+            AddressUtils.isDomain(this.inputFieldFc.value)
+        ) {
+            return this._value;
+        } else {
+            return null;
+        }
     }
 
     // noinspection JSMethodCanBeStatic
@@ -74,52 +181,34 @@ export class AddressInputComponent
     }
 
     registerOnChange(fn: any): void {
-        this.addressFc.valueChanges.subscribe(fn);
+        this.onChange = fn;
     }
 
     registerOnTouched(fn: any): void {
-        this.addressFc.registerOnChange(fn);
+        this.onTouch = fn;
     }
 
     setDisabledState(isDisabled: boolean): void {
-        isDisabled ? this.addressFc.disable() : this.addressFc.enable();
+        isDisabled ? this.inputFieldFc.disable() : this.inputFieldFc.enable();
     }
 
     writeValue(obj: any): void {
         if (!obj) {
             return;
         }
-        this.addressFc.setValue(obj, { emitEvent: false });
+        this.inputFieldFc.setValue(obj, { emitEvent: false });
+        this._value = obj;
+        this.onChange(obj);
     }
 
     checksum(): string {
-        return toChecksumAddress(this.addressFc.value);
+        return AddressUtils.toChecksumAddress(this.inputFieldFc.value);
     }
 
     registerOnValidatorChange(fn: () => void): void {}
 
     validate(c: AbstractControl): ValidationErrors | null {
-        if (!this.addressFc.value) {
-            return { empty: true };
-        }
-        return this.addressFc.errors;
-    }
-
-    private addressValidatorFn(raidenService: RaidenService): ValidatorFn {
-        return (control: AbstractControl) => {
-            const controlValue = control.value;
-            if (controlValue === raidenService.raidenAddress) {
-                return { ownAddress: true };
-            } else if (
-                controlValue &&
-                controlValue.length === 42 &&
-                !checkAddressChecksum(controlValue)
-            ) {
-                return { notChecksumAddress: true };
-            } else {
-                return undefined;
-            }
-        };
+        return this._errors;
     }
 
     private _filter(value: string | Address): Observable<Address[]> {
@@ -140,4 +229,9 @@ export class AddressInputComponent
             map((addresses: Address[]) => addresses.filter(matches))
         );
     }
+}
+
+interface InputResult {
+    value: string;
+    errors: any;
 }

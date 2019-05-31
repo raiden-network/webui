@@ -1,4 +1,5 @@
-import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import AddressUtils from '../utils/address-utils';
 
 export function addressValidator(): ValidatorFn {
     const regex = new RegExp('^0x[0-9a-fA-F]{40}$');
@@ -12,4 +13,26 @@ export function addressValidator(): ValidatorFn {
             return null;
         }
     };
+}
+
+export function isAddressValid(
+    address?: string,
+    ownAddress?: string
+): ValidationErrors | undefined {
+    if (!address) {
+        return { emptyAddress: true };
+    }
+    if (address === ownAddress) {
+        return { ownAddress: true };
+    } else if (!address || !AddressUtils.isAddress(address)) {
+        return { invalidFormat: true };
+    } else if (
+        address &&
+        address.length === 42 &&
+        !AddressUtils.isChecksum(address)
+    ) {
+        return { notChecksumAddress: true };
+    } else {
+        return undefined;
+    }
 }

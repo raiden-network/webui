@@ -493,4 +493,8 @@ export class RaidenService {
             .then(onResult)
             .catch(() => onResult(false));
     }
+
+    public resolveEnsName(name: string): Observable<string> {
+        return fromPromise(this.raidenConfig.web3.eth.ens.getAddress(name));
+    }
 }
