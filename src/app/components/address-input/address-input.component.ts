@@ -194,9 +194,10 @@ export class AddressInputComponent
 
     writeValue(obj: any): void {
         if (!obj) {
-            return;
+            this.inputFieldFc.reset('', { emitEvent: false });
+        } else {
+            this.inputFieldFc.setValue(obj, { emitEvent: false });
         }
-        this.inputFieldFc.setValue(obj, { emitEvent: false });
         this._value = obj;
         this.onChange(obj);
     }
