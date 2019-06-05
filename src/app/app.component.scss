@@ -66,3 +66,13 @@ mat-sidenav-content {
         line-height: 22px;
     }
 }
+
+.info-container {
+    display: flex;
+    flex-direction: column;
+    .network-info {
+        font-size: 14px;
+        line-height: 16px;
+        font-weight: 300;
+    }
+}

@@ -32,6 +32,7 @@ import { fromWei } from 'web3-utils';
 export class RaidenService {
     readonly raidenAddress$: Observable<string>;
     readonly balance$: Observable<string>;
+    readonly network$: Observable<string>;
     private userTokens: { [id: string]: UserToken | null } = {};
 
     constructor(
@@ -63,6 +64,8 @@ export class RaidenService {
             map(value => fromWei(value, 'ether')),
             share()
         );
+
+        this.network$ = this.raidenConfig.network$;
     }
 
     public get production(): boolean {
