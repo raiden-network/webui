@@ -10,6 +10,7 @@
     </button>
     <span fxLayoutAlign="center center" fxFlex="70px" fxFlex.xs="30px">
         <img
+            alt="Raiden logo"
             src="assets/favicon.png"
             class="inverted"
             ngClass.xs="favicon-mobile"
@@ -21,7 +22,10 @@
             Raiden Network
         </a>
         <span class="network-info">
-            {{ network$ | async }} {{ production ? 'production' : 'development' }}
+            {{ network$ | async }}
+            <span class="environment">{{
+                production ? 'production' : 'development'
+            }}</span>
         </span>
     </span>
     <span class="toolbar-spacer"></span>
@@ -47,7 +51,11 @@
         >
     </div>
     <span style="width: 32px; margin-right: 25px">
-        <img class="round identicon" [src]="identicon(raidenAddress)" />
+        <img
+            alt="User address identicon"
+            class="round identicon"
+            [src]="identicon(raidenAddress)"
+        />
     </span>
 
     <span

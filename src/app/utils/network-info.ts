@@ -1,23 +1,23 @@
 export class NetworkInfo {
     private static known: Network[] = [
         {
-            name: 'mainnet',
+            name: 'Mainnet',
             chainId: 1
         },
         {
-            name: 'ropsten',
+            name: 'Ropsten',
             chainId: 3
         },
         {
-            name: 'rinkeby',
+            name: 'Rinkeby',
             chainId: 4
         },
         {
-            name: 'görli',
+            name: 'Görli',
             chainId: 5
         },
         {
-            name: 'kovan',
+            name: 'Kovan',
             chainId: 42
         }
     ];
