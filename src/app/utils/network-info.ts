@@ -27,7 +27,7 @@ export class NetworkInfo {
             value => value.chainId === chainId
         );
         if (matches.length === 0) {
-            return chainId.toString();
+            return `Chain-id: ${chainId}`;
         } else {
             return matches[0].name;
         }
