@@ -8,6 +8,7 @@
 - [#79] Adds ens resolution support.
 - [#85] Adds account's eth balance on the header.
 - [#49] Adds error screen for JSON RPC connection failure.
+- [#33] Exposes environment and chain information.
 
 ## [0.8.0] - 2019-01-25
 ### Changed
@@ -55,6 +56,7 @@ token network.
 [#41]: https://github.com/raiden-network/webui/issues/41
 [#37]: https://github.com/raiden-network/webui/issues/37
 [#34]: https://github.com/raiden-network/webui/issues/34
+[#33]: https://github.com/raiden-network/webui/issues/33
 [#31]: https://github.com/raiden-network/webui/issues/31
 [#13]: https://github.com/raiden-network/webui/issues/13
 [#9]: https://github.com/raiden-network/webui/issues/9

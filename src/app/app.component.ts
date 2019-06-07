@@ -5,6 +5,7 @@ import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
 import { SharedService } from './services/shared.service';
 import { MediaObserver } from '@angular/flex-layout';
+import { Network } from './utils/network-info';
 
 @Component({
     selector: 'app-root',
@@ -18,6 +19,8 @@ export class AppComponent implements OnInit, OnDestroy {
     public title = 'Raiden';
     public raidenAddress;
     public readonly balance$: Observable<string>;
+    public readonly network$: Observable<Network>;
+    public readonly production: boolean;
 
     private _pendingRequests = 0;
 
@@ -36,6 +39,8 @@ export class AppComponent implements OnInit, OnDestroy {
     ) {
         this._menuOpen = false;
         this.balance$ = raidenService.balance$;
+        this.network$ = raidenService.network$;
+        this.production = raidenService.production;
     }
 
     get menuOpen(): boolean {

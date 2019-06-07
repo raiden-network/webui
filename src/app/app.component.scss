@@ -18,7 +18,7 @@ a.active {
     background-color: black !important;
 }
 
-$sidenav-top: 56px;
+$sidenav-top: 64px;
 .sidenav-container {
     position: absolute;
     top: $sidenav-top;
@@ -64,5 +64,29 @@ mat-sidenav-content {
     .account {
         font-size: 16px;
         line-height: 22px;
+    }
+}
+
+.info-container {
+    display: flex;
+    flex-direction: column;
+
+    @include respond-to('medium-screens') {
+        margin-left: 25px;
+    }
+
+    @include respond-to('wide-screens') {
+        margin-left: 25px;
+    }
+
+    .network-info {
+        font-size: 14px;
+        line-height: 16px;
+        font-weight: 400;
+
+        .environment {
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.76);
+        }
     }
 }
