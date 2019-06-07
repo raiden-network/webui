@@ -41,7 +41,7 @@
     "ngx-toastr": "^9.1.1",
     "rxjs": "^6.4.0",
     "tslib": "^1.9.0",
-    "web3": "^1.0.0-beta.47",
+    "web3": "^1.0.0-beta.55",
     "zone.js": "^0.8.29"
   },
   "devDependencies": {
@@ -61,6 +61,7 @@
     "karma-coverage-istanbul-reporter": "^2.0.4",
     "karma-jasmine": "^2.0.1",
     "karma-junit-reporter": "^1.2.0",
+    "node-sass": "^4.12.0",
     "prettier": "1.16.1",
     "protractor": "~5.4.1",
     "rxjs-tslint": "^0.1.5",

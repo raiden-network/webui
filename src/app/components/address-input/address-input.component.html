@@ -7,12 +7,17 @@
     >
         <img
             class="identicon no-margin"
-            *ngIf="addressFc.value && addressFc.valid; else placeholder"
-            [src]="identicon(addressFc.value)"
+            *ngIf="address; else placeholder"
+            [src]="identicon(address)"
         />
 
         <ng-template #placeholder>
-            <mat-icon>person</mat-icon>
+            <mat-progress-spinner
+                diameter="24"
+                mode="indeterminate"
+                *ngIf="searching"
+            ></mat-progress-spinner>
+            <mat-icon *ngIf="!searching">person</mat-icon>
         </ng-template>
     </div>
 
@@ -25,14 +30,11 @@
             matInput
             type="text"
             [placeholder]="placeholder"
-            [formControl]="addressFc"
+            [formControl]="inputFieldFc"
             [matAutocomplete]="auto"
             [matAutocompleteDisabled]="!userAccount"
             aria-label="Address input"
             required
-            pattern="^0x[0-9a-fA-F]{40}$"
-            minlength="42"
-            maxlength="42"
         />
 
         <mat-autocomplete
@@ -53,33 +55,33 @@
             </mat-option>
         </mat-autocomplete>
 
+        <mat-hint *ngIf="hint()"> {{ hint() }} </mat-hint>
+
         <mat-error
-            *ngIf="addressFc.invalid && (addressFc.dirty || addressFc.touched)"
+            *ngIf="
+                inputFieldFc.invalid &&
+                (inputFieldFc.dirty || inputFieldFc.touched)
+            "
         >
-            <span *ngIf="addressFc.errors['required']">
+            <span *ngIf="inputFieldFc.errors['emptyAddress']">
                 {{ errorPlaceholder }} address cannot be empty
             </span>
 
-            <span *ngIf="addressFc.errors['minlength']; else valid_length">
-                Invalid {{ errorPlaceholder }} address length
+            <span *ngIf="inputFieldFc.errors['unableToResolveEns']">
+                Could not resolve the address for {{ inputFieldFc.value }}
             </span>
 
-            <ng-template #valid_length>
-                <span *ngIf="addressFc.errors['ownAddress']">
-                    You cannot use your own address for this action
-                </span>
-                <span
-                    *ngIf="
-                        !addressFc.errors['pattern'] &&
-                        addressFc.errors['notChecksumAddress']
-                    "
-                >
-                    Address is not in checksum format: {{ checksum() }}
-                </span>
-                <span *ngIf="addressFc.errors['pattern']">
-                    The {{ errorPlaceholder }} address is not in a valid format
-                </span>
-            </ng-template>
+            <span *ngIf="inputFieldFc.errors['ownAddress']">
+                You cannot use your own address for this action
+            </span>
+
+            <span *ngIf="inputFieldFc.errors['notChecksumAddress']">
+                Address is not in checksum format: {{ checksum() }}
+            </span>
+
+            <span *ngIf="inputFieldFc.errors['invalidFormat']">
+                The {{ errorPlaceholder }} address is not in a valid format
+            </span>
         </mat-error>
     </mat-form-field>
 </div>
