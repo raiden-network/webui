@@ -5,8 +5,8 @@ import { BatchManager } from './batch-manager';
 import { SharedService } from './shared.service';
 import { HttpProvider } from 'web3-providers/types';
 import Web3 from 'web3';
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
-import { NetworkInfo } from '../utils/network-info';
+import { Observable, ReplaySubject } from 'rxjs';
+import { Network, NetworkInfo } from '../utils/network-info';
 
 interface RDNConfig {
     raiden: string;
@@ -45,9 +45,9 @@ export class RaidenConfig {
     public api: string;
     public web3: Web3;
 
-    private _network$: ReplaySubject<string> = new ReplaySubject(1);
+    private _network$: ReplaySubject<Network> = new ReplaySubject(1);
 
-    public get network$(): Observable<string> {
+    public get network$(): Observable<Network> {
         return this._network$;
     }
 
@@ -84,7 +84,7 @@ export class RaidenConfig {
 
         try {
             const id = await this.web3.eth.net.getId();
-            this._network$.next(NetworkInfo.getName(id));
+            this._network$.next(NetworkInfo.getNetwork(id));
             this.web3 = this.web3Factory.create(this.provider());
             this.createBatchManager();
         } catch (e) {
@@ -92,7 +92,7 @@ export class RaidenConfig {
             this.web3 = this.web3Factory.create(this.provider());
             this.createBatchManager();
             const id = await this.web3.eth.net.getId();
-            this._network$.next(NetworkInfo.getName(id));
+            this._network$.next(NetworkInfo.getNetwork(id));
         }
     }
 

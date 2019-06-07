@@ -22,7 +22,7 @@
             Raiden Network
         </a>
         <span class="network-info">
-            {{ network$ | async }}
+            {{ (network$ | async).name }}
             <span class="environment">{{
                 production ? 'production' : 'development'
             }}</span>
@@ -47,7 +47,8 @@
             {{ raidenAddress | shortenAddress }}
         </span>
         <span class="balance"
-            >{{ balance$ | async | displayDecimals }} ETH</span
+            >{{ balance$ | async | displayDecimals }}
+            {{ (network$ | async).shortName | uppercase }}</span
         >
     </div>
     <span style="width: 32px; margin-right: 25px">

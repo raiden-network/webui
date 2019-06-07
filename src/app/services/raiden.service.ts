@@ -25,6 +25,7 @@ import { SharedService } from './shared.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { environment } from '../../environments/environment';
 import { fromWei } from 'web3-utils';
+import { Network } from '../utils/network-info';
 
 @Injectable({
     providedIn: 'root'
@@ -32,7 +33,7 @@ import { fromWei } from 'web3-utils';
 export class RaidenService {
     readonly raidenAddress$: Observable<string>;
     readonly balance$: Observable<string>;
-    readonly network$: Observable<string>;
+    readonly network$: Observable<Network>;
     private userTokens: { [id: string]: UserToken | null } = {};
 
     constructor(

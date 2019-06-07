@@ -17,13 +17,43 @@ import Spy = jasmine.Spy;
 import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
 import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
 import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
+import { EMPTY, Observable, ReplaySubject } from 'rxjs';
+import { TestProviders } from '../testing/test-providers';
+import { Network } from './utils/network-info';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
     let app: AppComponent;
     let isActive: Spy;
+    let service: {
+        network$: ReplaySubject<Network>;
+        balance$: ReplaySubject<string>;
+        production: boolean;
+        raidenAddress$: ReplaySubject<string>;
+        getChannels: () => Observable<any>;
+    };
 
     beforeEach(() => {
+        const networkMock = new ReplaySubject<Network>(1);
+        const balanceMock = new ReplaySubject<string>(1);
+        const addressMock = new ReplaySubject<string>(1);
+
+        service = {
+            network$: networkMock,
+            balance$: balanceMock,
+            production: true,
+            raidenAddress$: addressMock,
+            getChannels: () => EMPTY
+        };
+
+        networkMock.next({
+            name: 'Test',
+            shortName: 'tst',
+            chainId: 9001
+        });
+        balanceMock.next('0.1');
+        addressMock.next('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359');
+
         TestBed.configureTestingModule({
             declarations: [
                 AppComponent,
@@ -38,8 +68,12 @@ describe('AppComponent', () => {
                     useClass: MockConfig
                 },
                 SharedService,
-                RaidenService,
-                ChannelPollingService
+                {
+                    provide: RaidenService,
+                    useValue: service
+                },
+                ChannelPollingService,
+                TestProviders.HammerJSProvider()
             ],
             imports: [
                 MaterialComponentsModule,
