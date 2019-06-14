@@ -133,6 +133,7 @@ describe('ChannelTableComponent', () => {
             reveal_timeout: 600,
             balance: 10,
             total_deposit: 10,
+            total_withdraw: 10,
             settle_timeout: 500,
             userToken: token
         };
@@ -145,6 +146,7 @@ describe('ChannelTableComponent', () => {
             reveal_timeout: 600,
             balance: 0,
             total_deposit: 10,
+            total_withdraw: 10,
             settle_timeout: 500,
             userToken: token
         };
@@ -157,6 +159,7 @@ describe('ChannelTableComponent', () => {
             reveal_timeout: 600,
             balance: 10,
             total_deposit: 10,
+            total_withdraw: 10,
             settle_timeout: 500,
             userToken: token
         };
@@ -169,6 +172,7 @@ describe('ChannelTableComponent', () => {
             reveal_timeout: 600,
             balance: 10,
             total_deposit: 10,
+            total_withdraw: 10,
             settle_timeout: 500,
             userToken: token
         };
@@ -181,6 +185,7 @@ describe('ChannelTableComponent', () => {
             reveal_timeout: 600,
             balance: 60,
             total_deposit: 60,
+            total_withdraw: 10,
             settle_timeout: 500,
             userToken: token
         };

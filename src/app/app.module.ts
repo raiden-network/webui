@@ -27,7 +27,7 @@ import { RaidenConfig, Web3Factory } from './services/raiden.config';
 import { RaidenInterceptor } from './services/raiden.interceptor';
 import { RaidenService } from './services/raiden.service';
 import { SharedService } from './services/shared.service';
-import { DepositDialogComponent } from './components/deposit-dialog/deposit-dialog.component';
+import { DepositWithdrawDialogComponent } from './components/deposit-withdraw-dialog/deposit-withdraw-dialog.component';
 import { DecimalPipe } from './pipes/decimal.pipe';
 import { TokenInputComponent } from './components/token-input/token-input.component';
 import { AddressInputComponent } from './components/address-input/address-input.component';
@@ -90,7 +90,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         EllipsisPipe,
         CdkDetailRowDirective,
         ConfirmationDialogComponent,
-        DepositDialogComponent,
+        DepositWithdrawDialogComponent,
         DecimalPipe,
         TokenInputComponent,
         AddressInputComponent,
@@ -165,7 +165,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ConnectionManagerDialogComponent,
         PaymentDialogComponent,
         ConfirmationDialogComponent,
-        DepositDialogComponent,
+        DepositWithdrawDialogComponent,
         OpenDialogComponent,
         FilterDialogComponent,
         SortDialogComponent,

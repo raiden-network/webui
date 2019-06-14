@@ -23,10 +23,10 @@ import {
     ConfirmationDialogPayload
 } from '../confirmation-dialog/confirmation-dialog.component';
 import {
-    DepositDialogComponent,
-    DepositDialogPayload,
-    DepositDialogResult
-} from '../deposit-dialog/deposit-dialog.component';
+    DepositWithdrawDialogComponent,
+    DepositWithdrawDialogPayload,
+    DepositWithdrawDialogResult
+} from '../deposit-withdraw-dialog/deposit-withdraw-dialog.component';
 import {
     OpenDialogComponent,
     OpenDialogPayload,
@@ -40,6 +40,7 @@ import { ChannelSorting } from './channel.sorting.enum';
 import { AddressBookService } from '../../services/address-book.service';
 import { Addresses } from '../../models/address';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
+import { DepositMode } from '../../utils/helpers';
 
 @Component({
     selector: 'app-channel-table',
@@ -203,28 +204,30 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
             .subscribe(() => this.refresh());
     }
 
-    public onDeposit(channel: Channel) {
-        const payload: DepositDialogPayload = {
-            decimals: channel.userToken.decimals
+    public onDepositDialog(channel: Channel, depositMode: DepositMode) {
+        const payload: DepositWithdrawDialogPayload = {
+            decimals: channel.userToken.decimals,
+            depositMode: depositMode
         };
 
-        const dialog = this.dialog.open(DepositDialogComponent, {
+        const dialog = this.dialog.open(DepositWithdrawDialogComponent, {
             data: payload
         });
 
         dialog
             .afterClosed()
             .pipe(
-                flatMap((deposit?: DepositDialogResult) => {
+                flatMap((deposit?: DepositWithdrawDialogResult) => {
                     if (!deposit) {
                         return EMPTY;
                     }
 
-                    return this.raidenService.depositToChannel(
+                    return this.raidenService.modifyDeposit(
                         channel.token_address,
                         channel.partner_address,
                         deposit.tokenAmount,
-                        deposit.tokenAmountDecimals
+                        deposit.tokenAmountDecimals,
+                        depositMode
                     );
                 })
             )

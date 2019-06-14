@@ -35,6 +35,7 @@ describe('RaidenService', () => {
         reveal_timeout: 600,
         balance: 10,
         total_deposit: 10,
+        total_withdraw: 10,
         settle_timeout: 500,
         userToken: null
     };
@@ -47,6 +48,7 @@ describe('RaidenService', () => {
         reveal_timeout: 600,
         balance: 0,
         total_deposit: 10,
+        total_withdraw: 10,
         settle_timeout: 500,
         userToken: null
     };

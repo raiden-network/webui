@@ -142,7 +142,7 @@
             [channel]="channel"
             (openCloseDialog)="onClose(channel)"
             (openPayDialog)="onPay(channel)"
-            (openDepositDialog)="onDeposit(channel)"
+            (openDepositDialog)="onDepositDialog(channel, $event)"
         ></app-channel-actions>
     </app-page-item>
 </app-page-base>

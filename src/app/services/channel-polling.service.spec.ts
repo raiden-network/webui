@@ -53,6 +53,7 @@ describe('ChannelPollingService', () => {
         reveal_timeout: 600,
         balance: 10,
         total_deposit: 10,
+        total_withdraw: 10,
         settle_timeout: 500,
         userToken: token
     };
@@ -65,6 +66,7 @@ describe('ChannelPollingService', () => {
         reveal_timeout: 600,
         balance: 20,
         total_deposit: 10,
+        total_withdraw: 10,
         settle_timeout: 500,
         userToken: token2
     };
@@ -77,6 +79,7 @@ describe('ChannelPollingService', () => {
         reveal_timeout: 600,
         balance: 20,
         total_deposit: 10,
+        total_withdraw: 10,
         settle_timeout: 500,
         userToken: token
     };
@@ -89,6 +92,7 @@ describe('ChannelPollingService', () => {
         reveal_timeout: 600,
         balance: 5,
         total_deposit: 10,
+        total_withdraw: 10,
         settle_timeout: 500,
         userToken: token
     };
@@ -101,6 +105,7 @@ describe('ChannelPollingService', () => {
         reveal_timeout: 600,
         balance: 0,
         total_deposit: 10,
+        total_withdraw: 10,
         settle_timeout: 500,
         userToken: token
     };

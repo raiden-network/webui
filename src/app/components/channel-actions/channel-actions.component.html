@@ -14,9 +14,19 @@
     mat-button
     color="accent"
     [disabled]="channel.state !== 'opened'"
-    (click)="openDepositDialog.emit(true)"
+    (click)="deposit()"
 >
     {{ 'Deposit' | uppercase }}
+</button>
+<button
+    class="match-parent-width"
+    id="withdraw-button"
+    mat-button
+    color="accent"
+    [disabled]="channel.state !== 'opened'"
+    (click)="withdraw()"
+>
+    {{ 'Withdraw' | uppercase }}
 </button>
 <button
     class="match-parent-width"

@@ -4,16 +4,16 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { TokenInputComponent } from '../token-input/token-input.component';
 
-import { DepositDialogComponent } from './deposit-dialog.component';
+import { DepositWithdrawDialogComponent } from './deposit-withdraw-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
 
 describe('DepositDialogComponent', () => {
-    let component: DepositDialogComponent;
-    let fixture: ComponentFixture<DepositDialogComponent>;
+    let component: DepositWithdrawDialogComponent;
+    let fixture: ComponentFixture<DepositWithdrawDialogComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [DepositDialogComponent, TokenInputComponent],
+            declarations: [DepositWithdrawDialogComponent, TokenInputComponent],
             providers: [
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialogData(),
@@ -28,7 +28,7 @@ describe('DepositDialogComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(DepositDialogComponent);
+        fixture = TestBed.createComponent(DepositWithdrawDialogComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
