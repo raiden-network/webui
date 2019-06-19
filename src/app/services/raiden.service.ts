@@ -291,7 +291,9 @@ export class RaidenService {
                 );
             }),
             tap(response => {
-                const action = 'Deposit';
+                const action =
+                    mode === DepositMode.WITHDRAW ? 'Withdraw' : 'Deposit';
+
                 if ('balance' in response && 'state' in response) {
                     const balance = amountToDecimal(response.balance, decimals);
                     const formattedBalance = balance
@@ -301,7 +303,7 @@ export class RaidenService {
                         title: action,
                         description: `The channel ${
                             response.channel_identifier
-                        } has been modified with a deposit of ${formattedBalance}`
+                        } balance changed to ${formattedBalance}`
                     });
                 } else {
                     this.sharedService.error({
