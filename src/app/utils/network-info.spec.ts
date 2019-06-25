@@ -6,7 +6,8 @@ describe('NetworkInfo', () => {
             expect(NetworkInfo.getNetwork(1)).toEqual({
                 name: 'Mainnet',
                 shortName: 'eth',
-                chainId: 1
+                chainId: 1,
+                faucet: undefined
             });
         });
 
@@ -14,7 +15,8 @@ describe('NetworkInfo', () => {
             expect(NetworkInfo.getNetwork(3)).toEqual({
                 name: 'Ropsten',
                 shortName: 'rop',
-                chainId: 3
+                chainId: 3,
+                faucet: 'https://faucet.ropsten.be/?${ADDRESS}'
             });
         });
 
@@ -22,7 +24,8 @@ describe('NetworkInfo', () => {
             expect(NetworkInfo.getNetwork(4)).toEqual({
                 name: 'Rinkeby',
                 shortName: 'rin',
-                chainId: 4
+                chainId: 4,
+                faucet: 'https://faucet.rinkeby.io/'
             });
         });
 
@@ -30,7 +33,8 @@ describe('NetworkInfo', () => {
             expect(NetworkInfo.getNetwork(5)).toEqual({
                 name: 'Görli',
                 shortName: 'gor',
-                chainId: 5
+                chainId: 5,
+                faucet: 'https://goerli-faucet.slock.it/?address=${ADDRESS}'
             });
         });
 
@@ -38,7 +42,8 @@ describe('NetworkInfo', () => {
             expect(NetworkInfo.getNetwork(42)).toEqual({
                 name: 'Kovan',
                 shortName: 'kov',
-                chainId: 42
+                chainId: 42,
+                faucet: 'https://faucet.kovan.network/'
             });
         });
 
@@ -46,7 +51,8 @@ describe('NetworkInfo', () => {
             expect(NetworkInfo.getNetwork(123)).toEqual({
                 name: 'Chain-id: 123',
                 shortName: 'eth',
-                chainId: 123
+                chainId: 123,
+                faucet: undefined
             });
         });
     });

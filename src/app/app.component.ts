@@ -110,4 +110,13 @@ export class AppComponent implements OnInit, OnDestroy {
     closeMenu() {
         this._menuOpen = false;
     }
+
+    openFaucet() {
+        this.network$.subscribe(
+            network => {
+                const faucetUrl = network.faucet.replace('${ADDRESS}', this.raidenAddress)
+                window.open(faucetUrl, '_blank');
+            }
+        );
+    }
 }

@@ -20,6 +20,8 @@ import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
 import { EMPTY, Observable, ReplaySubject } from 'rxjs';
 import { TestProviders } from '../testing/test-providers';
 import { Network } from './utils/network-info';
+import { By } from '@angular/platform-browser';
+import { clickElement } from '../testing/interaction-helper';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -49,7 +51,8 @@ describe('AppComponent', () => {
         networkMock.next({
             name: 'Test',
             shortName: 'tst',
-            chainId: 9001
+            chainId: 9001,
+            faucet: 'http://faucet.test/?${ADDRESS}'
         });
         balanceMock.next('0.00000001');
         addressMock.next('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359');
@@ -120,5 +123,48 @@ describe('AppComponent', () => {
         expect(app.menuOpen).toBe(false);
         app.toggleMenu();
         expect(app.menuOpen).toBe(true);
+    });
+
+    it('should have a faucet button when network has a faucet', function() {
+        expect(
+            fixture.debugElement.query(By.css('.faucet-button'))
+        ).toBeTruthy();
+    });
+
+    it('should not have a faucet button when network does not have a faucet', function() {
+        service.network$.next({
+            name: 'Test',
+            shortName: 'tst',
+            chainId: 9001
+        });
+        fixture.detectChanges();
+        expect(
+            fixture.debugElement.query(By.css('.faucet-button'))
+        ).toBeFalsy();
+    });
+
+    it('should have a mobile faucet button only on mobile devices', function() {
+        isActive.and.returnValue(false);
+        fixture.detectChanges();
+        expect(
+            fixture.debugElement.query(By.css('#mobile-faucet-button'))
+        ).toBeFalsy();
+        isActive.and.returnValue(true);
+        fixture.detectChanges();
+        expect(
+            fixture.debugElement.query(By.css('#mobile-faucet-button'))
+        ).toBeTruthy();
+    });
+
+    it('should open the faucet URL in a new page when the faucet button is clicked', function() {
+        spyOn(window, 'open').and.callFake(function() {
+            return true;
+        });
+        clickElement(fixture.debugElement, '.faucet-button');
+        expect(window.open).toHaveBeenCalledTimes(1);
+        expect(window.open).toHaveBeenCalledWith(
+            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359', 
+            '_blank'
+        );
     });
 });
