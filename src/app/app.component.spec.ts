@@ -163,7 +163,7 @@ describe('AppComponent', () => {
         clickElement(fixture.debugElement, '.faucet-button');
         expect(window.open).toHaveBeenCalledTimes(1);
         expect(window.open).toHaveBeenCalledWith(
-            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359', 
+            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359',
             '_blank'
         );
     });

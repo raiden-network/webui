@@ -29,15 +29,15 @@
         </span>
     </span>
     <span class="toolbar-spacer"></span>
-    
+
     <span>
-        <a 
+        <a
             *ngIf="(network$ | async).faucet && !isMobile()"
             mat-button
             class="faucet-button"
             (click)="openFaucet()"
         >
-            {{ 'Get ' + (network$ | async).shortName | uppercase}}
+            {{ 'Get ' + (network$ | async).shortName | uppercase }}
         </a>
     </span>
     <span>
@@ -65,19 +65,18 @@
             "
             >{{ balance | displayDecimals }}
             {{ (network$ | async).shortName | uppercase }}
-            <a 
+            <a
                 *ngIf="(network$ | async).faucet && isMobile()"
                 mat-button
                 id="mobile-faucet-button"
                 class="faucet-button"
                 (click)="openFaucet()"
             >
-            <u>
-                {{ '(More)' | uppercase }}
-            </u>
+                <u>
+                    {{ '(More)' | uppercase }}
+                </u>
             </a>
-            </span
-        >
+        </span>
     </div>
     <span style="width: 32px; margin-right: 25px">
         <img
