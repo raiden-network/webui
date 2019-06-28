@@ -6,6 +6,7 @@ export interface Channel {
     partner_address: string;
     state: string;
     total_deposit: number;
+    total_withdraw: number;
     balance: number;
     settle_timeout: number;
     reveal_timeout: number;

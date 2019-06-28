@@ -8,13 +8,14 @@ import { of } from 'rxjs';
 import { Channel } from '../models/channel';
 import { UserToken } from '../models/usertoken';
 import { RaidenConfig, Web3Factory } from './raiden.config';
-
 import { RaidenService } from './raiden.service';
 import { SharedService } from './shared.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
-import Spy = jasmine.Spy;
 import { TestProviders } from '../../testing/test-providers';
 import BigNumber from 'bignumber.js';
+import { DepositMode } from '../utils/helpers';
+import { createChannel } from '../../testing/test-data';
+import Spy = jasmine.Spy;
 
 describe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
@@ -27,37 +28,34 @@ describe('RaidenService', () => {
 
     let retrieverSpy: Spy;
 
-    const channel1: Channel = {
-        state: 'opened',
-        channel_identifier: 1,
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-        reveal_timeout: 600,
-        balance: 10,
-        total_deposit: 10,
-        settle_timeout: 500,
-        userToken: null
-    };
-
-    const channel2: Channel = {
-        state: 'opened',
-        channel_identifier: 2,
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        partner_address: '0xFC57d325f23b9121a8488fFdE2E6b3ef1208a20b',
-        reveal_timeout: 600,
+    const channel1: Channel = createChannel({
+        id: 1,
         balance: 0,
-        total_deposit: 10,
-        settle_timeout: 500,
-        userToken: null
-    };
+        totalDeposit: 10,
+        totalWithdraw: 10
+    });
+
+    const channel2: Channel = createChannel({
+        id: 2,
+        balance: 0,
+        totalDeposit: 10,
+        totalWithdraw: 10
+    });
 
     beforeEach(() => {
+        sharedService = jasmine.createSpyObj('SharedService', [
+            'error',
+            'info'
+        ]);
         TestBed.configureTestingModule({
             imports: [HttpClientModule, HttpClientTestingModule],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 RaidenService,
-                SharedService,
+                {
+                    provide: SharedService,
+                    useValue: sharedService
+                },
                 TokenInfoRetrieverService,
                 Web3Factory
             ]
@@ -66,14 +64,12 @@ describe('RaidenService', () => {
         mockHttp = TestBed.get(HttpTestingController);
 
         endpoint = TestBed.get(RaidenConfig).api;
-        sharedService = TestBed.get(SharedService);
         service = TestBed.get(RaidenService);
 
         retrieverSpy = spyOn(
             TestBed.get(TokenInfoRetrieverService),
             'createBatch'
         );
-        spyOn(sharedService, 'error');
         // @ts-ignore
         spyOn(service, 'raidenAddress$').and.returnValue(
             of('0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C')
@@ -208,12 +204,11 @@ describe('RaidenService', () => {
         const config: RaidenConfig = TestBed.get(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.returnValue(Promise.resolve(true));
-        const infoSpy = spyOn(sharedService, 'info');
 
         service.attemptConnection();
         tick();
-        expect(infoSpy).toHaveBeenCalledTimes(1);
-        expect(infoSpy).toHaveBeenCalledWith({
+        expect(sharedService.info).toHaveBeenCalledTimes(1);
+        expect(sharedService.info).toHaveBeenCalledWith({
             title: 'JSON RPC Connection',
             description: 'JSON-RPC connection established successfully'
         });
@@ -287,5 +282,119 @@ describe('RaidenService', () => {
         expect(count).toEqual(1);
         subscription.unsubscribe();
         config.web3.eth = eth;
+    }));
+
+    it('should notify the user when a deposit was complete successfully', fakeAsync(() => {
+        const channel = createChannel({
+            id: 1,
+            totalDeposit: 1000000,
+            balance: 10,
+            totalWithdraw: 0
+        });
+        spyOn(service, 'getChannel').and.returnValue(of(channel));
+
+        service
+            .modifyDeposit(
+                '0xtkn',
+                '0xpartn',
+                0.0000001,
+                18,
+                DepositMode.DEPOSIT
+            )
+            .subscribe(value => {
+                expect(value).toEqual(
+                    createChannel({
+                        id: 1,
+                        totalWithdraw: 0,
+                        totalDeposit: 100001000000,
+                        balance: 100000000010
+                    })
+                );
+            });
+        tick();
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/channels/0xtkn/0xpartn`,
+            method: 'PATCH'
+        });
+
+        const body = Object.assign({}, channel, {
+            total_deposit: 100001000000,
+            balance: 100000000010
+        });
+
+        expect(JSON.parse(request.request.body.total_deposit)).toEqual(
+            100001000000
+        );
+
+        request.flush(body, {
+            status: 200,
+            statusText: ''
+        });
+
+        flush();
+
+        expect(sharedService.info).toHaveBeenCalledTimes(1);
+        expect(sharedService.info).toHaveBeenCalledWith({
+            title: 'Deposit',
+            description: `The channel 1 balance changed to 0.000000100000000010`
+        });
+    }));
+
+    it('should inform the user when a withdraw was completed successfully', fakeAsync(() => {
+        const channel = createChannel({
+            id: 1,
+            totalDeposit: 10,
+            balance: 1000000000000,
+            totalWithdraw: 1000000
+        });
+        spyOn(service, 'getChannel').and.returnValue(of(channel));
+
+        service
+            .modifyDeposit(
+                '0xtkn',
+                '0xpartn',
+                0.000001,
+                18,
+                DepositMode.WITHDRAW
+            )
+            .subscribe(value => {
+                expect(value).toEqual(
+                    createChannel({
+                        id: 1,
+                        totalWithdraw: 1000001000000,
+                        totalDeposit: 10,
+                        balance: 0
+                    })
+                );
+            });
+        tick();
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/channels/0xtkn/0xpartn`,
+            method: 'PATCH'
+        });
+
+        const body = Object.assign({}, channel, {
+            total_withdraw: 1000001000000,
+            balance: 0
+        });
+
+        expect(JSON.parse(request.request.body.total_withdraw)).toEqual(
+            1000001000000
+        );
+
+        request.flush(body, {
+            status: 200,
+            statusText: ''
+        });
+
+        flush();
+
+        expect(sharedService.info).toHaveBeenCalledTimes(1);
+        expect(sharedService.info).toHaveBeenCalledWith({
+            title: 'Withdraw',
+            description: `The channel 1 balance changed to 0.000000000000000000`
+        });
     }));
 });

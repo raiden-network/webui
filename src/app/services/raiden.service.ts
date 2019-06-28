@@ -26,6 +26,7 @@ import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { environment } from '../../environments/environment';
 import { fromWei } from 'web3-utils';
 import { Network } from '../utils/network-info';
+import { DepositMode } from '../utils/helpers';
 
 @Injectable({
     providedIn: 'root'
@@ -261,25 +262,38 @@ export class RaidenService {
             );
     }
 
-    public depositToChannel(
+    public modifyDeposit(
         tokenAddress: string,
         partnerAddress: string,
         amount: number,
-        decimals: number
+        decimals: number,
+        mode: DepositMode
     ): Observable<Channel> {
-        const depositIncrement = amountFromDecimal(amount, decimals);
+        const increase = amountFromDecimal(amount, decimals);
 
         return this.getChannel(tokenAddress, partnerAddress).pipe(
-            switchMap(channel =>
-                this.http.patch<Channel>(
+            switchMap(channel => {
+                const body: {
+                    total_deposit?: number;
+                    total_withdraw?: number;
+                } = {};
+                if (mode === DepositMode.WITHDRAW) {
+                    body.total_withdraw = channel.total_withdraw + increase;
+                } else {
+                    body.total_deposit = channel.total_deposit + increase;
+                }
+
+                return this.http.patch<Channel>(
                     `${
                         this.raidenConfig.api
                     }/channels/${tokenAddress}/${partnerAddress}`,
-                    { total_deposit: channel.total_deposit + depositIncrement }
-                )
-            ),
+                    body
+                );
+            }),
             tap(response => {
-                const action = 'Deposit';
+                const action =
+                    mode === DepositMode.WITHDRAW ? 'Withdraw' : 'Deposit';
+
                 if ('balance' in response && 'state' in response) {
                     const balance = amountToDecimal(response.balance, decimals);
                     const formattedBalance = balance
@@ -289,7 +303,7 @@ export class RaidenService {
                         title: action,
                         description: `The channel ${
                             response.channel_identifier
-                        } has been modified with a deposit of ${formattedBalance}`
+                        } balance changed to ${formattedBalance}`
                     });
                 } else {
                     this.sharedService.error({
