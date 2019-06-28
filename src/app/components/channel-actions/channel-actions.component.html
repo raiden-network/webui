@@ -6,7 +6,7 @@
     [disabled]="channel.state !== 'opened' || channel.balance == 0"
     (click)="openPayDialog.emit(true)"
 >
-    {{ 'Pay' | uppercase }}
+    Pay
 </button>
 <button
     class="match-parent-width"
@@ -16,7 +16,7 @@
     [disabled]="channel.state !== 'opened'"
     (click)="deposit()"
 >
-    {{ 'Deposit' | uppercase }}
+    Deposit
 </button>
 <button
     class="match-parent-width"
@@ -26,7 +26,7 @@
     [disabled]="channel.state !== 'opened'"
     (click)="withdraw()"
 >
-    {{ 'Withdraw' | uppercase }}
+    Withdraw
 </button>
 <button
     class="match-parent-width"
@@ -36,5 +36,5 @@
     [disabled]="channel.state !== 'opened'"
     (click)="openCloseDialog.emit(true)"
 >
-    {{ 'Close' | uppercase }}
+    Close
 </button>
