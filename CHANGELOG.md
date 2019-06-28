@@ -5,6 +5,7 @@
 - [#60] Adds layout optimizations for mobile devices.
 
 ### Added
+- [#94] Adds withdraw functionality.
 - [#79] Adds ens resolution support.
 - [#85] Adds account's eth balance on the header.
 - [#49] Adds error screen for JSON RPC connection failure.
@@ -44,6 +45,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#94]: https://github.com/raiden-network/webui/issues/94
 [#85]: https://github.com/raiden-network/webui/issues/85
 [#79]: https://github.com/raiden-network/webui/issues/79
 [#66]: https://github.com/raiden-network/webui/issues/66
