@@ -156,15 +156,12 @@ describe('AppComponent', () => {
         ).toBeTruthy();
     });
 
-    it('should open the faucet URL in a new page when the faucet button is clicked', function() {
-        spyOn(window, 'open').and.callFake(function() {
-            return true;
-        });
-        clickElement(fixture.debugElement, '.faucet-button');
-        expect(window.open).toHaveBeenCalledTimes(1);
-        expect(window.open).toHaveBeenCalledWith(
-            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359',
-            '_blank'
+    it('should insert the address correctly into the href attribute of the faucet button', function() {
+        const href = fixture.debugElement
+            .query(By.css('.faucet-button'))
+            .nativeElement.getAttribute('href');
+        expect(href).toBe(
+            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
         );
     });
 });

@@ -1,6 +1,7 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { default as makeBlockie } from 'ethereum-blockies-base64';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, zip } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
 import { SharedService } from './services/shared.service';
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public readonly balance$: Observable<string>;
     public readonly network$: Observable<Network>;
     public readonly production: boolean;
+    public readonly faucetLink$: Observable<string>;
 
     private _pendingRequests = 0;
 
@@ -41,6 +43,14 @@ export class AppComponent implements OnInit, OnDestroy {
         this.balance$ = raidenService.balance$;
         this.network$ = raidenService.network$;
         this.production = raidenService.production;
+        this.faucetLink$ = zip(
+            raidenService.network$,
+            raidenService.raidenAddress$
+        ).pipe(
+            map(([network, raidenAddress]) =>
+                network.faucet.replace('${ADDRESS}', raidenAddress)
+            )
+        );
     }
 
     get menuOpen(): boolean {
@@ -109,15 +119,5 @@ export class AppComponent implements OnInit, OnDestroy {
 
     closeMenu() {
         this._menuOpen = false;
-    }
-
-    openFaucet() {
-        this.network$.subscribe(network => {
-            const faucetUrl = network.faucet.replace(
-                '${ADDRESS}',
-                this.raidenAddress
-            );
-            window.open(faucetUrl, '_blank');
-        });
     }
 }

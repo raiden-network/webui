@@ -33,9 +33,10 @@
     <span>
         <a
             *ngIf="(network$ | async).faucet && !isMobile()"
+            [href]="faucetLink$ | async"
+            target="_blank"
             mat-button
             class="faucet-button"
-            (click)="openFaucet()"
         >
             {{ 'Get ' + (network$ | async).shortName | uppercase }}
         </a>
@@ -67,10 +68,11 @@
             {{ (network$ | async).shortName | uppercase }}
             <a
                 *ngIf="(network$ | async).faucet && isMobile()"
+                [href]="faucetLink$ | async"
+                target="_blank"
                 mat-button
                 id="mobile-faucet-button"
                 class="faucet-button"
-                (click)="openFaucet()"
             >
                 <u>
                     {{ '(More)' | uppercase }}
