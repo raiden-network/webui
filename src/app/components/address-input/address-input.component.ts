@@ -199,7 +199,6 @@ export class AddressInputComponent
             this._errors = null;
             this.inputFieldFc.setValue(obj, { emitEvent: true });
         }
-        this._value = obj;
         this.onChange(obj);
     }
 
