@@ -77,11 +77,15 @@ describe('AddressInputComponent', () => {
     const nonEip55Address = '0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359';
     let mockConfig: MockConfig;
 
-    function input(val: string) {
+    function getAddressInputComponentInstance(): AddressInputComponent {
         const addressInput = fixture.debugElement.query(
             By.directive(AddressInputComponent)
         );
-        const instance = addressInput.componentInstance as AddressInputComponent;
+        return addressInput.componentInstance;
+    }
+
+    function input(val: string) {
+        const instance = getAddressInputComponentInstance();
         const inputElement = mockInput(fixture.debugElement, 'input', val);
         instance.inputFieldFc.setValue(val);
         instance.inputFieldFc.markAsDirty();
@@ -312,6 +316,65 @@ describe('AddressInputComponent', () => {
             );
             option.nativeElement.click();
             expect(component.value).toBe(firstAddress.address);
+        });
+    });
+
+    describe('as a programmatic input', () => {
+        beforeEach(() => {
+            fixture.detectChanges();
+        });
+
+        it('should set the value correctly and set no errors', () => {
+            const instance = getAddressInputComponentInstance();
+            instance.writeValue('0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6');
+            expect(instance.address).toBe(
+                '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6'
+            );
+            expect(instance.validate(instance.inputFieldFc)).toBeFalsy();
+        });
+
+        it('should set an error when the input value is empty', () => {
+            const instance = getAddressInputComponentInstance();
+            instance.writeValue('');
+            expect(instance.address).toBe('');
+            expect(
+                instance.validate(instance.inputFieldFc).emptyAddress
+            ).toBeTruthy();
+        });
+
+        it('should set an error when the input value is invalid', () => {
+            const instance = getAddressInputComponentInstance();
+            instance.writeValue('ABC');
+            expect(instance.address).toBe('');
+            expect(
+                instance.validate(instance.inputFieldFc).invalidFormat
+            ).toBeTruthy();
+        });
+
+        it('should set an error when the input value is not in checksum format', () => {
+            mockConfig.updateChecksumAddress(
+                '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
+            );
+            const instance = getAddressInputComponentInstance();
+            instance.writeValue(nonEip55Address);
+            expect(instance.address).toBe('');
+            expect(
+                instance.validate(instance.inputFieldFc).notChecksumAddress
+            ).toBeTruthy();
+        });
+
+        it('should set an error when the input value is own address', () => {
+            const instance = getAddressInputComponentInstance();
+            const service = TestBed.get(RaidenService);
+            const address = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
+            spyOnProperty(service, 'raidenAddress', 'get').and.returnValue(
+                address
+            );
+            instance.writeValue(address);
+            expect(instance.address).toBe('');
+            expect(
+                instance.validate(instance.inputFieldFc).ownAddress
+            ).toBeTruthy();
         });
     });
 });
