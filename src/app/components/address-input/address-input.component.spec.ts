@@ -87,15 +87,6 @@ describe('AddressInputComponent', () => {
         return addressInput.componentInstance;
     }
 
-    function input(val: string) {
-        mockFormInput(
-            fixture.debugElement,
-            AddressInputComponent,
-            'inputFieldFc',
-            val
-        );
-    }
-
     const formBuilder: FormBuilder = new FormBuilder();
 
     beforeEach(async(() => {
@@ -161,7 +152,12 @@ describe('AddressInputComponent', () => {
                 '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
             );
 
-            input(nonEip55Address);
+            mockFormInput(
+                fixture.debugElement,
+                AddressInputComponent,
+                'inputFieldFc',
+                nonEip55Address
+            );
 
             tick(2000);
 
@@ -173,7 +169,12 @@ describe('AddressInputComponent', () => {
         }));
 
         it('should show an error if the input is empty', fakeAsync(() => {
-            input('');
+            mockFormInput(
+                fixture.debugElement,
+                AddressInputComponent,
+                'inputFieldFc',
+                ''
+            );
             fixture.detectChanges();
             tick();
             expect(errorMessage(fixture.debugElement)).toBe(
@@ -182,7 +183,12 @@ describe('AddressInputComponent', () => {
         }));
 
         it('should show an error if not a valid address', () => {
-            input('0x');
+            mockFormInput(
+                fixture.debugElement,
+                AddressInputComponent,
+                'inputFieldFc',
+                '0x'
+            );
             fixture.detectChanges();
             expect(errorMessage(fixture.debugElement)).toBe(
                 `The ${
@@ -192,7 +198,12 @@ describe('AddressInputComponent', () => {
         });
 
         it('should show an error if the address is not valid', fakeAsync(() => {
-            input('abbfosdaiudaisduaosiduaoisduaoisdu23423423');
+            mockFormInput(
+                fixture.debugElement,
+                AddressInputComponent,
+                'inputFieldFc',
+                'abbfosdaiudaisduaosiduaoisduaoisdu23423423'
+            );
             tick(2000);
             fixture.detectChanges();
             expect(errorMessage(fixture.debugElement)).toBe(
@@ -211,7 +222,12 @@ describe('AddressInputComponent', () => {
             spyOnProperty(service, 'raidenAddress', 'get').and.returnValue(
                 address
             );
-            input(address);
+            mockFormInput(
+                fixture.debugElement,
+                AddressInputComponent,
+                'inputFieldFc',
+                address
+            );
             fixture.detectChanges();
             expect(errorMessage(fixture.debugElement)).toBe(
                 `You cannot use your own address for this action`
@@ -220,13 +236,23 @@ describe('AddressInputComponent', () => {
 
         it('should update form control value properly if a truthy value is passed', () => {
             const address = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
-            input(address);
+            mockFormInput(
+                fixture.debugElement,
+                AddressInputComponent,
+                'inputFieldFc',
+                address
+            );
             expect(component.value).toBe(address);
         });
 
         it('should display an identicon when a valid address is inserted', async function() {
             component.displayIdenticon = true;
-            input('0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6');
+            mockFormInput(
+                fixture.debugElement,
+                AddressInputComponent,
+                'inputFieldFc',
+                '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6'
+            );
             fixture.detectChanges();
             expect(component.control.valid).toBe(true);
             await fixture.whenStable();
@@ -240,7 +266,12 @@ describe('AddressInputComponent', () => {
             const service = TestBed.get(RaidenService);
             spyOn(service, 'resolveEnsName').and.returnValue(of(null));
 
-            input('test.eth');
+            mockFormInput(
+                fixture.debugElement,
+                AddressInputComponent,
+                'inputFieldFc',
+                'test.eth'
+            );
             tick(2000);
             fixture.detectChanges();
             expect(errorMessage(fixture.debugElement)).toBe(
@@ -255,7 +286,12 @@ describe('AddressInputComponent', () => {
                 of('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359')
             );
 
-            input('test.eth');
+            mockFormInput(
+                fixture.debugElement,
+                AddressInputComponent,
+                'inputFieldFc',
+                'test.eth'
+            );
             tick(2000);
             fixture.detectChanges();
             const hint = fixture.debugElement.query(By.directive(MatHint));
@@ -286,7 +322,12 @@ describe('AddressInputComponent', () => {
         });
 
         it('should filter the results when the user types part of the label', async () => {
-            input('Account 2');
+            mockFormInput(
+                fixture.debugElement,
+                AddressInputComponent,
+                'inputFieldFc',
+                'Account 2'
+            );
             fixture.detectChanges();
 
             await fixture.whenStable();
@@ -302,7 +343,12 @@ describe('AddressInputComponent', () => {
         });
 
         it('should filter the results when the users types part of the address', async () => {
-            input('53A9462');
+            mockFormInput(
+                fixture.debugElement,
+                AddressInputComponent,
+                'inputFieldFc',
+                '53A9462'
+            );
             fixture.detectChanges();
 
             await fixture.whenStable();
