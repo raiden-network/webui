@@ -197,7 +197,7 @@ describe('TokenNetworkSelectorComponent', () => {
         component.writeValue(address);
         component.writeValue(null);
         expect(component.tokenFc.value).toBe('');
-        expect(component.validate(component.tokenFc).empty).toBeTruthy;
+        expect(component.validate(component.tokenFc).empty).toBeTruthy();
     });
 
     it('should emit the selected token when the user selects a token', fakeAsync(() => {

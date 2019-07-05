@@ -97,6 +97,6 @@ describe('PaymentDialogComponent', () => {
             token: '',
             amount: 0
         });
-        expect(component.form.invalid).toBeTruthy;
+        expect(component.form.invalid).toBeTruthy();
     });
 });
