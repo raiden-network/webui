@@ -1,6 +1,8 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Type } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { TokenPipe } from '../../pipes/token.pipe';
@@ -13,10 +15,26 @@ import {
     PaymentDialogPayload
 } from './payment-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
+import { mockInput } from '../../../testing/interaction-helper';
 
 describe('PaymentDialogComponent', () => {
     let component: PaymentDialogComponent;
     let fixture: ComponentFixture<PaymentDialogComponent>;
+
+    function input(
+        componentDirective: Type<any>,
+        formControlProperty: string,
+        val: string
+    ) {
+        const inputElement = fixture.debugElement.query(
+            By.directive(componentDirective)
+        );
+        const formControl = inputElement.componentInstance[formControlProperty];
+        mockInput(inputElement, 'input', val);
+        formControl.setValue(val);
+        formControl.markAsDirty();
+        formControl.markAsTouched();
+    }
 
     beforeEach(async(() => {
         const payload: PaymentDialogPayload = {
@@ -58,5 +76,27 @@ describe('PaymentDialogComponent', () => {
 
     it('should be created', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should reset the form when the reset button is clicked', async () => {
+        input(
+            AddressInputComponent,
+            'inputFieldFc',
+            '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
+        );
+        input(
+            TokenNetworkSelectorComponent,
+            'tokenFc',
+            '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
+        );
+        input(TokenInputComponent, 'inputControl', '10');
+        const element = fixture.debugElement.query(By.css('#reset'));
+        element.triggerEventHandler('click', {});
+        expect(component.form.value).toEqual({
+            target_address: '',
+            token: '',
+            amount: 0
+        });
+        expect(component.form.invalid).toBeTruthy;
     });
 });

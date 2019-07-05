@@ -84,7 +84,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     }
 
     public resetAmount() {
-        this.inputControl.setValue('0');
+        this.inputControl.reset(0);
     }
 
     public step(): string {

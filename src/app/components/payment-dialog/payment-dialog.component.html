@@ -23,7 +23,7 @@
 </div>
 <div mat-dialog-actions>
     <button mat-button mat-dialog-close>Close</button>
-    <button mat-button (click)="reset()" [disabled]="form.pristine">
+    <button mat-button id="reset" (click)="reset()" [disabled]="form.pristine">
         Reset
     </button>
     <button

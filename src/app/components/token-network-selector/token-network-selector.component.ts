@@ -102,6 +102,7 @@ export class TokenNetworkSelectorComponent
 
     writeValue(obj: any): void {
         if (!obj) {
+            this.tokenFc.reset('', { emitEvent: false });
             return;
         }
         this.tokenFc.setValue(obj, { emitEvent: false });

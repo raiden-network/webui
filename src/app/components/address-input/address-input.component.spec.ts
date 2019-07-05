@@ -333,15 +333,6 @@ describe('AddressInputComponent', () => {
             expect(instance.validate(instance.inputFieldFc)).toBeFalsy();
         });
 
-        it('should set an error when the input value is empty', () => {
-            const instance = getAddressInputComponentInstance();
-            instance.writeValue('');
-            expect(instance.address).toBe('');
-            expect(
-                instance.validate(instance.inputFieldFc).emptyAddress
-            ).toBeTruthy();
-        });
-
         it('should set an error when the input value is invalid', () => {
             const instance = getAddressInputComponentInstance();
             instance.writeValue('ABC');
@@ -374,6 +365,16 @@ describe('AddressInputComponent', () => {
             expect(instance.address).toBe('');
             expect(
                 instance.validate(instance.inputFieldFc).ownAddress
+            ).toBeTruthy();
+        });
+
+        it('should reset the value when a falsy value is passed', () => {
+            const instance = getAddressInputComponentInstance();
+            instance.writeValue('0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6');
+            instance.writeValue('');
+            expect(instance.address).toBe('');
+            expect(
+                instance.validate(instance.inputFieldFc).emptyAddress
             ).toBeTruthy();
         });
     });
