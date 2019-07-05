@@ -88,6 +88,10 @@ export class PaymentDialogComponent implements OnInit {
     }
 
     tokenNetworkSelected(token: UserToken) {
+        if (!token) {
+            this.tokenInput.decimals = 0;
+            return;
+        }
         this.tokenInput.decimals = token.decimals;
     }
 }

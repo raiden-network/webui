@@ -192,11 +192,12 @@ describe('TokenNetworkSelectorComponent', () => {
         expect(component.tokenFc.value).toBe(address);
     });
 
-    it('should not update form control when a falsy value is passed', () => {
+    it('should reset form control when a falsy value is passed', () => {
         const address = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
         component.writeValue(address);
         component.writeValue(null);
-        expect(component.tokenFc.value).toBe(address);
+        expect(component.tokenFc.value).toBe('');
+        expect(component.validate(component.tokenFc).empty).toBeTruthy();
     });
 
     it('should emit the selected token when the user selects a token', fakeAsync(() => {

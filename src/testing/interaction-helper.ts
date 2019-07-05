@@ -1,6 +1,7 @@
 import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { DebugElement, Type } from '@angular/core';
 import { MatError } from '@angular/material';
+import { ComponentFixture } from '@angular/core/testing';
 
 export function mockEvent(
     type: string,
@@ -34,6 +35,21 @@ export function mockInput(
     input.value = value;
     input.dispatchEvent(mockEvent('focusin'));
     input.dispatchEvent(mockEvent('input'));
+    return input;
+}
+
+export function mockFormInput(
+    element: DebugElement,
+    componentDirective: Type<any>,
+    formControlProperty: string,
+    val: string
+): HTMLInputElement {
+    const formElement = element.query(By.directive(componentDirective));
+    const formControl = formElement.componentInstance[formControlProperty];
+    const input = mockInput(formElement, 'input', val);
+    formControl.setValue(val);
+    formControl.markAsDirty();
+    formControl.markAsTouched();
     return input;
 }
 

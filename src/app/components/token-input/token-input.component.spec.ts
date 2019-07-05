@@ -170,4 +170,12 @@ describe('TokenInputComponent', () => {
         expect(component.tokenAmount.isEqualTo(1)).toBe(true);
         expect(component.tokenAmountDecimals).toBe(0);
     });
+
+    it('should be able to reset the amount', () => {
+        mockInput('1');
+        fixture.detectChanges();
+        component.resetAmount();
+        expect(component.tokenAmount.isEqualTo(0)).toBe(true);
+        expect(component.tokenAmountDecimals).toBe(0);
+    });
 });
