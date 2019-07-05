@@ -15,26 +15,11 @@ import {
     PaymentDialogPayload
 } from './payment-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
-import { mockInput } from '../../../testing/interaction-helper';
+import { mockFormInput } from '../../../testing/interaction-helper';
 
 describe('PaymentDialogComponent', () => {
     let component: PaymentDialogComponent;
     let fixture: ComponentFixture<PaymentDialogComponent>;
-
-    function input(
-        componentDirective: Type<any>,
-        formControlProperty: string,
-        val: string
-    ) {
-        const inputElement = fixture.debugElement.query(
-            By.directive(componentDirective)
-        );
-        const formControl = inputElement.componentInstance[formControlProperty];
-        mockInput(inputElement, 'input', val);
-        formControl.setValue(val);
-        formControl.markAsDirty();
-        formControl.markAsTouched();
-    }
 
     beforeEach(async(() => {
         const payload: PaymentDialogPayload = {
@@ -79,17 +64,24 @@ describe('PaymentDialogComponent', () => {
     });
 
     it('should reset the form when the reset button is clicked', async () => {
-        input(
+        mockFormInput(
+            fixture.debugElement,
             AddressInputComponent,
             'inputFieldFc',
             '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
         );
-        input(
+        mockFormInput(
+            fixture.debugElement,
             TokenNetworkSelectorComponent,
             'tokenFc',
             '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
         );
-        input(TokenInputComponent, 'inputControl', '10');
+        mockFormInput(
+            fixture.debugElement,
+            TokenInputComponent,
+            'inputControl',
+            '10'
+        );
         const element = fixture.debugElement.query(By.css('#reset'));
         element.triggerEventHandler('click', {});
         expect(component.form.value).toEqual({

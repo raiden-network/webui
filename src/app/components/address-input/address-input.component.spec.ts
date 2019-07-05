@@ -26,7 +26,10 @@ import { MockConfig } from '../../../testing/mock-config';
 import { AddressInputComponent } from './address-input.component';
 import { AddressBookService } from '../../services/address-book.service';
 import { Address } from '../../models/address';
-import { errorMessage, mockInput } from '../../../testing/interaction-helper';
+import {
+    errorMessage,
+    mockFormInput
+} from '../../../testing/interaction-helper';
 
 import { TestProviders } from '../../../testing/test-providers';
 import { Component } from '@angular/core';
@@ -85,12 +88,12 @@ describe('AddressInputComponent', () => {
     }
 
     function input(val: string) {
-        const instance = getAddressInputComponentInstance();
-        const inputElement = mockInput(fixture.debugElement, 'input', val);
-        instance.inputFieldFc.setValue(val);
-        instance.inputFieldFc.markAsDirty();
-        instance.inputFieldFc.markAsTouched();
-        return inputElement;
+        mockFormInput(
+            fixture.debugElement,
+            AddressInputComponent,
+            'inputFieldFc',
+            val
+        );
     }
 
     const formBuilder: FormBuilder = new FormBuilder();
