@@ -134,7 +134,7 @@ export class AddressBookComponent implements OnInit {
         link.href = this.addressBookService.createExportURL();
         link.setAttribute('visibility', 'hidden');
         link.setAttribute('download', 'address-book');
-        link.click();
+        link.dispatchEvent(new MouseEvent('click'));
     }
 
     openAddDialog() {
