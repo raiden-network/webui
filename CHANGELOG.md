@@ -3,6 +3,8 @@
 ## [Unreleased]
 ### Changed
 - [#60] Adds layout optimizations for mobile devices.
+- [#105] Fixes an issue which prevented the address book download button to work on Firefox.
+- [#101] Fixes the reset button of the payment dialog to reset the validity and input values correctly.
 
 ### Added
 - [#94] Adds withdraw functionality.
@@ -45,6 +47,8 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#105]: https://github.com/raiden-network/webui/issues/105
+[#101]: https://github.com/raiden-network/webui/issues/101
 [#94]: https://github.com/raiden-network/webui/issues/94
 [#85]: https://github.com/raiden-network/webui/issues/85
 [#79]: https://github.com/raiden-network/webui/issues/79
