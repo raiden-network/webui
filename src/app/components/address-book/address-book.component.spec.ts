@@ -269,7 +269,10 @@ describe('AddressBookComponent', () => {
     });
 
     it('should download a json file', function() {
-        const spy = jasmine.createSpyObj('a', ['click', 'setAttribute']);
+        const spy = jasmine.createSpyObj('a', [
+            'dispatchEvent',
+            'setAttribute'
+        ]);
         spy.setAttribute = function(attr, value) {
             this[attr] = value;
         };
@@ -285,7 +288,8 @@ describe('AddressBookComponent', () => {
         expect(spy.href).toBe('blob:http://localhost/mockpath');
         expect(spy.target).toBe('_blank');
         expect(spy.download).toBe('address-book');
-        expect(spy.click).toHaveBeenCalledTimes(1);
+        expect(spy.dispatchEvent).toHaveBeenCalledTimes(1);
+        expect(spy.dispatchEvent).toHaveBeenCalledWith(new MouseEvent('click'));
     });
 
     it('should update stored data when the user updates a label', function() {
