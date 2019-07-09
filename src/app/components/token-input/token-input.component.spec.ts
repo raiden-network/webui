@@ -3,9 +3,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
+import {
+    ErrorStateMatcher,
+    ShowOnDirtyErrorStateMatcher
+} from '@angular/material';
 
 import { TokenInputComponent } from './token-input.component';
 import { TestProviders } from '../../../testing/test-providers';
+import { mockInput, errorMessage } from '../../../testing/interaction-helper';
 
 describe('TokenInputComponent', () => {
     let component: TokenInputComponent;
@@ -14,7 +19,7 @@ describe('TokenInputComponent', () => {
     let input: HTMLInputElement;
     let checkbox: HTMLInputElement;
 
-    function mockInput(inputValue: string, isStep: boolean = false) {
+    function mockFormInput(inputValue: string, isStep: boolean = false) {
         input.value = inputValue;
         const event = new Event('input');
         if (!isStep) {
@@ -34,7 +39,13 @@ describe('TokenInputComponent', () => {
                 FormsModule,
                 ReactiveFormsModule
             ],
-            providers: [TestProviders.HammerJSProvider()]
+            providers: [
+                TestProviders.HammerJSProvider(),
+                {
+                    provide: ErrorStateMatcher,
+                    useClass: ShowOnDirtyErrorStateMatcher
+                }
+            ]
         }).compileComponents();
     }));
 
@@ -85,7 +96,7 @@ describe('TokenInputComponent', () => {
         component.decimals = 18;
         component.form.get('decimals').setValue(false);
 
-        mockInput('10');
+        mockFormInput('10');
 
         fixture.detectChanges();
         expect(component.tokenAmount.isEqualTo(10)).toBe(true);
@@ -95,7 +106,7 @@ describe('TokenInputComponent', () => {
     it('should allow a decimal amount if checkbox is selected', () => {
         component.decimals = 18;
 
-        mockInput('0.000000000000000010');
+        mockFormInput('0.000000000000000010');
 
         fixture.detectChanges();
         expect(input.value).toBe('0.000000000000000010');
@@ -103,10 +114,22 @@ describe('TokenInputComponent', () => {
         expect(component.tokenAmountDecimals).toBe(18);
     });
 
+    it('should not show an error without a user input', () => {
+        expect(errorMessage(fixture.debugElement)).toBeFalsy();
+    });
+
+    it('should show errors while the user types', () => {
+        mockInput(fixture.debugElement, 'input[type=number]', '0.1');
+        fixture.detectChanges();
+        expect(component.form.get('amount').errors['tooManyDecimals']).toBe(
+            true
+        );
+    });
+
     it('should show error when input value is 0', () => {
         component.decimals = 18;
 
-        mockInput('0');
+        mockFormInput('0');
         fixture.detectChanges();
 
         expect(component.tokenAmount.isEqualTo(0)).toBe(true);
@@ -118,7 +141,7 @@ describe('TokenInputComponent', () => {
         component.decimals = 18;
         component.allowZero = true;
 
-        mockInput('0');
+        mockFormInput('0');
         fixture.detectChanges();
 
         expect(component.tokenAmount.isEqualTo(0)).toBe(true);
@@ -129,7 +152,7 @@ describe('TokenInputComponent', () => {
     it('should automatically change the value integer value on checkbox change', () => {
         component.decimals = 8;
 
-        mockInput('0.00000001');
+        mockFormInput('0.00000001');
         checkbox.click();
         fixture.detectChanges();
 
@@ -142,7 +165,7 @@ describe('TokenInputComponent', () => {
         component.decimals = 8;
         fixture.detectChanges();
 
-        mockInput('1');
+        mockFormInput('1');
 
         checkbox.click();
         fixture.detectChanges();
@@ -156,7 +179,7 @@ describe('TokenInputComponent', () => {
         component.decimals = 8;
         fixture.detectChanges();
 
-        mockInput('1');
+        mockFormInput('1');
 
         checkbox.click();
         fixture.detectChanges();
@@ -172,7 +195,7 @@ describe('TokenInputComponent', () => {
     });
 
     it('should be able to reset the amount', () => {
-        mockInput('1');
+        mockFormInput('1');
         fixture.detectChanges();
         component.resetAmount();
         expect(component.tokenAmount.isEqualTo(0)).toBe(true);

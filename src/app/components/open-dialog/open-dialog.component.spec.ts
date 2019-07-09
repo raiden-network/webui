@@ -11,6 +11,15 @@ import { TokenNetworkSelectorComponent } from '../token-network-selector/token-n
 
 import { OpenDialogComponent } from './open-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
+import {
+    ErrorStateMatcher,
+    ShowOnDirtyErrorStateMatcher
+} from '@angular/material';
+import {
+    errorMessage,
+    mockInput,
+    mockFormInput
+} from '../../../testing/interaction-helper';
 
 describe('OpenDialogComponent', () => {
     let component: OpenDialogComponent;
@@ -31,7 +40,11 @@ describe('OpenDialogComponent', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.HammerJSProvider(),
-                SharedService
+                SharedService,
+                {
+                    provide: ErrorStateMatcher,
+                    useClass: ShowOnDirtyErrorStateMatcher
+                }
             ],
             imports: [
                 MaterialComponentsModule,
@@ -50,5 +63,21 @@ describe('OpenDialogComponent', () => {
 
     it('should be created', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should not show an error without a user input', () => {
+        expect(errorMessage(fixture.debugElement)).toBeFalsy();
+    });
+
+    it('should show errors for the settle timeout while the user types', () => {
+        mockInput(
+            fixture.debugElement,
+            'input[formControlName="settle_timeout"]',
+            '0.1'
+        );
+        fixture.detectChanges();
+        expect(errorMessage(fixture.debugElement)).toBe(
+            'The settle timeout has to be a number greater than zero'
+        );
     });
 });

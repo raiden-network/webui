@@ -17,6 +17,10 @@ import {
 import { MatHint, MatIcon, MatOption } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {
+    ErrorStateMatcher,
+    ShowOnDirtyErrorStateMatcher
+} from '@angular/material';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
@@ -28,11 +32,12 @@ import { AddressBookService } from '../../services/address-book.service';
 import { Address } from '../../models/address';
 import {
     errorMessage,
-    mockFormInput
+    mockFormInput,
+    mockInput
 } from '../../../testing/interaction-helper';
 
 import { TestProviders } from '../../../testing/test-providers';
-import { Component } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { of } from 'rxjs';
 
@@ -76,16 +81,10 @@ describe('AddressInputComponent', () => {
     let component: TestHostComponent;
     let fixture: ComponentFixture<TestHostComponent>;
     let mockAddressBookService: AddressBookService;
+    let input: DebugElement;
 
     const nonEip55Address = '0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359';
     let mockConfig: MockConfig;
-
-    function getAddressInputComponentInstance(): AddressInputComponent {
-        const addressInput = fixture.debugElement.query(
-            By.directive(AddressInputComponent)
-        );
-        return addressInput.componentInstance;
-    }
 
     const formBuilder: FormBuilder = new FormBuilder();
 
@@ -97,7 +96,11 @@ describe('AddressInputComponent', () => {
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.HammerJSProvider(),
                 SharedService,
-                { provide: FormBuilder, useValue: formBuilder }
+                { provide: FormBuilder, useValue: formBuilder },
+                {
+                    provide: ErrorStateMatcher,
+                    useClass: ShowOnDirtyErrorStateMatcher
+                }
             ],
             imports: [
                 CommonModule,
@@ -116,6 +119,7 @@ describe('AddressInputComponent', () => {
         mockConfig = TestBed.get(RaidenConfig);
         fixture = TestBed.createComponent(TestHostComponent);
         component = fixture.componentInstance;
+        input = fixture.debugElement.query(By.directive(AddressInputComponent));
     });
 
     describe('as a simple address input', () => {
@@ -146,18 +150,27 @@ describe('AddressInputComponent', () => {
             expect(identiconPlaceholder).toBeTruthy();
         });
 
+        it('should not show an error without a user input', () => {
+            expect(errorMessage(fixture.debugElement)).toBeFalsy();
+        });
+
+        it('should show errors while the user types', () => {
+            mockInput(fixture.debugElement, 'input', '0x');
+            fixture.detectChanges();
+            expect(errorMessage(fixture.debugElement)).toBe(
+                `The ${
+                    component.errorPlaceholder
+                } address is not in a valid format`
+            );
+        });
+
         it('should show error when address is not in checksum format', fakeAsync(() => {
             component.displayIdenticon = true;
             mockConfig.updateChecksumAddress(
                 '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
             );
 
-            mockFormInput(
-                fixture.debugElement,
-                AddressInputComponent,
-                'inputFieldFc',
-                nonEip55Address
-            );
+            mockFormInput(input, 'inputFieldFc', nonEip55Address);
 
             tick(2000);
 
@@ -169,12 +182,7 @@ describe('AddressInputComponent', () => {
         }));
 
         it('should show an error if the input is empty', fakeAsync(() => {
-            mockFormInput(
-                fixture.debugElement,
-                AddressInputComponent,
-                'inputFieldFc',
-                ''
-            );
+            mockFormInput(input, 'inputFieldFc', '');
             fixture.detectChanges();
             tick();
             expect(errorMessage(fixture.debugElement)).toBe(
@@ -183,12 +191,7 @@ describe('AddressInputComponent', () => {
         }));
 
         it('should show an error if not a valid address', () => {
-            mockFormInput(
-                fixture.debugElement,
-                AddressInputComponent,
-                'inputFieldFc',
-                '0x'
-            );
+            mockFormInput(input, 'inputFieldFc', '0x');
             fixture.detectChanges();
             expect(errorMessage(fixture.debugElement)).toBe(
                 `The ${
@@ -199,8 +202,7 @@ describe('AddressInputComponent', () => {
 
         it('should show an error if the address is not valid', fakeAsync(() => {
             mockFormInput(
-                fixture.debugElement,
-                AddressInputComponent,
+                input,
                 'inputFieldFc',
                 'abbfosdaiudaisduaosiduaoisduaoisdu23423423'
             );
@@ -222,12 +224,7 @@ describe('AddressInputComponent', () => {
             spyOnProperty(service, 'raidenAddress', 'get').and.returnValue(
                 address
             );
-            mockFormInput(
-                fixture.debugElement,
-                AddressInputComponent,
-                'inputFieldFc',
-                address
-            );
+            mockFormInput(input, 'inputFieldFc', address);
             fixture.detectChanges();
             expect(errorMessage(fixture.debugElement)).toBe(
                 `You cannot use your own address for this action`
@@ -236,20 +233,14 @@ describe('AddressInputComponent', () => {
 
         it('should update form control value properly if a truthy value is passed', () => {
             const address = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
-            mockFormInput(
-                fixture.debugElement,
-                AddressInputComponent,
-                'inputFieldFc',
-                address
-            );
+            mockFormInput(input, 'inputFieldFc', address);
             expect(component.value).toBe(address);
         });
 
         it('should display an identicon when a valid address is inserted', async function() {
             component.displayIdenticon = true;
             mockFormInput(
-                fixture.debugElement,
-                AddressInputComponent,
+                input,
                 'inputFieldFc',
                 '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6'
             );
@@ -266,12 +257,7 @@ describe('AddressInputComponent', () => {
             const service = TestBed.get(RaidenService);
             spyOn(service, 'resolveEnsName').and.returnValue(of(null));
 
-            mockFormInput(
-                fixture.debugElement,
-                AddressInputComponent,
-                'inputFieldFc',
-                'test.eth'
-            );
+            mockFormInput(input, 'inputFieldFc', 'test.eth');
             tick(2000);
             fixture.detectChanges();
             expect(errorMessage(fixture.debugElement)).toBe(
@@ -286,12 +272,7 @@ describe('AddressInputComponent', () => {
                 of('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359')
             );
 
-            mockFormInput(
-                fixture.debugElement,
-                AddressInputComponent,
-                'inputFieldFc',
-                'test.eth'
-            );
+            mockFormInput(input, 'inputFieldFc', 'test.eth');
             tick(2000);
             fixture.detectChanges();
             const hint = fixture.debugElement.query(By.directive(MatHint));
@@ -322,12 +303,7 @@ describe('AddressInputComponent', () => {
         });
 
         it('should filter the results when the user types part of the label', async () => {
-            mockFormInput(
-                fixture.debugElement,
-                AddressInputComponent,
-                'inputFieldFc',
-                'Account 2'
-            );
+            mockFormInput(input, 'inputFieldFc', 'Account 2');
             fixture.detectChanges();
 
             await fixture.whenStable();
@@ -343,12 +319,7 @@ describe('AddressInputComponent', () => {
         });
 
         it('should filter the results when the users types part of the address', async () => {
-            mockFormInput(
-                fixture.debugElement,
-                AddressInputComponent,
-                'inputFieldFc',
-                '53A9462'
-            );
+            mockFormInput(input, 'inputFieldFc', '53A9462');
             fixture.detectChanges();
 
             await fixture.whenStable();
@@ -374,7 +345,7 @@ describe('AddressInputComponent', () => {
         });
 
         it('should set the value correctly and set no errors', () => {
-            const instance = getAddressInputComponentInstance();
+            const instance = input.componentInstance;
             instance.writeValue('0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6');
             expect(instance.address).toBe(
                 '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6'
@@ -383,7 +354,7 @@ describe('AddressInputComponent', () => {
         });
 
         it('should set an error when the input value is invalid', () => {
-            const instance = getAddressInputComponentInstance();
+            const instance = input.componentInstance;
             instance.writeValue('ABC');
             expect(instance.address).toBe('');
             expect(
@@ -395,7 +366,7 @@ describe('AddressInputComponent', () => {
             mockConfig.updateChecksumAddress(
                 '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
             );
-            const instance = getAddressInputComponentInstance();
+            const instance = input.componentInstance;
             instance.writeValue(nonEip55Address);
             expect(instance.address).toBe('');
             expect(
@@ -404,7 +375,7 @@ describe('AddressInputComponent', () => {
         });
 
         it('should set an error when the input value is own address', () => {
-            const instance = getAddressInputComponentInstance();
+            const instance = input.componentInstance;
             const service = TestBed.get(RaidenService);
             const address = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
             spyOnProperty(service, 'raidenAddress', 'get').and.returnValue(
@@ -418,7 +389,7 @@ describe('AddressInputComponent', () => {
         });
 
         it('should reset the value when a falsy value is passed', () => {
-            const instance = getAddressInputComponentInstance();
+            const instance = input.componentInstance;
             instance.writeValue('0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6');
             instance.writeValue('');
             expect(instance.address).toBe('');

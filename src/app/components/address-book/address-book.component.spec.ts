@@ -8,10 +8,18 @@ import { AddressBookItemComponent } from '../address-book-item/address-book-item
 import { DragUploadDirective } from '../../directives/drag-upload.directive';
 import { AddressBookService } from '../../services/address-book.service';
 import { Address, Addresses } from '../../models/address';
-import { MatDialog } from '@angular/material';
+import {
+    MatDialog,
+    ErrorStateMatcher,
+    ShowOnDirtyErrorStateMatcher
+} from '@angular/material';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { By } from '@angular/platform-browser';
-import { clickElement, mockInput } from '../../../testing/interaction-helper';
+import {
+    clickElement,
+    mockInput,
+    errorMessage
+} from '../../../testing/interaction-helper';
 import { DebugElement } from '@angular/core';
 import { TestProviders } from '../../../testing/test-providers';
 import { createTestAddresses } from '../../../testing/test-data';
@@ -70,7 +78,11 @@ describe('AddressBookComponent', () => {
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.MockMatDialog(),
                 TestProviders.MockRaidenConfigProvider(),
-                SharedService
+                SharedService,
+                {
+                    provide: ErrorStateMatcher,
+                    useClass: ShowOnDirtyErrorStateMatcher
+                }
             ]
         }).compileComponents();
         serviceStub = TestBed.get(AddressBookService);
@@ -463,5 +475,22 @@ describe('AddressBookComponent', () => {
         expect(
             fixture.debugElement.query(By.css('.page-list')).children.length
         ).toBe(5);
+    });
+
+    it('should not show an error without a user input', () => {
+        serviceStub.getArray = () => createTestAddresses();
+        fixture.detectChanges();
+        expect(errorMessage(fixture.debugElement)).toBeFalsy();
+    });
+
+    it('should show errors for the label of a new entry while the user types', () => {
+        serviceStub.getArray = () => createTestAddresses();
+        fixture.detectChanges();
+
+        mockInput(fixture.debugElement, '#addresses-label', '');
+        fixture.detectChanges();
+        expect(errorMessage(fixture.debugElement)).toBe(
+            'The label cannot be empty!'
+        );
     });
 });

@@ -20,16 +20,23 @@ import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import { SharedService } from '../../services/shared.service';
 import { MockConfig } from '../../../testing/mock-config';
+import {
+    ErrorStateMatcher,
+    ShowOnDirtyErrorStateMatcher
+} from '@angular/material';
 
 import { TokenNetworkSelectorComponent } from './token-network-selector.component';
-import { errorMessage, mockEvent } from '../../../testing/interaction-helper';
+import {
+    errorMessage,
+    mockInput,
+    mockFormInput
+} from '../../../testing/interaction-helper';
 import { TestProviders } from '../../../testing/test-providers';
 
 describe('TokenNetworkSelectorComponent', () => {
     let component: TokenNetworkSelectorComponent;
     let fixture: ComponentFixture<TokenNetworkSelectorComponent>;
 
-    let input: HTMLInputElement;
     let mockConfig: MockConfig;
     let raidenSpy: jasmine.Spy;
 
@@ -64,14 +71,6 @@ describe('TokenNetworkSelectorComponent', () => {
 
     const tokens = [notOwnedToken, connectedToken, ownedToken];
 
-    function mockInput(inputValue: string = '') {
-        component.tokenFc.markAsTouched();
-        component.tokenFc.setValue(inputValue);
-        input.value = inputValue;
-        input.dispatchEvent(mockEvent('focusin'));
-        input.dispatchEvent(mockEvent('input'));
-    }
-
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [
@@ -81,7 +80,11 @@ describe('TokenNetworkSelectorComponent', () => {
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
-                SharedService
+                SharedService,
+                {
+                    provide: ErrorStateMatcher,
+                    useClass: ShowOnDirtyErrorStateMatcher
+                }
             ],
             imports: [
                 MaterialComponentsModule,
@@ -103,11 +106,6 @@ describe('TokenNetworkSelectorComponent', () => {
         fixture = TestBed.createComponent(TokenNetworkSelectorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-
-        const inputDebugElement = fixture.debugElement.query(
-            By.css('input[type=text]')
-        );
-        input = inputDebugElement.nativeElement as HTMLInputElement;
 
         mockConfig.setIsChecksum(true);
     });
@@ -141,8 +139,22 @@ describe('TokenNetworkSelectorComponent', () => {
         flush();
     }));
 
+    it('should not show an error without a user input', () => {
+        expect(errorMessage(fixture.debugElement)).toBeFalsy();
+    });
+
+    it('should show errors while the user types', () => {
+        mockInput(fixture.debugElement, 'input', '0x34234');
+        component.tokenFc.setValue('0x34234');
+        component.tokenFc.markAsDirty();
+        fixture.detectChanges();
+        expect(errorMessage(fixture.debugElement)).toBe(
+            `Invalid token network address length`
+        );
+    });
+
     it('should show an error if the input is empty', () => {
-        mockInput('');
+        mockFormInput(fixture.debugElement, 'tokenFc', '');
         fixture.detectChanges();
         expect(errorMessage(fixture.debugElement)).toBe(
             `Please select a token network`
@@ -150,7 +162,7 @@ describe('TokenNetworkSelectorComponent', () => {
     });
 
     it('should show an error if the error is not 42 characters long', () => {
-        mockInput('0x34234');
+        mockFormInput(fixture.debugElement, 'tokenFc', '0x34234');
         fixture.detectChanges();
         expect(errorMessage(fixture.debugElement)).toBe(
             `Invalid token network address length`
@@ -158,7 +170,11 @@ describe('TokenNetworkSelectorComponent', () => {
     });
 
     it('should show an error if the address is not valid', () => {
-        mockInput('abbfosdaiudaisduaosiduaoisduaoisdu23423423');
+        mockFormInput(
+            fixture.debugElement,
+            'tokenFc',
+            'abbfosdaiudaisduaosiduaoisduaoisdu23423423'
+        );
         fixture.detectChanges();
         expect(errorMessage(fixture.debugElement)).toBe(
             'This is not a valid token network address.'
@@ -167,7 +183,7 @@ describe('TokenNetworkSelectorComponent', () => {
 
     it('should show an error if network not in registered networks', () => {
         const address = '0xc778417E063141139Fce010982780140Aa0cD5Ab';
-        mockInput(address);
+        mockFormInput(fixture.debugElement, 'tokenFc', address);
         fixture.detectChanges();
         expect(errorMessage(fixture.debugElement)).toBe(
             'This address does not belong to a registered token network'
@@ -179,7 +195,11 @@ describe('TokenNetworkSelectorComponent', () => {
         mockConfig.updateChecksumAddress(
             '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195'
         );
-        mockInput('0xeb7f4bbaa1714f3e5a12ff8b681908d7b98bd195');
+        mockFormInput(
+            fixture.debugElement,
+            'tokenFc',
+            '0xeb7f4bbaa1714f3e5a12ff8b681908d7b98bd195'
+        );
         fixture.detectChanges();
         expect(errorMessage(fixture.debugElement)).toBe(
             'Address is not in checksum format: 0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195'
@@ -207,7 +227,7 @@ describe('TokenNetworkSelectorComponent', () => {
             expect(value).toBe(connectedToken);
         });
 
-        mockInput('TS');
+        mockFormInput(fixture.debugElement, 'tokenFc', 'TS');
         fixture.detectChanges();
 
         tick();
