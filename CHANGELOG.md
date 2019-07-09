@@ -3,6 +3,8 @@
 ## [Unreleased]
 ### Changed
 - [#60] Adds layout optimizations for mobile devices.
+- [#105] Fixes an issue which prevented the address book download button to work on Firefox.
+- [#101] Fixes the reset button of the payment dialog to reset the validity and input values correctly.
 
 ### Added
 - [#94] Adds withdraw functionality.
