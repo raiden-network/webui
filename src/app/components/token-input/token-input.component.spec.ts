@@ -126,6 +126,28 @@ describe('TokenInputComponent', () => {
         );
     });
 
+    it('should show error when input is empty', () => {
+        component.decimals = 18;
+
+        mockFormInput('');
+        fixture.detectChanges();
+
+        expect(component.tokenAmount.isNaN()).toBe(true);
+        expect(component.tokenAmountDecimals).toBe(18);
+        expect(component.form.get('amount').errors['notANumber']).toBe(true);
+    });
+
+    it('should show error when input is not a number', () => {
+        component.decimals = 18;
+
+        mockFormInput('1Hello');
+        fixture.detectChanges();
+
+        expect(component.tokenAmount.isNaN()).toBe(true);
+        expect(component.tokenAmountDecimals).toBe(18);
+        expect(component.form.get('amount').errors['notANumber']).toBe(true);
+    });
+
     it('should show error when input value is 0', () => {
         component.decimals = 18;
 

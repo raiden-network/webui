@@ -195,6 +195,10 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
                 return {
                     invalidAmount: true
                 };
+            } else if (controlValue === null) {
+                return {
+                    notANumber: true
+                };
             }
             return undefined;
         };

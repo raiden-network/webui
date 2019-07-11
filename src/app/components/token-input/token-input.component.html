@@ -46,6 +46,9 @@
                     1 represents then 1/{{ decimals }} of the token
                 </ng-template>
             </span>
+            <span *ngIf="form.get('amount').errors['notANumber']">
+                The {{ errorPlaceholder }} should be a valid number
+            </span>
         </mat-error>
     </mat-form-field>
 
