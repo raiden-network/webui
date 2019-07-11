@@ -6,7 +6,11 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { Address } from '../../models/address';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
-import { MatDialog } from '@angular/material';
+import {
+    MatDialog,
+    ErrorStateMatcher,
+    ShowOnDirtyErrorStateMatcher
+} from '@angular/material';
 import {
     clickElement,
     errorMessage,
@@ -33,7 +37,13 @@ describe('AddressBookItemComponent', () => {
                 NoopAnimationsModule,
                 ReactiveFormsModule
             ],
-            providers: [TestProviders.MockMatDialog()]
+            providers: [
+                TestProviders.MockMatDialog(),
+                {
+                    provide: ErrorStateMatcher,
+                    useClass: ShowOnDirtyErrorStateMatcher
+                }
+            ]
         });
     }));
 
@@ -219,5 +229,21 @@ describe('AddressBookItemComponent', () => {
         fixture.detectChanges();
 
         expect(component.form.get('label').value).toBe('New Label');
+    });
+
+    it('should not show an error during edit without a user input', () => {
+        const element = fixture.debugElement;
+        clickElement(element, '#edit-address');
+        fixture.detectChanges();
+        expect(errorMessage(fixture.debugElement)).toBeFalsy();
+    });
+
+    it('should show errors during edit while the user types', () => {
+        const element = fixture.debugElement;
+        clickElement(element, '#edit-address');
+        fixture.detectChanges();
+        mockInput(element, '#address-label', '');
+        fixture.detectChanges();
+        expect(errorMessage(element)).toBe('Label cannot be empty!');
     });
 });

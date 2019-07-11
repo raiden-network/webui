@@ -11,8 +11,16 @@ import { LocalStorageAdapter } from '../../adapters/local-storage-adapter';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { clickElement, mockInput } from '../../../testing/interaction-helper';
+import {
+    clickElement,
+    mockInput,
+    errorMessage
+} from '../../../testing/interaction-helper';
 import Spy = jasmine.Spy;
+import {
+    ErrorStateMatcher,
+    ShowOnDirtyErrorStateMatcher
+} from '@angular/material';
 
 // noinspection Angular2DeclarationMembershipInModule
 @Component({
@@ -50,6 +58,10 @@ describe('AddAddressDialogComponent', () => {
                 {
                     provide: LocalStorageAdapter,
                     useValue: {}
+                },
+                {
+                    provide: ErrorStateMatcher,
+                    useClass: ShowOnDirtyErrorStateMatcher
                 }
             ],
             imports: [
@@ -91,5 +103,17 @@ describe('AddAddressDialogComponent', () => {
             address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             label: 'Test Node'
         });
+    });
+
+    it('should not show an error without a user input', () => {
+        expect(errorMessage(fixture.debugElement)).toBeFalsy();
+    });
+
+    it('should show errors while the user types', () => {
+        mockInput(fixture.debugElement, '#addresses-label', '');
+        fixture.detectChanges();
+        expect(errorMessage(fixture.debugElement)).toBe(
+            'The label cannot be empty!'
+        );
     });
 });

@@ -12,6 +12,7 @@
 - [#85] Adds account's eth balance on the header.
 - [#49] Adds error screen for JSON RPC connection failure.
 - [#33] Exposes environment and chain information.
+- [#103] Adds instant validation feedback on input fields.
 
 ## [0.8.0] - 2019-01-25
 ### Changed
@@ -48,6 +49,7 @@ token network.
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
 [#105]: https://github.com/raiden-network/webui/issues/105
+[#103]: https://github.com/raiden-network/webui/issues/103
 [#101]: https://github.com/raiden-network/webui/issues/101
 [#94]: https://github.com/raiden-network/webui/issues/94
 [#85]: https://github.com/raiden-network/webui/issues/85

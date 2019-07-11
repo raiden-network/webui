@@ -54,7 +54,12 @@ import { PageItemComponent } from './components/page/page-item/page-item.compone
 import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
 import { SortFilterPageHeaderComponent } from './components/page/sort-filter-page-header/sort-filter-page-header.component';
 import { AddAddressDialogComponent } from './components/add-address-dialog/add-address-dialog.component';
-import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material';
+import {
+    MAT_DIALOG_DEFAULT_OPTIONS,
+    MatDialogConfig,
+    ErrorStateMatcher,
+    ShowOnDirtyErrorStateMatcher
+} from '@angular/material';
 import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
 import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
 
@@ -158,7 +163,11 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         RaidenService,
         TokenPipe,
         LocalStorageAdapter,
-        Web3Factory
+        Web3Factory,
+        {
+            provide: ErrorStateMatcher,
+            useClass: ShowOnDirtyErrorStateMatcher
+        }
     ],
     entryComponents: [
         RegisterDialogComponent,

@@ -1,7 +1,6 @@
 import { By } from '@angular/platform-browser';
 import { DebugElement, Type } from '@angular/core';
 import { MatError } from '@angular/material';
-import { ComponentFixture } from '@angular/core/testing';
 
 export function mockEvent(
     type: string,
@@ -40,13 +39,11 @@ export function mockInput(
 
 export function mockFormInput(
     element: DebugElement,
-    componentDirective: Type<any>,
     formControlProperty: string,
     val: string
 ): HTMLInputElement {
-    const formElement = element.query(By.directive(componentDirective));
-    const formControl = formElement.componentInstance[formControlProperty];
-    const input = mockInput(formElement, 'input', val);
+    const formControl = element.componentInstance[formControlProperty];
+    const input = mockInput(element, 'input', val);
     formControl.setValue(val);
     formControl.markAsDirty();
     formControl.markAsTouched();
@@ -55,6 +52,9 @@ export function mockFormInput(
 
 export function errorMessage(element: DebugElement): string {
     const matErrorElement = element.query(By.directive(MatError));
+    if (!matErrorElement) {
+        return undefined;
+    }
     const spanElement = matErrorElement.query(By.css('span'));
 
     let innerText: string;

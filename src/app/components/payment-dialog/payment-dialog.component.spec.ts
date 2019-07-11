@@ -65,20 +65,19 @@ describe('PaymentDialogComponent', () => {
 
     it('should reset the form when the reset button is clicked', async () => {
         mockFormInput(
-            fixture.debugElement,
-            AddressInputComponent,
+            fixture.debugElement.query(By.directive(AddressInputComponent)),
             'inputFieldFc',
             '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
         );
         mockFormInput(
-            fixture.debugElement,
-            TokenNetworkSelectorComponent,
+            fixture.debugElement.query(
+                By.directive(TokenNetworkSelectorComponent)
+            ),
             'tokenFc',
             '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
         );
         mockFormInput(
-            fixture.debugElement,
-            TokenInputComponent,
+            fixture.debugElement.query(By.directive(TokenInputComponent)),
             'inputControl',
             '10'
         );
