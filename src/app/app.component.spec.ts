@@ -51,7 +51,7 @@ describe('AppComponent', () => {
             shortName: 'tst',
             chainId: 9001
         });
-        balanceMock.next('0.1');
+        balanceMock.next('0.00000001');
         addressMock.next('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359');
 
         TestBed.configureTestingModule({

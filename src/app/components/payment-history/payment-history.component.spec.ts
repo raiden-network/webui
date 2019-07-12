@@ -25,6 +25,7 @@ import { PaymentHistoryComponent } from './payment-history.component';
 import { TestProviders } from '../../../testing/test-providers';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { PageItemComponent } from '../page/page-item/page-item.component';
+import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 
 describe('PaymentHistoryComponent', () => {
     let component: PaymentHistoryComponent;
@@ -148,6 +149,7 @@ describe('PaymentHistoryComponent', () => {
                 PageBaseComponent,
                 PageItemComponent,
                 DecimalPipe,
+                DisplayDecimalsPipe,
                 TokenPipe
             ],
             providers: [
@@ -183,7 +185,7 @@ describe('PaymentHistoryComponent', () => {
         spy.and.returnValue(dataProvider);
 
         const tokenSpy = spyOn(raidenService, 'getUserToken');
-        tokenSpy.and.returnValue(of(connectedToken));
+        tokenSpy.and.returnValue(connectedToken);
         fixture = TestBed.createComponent(PaymentHistoryComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

@@ -42,6 +42,7 @@ import { SortFilterPageHeaderComponent } from '../page/sort-filter-page-header/s
 import { ChannelActionsComponent } from '../channel-actions/channel-actions.component';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { PageItemComponent } from '../page/page-item/page-item.component';
+import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 
 describe('ChannelTableComponent', () => {
     let component: ChannelTableComponent;
@@ -66,6 +67,7 @@ describe('ChannelTableComponent', () => {
                 KeysPipe,
                 SubsetPipe,
                 DecimalPipe,
+                DisplayDecimalsPipe,
                 StatusPipe,
                 CdkDetailRowDirective,
                 TokenNetworkSelectorComponent

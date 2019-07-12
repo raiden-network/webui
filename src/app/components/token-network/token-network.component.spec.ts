@@ -20,6 +20,7 @@ import { TokenNetworkActionsComponent } from '../token-network-actions/token-net
 import { SortFilterPageHeaderComponent } from '../page/sort-filter-page-header/sort-filter-page-header.component';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { PageItemComponent } from '../page/page-item/page-item.component';
+import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 
 describe('TokenNetworkComponent', () => {
     let component: TokenNetworkComponent;
@@ -35,6 +36,7 @@ describe('TokenNetworkComponent', () => {
                 PageBaseComponent,
                 PageItemComponent,
                 DecimalPipe,
+                DisplayDecimalsPipe,
                 EllipsisPipe
             ],
             providers: [
