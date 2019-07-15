@@ -81,12 +81,15 @@
         </div>
         <app-token-network-actions
             class="actions"
+            id="{{ token.address }}-actions"
             [connection]="token.connected"
+            [chainId]="(network$ | async).chainId"
             (openConnectionManagerDialog)="
                 showConnectionManagerDialog(token, $event)
             "
             (openLeaveNetworkDialog)="showLeaveDialog(token)"
             (openPaymentDialog)="showPaymentDialog(token)"
+            (requestTokens)="mintToken(token, $event)"
         ></app-token-network-actions>
     </app-page-item>
 </app-page-base>

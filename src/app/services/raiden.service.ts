@@ -441,6 +441,34 @@ export class RaidenService {
             );
     }
 
+    public mintToken(
+        token: UserToken,
+        to: string,
+        value: number
+    ): Observable<any> {
+        return this.http
+            .post(
+                `${this.raidenConfig.api}/_testing/tokens/${
+                    token.address
+                }/mint`,
+                { to, value },
+                { observe: 'response' }
+            )
+            .pipe(
+                tap(() => {
+                    const decimalValue = amountToDecimal(value, token.decimals);
+                    const description = `${decimalValue} ${
+                        token.symbol
+                    } have successfully been minted`;
+                    this.sharedService.success({
+                        title: 'Mint',
+                        description
+                    });
+                }),
+                catchError(error => this.handleError(error))
+            );
+    }
+
     public getUserToken(tokenAddress: string): UserToken | null {
         return this.userTokens[tokenAddress];
     }

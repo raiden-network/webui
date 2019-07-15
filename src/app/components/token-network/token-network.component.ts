@@ -1,7 +1,7 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, PageEvent } from '@angular/material';
-import { BehaviorSubject, EMPTY, Subscription } from 'rxjs';
-import { flatMap, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, Subscription } from 'rxjs';
+import { flatMap, switchMap, tap, finalize } from 'rxjs/operators';
 import { SortingData } from '../../models/sorting.data';
 import { UserToken } from '../../models/usertoken';
 import { RaidenConfig } from '../../services/raiden.config';
@@ -23,6 +23,8 @@ import {
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { TokenSorting } from './token.sorting.enum';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
+import { TokenNetworkActionsComponent } from '../token-network-actions/token-network-actions.component';
+import { Network } from '../../utils/network-info';
 
 @Component({
     selector: 'app-token-network',
@@ -30,8 +32,6 @@ import { PageBaseComponent } from '../page/page-base/page-base.component';
     styleUrls: ['./token-network.component.scss']
 })
 export class TokenNetworkComponent implements OnInit, OnDestroy {
-    @Input()
-    raidenAddress: string;
     @ViewChild(PageBaseComponent)
     page: PageBaseComponent;
 
@@ -46,6 +46,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     sorting = TokenSorting.Balance;
     ascending = false;
     filter = '';
+    readonly network$: Observable<Network>;
 
     readonly sortingOptions: SortingData[] = [
         {
@@ -73,7 +74,9 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         public dialog: MatDialog,
         private raidenService: RaidenService,
         private raidenConfig: RaidenConfig
-    ) {}
+    ) {
+        this.network$ = raidenService.network$;
+    }
 
     public get production(): boolean {
         return this.raidenService.production;
@@ -303,6 +306,15 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         this.filter = '';
         this.applyFilters(this.sorting);
         this.page.firstPage();
+    }
+
+    mintToken(token: UserToken, component: TokenNetworkActionsComponent) {
+        component.requestingTokens = true;
+        const finishRequest = () => (component.requestingTokens = false);
+        this.raidenService
+            .mintToken(token, this.raidenService.raidenAddress, 1000)
+            .pipe(finalize(finishRequest))
+            .subscribe();
     }
 
     private refreshTokens() {

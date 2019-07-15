@@ -7,7 +7,9 @@ import { Connection } from '../../models/connection';
     styleUrls: ['./token-network-actions.component.css']
 })
 export class TokenNetworkActionsComponent implements OnInit {
+    @Input() id: string;
     @Input() connection: Connection;
+    @Input() chainId: number;
     @Output() openConnectionManagerDialog: EventEmitter<
         boolean
     > = new EventEmitter();
@@ -15,6 +17,11 @@ export class TokenNetworkActionsComponent implements OnInit {
         boolean
     > = new EventEmitter();
     @Output() openPaymentDialog: EventEmitter<boolean> = new EventEmitter();
+    @Output() requestTokens: EventEmitter<
+        TokenNetworkActionsComponent
+    > = new EventEmitter();
+
+    requestingTokens = false;
 
     constructor() {}
 
