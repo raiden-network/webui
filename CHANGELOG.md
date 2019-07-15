@@ -15,6 +15,7 @@
 - [#33] Exposes environment and chain information.
 - [#103] Adds instant validation feedback on input fields.
 - [#15] Adds a button to the header linking to a faucet on testnets.
+- [#11] Adds a token mint button for testnets
 
 ## [0.8.0] - 2019-01-25
 ### Changed
@@ -70,6 +71,7 @@ token network.
 [#31]: https://github.com/raiden-network/webui/issues/31
 [#15]: https://github.com/raiden-network/webui/issues/15
 [#13]: https://github.com/raiden-network/webui/issues/13
+[#11]: https://github.com/raiden-network/webui/issues/11
 [#9]: https://github.com/raiden-network/webui/issues/9
 [#8]: https://github.com/raiden-network/webui/issues/8
 [#5]: https://github.com/raiden-network/webui/issues/5
