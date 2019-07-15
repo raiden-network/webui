@@ -84,9 +84,16 @@
                 {{ historyEvent.reason }}
             </div>
             <div fxLayout="row" fxLayoutGap="4px" *ngIf="historyEvent.amount">
-                <span class="mat-body-2">{{
-                    historyEvent.amount | decimal: decimals
-                }}</span>
+                <span
+                    *ngIf="(historyEvent.amount | decimal: decimals) as balance"
+                    class="mat-body-2"
+                    id="display-ether"
+                    [matTooltip]="
+                        (balance | displayDecimals) === balance ? '' : balance
+                    "
+                >
+                    {{ balance | displayDecimals }}
+                </span>
                 <span>tokens</span>
             </div>
             <div fxLayout="row" class="mat-caption">

@@ -5,21 +5,24 @@ import BigNumber from 'bignumber.js';
     name: 'displayDecimals'
 })
 export class DisplayDecimalsPipe implements PipeTransform {
-    transform(value?: string, maxDecimals: number = 4): string {
+    transform(value?: string, maxDecimals: number = 5): string {
         if (!value) {
             return '';
         }
 
         const bn = new BigNumber(value);
 
-        if (bn.isZero()) {
-            return '0.0';
-        } else if (bn.isLessThan(0.00001)) {
+        if (bn.isLessThan(0.00001) && !bn.isZero()) {
             return '<0.00001';
         } else {
             const splitted = value.split('.');
-            if (splitted[1] && splitted[1].length > 5) {
-                return value.substr(0, value.indexOf('.') + 6);
+            if (splitted[1] && splitted[1].length > maxDecimals) {
+                const suffix = maxDecimals !== 0 ? '[...]' : '';
+                return (
+                    '~' +
+                    bn.toFixed(maxDecimals, BigNumber.ROUND_FLOOR) +
+                    suffix
+                );
             } else {
                 return value;
             }

@@ -46,8 +46,13 @@
         >
             {{ raidenAddress | shortenAddress }}
         </span>
-        <span class="balance"
-            >{{ balance$ | async | displayDecimals }}
+        <span
+            *ngIf="(balance$ | async) as balance"
+            class="balance"
+            [matTooltip]="
+                (balance | displayDecimals) === balance ? '' : balance
+            "
+            >{{ balance | displayDecimals }}
             {{ (network$ | async).shortName | uppercase }}</span
         >
     </div>

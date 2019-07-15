@@ -6,8 +6,9 @@ import { amountToDecimal } from '../utils/amount.converter';
     name: 'decimal'
 })
 export class DecimalPipe implements PipeTransform {
-    transform(value: any, decimals: number): string {
+    transform(value: number, decimals): string {
+        BigNumber.config({ DECIMAL_PLACES: decimals });
         const amount = new BigNumber(amountToDecimal(value, decimals));
-        return !amount.isZero() ? amount.toString() : '0';
+        return amount.toFixed();
     }
 }
