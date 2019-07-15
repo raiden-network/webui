@@ -30,17 +30,7 @@
     </span>
     <span class="toolbar-spacer"></span>
 
-    <span>
-        <a
-            *ngIf="(network$ | async).faucet && !isMobile()"
-            [href]="faucetLink$ | async"
-            target="_blank"
-            mat-button
-            class="faucet-button"
-        >
-            {{ 'Get ' + (network$ | async).shortName | uppercase }}
-        </a>
-    </span>
+    <span> </span>
     <span>
         <button mat-icon-button ngxClipboard [cbContent]="raidenAddress">
             <mat-icon aria-label="Copy address to clipboard">
@@ -67,16 +57,15 @@
             >{{ balance | displayDecimals }}
             {{ (network$ | async).shortName | uppercase }}
             <a
-                *ngIf="(network$ | async).faucet && isMobile()"
+                *ngIf="(network$ | async).faucet"
                 [href]="faucetLink$ | async"
                 target="_blank"
-                mat-button
-                id="mobile-faucet-button"
-                class="faucet-button"
+                mat-icon-button
+                id="faucet-button"
             >
-                <u>
-                    {{ '(More)' | uppercase }}
-                </u>
+                <mat-icon aria-label="Open ether faucet">
+                    card_giftcard
+                </mat-icon>
             </a>
         </span>
     </div>
