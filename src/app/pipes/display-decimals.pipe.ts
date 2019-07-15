@@ -17,10 +17,11 @@ export class DisplayDecimalsPipe implements PipeTransform {
         } else {
             const splitted = value.split('.');
             if (splitted[1] && splitted[1].length > maxDecimals) {
+                const suffix = maxDecimals !== 0 ? '[...]' : '';
                 return (
                     '~' +
                     bn.toFixed(maxDecimals, BigNumber.ROUND_FLOOR) +
-                    '[...]'
+                    suffix
                 );
             } else {
                 return value;

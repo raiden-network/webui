@@ -32,7 +32,7 @@ describe('DisplayDecimalsPipe', () => {
     });
 
     it('should display an integer when 0 decimal points passed', function() {
-        expect(pipe.transform('1000.9', 0)).toEqual('~1000[...]');
+        expect(pipe.transform('1000.9', 0)).toEqual('~1000');
     });
 
     it('should return the number formatted as it is if not enough decimals', function() {
