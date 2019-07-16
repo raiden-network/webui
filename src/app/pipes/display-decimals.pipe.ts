@@ -5,7 +5,11 @@ import BigNumber from 'bignumber.js';
     name: 'displayDecimals'
 })
 export class DisplayDecimalsPipe implements PipeTransform {
-    transform(value?: string, maxDecimals: number = 5): string {
+    transform(
+        value?: string,
+        maxDecimals: number = 5,
+        shortVersion: boolean = false
+    ): string {
         if (!value) {
             return '';
         }
@@ -17,7 +21,8 @@ export class DisplayDecimalsPipe implements PipeTransform {
         } else {
             const splitted = value.split('.');
             if (splitted[1] && splitted[1].length > maxDecimals) {
-                const suffix = maxDecimals !== 0 ? '[...]' : '';
+                const suffix =
+                    maxDecimals !== 0 && !shortVersion ? '[...]' : '';
                 return (
                     '~' +
                     bn.toFixed(maxDecimals, BigNumber.ROUND_FLOOR) +

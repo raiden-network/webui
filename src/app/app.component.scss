@@ -55,6 +55,10 @@ mat-sidenav-content {
     padding-left: 8px;
     padding-right: 8px;
 
+    .balance-info {
+        line-height: 100%;
+    }
+
     .balance {
         line-height: 20px;
         font-weight: 300;
