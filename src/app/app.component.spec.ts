@@ -20,6 +20,8 @@ import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
 import { EMPTY, Observable, ReplaySubject } from 'rxjs';
 import { TestProviders } from '../testing/test-providers';
 import { Network } from './utils/network-info';
+import { By } from '@angular/platform-browser';
+import { clickElement } from '../testing/interaction-helper';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -49,7 +51,8 @@ describe('AppComponent', () => {
         networkMock.next({
             name: 'Test',
             shortName: 'tst',
-            chainId: 9001
+            chainId: 9001,
+            faucet: 'http://faucet.test/?${ADDRESS}'
         });
         balanceMock.next('0.00000001');
         addressMock.next('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359');
@@ -120,5 +123,32 @@ describe('AppComponent', () => {
         expect(app.menuOpen).toBe(false);
         app.toggleMenu();
         expect(app.menuOpen).toBe(true);
+    });
+
+    it('should have a faucet button when network has a faucet', function() {
+        expect(
+            fixture.debugElement.query(By.css('#faucet-button'))
+        ).toBeTruthy();
+    });
+
+    it('should not have a faucet button when network does not have a faucet', function() {
+        service.network$.next({
+            name: 'Test',
+            shortName: 'tst',
+            chainId: 9001
+        });
+        fixture.detectChanges();
+        expect(
+            fixture.debugElement.query(By.css('#faucet-button'))
+        ).toBeFalsy();
+    });
+
+    it('should insert the address correctly into the href attribute of the faucet button', function() {
+        const href = fixture.debugElement
+            .query(By.css('#faucet-button'))
+            .nativeElement.getAttribute('href');
+        expect(href).toBe(
+            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
+        );
     });
 });

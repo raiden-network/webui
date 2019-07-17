@@ -46,15 +46,41 @@
         >
             {{ raidenAddress | shortenAddress }}
         </span>
-        <span
-            *ngIf="(balance$ | async) as balance"
-            class="balance"
-            [matTooltip]="
-                (balance | displayDecimals) === balance ? '' : balance
-            "
-            >{{ balance | displayDecimals }}
-            {{ (network$ | async).shortName | uppercase }}</span
-        >
+        <span class="balance-info" *ngIf="(balance$ | async) as balance">
+            <span
+                *ngIf="!isMobile(); else mobile_balance"
+                class="balance"
+                [matTooltip]="
+                    (balance | displayDecimals) === balance ? '' : balance
+                "
+                >{{ balance | displayDecimals }}
+                {{ (network$ | async).shortName | uppercase }}
+            </span>
+            <ng-template #mobile_balance>
+                <span
+                    class="balance"
+                    [matTooltip]="
+                        (balance | displayDecimals: 3:true) === balance
+                            ? ''
+                            : balance
+                    "
+                    >{{ balance | displayDecimals: 3:true }}
+                    {{ (network$ | async).shortName | uppercase }}
+                </span>
+            </ng-template>
+            <a
+                *ngIf="(network$ | async).faucet"
+                [href]="faucetLink$ | async"
+                target="_blank"
+                mat-icon-button
+                id="faucet-button"
+                matTooltip="Open ether faucet"
+            >
+                <mat-icon aria-label="Open ether faucet">
+                    card_giftcard
+                </mat-icon>
+            </a>
+        </span>
     </div>
     <span style="width: 32px; margin-right: 25px">
         <img

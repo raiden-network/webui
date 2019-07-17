@@ -55,6 +55,10 @@ mat-sidenav-content {
     padding-left: 8px;
     padding-right: 8px;
 
+    .balance-info {
+        line-height: 100%;
+    }
+
     .balance {
         line-height: 20px;
         font-weight: 300;
@@ -89,4 +93,10 @@ mat-sidenav-content {
             color: rgba(255, 255, 255, 0.76);
         }
     }
+}
+
+#faucet-button {
+    padding: 0;
+    line-height: 100%;
+    height: 100%;
 }

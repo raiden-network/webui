@@ -31,6 +31,10 @@ describe('DisplayDecimalsPipe', () => {
         expect(pipe.transform('0.0011111111111', 3)).toEqual('~0.001[...]');
     });
 
+    it('should display the amount cutoff without dots when shortVersion is set true', function() {
+        expect(pipe.transform('0.0011111111111', 3, true)).toEqual('~0.001');
+    });
+
     it('should display an integer when 0 decimal points passed', function() {
         expect(pipe.transform('1000.9', 0)).toEqual('~1000');
     });

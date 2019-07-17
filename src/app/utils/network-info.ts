@@ -3,27 +3,32 @@ export class NetworkInfo {
         {
             name: 'Mainnet',
             shortName: 'eth',
-            chainId: 1
+            chainId: 1,
+            faucet: undefined
         },
         {
             name: 'Ropsten',
             shortName: 'rop',
-            chainId: 3
+            chainId: 3,
+            faucet: 'https://faucet.ropsten.be/?${ADDRESS}'
         },
         {
             name: 'Rinkeby',
             shortName: 'rin',
-            chainId: 4
+            chainId: 4,
+            faucet: 'https://faucet.rinkeby.io/'
         },
         {
             name: 'Görli',
             shortName: 'gor',
-            chainId: 5
+            chainId: 5,
+            faucet: 'https://goerli-faucet.slock.it/?address=${ADDRESS}'
         },
         {
             name: 'Kovan',
             shortName: 'kov',
-            chainId: 42
+            chainId: 42,
+            faucet: 'https://faucet.kovan.network/'
         }
     ];
 
@@ -35,7 +40,8 @@ export class NetworkInfo {
             return {
                 name: `Chain-id: ${chainId}`,
                 shortName: 'eth',
-                chainId: chainId
+                chainId: chainId,
+                faucet: undefined
             };
         } else {
             return matches[0];
@@ -47,4 +53,5 @@ export interface Network {
     readonly name: string;
     readonly shortName: string;
     readonly chainId: number;
+    readonly faucet?: string;
 }
