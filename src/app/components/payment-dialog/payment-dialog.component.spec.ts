@@ -1,5 +1,4 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Type } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -16,17 +15,46 @@ import {
 } from './payment-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
 import { mockFormInput } from '../../../testing/interaction-helper';
+import { PaymentIdentifierInputComponent } from '../payment-identifier-input/payment-identifier-input.component';
 
 describe('PaymentDialogComponent', () => {
     let component: PaymentDialogComponent;
     let fixture: ComponentFixture<PaymentDialogComponent>;
+
+    function mockAllInputs() {
+        mockFormInput(
+            fixture.debugElement.query(By.directive(AddressInputComponent)),
+            'inputFieldFc',
+            '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
+        );
+        mockFormInput(
+            fixture.debugElement.query(
+                By.directive(TokenNetworkSelectorComponent)
+            ),
+            'tokenFc',
+            '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
+        );
+        mockFormInput(
+            fixture.debugElement.query(By.directive(TokenInputComponent)),
+            'inputControl',
+            '10'
+        );
+        mockFormInput(
+            fixture.debugElement.query(
+                By.directive(PaymentIdentifierInputComponent)
+            ),
+            'identifierControl',
+            '999'
+        );
+    }
 
     beforeEach(async(() => {
         const payload: PaymentDialogPayload = {
             tokenAddress: '',
             amount: 0,
             targetAddress: '',
-            decimals: 0
+            decimals: 0,
+            paymentIdentifier: 0
         };
         TestBed.configureTestingModule({
             declarations: [
@@ -34,11 +62,12 @@ describe('PaymentDialogComponent', () => {
                 TokenPipe,
                 TokenInputComponent,
                 AddressInputComponent,
-                TokenNetworkSelectorComponent
+                TokenNetworkSelectorComponent,
+                PaymentIdentifierInputComponent
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef(),
+                TestProviders.MockMatDialogRef({ close: () => {} }),
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.HammerJSProvider(),
@@ -64,30 +93,30 @@ describe('PaymentDialogComponent', () => {
     });
 
     it('should reset the form when the reset button is clicked', async () => {
-        mockFormInput(
-            fixture.debugElement.query(By.directive(AddressInputComponent)),
-            'inputFieldFc',
-            '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
-        );
-        mockFormInput(
-            fixture.debugElement.query(
-                By.directive(TokenNetworkSelectorComponent)
-            ),
-            'tokenFc',
-            '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
-        );
-        mockFormInput(
-            fixture.debugElement.query(By.directive(TokenInputComponent)),
-            'inputControl',
-            '10'
-        );
+        mockAllInputs();
         const element = fixture.debugElement.query(By.css('#reset'));
         element.triggerEventHandler('click', {});
         expect(component.form.value).toEqual({
             target_address: '',
             token: '',
-            amount: 0
+            amount: 0,
+            payment_identifier: 0
         });
-        expect(component.form.invalid).toBeTruthy();
+        expect(component.form.invalid).toBe(true);
+    });
+
+    it('should close the dialog with the result when send button is clicked', () => {
+        mockAllInputs();
+        const close = spyOn(component.dialogRef, 'close');
+        const element = fixture.debugElement.query(By.css('#send'));
+        element.triggerEventHandler('click', {});
+        expect(close).toHaveBeenCalledTimes(1);
+        expect(close).toHaveBeenCalledWith({
+            tokenAddress: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+            targetAddress: '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359',
+            decimals: 0,
+            amount: 10,
+            paymentIdentifier: 999
+        });
     });
 });

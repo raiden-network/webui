@@ -18,7 +18,7 @@ import { createChannel } from '../../testing/test-data';
 import Spy = jasmine.Spy;
 import { amountToDecimal, amountFromDecimal } from '../utils/amount.converter';
 
-describe('RaidenService', () => {
+fdescribe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
 
     let mockHttp: HttpTestingController;
@@ -670,6 +670,104 @@ describe('RaidenService', () => {
         });
 
         const errorMessage = 'Not a valid token network address';
+        const errorBody = {
+            errors: errorMessage
+        };
+
+        request.flush(errorBody, {
+            status: 400,
+            statusText: ''
+        });
+        flush();
+
+        expect(sharedService.error).toHaveBeenCalledTimes(1);
+
+        // @ts-ignore
+        const payload = sharedService.error.calls.first().args[0];
+
+        expect(payload.title).toBe(
+            'Raiden Error',
+            'It should be a Raiden Error'
+        );
+        expect(payload.description).toBe(errorMessage);
+    }));
+
+    it('should inform the user when a payment was successful', fakeAsync(() => {
+        const targetAddress = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
+        const amount = 10;
+        const decimals = 8;
+        const paymentIdentifier = 3;
+        service
+            .initiatePayment(
+                tokenAddress,
+                targetAddress,
+                amount,
+                decimals,
+                paymentIdentifier
+            )
+            .subscribe(value => expect(value).toBeFalsy());
+        tick();
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
+            method: 'POST'
+        });
+        expect(JSON.parse(request.request.body.amount)).toEqual(
+            amountFromDecimal(amount, decimals)
+        );
+        expect(JSON.parse(request.request.body.identifier)).toEqual(
+            paymentIdentifier
+        );
+
+        const body = {
+            target_address: targetAddress,
+            identifier: paymentIdentifier
+        };
+
+        request.flush(body, {
+            status: 200,
+            statusText: ''
+        });
+        flush();
+
+        expect(sharedService.success).toHaveBeenCalledTimes(1);
+        expect(sharedService.success).toHaveBeenCalledWith({
+            title: 'Transfer successful',
+            description: `A payment of ${amount.toFixed(
+                decimals
+            )} was successfully sent to the partner ${targetAddress}`
+        });
+    }));
+
+    it('should inform the user when a payment was not successful', fakeAsync(() => {
+        const targetAddress = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
+        const amount = 10;
+        const decimals = 8;
+        const paymentIdentifier = 3;
+        service
+            .initiatePayment(
+                tokenAddress,
+                targetAddress,
+                amount,
+                decimals,
+                paymentIdentifier
+            )
+            .subscribe(
+                () => {
+                    fail('On next should not be called');
+                },
+                error => {
+                    expect(error).toBeTruthy('An error was expected');
+                }
+            );
+        tick();
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
+            method: 'POST'
+        });
+
+        const errorMessage = 'Payment was not successful';
         const errorBody = {
             errors: errorMessage
         };

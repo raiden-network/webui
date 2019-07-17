@@ -20,6 +20,8 @@
         formControlName="amount"
     >
     </app-token-input>
+    <app-payment-identifier-input formControlName="payment_identifier">
+    </app-payment-identifier-input>
 </div>
 <div mat-dialog-actions>
     <button mat-button mat-dialog-close>Close</button>
@@ -28,6 +30,7 @@
     </button>
     <button
         mat-button
+        id="send"
         color="accent"
         (click)="accept()"
         [disabled]="form.invalid"
