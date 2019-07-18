@@ -6,6 +6,7 @@
 - [#105] Fixes an issue which prevented the address book download button to work on Firefox.
 - [#101] Fixes the reset button of the payment dialog to reset the validity and input values correctly.
 - [#5] Changes numeric amounts to be displayed in decimal notation
+- [#87] Fixes the notification for a successful token registration
 
 ### Added
 - [#94] Adds withdraw functionality.
@@ -55,6 +56,7 @@ token network.
 [#103]: https://github.com/raiden-network/webui/issues/103
 [#101]: https://github.com/raiden-network/webui/issues/101
 [#94]: https://github.com/raiden-network/webui/issues/94
+[#87]: https://github.com/raiden-network/webui/issues/87
 [#85]: https://github.com/raiden-network/webui/issues/85
 [#79]: https://github.com/raiden-network/webui/issues/79
 [#66]: https://github.com/raiden-network/webui/issues/66
