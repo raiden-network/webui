@@ -83,7 +83,7 @@
             class="actions"
             id="{{ token.address }}-actions"
             [connection]="token.connected"
-            [chainId]="(network$ | async).chainId"
+            [onMainnet]="(network$ | async).chainId === 1"
             (openConnectionManagerDialog)="
                 showConnectionManagerDialog(token, $event)
             "

@@ -9,7 +9,7 @@ import { Connection } from '../../models/connection';
 export class TokenNetworkActionsComponent implements OnInit {
     @Input() id: string;
     @Input() connection: Connection;
-    @Input() chainId: number;
+    @Input() onMainnet: boolean;
     @Output() openConnectionManagerDialog: EventEmitter<
         boolean
     > = new EventEmitter();

@@ -443,20 +443,23 @@ export class RaidenService {
 
     public mintToken(
         token: UserToken,
-        to: string,
-        value: number
+        targetAddress: string,
+        amount: number
     ): Observable<any> {
         return this.http
             .post(
                 `${this.raidenConfig.api}/_testing/tokens/${
                     token.address
                 }/mint`,
-                { to, value },
+                { to: targetAddress, value: amount },
                 { observe: 'response' }
             )
             .pipe(
                 tap(() => {
-                    const decimalValue = amountToDecimal(value, token.decimals);
+                    const decimalValue = amountToDecimal(
+                        amount,
+                        token.decimals
+                    );
                     const description = `${decimalValue} ${
                         token.symbol
                     } have successfully been minted`;

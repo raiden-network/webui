@@ -41,7 +41,7 @@
         {{ 'Leave Network' | uppercase }}
     </button>
     <button
-        *ngIf="chainId !== 1"
+        *ngIf="!onMainnet"
         [disabled]="requestingTokens"
         class="match-parent-width"
         id="token-mint"

@@ -24,14 +24,14 @@ describe('TokenNetworkActionsComponent', () => {
     });
 
     it('should have a mint token button when network is not mainnet', () => {
-        component.chainId = 2;
+        component.onMainnet = false;
         fixture.detectChanges();
         const element = fixture.debugElement.query(By.css('#token-mint'));
         expect(element).toBeTruthy();
     });
 
     it('should not have a mint token button when network is mainnet', () => {
-        component.chainId = 1;
+        component.onMainnet = true;
         fixture.detectChanges();
         const element = fixture.debugElement.query(By.css('#token-mint'));
         expect(element).toBeFalsy();

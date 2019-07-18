@@ -314,7 +314,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         this.raidenService
             .mintToken(token, this.raidenService.raidenAddress, 1000)
             .pipe(finalize(finishRequest))
-            .subscribe();
+            .subscribe(() => this.refreshTokens());
     }
 
     private refreshTokens() {
