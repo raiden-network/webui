@@ -349,25 +349,14 @@ export class RaidenService {
             );
     }
 
-    public registerToken(tokenAddress: string): Observable<UserToken> {
+    public registerToken(tokenAddress: string): Observable<any> {
         return this.http
             .put(`${this.raidenConfig.api}/tokens/${tokenAddress}`, {})
             .pipe(
-                map(() => {
-                    const userToken = this.getUserToken(tokenAddress);
-                    if (userToken === null) {
-                        throw new Error(
-                            `No contract on address: ${tokenAddress}`
-                        );
-                    }
-                    return userToken;
-                }),
-                tap((userToken: UserToken) => {
+                tap(() => {
                     this.sharedService.success({
                         title: 'Token registered',
-                        description: `Your token was successfully registered: ${
-                            userToken.address
-                        }`
+                        description: `Your token was successfully registered: ${tokenAddress}`
                     });
                 }),
                 catchError(error => this.handleError(error))

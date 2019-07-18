@@ -85,7 +85,40 @@ describe('RaidenService', () => {
         }
     ));
 
-    it('When token creation fails there should be a nice message', () => {
+    it('should inform the user when token network creation was completed successfully', () => {
+        service
+            .registerToken(tokenAddress)
+            .subscribe(value =>
+                expect(value.token_network_address).toBe(
+                    '0xc52952ebad56f2c5e5b42bb881481ae27d036475'
+                )
+            );
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/tokens/${tokenAddress}`,
+            method: 'PUT'
+        });
+        expect(request.request.body).toEqual({});
+
+        request.flush(
+            {
+                token_network_address:
+                    '0xc52952ebad56f2c5e5b42bb881481ae27d036475'
+            },
+            {
+                status: 201,
+                statusText: ''
+            }
+        );
+
+        expect(sharedService.success).toHaveBeenCalledTimes(1);
+        expect(sharedService.success).toHaveBeenCalledWith({
+            title: 'Token registered',
+            description: `Your token was successfully registered: ${tokenAddress}`
+        });
+    });
+
+    it('When token network creation fails there should be a nice message', () => {
         service.registerToken(tokenAddress).subscribe(
             () => {
                 fail('On next should not be called');
