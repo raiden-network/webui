@@ -40,4 +40,15 @@
     >
         {{ 'Leave Network' | uppercase }}
     </button>
+    <button
+        *ngIf="!onMainnet"
+        [disabled]="requestingTokens"
+        class="match-parent-width"
+        id="token-mint"
+        mat-button
+        color="accent"
+        (click)="requestTokens.emit(this)"
+    >
+        {{ 'Mint Token' | uppercase }}
+    </button>
 </div>

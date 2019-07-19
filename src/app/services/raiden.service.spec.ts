@@ -16,6 +16,7 @@ import BigNumber from 'bignumber.js';
 import { DepositMode } from '../utils/helpers';
 import { createChannel } from '../../testing/test-data';
 import Spy = jasmine.Spy;
+import { amountToDecimal } from '../utils/amount.converter';
 
 describe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
@@ -45,7 +46,8 @@ describe('RaidenService', () => {
     beforeEach(() => {
         sharedService = jasmine.createSpyObj('SharedService', [
             'error',
-            'info'
+            'info',
+            'success'
         ]);
         TestBed.configureTestingModule({
             imports: [HttpClientModule, HttpClientTestingModule],
@@ -397,4 +399,85 @@ describe('RaidenService', () => {
             description: `The channel 1 balance changed to 0.000000000000000000`
         });
     }));
+
+    it('should inform the user when minting was completed successfully', () => {
+        const token: UserToken = {
+            address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+            symbol: 'TST',
+            name: 'Test Suite Token',
+            decimals: 8,
+            balance: 20
+        };
+        service
+            .mintToken(token, '0xto', 1000)
+            .subscribe(response => expect(response.ok).toBeTruthy());
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/_testing/tokens/${token.address}/mint`,
+            method: 'POST'
+        });
+        expect(request.request.body.to).toBe('0xto');
+        expect(request.request.body.value).toBe(1000);
+
+        request.flush(
+            { transaction_hash: '0xabc' },
+            {
+                status: 200,
+                statusText: ''
+            }
+        );
+
+        const decimalValue = amountToDecimal(1000, token.decimals);
+        expect(sharedService.success).toHaveBeenCalledTimes(1);
+        expect(sharedService.success).toHaveBeenCalledWith({
+            title: 'Mint',
+            description: `${decimalValue} ${
+                token.symbol
+            } have successfully been minted`
+        });
+    });
+
+    it('should inform the user when minting was not successful', () => {
+        const token: UserToken = {
+            address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+            symbol: 'TST',
+            name: 'Test Suite Token',
+            decimals: 8,
+            balance: 20
+        };
+        service.mintToken(token, '0xto', 1000).subscribe(
+            () => {
+                fail('On next should not be called');
+            },
+            error => {
+                expect(error).toBeTruthy('An error was expected');
+            }
+        );
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/_testing/tokens/${token.address}/mint`,
+            method: 'POST'
+        });
+
+        const errorMessage = 'Token does not have a mint method';
+        const errorBody = {
+            errors: errorMessage
+        };
+
+        request.flush(errorBody, {
+            status: 400,
+            statusText: ''
+        });
+
+        expect(sharedService.error).toHaveBeenCalledTimes(1);
+
+        // @ts-ignore
+        const payload = sharedService.error.calls.first().args[0];
+
+        expect(payload.title).toBe(
+            'Raiden Error',
+            'It should be a Raiden Error'
+        );
+        expect(payload.description).toBe(errorMessage);
+    });
 });

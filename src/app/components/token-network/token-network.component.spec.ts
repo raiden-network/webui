@@ -1,5 +1,11 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    TestBed,
+    fakeAsync,
+    tick
+} from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -21,11 +27,23 @@ import { SortFilterPageHeaderComponent } from '../page/sort-filter-page-header/s
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { PageItemComponent } from '../page/page-item/page-item.component';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
+import { of } from 'rxjs';
+import { UserToken } from '../../models/usertoken';
+import { clickElement } from '../../../testing/interaction-helper';
 
 describe('TokenNetworkComponent', () => {
     let component: TokenNetworkComponent;
     let fixture: ComponentFixture<TokenNetworkComponent>;
     let mockConfiguration: MockConfig;
+    let raidenService: RaidenService;
+
+    const token: UserToken = {
+        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+        symbol: 'TST',
+        name: 'Test Suite Token',
+        decimals: 8,
+        balance: 20
+    };
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -58,6 +76,16 @@ describe('TokenNetworkComponent', () => {
 
     beforeEach(() => {
         mockConfiguration = TestBed.get(RaidenConfig);
+        spyOnProperty(mockConfiguration, 'network$', 'get').and.returnValue(
+            of({
+                name: 'Test',
+                shortName: 'tst',
+                chainId: 9001
+            })
+        );
+        raidenService = TestBed.get(RaidenService);
+        spyOn(raidenService, 'getTokens').and.returnValue(of([token]));
+
         fixture = TestBed.createComponent(TokenNetworkComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -84,4 +112,17 @@ describe('TokenNetworkComponent', () => {
         );
         expect(element).toBeFalsy();
     }));
+
+    it('should request raiden service when mint button is clicked', () => {
+        const mintToken = spyOn(raidenService, 'mintToken').and.returnValue(
+            of(null)
+        );
+        clickElement(fixture.debugElement, '#token-mint');
+        expect(mintToken).toHaveBeenCalledTimes(1);
+        expect(mintToken).toHaveBeenCalledWith(
+            token,
+            raidenService.raidenAddress,
+            1000
+        );
+    });
 });
