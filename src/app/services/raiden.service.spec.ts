@@ -88,11 +88,7 @@ describe('RaidenService', () => {
     it('should inform the user when token network creation was completed successfully', () => {
         service
             .registerToken(tokenAddress)
-            .subscribe(value =>
-                expect(value.token_network_address).toBe(
-                    '0xc52952ebad56f2c5e5b42bb881481ae27d036475'
-                )
-            );
+            .subscribe(value => expect(value).toBeFalsy());
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/tokens/${tokenAddress}`,

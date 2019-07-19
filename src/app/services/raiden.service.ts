@@ -201,7 +201,7 @@ export class RaidenService {
         targetAddress: string,
         amount: number,
         decimals: number
-    ): Observable<any> {
+    ): Observable<void> {
         const raidenAmount = amountFromDecimal(amount, decimals);
 
         return this.http
@@ -234,6 +234,7 @@ export class RaidenService {
                         });
                     }
                 }),
+                map(() => null),
                 catchError(error => this.handleError(error))
             );
     }
@@ -349,10 +350,11 @@ export class RaidenService {
             );
     }
 
-    public registerToken(tokenAddress: string): Observable<any> {
+    public registerToken(tokenAddress: string): Observable<void> {
         return this.http
             .put(`${this.raidenConfig.api}/tokens/${tokenAddress}`, {})
             .pipe(
+                map(() => null),
                 tap(() => {
                     this.sharedService.success({
                         title: 'Token registered',
@@ -368,12 +370,13 @@ export class RaidenService {
         tokenAddress: string,
         decimals: number,
         join: boolean
-    ): Observable<any> {
+    ): Observable<void> {
         return this.http
             .put(`${this.raidenConfig.api}/connections/${tokenAddress}`, {
                 funds: amountFromDecimal(funds, decimals)
             })
             .pipe(
+                map(() => null),
                 tap(() => {
                     const title = join ? 'Joined Token Network' : 'Funds Added';
                     const description = join
@@ -388,11 +391,11 @@ export class RaidenService {
             );
     }
 
-    public leaveTokenNetwork(userToken: UserToken): Observable<any> {
+    public leaveTokenNetwork(userToken: UserToken): Observable<void> {
         return this.http
             .delete(`${this.raidenConfig.api}/connections/${userToken.address}`)
             .pipe(
-                map(() => true),
+                map(() => null),
                 tap(() => {
                     const description = `Successfully closed and settled all channels in ${
                         userToken.name
