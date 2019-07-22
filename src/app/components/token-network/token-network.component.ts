@@ -25,6 +25,7 @@ import { TokenSorting } from './token.sorting.enum';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { TokenNetworkActionsComponent } from '../token-network-actions/token-network-actions.component';
 import { Network } from '../../utils/network-info';
+import { backoff } from '../../shared/backoff.operator';
 
 @Component({
     selector: 'app-token-network',
@@ -124,7 +125,8 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
                         this.refreshing = false;
                     },
                     () => (this.refreshing = false)
-                )
+                ),
+                backoff(this.raidenConfig.config.error_poll_interval)
             )
             .subscribe((tokens: Array<UserToken>) => {
                 this.tokens = tokens;

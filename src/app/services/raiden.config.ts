@@ -13,6 +13,7 @@ interface RDNConfig {
     web3: string;
     web3_fallback?: string;
     poll_interval?: number;
+    error_poll_interval?: number;
     block_start?: number;
     http_timeout?: number;
     settle_timeout?: number;
@@ -25,6 +26,7 @@ const default_config: RDNConfig = {
     web3: '/web3',
     web3_fallback: 'http://localhost:8545',
     poll_interval: 5000,
+    error_poll_interval: 30000,
     block_start: 1603031,
     http_timeout: 600000,
     settle_timeout: 500,
