@@ -189,7 +189,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
             targetAddress: '',
             amount: 0,
             decimals: userToken.decimals,
-            paymentIdentifier: this.raidenService.identifier
+            paymentIdentifier: 0
         };
 
         const paymentDialogRef = this.dialog.open(PaymentDialogComponent, {

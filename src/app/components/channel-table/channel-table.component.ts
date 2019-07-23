@@ -179,7 +179,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
             targetAddress: channel ? channel.partner_address : '',
             amount: this.amount,
             decimals: channel ? channel.userToken.decimals : 0,
-            paymentIdentifier: this.raidenService.identifier
+            paymentIdentifier: 0
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {

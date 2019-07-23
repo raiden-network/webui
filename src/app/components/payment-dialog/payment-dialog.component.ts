@@ -52,19 +52,23 @@ export class PaymentDialogComponent implements OnInit {
             ],
             amount: 0,
             token: data.tokenAddress,
-            payment_identifier: data.paymentIdentifier
+            payment_identifier: ''
         });
     }
 
     public accept() {
         const value = this.form.value;
 
+        const paymentIdentifier = this.paymentIdentifierInput.paymentIdentifier;
+
         const payload: PaymentDialogPayload = {
             tokenAddress: value['token'],
             targetAddress: value['target_address'],
             decimals: this.tokenInput.tokenAmountDecimals,
             amount: this.tokenInput.tokenAmount.toNumber(),
-            paymentIdentifier: this.paymentIdentifierInput.paymentIdentifier.toNumber()
+            paymentIdentifier: paymentIdentifier.isNaN()
+                ? this.raidenService.identifier
+                : paymentIdentifier.toNumber()
         };
 
         this.dialogRef.close(payload);
@@ -74,18 +78,17 @@ export class PaymentDialogComponent implements OnInit {
         this.form.reset();
         const targetAddress = this.data.targetAddress;
         const tokenAddress = this.data.tokenAddress;
-        const paymentIdentifier = this.data.paymentIdentifier;
 
         this.form.setValue({
             target_address: targetAddress ? targetAddress : '',
             token: tokenAddress || '',
             amount: 0,
-            payment_identifier: paymentIdentifier || 0
+            payment_identifier: ''
         });
 
         this.tokenInput.resetAmount();
         this.tokenInput.decimals = this.data.decimals;
-        this.paymentIdentifierInput.resetEditability();
+        this.paymentIdentifierInput.resetPanel();
     }
 
     // noinspection JSMethodCanBeStatic

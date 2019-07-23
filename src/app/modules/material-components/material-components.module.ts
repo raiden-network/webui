@@ -23,7 +23,8 @@ import {
     MatSortModule,
     MatTableModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatExpansionModule
 } from '@angular/material';
 
 @NgModule({
@@ -50,7 +51,8 @@ import {
         MatSidenavModule,
         MatBadgeModule,
         MatRadioModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatExpansionModule
     ],
     imports: [CommonModule],
     declarations: []

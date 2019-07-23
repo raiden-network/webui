@@ -1,16 +1,14 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, ViewChild } from '@angular/core';
 import {
     ControlValueAccessor,
     FormControl,
-    FormGroup,
-    FormBuilder,
     AbstractControl,
     ValidationErrors,
     ValidatorFn,
     NG_VALUE_ACCESSOR,
     NG_VALIDATORS
 } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material';
+import { MatExpansionPanel } from '@angular/material';
 import BigNumber from 'bignumber.js';
 
 @Component({
@@ -31,64 +29,52 @@ import BigNumber from 'bignumber.js';
     ]
 })
 export class PaymentIdentifierInputComponent implements ControlValueAccessor {
-    readonly form: FormGroup = this.fb.group({
-        payment_identifier: new FormControl(
-            { value: 0, disabled: true },
-            this.identifierValidator()
-        ),
-        edit_box: false
-    });
-    readonly identifierControl: FormControl;
-    readonly checkboxControl: FormControl;
+    @ViewChild(MatExpansionPanel)
+    panel: MatExpansionPanel;
 
-    constructor(private fb: FormBuilder) {
-        this.identifierControl = this.form.get(
-            'payment_identifier'
-        ) as FormControl;
-        this.checkboxControl = this.form.get('edit_box') as FormControl;
-    }
+    readonly identifierFc = new FormControl('', this.identifierValidator());
+
+    constructor() {}
 
     public get paymentIdentifier(): BigNumber {
-        return new BigNumber(this.identifierControl.value);
+        return new BigNumber(this.identifierFc.value);
     }
 
-    public resetEditability() {
-        this.checkboxControl.reset(false);
-        this.checkboxControl.enable();
-        this.identifierControl.disable({ emitEvent: false });
+    public resetPanel() {
+        this.panel.close();
     }
 
-    public onCheckChange(event: MatCheckboxChange) {
-        if (event.checked) {
-            this.identifierControl.enable();
-            this.checkboxControl.disable();
-        }
+    public onClose() {
+        this.identifierFc.reset('');
     }
 
     registerOnChange(fn: any): void {
-        this.identifierControl.valueChanges.subscribe(fn);
+        this.identifierFc.valueChanges.subscribe(fn);
     }
 
     registerOnTouched(fn: any): void {
-        this.identifierControl.registerOnChange(fn);
+        this.identifierFc.registerOnChange(fn);
     }
 
     registerOnValidatorChange(fn: () => void): void {}
 
     validate(c: AbstractControl): ValidationErrors | null {
-        return this.identifierControl.errors;
+        return this.identifierFc.errors;
     }
 
     writeValue(obj: any): void {
         if (!obj) {
-            this.identifierControl.reset('', { emitEvent: false });
+            this.identifierFc.reset('', { emitEvent: false });
             return;
         }
-        this.identifierControl.setValue(obj, { emitEvent: false });
+        this.identifierFc.setValue(obj, { emitEvent: false });
     }
 
     private identifierValidator(): ValidatorFn {
         return (control: AbstractControl) => {
+            if (control.pristine && control.untouched) {
+                return undefined;
+            }
             const value = new BigNumber(control.value);
             if (value.isNaN()) {
                 return {

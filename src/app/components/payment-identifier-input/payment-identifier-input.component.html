@@ -1,14 +1,22 @@
-<div
-    [formGroup]="form"
-    class="form"
-    fxLayout="row"
-    fxLayout.xs="column"
-    fxLayoutGap.xs="20px"
+<mat-expansion-panel
+    class="full-width-expansion-panel mat-elevation-z0 dialog-expansion-panel"
+    (closed)="onClose()"
 >
+    <mat-expansion-panel-header
+        matTooltip="The payment identifier can be set for tagging payments"
+        matTooltipPosition="above"
+        aria-label="Set payment identifier"
+    >
+        <mat-panel-description>
+            Set payment identifier
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+
     <mat-form-field
         fxFlex="1 1 auto"
         fxLayout="column"
         fxLayout.xs="row"
+        fxLayoutGap="0px"
         ngClass.xs="full-width-form-field"
     >
         <input
@@ -17,31 +25,20 @@
             type="number"
             placeholder="Payment identifier"
             aria-label="Payment identifier"
-            formControlName="payment_identifier"
+            [formControl]="identifierFc"
         />
-        <mat-error *ngIf="form.invalid && (form.touched || form.dirty)">
-            <span *ngIf="identifierControl.errors['invalidNumber']">
+        <mat-error
+            *ngIf="
+                identifierFc.invalid &&
+                (identifierFc.touched || identifierFc.dirty)
+            "
+        >
+            <span *ngIf="identifierFc.errors['invalidNumber']">
                 The payment identifier should be a positive number
             </span>
-            <span *ngIf="identifierControl.errors['notANumber']">
+            <span *ngIf="identifierFc.errors['notANumber']">
                 The payment identifier is not a number
             </span>
         </mat-error>
     </mat-form-field>
-
-    <mat-checkbox
-        class="checkbox"
-        fxFlex="0 0 6.5em"
-        fxFlex.xs="0 0 auto"
-        fxFlexAlign="center"
-        fxFlexAlign.xs="start"
-        fxLayout="column"
-        fxLayout.xs="row"
-        (change)="onCheckChange($event)"
-        matTooltip="The payment identifier can be changed for tagging payments"
-        matTooltipPosition="above"
-        formControlName="edit_box"
-    >
-        Edit
-    </mat-checkbox>
-</div>
+</mat-expansion-panel>

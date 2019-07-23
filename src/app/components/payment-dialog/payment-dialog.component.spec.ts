@@ -43,7 +43,7 @@ describe('PaymentDialogComponent', () => {
             fixture.debugElement.query(
                 By.directive(PaymentIdentifierInputComponent)
             ),
-            'identifierControl',
+            'identifierFc',
             '999'
         );
     }
@@ -100,7 +100,7 @@ describe('PaymentDialogComponent', () => {
             target_address: '',
             token: '',
             amount: 0,
-            payment_identifier: 0
+            payment_identifier: ''
         });
         expect(component.form.invalid).toBe(true);
     });
