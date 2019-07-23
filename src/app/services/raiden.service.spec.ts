@@ -18,7 +18,7 @@ import { createChannel } from '../../testing/test-data';
 import Spy = jasmine.Spy;
 import { amountToDecimal, amountFromDecimal } from '../utils/amount.converter';
 
-fdescribe('RaidenService', () => {
+describe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
 
     let mockHttp: HttpTestingController;
@@ -737,6 +737,24 @@ fdescribe('RaidenService', () => {
                 decimals
             )} was successfully sent to the partner ${targetAddress}`
         });
+    }));
+
+    it('should set a payment identifier for a payment when none is passed', fakeAsync(() => {
+        const targetAddress = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
+        const amount = 10;
+        const decimals = 8;
+        spyOnProperty(service, 'identifier', 'get').and.returnValue(50);
+        service
+            .initiatePayment(tokenAddress, targetAddress, amount, decimals)
+            .subscribe();
+        tick();
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
+            method: 'POST'
+        });
+        expect(JSON.parse(request.request.body.identifier)).toEqual(50);
+        flush();
     }));
 
     it('should inform the user when a payment was not successful', fakeAsync(() => {

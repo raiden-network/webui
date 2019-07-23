@@ -67,7 +67,7 @@ export class PaymentDialogComponent implements OnInit {
             decimals: this.tokenInput.tokenAmountDecimals,
             amount: this.tokenInput.tokenAmount.toNumber(),
             paymentIdentifier: paymentIdentifier.isNaN()
-                ? this.raidenService.identifier
+                ? undefined
                 : paymentIdentifier.toNumber()
         };
 

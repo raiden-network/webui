@@ -3,8 +3,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     ErrorStateMatcher,
-    ShowOnDirtyErrorStateMatcher,
-    MatExpansionPanel
+    ShowOnDirtyErrorStateMatcher
 } from '@angular/material';
 import { By } from '@angular/platform-browser';
 
@@ -14,10 +13,8 @@ import { TestProviders } from '../../../testing/test-providers';
 import {
     errorMessage,
     mockInput,
-    mockFormInput,
-    clickElement
+    mockFormInput
 } from '../../../testing/interaction-helper';
-import { expand } from 'rxjs/operators';
 
 describe('PaymentIdentifierInputComponent', () => {
     let component: PaymentIdentifierInputComponent;

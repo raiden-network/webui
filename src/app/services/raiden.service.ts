@@ -201,7 +201,7 @@ export class RaidenService {
         targetAddress: string,
         amount: number,
         decimals: number,
-        paymentIdentifier: number
+        paymentIdentifier?: number
     ): Observable<void> {
         const raidenAmount = amountFromDecimal(amount, decimals);
 
@@ -213,6 +213,8 @@ export class RaidenService {
                 {
                     amount: raidenAmount,
                     identifier: paymentIdentifier
+                        ? paymentIdentifier
+                        : this.identifier
                 }
             )
             .pipe(
