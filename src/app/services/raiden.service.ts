@@ -437,7 +437,7 @@ export class RaidenService {
         token: UserToken,
         targetAddress: string,
         amount: number
-    ): Observable<any> {
+    ): Observable<void> {
         return this.http
             .post(
                 `${this.raidenConfig.api}/_testing/tokens/${
@@ -447,6 +447,7 @@ export class RaidenService {
                 { observe: 'response' }
             )
             .pipe(
+                map(() => null),
                 tap(() => {
                     const decimalValue = amountToDecimal(
                         amount,

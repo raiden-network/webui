@@ -16,7 +16,7 @@ import BigNumber from 'bignumber.js';
 import { DepositMode } from '../utils/helpers';
 import { createChannel } from '../../testing/test-data';
 import Spy = jasmine.Spy;
-import { amountToDecimal } from '../utils/amount.converter';
+import { amountToDecimal, amountFromDecimal } from '../utils/amount.converter';
 
 describe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
@@ -439,7 +439,7 @@ describe('RaidenService', () => {
         };
         service
             .mintToken(token, '0xto', 1000)
-            .subscribe(response => expect(response.ok).toBeTruthy());
+            .subscribe(value => expect(value).toBeFalsy());
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/_testing/tokens/${token.address}/mint`,
@@ -509,4 +509,186 @@ describe('RaidenService', () => {
         );
         expect(payload.description).toBe(errorMessage);
     });
+
+    it('should inform the user when joining a token network was successful', fakeAsync(() => {
+        service
+            .connectTokenNetwork(1000, tokenAddress, 8, true)
+            .subscribe(value => expect(value).toBeFalsy());
+        tick();
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/connections/${tokenAddress}`,
+            method: 'PUT'
+        });
+        expect(JSON.parse(request.request.body.funds)).toBe(
+            amountFromDecimal(1000, 8)
+        );
+
+        request.flush(
+            {},
+            {
+                status: 204,
+                statusText: ''
+            }
+        );
+        flush();
+
+        expect(sharedService.success).toHaveBeenCalledTimes(1);
+        expect(sharedService.success).toHaveBeenCalledWith({
+            title: 'Joined Token Network',
+            description: `You have successfully joined the Network of Token ${tokenAddress}`
+        });
+    }));
+
+    it('should inform the user when adding funds to a token network was successful', fakeAsync(() => {
+        service
+            .connectTokenNetwork(1000, tokenAddress, 8, false)
+            .subscribe(value => expect(value).toBeFalsy());
+        tick();
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/connections/${tokenAddress}`,
+            method: 'PUT'
+        });
+        expect(JSON.parse(request.request.body.funds)).toBe(
+            amountFromDecimal(1000, 8)
+        );
+
+        request.flush(
+            {},
+            {
+                status: 204,
+                statusText: ''
+            }
+        );
+        flush();
+
+        expect(sharedService.success).toHaveBeenCalledTimes(1);
+        expect(sharedService.success).toHaveBeenCalledWith({
+            title: 'Funds Added',
+            description: `You successfully added funds to the Network of Token ${tokenAddress}`
+        });
+    }));
+
+    it('should inform the user when joining a token network was not successful', fakeAsync(() => {
+        service.connectTokenNetwork(1000, tokenAddress, 8, true).subscribe(
+            () => {
+                fail('On next should not be called');
+            },
+            error => {
+                expect(error).toBeTruthy('An error was expected');
+            }
+        );
+        tick();
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/connections/${tokenAddress}`,
+            method: 'PUT'
+        });
+
+        const errorMessage = 'Insufficient balance';
+        const errorBody = {
+            errors: errorMessage
+        };
+
+        request.flush(errorBody, {
+            status: 400,
+            statusText: ''
+        });
+        flush();
+
+        expect(sharedService.error).toHaveBeenCalledTimes(1);
+
+        // @ts-ignore
+        const payload = sharedService.error.calls.first().args[0];
+
+        expect(payload.title).toBe(
+            'Raiden Error',
+            'It should be a Raiden Error'
+        );
+        expect(payload.description).toBe(errorMessage);
+    }));
+
+    it('should inform the user when leaving a token network was successful', fakeAsync(() => {
+        const token: UserToken = {
+            address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+            symbol: 'TST',
+            name: 'Test Suite Token',
+            decimals: 8,
+            balance: 20
+        };
+        service
+            .leaveTokenNetwork(token)
+            .subscribe(value => expect(value).toBeFalsy());
+        tick();
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/connections/${token.address}`,
+            method: 'DELETE'
+        });
+        expect(request.request.body).toBe(null);
+
+        request.flush(
+            {},
+            {
+                status: 200,
+                statusText: ''
+            }
+        );
+        flush();
+
+        expect(sharedService.success).toHaveBeenCalledTimes(1);
+        expect(sharedService.success).toHaveBeenCalledWith({
+            title: 'Left Token Network',
+            description: `Successfully closed and settled all channels in ${
+                token.name
+            } <${token.address}> token`
+        });
+    }));
+
+    it('should inform the user when leaving a token network was not successful', fakeAsync(() => {
+        const token: UserToken = {
+            address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+            symbol: 'TST',
+            name: 'Test Suite Token',
+            decimals: 8,
+            balance: 20
+        };
+        service.leaveTokenNetwork(token).subscribe(
+            () => {
+                fail('On next should not be called');
+            },
+            error => {
+                expect(error).toBeTruthy('An error was expected');
+            }
+        );
+        tick();
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/connections/${token.address}`,
+            method: 'DELETE'
+        });
+
+        const errorMessage = 'Not a valid token network address';
+        const errorBody = {
+            errors: errorMessage
+        };
+
+        request.flush(errorBody, {
+            status: 400,
+            statusText: ''
+        });
+        flush();
+
+        expect(sharedService.error).toHaveBeenCalledTimes(1);
+
+        // @ts-ignore
+        const payload = sharedService.error.calls.first().args[0];
+
+        expect(payload.title).toBe(
+            'Raiden Error',
+            'It should be a Raiden Error'
+        );
+        expect(payload.description).toBe(errorMessage);
+    }));
 });
