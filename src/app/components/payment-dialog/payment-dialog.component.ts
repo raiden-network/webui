@@ -6,12 +6,14 @@ import { IdenticonCacheService } from '../../services/identicon-cache.service';
 
 import { RaidenService } from '../../services/raiden.service';
 import { TokenInputComponent } from '../token-input/token-input.component';
+import { PaymentIdentifierInputComponent } from '../payment-identifier-input/payment-identifier-input.component';
 
 export interface PaymentDialogPayload {
     tokenAddress: string;
     targetAddress: string;
     amount: number;
     decimals: number;
+    paymentIdentifier: number;
 }
 
 @Component({
@@ -23,6 +25,8 @@ export class PaymentDialogComponent implements OnInit {
     public form: FormGroup;
 
     @ViewChild(TokenInputComponent) tokenInput: TokenInputComponent;
+    @ViewChild(PaymentIdentifierInputComponent)
+    paymentIdentifierInput: PaymentIdentifierInputComponent;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: PaymentDialogPayload,
@@ -47,18 +51,24 @@ export class PaymentDialogComponent implements OnInit {
                         : undefined
             ],
             amount: 0,
-            token: data.tokenAddress
+            token: data.tokenAddress,
+            payment_identifier: ''
         });
     }
 
     public accept() {
         const value = this.form.value;
 
+        const paymentIdentifier = this.paymentIdentifierInput.paymentIdentifier;
+
         const payload: PaymentDialogPayload = {
             tokenAddress: value['token'],
             targetAddress: value['target_address'],
             decimals: this.tokenInput.tokenAmountDecimals,
-            amount: this.tokenInput.tokenAmount.toNumber()
+            amount: this.tokenInput.tokenAmount.toNumber(),
+            paymentIdentifier: paymentIdentifier.isNaN()
+                ? undefined
+                : paymentIdentifier.toNumber()
         };
 
         this.dialogRef.close(payload);
@@ -72,11 +82,13 @@ export class PaymentDialogComponent implements OnInit {
         this.form.setValue({
             target_address: targetAddress ? targetAddress : '',
             token: tokenAddress || '',
-            amount: 0
+            amount: 0,
+            payment_identifier: ''
         });
 
         this.tokenInput.resetAmount();
         this.tokenInput.decimals = this.data.decimals;
+        this.paymentIdentifierInput.resetPanel();
     }
 
     // noinspection JSMethodCanBeStatic

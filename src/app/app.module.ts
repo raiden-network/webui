@@ -62,6 +62,7 @@ import {
 } from '@angular/material';
 import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
 import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
+import { PaymentIdentifierInputComponent } from './components/payment-identifier-input/payment-identifier-input.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -120,7 +121,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         NavigationEntryComponent,
         AddAddressDialogComponent,
         ShortenAddressPipe,
-        DisplayDecimalsPipe
+        DisplayDecimalsPipe,
+        PaymentIdentifierInputComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

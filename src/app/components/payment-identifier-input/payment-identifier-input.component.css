@@ -1,0 +1,7 @@
+.mat-expansion-panel-header {
+    padding-left: 0 !important;
+}
+
+.mat-expansion-panel-header:hover {
+    background: none !important;
+}

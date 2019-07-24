@@ -178,7 +178,8 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
             tokenAddress: channel ? channel.token_address : '',
             targetAddress: channel ? channel.partner_address : '',
             amount: this.amount,
-            decimals: channel ? channel.userToken.decimals : 0
+            decimals: channel ? channel.userToken.decimals : 0,
+            paymentIdentifier: 0
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
@@ -197,7 +198,8 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                         result.tokenAddress,
                         result.targetAddress,
                         result.amount,
-                        result.decimals
+                        result.decimals,
+                        result.paymentIdentifier
                     );
                 })
             )
