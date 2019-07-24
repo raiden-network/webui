@@ -1,12 +1,14 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.9.0] - 2019-07-24
 ### Changed
 - [#60] Adds layout optimizations for mobile devices.
 - [#105] Fixes an issue which prevented the address book download button to work on Firefox.
 - [#101] Fixes the reset button of the payment dialog to reset the validity and input values correctly.
-- [#5] Changes numeric amounts to be displayed in decimal notation
-- [#87] Fixes the notification for a successful token registration
+- [#5] Changes numeric amounts to be displayed in decimal notation.
+- [#87] Fixes the notification for a successful token registration.
 
 ### Added
 - [#94] Adds withdraw functionality.
@@ -16,7 +18,7 @@
 - [#33] Exposes environment and chain information.
 - [#103] Adds instant validation feedback on input fields.
 - [#15] Adds a button to the header linking to a faucet on testnets.
-- [#11] Adds a token mint button for testnets
+- [#11] Adds a token mint button for testnets.
 - [#111] Adds payment identifier field to payment dialog.
 
 ## [0.8.0] - 2019-01-25
@@ -47,7 +49,8 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/raiden-network/webui/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/raiden-network/webui/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/raiden-network/webui/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
