@@ -17,9 +17,18 @@ import { DepositMode } from '../utils/helpers';
 import { createChannel } from '../../testing/test-data';
 import Spy = jasmine.Spy;
 import { amountToDecimal, amountFromDecimal } from '../utils/amount.converter';
+import { Connection } from '../models/connection';
 
 describe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
+    const token: UserToken = {
+        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+        symbol: 'TST',
+        name: 'Test Suite Token',
+        decimals: 8,
+        balance: 20
+    };
+    const raidenAddress = '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C';
 
     let mockHttp: HttpTestingController;
     let sharedService: SharedService;
@@ -71,10 +80,6 @@ describe('RaidenService', () => {
         retrieverSpy = spyOn(
             TestBed.get(TokenInfoRetrieverService),
             'createBatch'
-        );
-        // @ts-ignore
-        spyOn(service, 'raidenAddress$').and.returnValue(
-            of('0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C')
         );
     });
 
@@ -192,14 +197,6 @@ describe('RaidenService', () => {
     });
 
     it('should have user token included in the channels', fakeAsync(() => {
-        const token: UserToken = {
-            address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            symbol: 'TST',
-            name: 'Test Suite Token',
-            decimals: 8,
-            balance: 20
-        };
-
         spyOn(service, 'getUserToken').and.returnValue(token);
         spyOn(service, 'getTokens').and.returnValue(of([token]));
 
@@ -301,7 +298,7 @@ describe('RaidenService', () => {
         });
 
         const body = {
-            our_address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+            our_address: raidenAddress
         };
 
         addressRequest.flush(body, {
@@ -430,13 +427,6 @@ describe('RaidenService', () => {
     }));
 
     it('should inform the user when minting was completed successfully', () => {
-        const token: UserToken = {
-            address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            symbol: 'TST',
-            name: 'Test Suite Token',
-            decimals: 8,
-            balance: 20
-        };
         service
             .mintToken(token, '0xto', 1000)
             .subscribe(value => expect(value).toBeFalsy());
@@ -467,13 +457,6 @@ describe('RaidenService', () => {
     });
 
     it('should inform the user when minting was not successful', () => {
-        const token: UserToken = {
-            address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            symbol: 'TST',
-            name: 'Test Suite Token',
-            decimals: 8,
-            balance: 20
-        };
         service.mintToken(token, '0xto', 1000).subscribe(
             () => {
                 fail('On next should not be called');
@@ -610,13 +593,6 @@ describe('RaidenService', () => {
     }));
 
     it('should inform the user when leaving a token network was successful', fakeAsync(() => {
-        const token: UserToken = {
-            address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            symbol: 'TST',
-            name: 'Test Suite Token',
-            decimals: 8,
-            balance: 20
-        };
         service
             .leaveTokenNetwork(token)
             .subscribe(value => expect(value).toBeFalsy());
@@ -647,13 +623,6 @@ describe('RaidenService', () => {
     }));
 
     it('should inform the user when leaving a token network was not successful', fakeAsync(() => {
-        const token: UserToken = {
-            address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            symbol: 'TST',
-            name: 'Test Suite Token',
-            decimals: 8,
-            balance: 20
-        };
         service.leaveTokenNetwork(token).subscribe(
             () => {
                 fail('On next should not be called');
@@ -806,5 +775,68 @@ describe('RaidenService', () => {
             'It should be a Raiden Error'
         );
         expect(payload.description).toBe(errorMessage);
+    }));
+
+    it('should give the tokens', fakeAsync(() => {
+        const connection: Connection = {
+            funds: 100,
+            sum_deposits: 67,
+            channels: 3
+        };
+        const tokens = [Object.assign({}, token, { connected: connection })];
+        retrieverSpy.and.returnValue(
+            new Promise(resolve => resolve({ [token.address]: token }))
+        );
+
+        service
+            .getTokens(true)
+            .subscribe(value => expect(value).toEqual(tokens));
+        tick(2000);
+
+        const addressRequest = mockHttp.expectOne({
+            url: `${endpoint}/address`,
+            method: 'GET'
+        });
+        expect(addressRequest.request.body).toBe(null);
+        addressRequest.flush(
+            { our_address: raidenAddress },
+            {
+                status: 200,
+                statusText: ''
+            }
+        );
+
+        const requestTokens = mockHttp.expectOne({
+            url: `${endpoint}/tokens`,
+            method: 'GET'
+        });
+        expect(requestTokens.request.body).toBe(null);
+        requestTokens.flush([token.address], {
+            status: 200,
+            statusText: ''
+        });
+
+        const requestConnections = mockHttp.expectOne({
+            url: `${endpoint}/connections`,
+            method: 'GET'
+        });
+        expect(requestConnections.request.body).toBe(null);
+        const requestConnectionsBody = {
+            [token.address]: connection
+        };
+        requestConnections.flush(requestConnectionsBody, {
+            status: 200,
+            statusText: ''
+        });
+
+        flush();
+
+        expect(retrieverSpy).toHaveBeenCalledTimes(1);
+        expect(retrieverSpy).toHaveBeenCalledWith(
+            [token.address],
+            raidenAddress,
+            // @ts-ignore
+            service.userTokens
+        );
     }));
 });

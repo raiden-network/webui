@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { from, interval, Observable, of, throwError, zip } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
@@ -39,7 +39,6 @@ export class RaidenService {
 
     constructor(
         private http: HttpClient,
-        private zone: NgZone,
         private raidenConfig: RaidenConfig,
         private sharedService: SharedService,
         private tokenInfoRetriever: TokenInfoRetrieverService
@@ -124,19 +123,20 @@ export class RaidenService {
         const tokensUrl = `${this.raidenConfig.api}/tokens`;
         const tokens$: Observable<{
             [address: string]: UserToken;
-        }> = this.http
-            .get<Array<string>>(tokensUrl)
-            .pipe(
-                flatMap(tokenAddresses =>
-                    fromPromise(
-                        this.tokenInfoRetriever.createBatch(
-                            tokenAddresses,
-                            this._raidenAddress,
-                            this.userTokens
-                        )
+        }> = zip(
+            this.http.get<Array<string>>(tokensUrl),
+            this.raidenAddress$
+        ).pipe(
+            flatMap(([tokenAddresses, raidenAddress]) =>
+                fromPromise(
+                    this.tokenInfoRetriever.createBatch(
+                        tokenAddresses,
+                        raidenAddress,
+                        this.userTokens
                     )
                 )
-            );
+            )
+        );
         const connections$ = refresh
             ? this.http.get<Connections>(`${this.raidenConfig.api}/connections`)
             : of(null);
