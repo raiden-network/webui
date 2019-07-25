@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+-[#119] Fixes an issue with the flex layout of the token input component.
 
 ## [0.9.0] - 2019-07-24
 ### Changed
@@ -56,6 +57,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#119]: https://github.com/raiden-network/webui/issues/119
 [#111]: https://github.com/raiden-network/webui/issues/111
 [#105]: https://github.com/raiden-network/webui/issues/105
 [#103]: https://github.com/raiden-network/webui/issues/103
