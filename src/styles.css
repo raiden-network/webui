@@ -98,3 +98,12 @@ app-page-base {
 .expanded-tooltip {
     min-width: 260px;
 }
+
+/* temporary fix for https://github.com/angular/components/issues/11765 */
+.ng-animating .dialog-expansion-panel .mat-expansion-panel-header {
+    height: 48px;
+}
+.ng-animating .dialog-expansion-panel .mat-expansion-panel-content {
+    height: 0px;
+    visibility: hidden;
+}
