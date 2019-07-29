@@ -4,12 +4,16 @@ import {
     ComponentFixture,
     TestBed,
     fakeAsync,
-    tick
+    tick,
+    flush
 } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import {
+    RouterTestingModule,
+    SpyNgModuleFactoryLoader
+} from '@angular/router/testing';
 import { ClipboardModule } from 'ngx-clipboard';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
@@ -30,12 +34,14 @@ import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { of } from 'rxjs';
 import { UserToken } from '../../models/usertoken';
 import { clickElement } from '../../../testing/interaction-helper';
+import Spy = jasmine.Spy;
 
 describe('TokenNetworkComponent', () => {
     let component: TokenNetworkComponent;
     let fixture: ComponentFixture<TokenNetworkComponent>;
     let mockConfiguration: MockConfig;
     let raidenService: RaidenService;
+    let tokenSpy: Spy;
 
     const token: UserToken = {
         address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
@@ -84,45 +90,70 @@ describe('TokenNetworkComponent', () => {
             })
         );
         raidenService = TestBed.get(RaidenService);
-        spyOn(raidenService, 'getTokens').and.returnValue(of([token]));
+        tokenSpy = spyOn(raidenService, 'getTokens').and.returnValue(
+            of([token])
+        );
 
         fixture = TestBed.createComponent(TokenNetworkComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
     });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
+    describe('initiated', () => {
+        beforeEach(() => {
+            fixture.detectChanges();
+        });
+
+        it('should create', () => {
+            expect(component).toBeTruthy();
+        });
+
+        it('should have a registration button when configuration is development', async(() => {
+            mockConfiguration.config.environment_type =
+                EnvironmentType.DEVELOPMENT;
+            fixture.detectChanges();
+            const element = fixture.debugElement.query(
+                By.css('#token-registration')
+            );
+            expect(element).toBeTruthy();
+        }));
+
+        it('should have registration disabled when configuration is production', async(() => {
+            mockConfiguration.config.environment_type =
+                EnvironmentType.PRODUCTION;
+            fixture.detectChanges();
+            const element = fixture.debugElement.query(
+                By.css('#token-registration')
+            );
+            expect(element).toBeFalsy();
+        }));
+
+        it('should request raiden service when mint button is clicked', () => {
+            const mintToken = spyOn(raidenService, 'mintToken').and.returnValue(
+                of(null)
+            );
+            clickElement(fixture.debugElement, '#token-mint');
+            expect(mintToken).toHaveBeenCalledTimes(1);
+            expect(mintToken).toHaveBeenCalledWith(
+                token,
+                raidenService.raidenAddress,
+                1000
+            );
+        });
     });
 
-    it('should have a registration button when configuration is development', async(() => {
-        mockConfiguration.config.environment_type = EnvironmentType.DEVELOPMENT;
-        fixture.detectChanges();
-        const element = fixture.debugElement.query(
-            By.css('#token-registration')
-        );
-        expect(element).toBeTruthy();
-    }));
-
-    it('should have registration disabled when configuration is production', async(() => {
-        mockConfiguration.config.environment_type = EnvironmentType.PRODUCTION;
-        fixture.detectChanges();
-        const element = fixture.debugElement.query(
-            By.css('#token-registration')
-        );
-        expect(element).toBeFalsy();
-    }));
-
-    it('should request raiden service when mint button is clicked', () => {
-        const mintToken = spyOn(raidenService, 'mintToken').and.returnValue(
-            of(null)
-        );
-        clickElement(fixture.debugElement, '#token-mint');
-        expect(mintToken).toHaveBeenCalledTimes(1);
-        expect(mintToken).toHaveBeenCalledWith(
-            token,
-            raidenService.raidenAddress,
-            1000
-        );
+    describe('on init', () => {
+        it('should start the polling loop and request tokens every 5 seconds', fakeAsync(() => {
+            fixture.detectChanges();
+            expect(component.tokens).toEqual([token]);
+            expect(tokenSpy).toHaveBeenCalledTimes(1);
+            expect(tokenSpy).toHaveBeenCalledWith(true);
+            tick(5000);
+            fixture.detectChanges();
+            expect(component.tokens).toEqual([token]);
+            expect(tokenSpy).toHaveBeenCalledTimes(2);
+            expect(tokenSpy).toHaveBeenCalledWith(true);
+            fixture.destroy();
+            flush();
+        }));
     });
 });

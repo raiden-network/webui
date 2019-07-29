@@ -108,17 +108,15 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         let timeout;
-        let refresh_tokens = true;
         this.subscription = this.tokensSubject
             .pipe(
                 tap(() => {
                     clearTimeout(timeout);
                     this.refreshing = true;
                 }),
-                switchMap(() => this.raidenService.getTokens(refresh_tokens)),
+                switchMap(() => this.raidenService.getTokens(true)),
                 tap(
                     () => {
-                        refresh_tokens = false;
                         timeout = setTimeout(
                             () => this.refreshTokens(),
                             this.raidenConfig.config.poll_interval
@@ -130,11 +128,6 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
             )
             .subscribe((tokens: Array<UserToken>) => {
                 this.tokens = tokens;
-                if (tokens.length <= 10) {
-                    // if number of tokens <= 10, refresh every poll_interval,
-                    // else, only when entering Tokens view
-                    refresh_tokens = true;
-                }
                 this.totalTokens = tokens.length;
                 this.applyFilters(this.sorting);
             });
