@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- [#129] Fixes the address book download to have .json extension on Firefox.
 
 ## [0.9.1] - 2019-07-26
 ### Changed
@@ -63,6 +65,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#129]: https://github.com/raiden-network/webui/issues/129
 [#123]: https://github.com/raiden-network/webui/issues/123
 [#121]: https://github.com/raiden-network/webui/issues/121
 [#119]: https://github.com/raiden-network/webui/issues/119
