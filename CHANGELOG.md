@@ -4,6 +4,7 @@
 ### Changed
 - [#129] Fixes the address book download to have .json extension on Firefox.
 - [#127] Fixes the token page to always refresh connections for showing updated token actions.
+- [29] Changes the polling mechanism to retry requesting after an error occurs.
 
 ## [0.9.1] - 2019-07-26
 ### Changed
@@ -91,6 +92,7 @@ token network.
 [#34]: https://github.com/raiden-network/webui/issues/34
 [#33]: https://github.com/raiden-network/webui/issues/33
 [#31]: https://github.com/raiden-network/webui/issues/31
+[#29]: https://github.com/raiden-network/webui/issues/29
 [#15]: https://github.com/raiden-network/webui/issues/15
 [#13]: https://github.com/raiden-network/webui/issues/13
 [#11]: https://github.com/raiden-network/webui/issues/11
