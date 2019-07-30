@@ -133,7 +133,7 @@ export class AddressBookComponent implements OnInit {
         link.target = '_blank';
         link.href = this.addressBookService.createExportURL();
         link.setAttribute('visibility', 'hidden');
-        link.setAttribute('download', 'address-book');
+        link.setAttribute('download', 'address-book.json');
         link.dispatchEvent(new MouseEvent('click'));
     }
 

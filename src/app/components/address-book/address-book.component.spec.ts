@@ -299,7 +299,7 @@ describe('AddressBookComponent', () => {
 
         expect(spy.href).toBe('blob:http://localhost/mockpath');
         expect(spy.target).toBe('_blank');
-        expect(spy.download).toBe('address-book');
+        expect(spy.download).toBe('address-book.json');
         expect(spy.dispatchEvent).toHaveBeenCalledTimes(1);
         expect(spy.dispatchEvent).toHaveBeenCalledWith(new MouseEvent('click'));
     });
