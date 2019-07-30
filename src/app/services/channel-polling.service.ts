@@ -6,6 +6,7 @@ import { amountToDecimal } from '../utils/amount.converter';
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { SharedService } from './shared.service';
+import { backoff } from '../shared/backoff.operator';
 
 @Injectable({
     providedIn: 'root'
@@ -42,6 +43,7 @@ export class ChannelPollingService {
                 this.checkForNewChannels(oldChannels, newChannels);
                 return newChannels;
             }, []),
+            backoff(this.raidenConfig.config.error_poll_interval),
             share()
         );
     }

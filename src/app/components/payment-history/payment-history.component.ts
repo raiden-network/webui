@@ -15,6 +15,7 @@ import { UserToken } from '../../models/usertoken';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
+import { backoff } from '../../shared/backoff.operator';
 
 interface PaymentHistoryParameters {
     readonly tokenAddress: string;
@@ -98,7 +99,8 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
                     () => this.refresh(),
                     this.raidenConfig.config.poll_interval
                 );
-            })
+            }),
+            backoff(this.raidenConfig.config.error_poll_interval)
         );
     }
 

@@ -27,6 +27,7 @@ import { environment } from '../../environments/environment';
 import { fromWei } from 'web3-utils';
 import { Network } from '../utils/network-info';
 import { DepositMode } from '../utils/helpers';
+import { backoff } from '../shared/backoff.operator';
 
 @Injectable({
     providedIn: 'root'
@@ -48,6 +49,7 @@ export class RaidenService {
             .pipe(
                 map(data => (this._raidenAddress = data.our_address)),
                 catchError(error => this.handleError(error)),
+                backoff(this.raidenConfig.config.error_poll_interval),
                 shareReplay(1)
             );
 
