@@ -310,8 +310,12 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
 
     mintToken(token: UserToken, component: TokenNetworkActionsComponent) {
         component.requestingTokens = true;
-        const amount =
-            token.decimals >= 2 ? amountFromDecimal(0.01, token.decimals) : 1;
+        const decimals = token.decimals;
+        const scaleFactor = decimals >= 18 ? 1 : decimals / 18;
+        const amount = Math.round(
+            scaleFactor * amountFromDecimal(0.01, decimals) +
+                (1 - scaleFactor) * amountFromDecimal(1000, decimals)
+        );
         const finishRequest = () => (component.requestingTokens = false);
         this.raidenService
             .mintToken(token, this.raidenService.raidenAddress, amount)

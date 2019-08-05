@@ -10,10 +10,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import {
-    RouterTestingModule,
-    SpyNgModuleFactoryLoader
-} from '@angular/router/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ClipboardModule } from 'ngx-clipboard';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
@@ -47,7 +44,7 @@ describe('TokenNetworkComponent', () => {
         address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
         symbol: 'TST',
         name: 'Test Suite Token',
-        decimals: 8,
+        decimals: 18,
         balance: 20
     };
 
@@ -144,7 +141,7 @@ describe('TokenNetworkComponent', () => {
             expect(mintToken).toHaveBeenCalledWith(
                 token,
                 raidenService.raidenAddress,
-                1000000
+                10000000000000000
             );
         });
     });
@@ -171,7 +168,7 @@ describe('TokenNetworkComponent', () => {
             fixture.detectChanges();
         });
 
-        it('should request 1 token when token has no decimals', () => {
+        it('should request 1000 tokens when token has no decimals', () => {
             const mintToken = spyOn(raidenService, 'mintToken').and.returnValue(
                 of(null)
             );
@@ -180,7 +177,7 @@ describe('TokenNetworkComponent', () => {
             expect(mintToken).toHaveBeenCalledWith(
                 token2,
                 raidenService.raidenAddress,
-                1
+                1000
             );
         });
     });
