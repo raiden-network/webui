@@ -51,6 +51,14 @@ describe('TokenNetworkComponent', () => {
         balance: 20
     };
 
+    const token2: UserToken = {
+        address: '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195',
+        symbol: 'TST2',
+        name: 'Test Suite Token 2',
+        balance: 20,
+        decimals: 0
+    };
+
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [
@@ -136,7 +144,7 @@ describe('TokenNetworkComponent', () => {
             expect(mintToken).toHaveBeenCalledWith(
                 token,
                 raidenService.raidenAddress,
-                1000
+                1000000
             );
         });
     });
@@ -155,5 +163,25 @@ describe('TokenNetworkComponent', () => {
             fixture.destroy();
             flush();
         }));
+    });
+
+    describe('with a different token', () => {
+        beforeEach(() => {
+            tokenSpy.and.returnValue(of([token2]));
+            fixture.detectChanges();
+        });
+
+        it('should request 1 token when token has no decimals', () => {
+            const mintToken = spyOn(raidenService, 'mintToken').and.returnValue(
+                of(null)
+            );
+            clickElement(fixture.debugElement, '#token-mint');
+            expect(mintToken).toHaveBeenCalledTimes(1);
+            expect(mintToken).toHaveBeenCalledWith(
+                token2,
+                raidenService.raidenAddress,
+                1
+            );
+        });
     });
 });

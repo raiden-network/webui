@@ -6,7 +6,10 @@ import { SortingData } from '../../models/sorting.data';
 import { UserToken } from '../../models/usertoken';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
-import { amountToDecimal } from '../../utils/amount.converter';
+import {
+    amountToDecimal,
+    amountFromDecimal
+} from '../../utils/amount.converter';
 import { StringUtils } from '../../utils/string.utils';
 import {
     ConfirmationDialogComponent,
@@ -307,9 +310,11 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
 
     mintToken(token: UserToken, component: TokenNetworkActionsComponent) {
         component.requestingTokens = true;
+        const amount =
+            token.decimals >= 2 ? amountFromDecimal(0.01, token.decimals) : 1;
         const finishRequest = () => (component.requestingTokens = false);
         this.raidenService
-            .mintToken(token, this.raidenService.raidenAddress, 1000)
+            .mintToken(token, this.raidenService.raidenAddress, amount)
             .pipe(finalize(finishRequest))
             .subscribe(() => this.refreshTokens());
     }
