@@ -9,6 +9,7 @@ import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { DepositMode } from '../../utils/helpers';
+import BigNumber from 'bignumber.js';
 
 export interface DepositWithdrawDialogPayload {
     readonly decimals: number;
@@ -16,7 +17,7 @@ export interface DepositWithdrawDialogPayload {
 }
 
 export interface DepositWithdrawDialogResult {
-    readonly tokenAmount: number;
+    readonly tokenAmount: BigNumber;
     readonly tokenAmountDecimals: number;
 }
 
@@ -31,7 +32,7 @@ export class DepositWithdrawDialogComponent implements OnInit {
     withdraw = false;
 
     form = this.fb.group({
-        amount: 0
+        amount: new BigNumber(0)
     });
 
     constructor(
@@ -48,9 +49,8 @@ export class DepositWithdrawDialogComponent implements OnInit {
     }
 
     deposit() {
-        const tokenInput = this.tokenInput;
-        const tokenAmount = tokenInput.tokenAmount.toNumber();
-        const tokenAmountDecimals = tokenInput.tokenAmountDecimals;
+        const tokenAmount = this.form.value.amount;
+        const tokenAmountDecimals = this.tokenInput.tokenAmountDecimals;
         this.dialogRef.close({ tokenAmount, tokenAmountDecimals });
     }
 }

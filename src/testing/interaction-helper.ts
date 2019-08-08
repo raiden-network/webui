@@ -1,5 +1,5 @@
 import { By } from '@angular/platform-browser';
-import { DebugElement, Type } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { MatError } from '@angular/material';
 
 export function mockEvent(
@@ -40,13 +40,13 @@ export function mockInput(
 export function mockFormInput(
     element: DebugElement,
     formControlProperty: string,
-    val: string
+    value: string
 ): HTMLInputElement {
     const formControl = element.componentInstance[formControlProperty];
-    const input = mockInput(element, 'input', val);
-    formControl.setValue(val);
+    formControl.setValue(value);
     formControl.markAsDirty();
     formControl.markAsTouched();
+    const input = mockInput(element, 'input', value);
     return input;
 }
 

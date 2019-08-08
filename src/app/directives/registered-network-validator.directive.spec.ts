@@ -7,6 +7,7 @@ import { RaidenService } from '../services/raiden.service';
 import { SharedService } from '../services/shared.service';
 import { RegisteredNetworkValidatorDirective } from './registered-network-validator.directive';
 import { TestProviders } from '../../testing/test-providers';
+import BigNumber from 'bignumber.js';
 
 describe('RegisteredNetworkValidatorDirective', () => {
     let directive: RegisteredNetworkValidatorDirective;
@@ -16,11 +17,11 @@ describe('RegisteredNetworkValidatorDirective', () => {
         symbol: 'TST',
         name: 'Test Suite Token',
         decimals: 8,
-        balance: 20,
+        balance: new BigNumber(20),
         connected: {
-            channels: 5,
-            funds: 10,
-            sum_deposits: 50
+            channels: new BigNumber(5),
+            funds: new BigNumber(10),
+            sum_deposits: new BigNumber(50)
         }
     };
 
@@ -29,7 +30,7 @@ describe('RegisteredNetworkValidatorDirective', () => {
         symbol: 'ATT',
         name: 'Another Test Token',
         decimals: 0,
-        balance: 400
+        balance: new BigNumber(400)
     };
 
     const notOwnedToken: UserToken = {
@@ -37,7 +38,7 @@ describe('RegisteredNetworkValidatorDirective', () => {
         symbol: 'ATT2',
         name: 'Another Test Token2',
         decimals: 18,
-        balance: 0
+        balance: new BigNumber(0)
     };
 
     const tokens = [notOwnedToken, connectedToken, ownedToken];

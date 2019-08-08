@@ -11,6 +11,7 @@ import {
 import { TokenInputComponent } from './token-input.component';
 import { TestProviders } from '../../../testing/test-providers';
 import { mockInput, errorMessage } from '../../../testing/interaction-helper';
+import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
 
 describe('TokenInputComponent', () => {
     let component: TokenInputComponent;
@@ -32,7 +33,7 @@ describe('TokenInputComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [TokenInputComponent],
+            declarations: [TokenInputComponent, BigNumberConversionDirective],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
@@ -99,7 +100,7 @@ describe('TokenInputComponent', () => {
         mockFormInput('10');
 
         fixture.detectChanges();
-        expect(component.tokenAmount.isEqualTo(10)).toBe(true);
+        expect(component.form.get('amount').value.isEqualTo(10)).toBe(true);
         expect(component.tokenAmountDecimals).toBe(0);
     });
 
@@ -110,7 +111,7 @@ describe('TokenInputComponent', () => {
 
         fixture.detectChanges();
         expect(input.value).toBe('0.000000000000000010');
-        expect(component.tokenAmount.isEqualTo(1e-17)).toBe(true);
+        expect(component.form.get('amount').value.isEqualTo(1e-17)).toBe(true);
         expect(component.tokenAmountDecimals).toBe(18);
     });
 
@@ -132,7 +133,7 @@ describe('TokenInputComponent', () => {
         mockFormInput('');
         fixture.detectChanges();
 
-        expect(component.tokenAmount.isNaN()).toBe(true);
+        expect(component.form.get('amount').value.isNaN()).toBe(true);
         expect(component.tokenAmountDecimals).toBe(18);
         expect(component.form.get('amount').errors['notANumber']).toBe(true);
     });
@@ -143,7 +144,7 @@ describe('TokenInputComponent', () => {
         mockFormInput('1Hello');
         fixture.detectChanges();
 
-        expect(component.tokenAmount.isNaN()).toBe(true);
+        expect(component.form.get('amount').value.isNaN()).toBe(true);
         expect(component.tokenAmountDecimals).toBe(18);
         expect(component.form.get('amount').errors['notANumber']).toBe(true);
     });
@@ -154,7 +155,7 @@ describe('TokenInputComponent', () => {
         mockFormInput('0');
         fixture.detectChanges();
 
-        expect(component.tokenAmount.isEqualTo(0)).toBe(true);
+        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
         expect(component.tokenAmountDecimals).toBe(18);
         expect(component.form.get('amount').errors['invalidAmount']).toBe(true);
     });
@@ -166,7 +167,7 @@ describe('TokenInputComponent', () => {
         mockFormInput('0');
         fixture.detectChanges();
 
-        expect(component.tokenAmount.isEqualTo(0)).toBe(true);
+        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
         expect(component.tokenAmountDecimals).toBe(18);
         expect(component.form.get('amount').errors).toBeNull();
     });
@@ -178,7 +179,7 @@ describe('TokenInputComponent', () => {
         checkbox.click();
         fixture.detectChanges();
 
-        expect(component.tokenAmount.isEqualTo(1)).toBe(true);
+        expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
         expect(component.tokenAmountDecimals).toBe(0);
     });
 
@@ -192,7 +193,9 @@ describe('TokenInputComponent', () => {
         checkbox.click();
         fixture.detectChanges();
 
-        expect(component.tokenAmount.isEqualTo(0.00000001)).toBe(true);
+        expect(component.form.get('amount').value.isEqualTo(0.00000001)).toBe(
+            true
+        );
         expect(component.tokenAmountDecimals).toBe(8);
     });
 
@@ -206,13 +209,15 @@ describe('TokenInputComponent', () => {
         checkbox.click();
         fixture.detectChanges();
 
-        expect(component.tokenAmount.isEqualTo(0.00000001)).toBe(true);
+        expect(component.form.get('amount').value.isEqualTo(0.00000001)).toBe(
+            true
+        );
         expect(component.tokenAmountDecimals).toBe(8);
 
         checkbox.click();
         fixture.detectChanges();
 
-        expect(component.tokenAmount.isEqualTo(1)).toBe(true);
+        expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
         expect(component.tokenAmountDecimals).toBe(0);
     });
 
@@ -220,7 +225,7 @@ describe('TokenInputComponent', () => {
         mockFormInput('1');
         fixture.detectChanges();
         component.resetAmount();
-        expect(component.tokenAmount.isEqualTo(0)).toBe(true);
+        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
         expect(component.tokenAmountDecimals).toBe(0);
     });
 });

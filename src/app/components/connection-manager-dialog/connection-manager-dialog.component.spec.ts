@@ -7,6 +7,7 @@ import { TokenInputComponent } from '../token-input/token-input.component';
 import { ConnectionManagerDialogComponent } from './connection-manager-dialog.component';
 import { By } from '@angular/platform-browser';
 import { TestProviders } from '../../../testing/test-providers';
+import BigNumber from 'bignumber.js';
 
 describe('ConnectionManagerDialogComponent', () => {
     let component: ConnectionManagerDialogComponent;
@@ -45,7 +46,7 @@ describe('ConnectionManagerDialogComponent', () => {
         component.data = {
             join: true,
             decimals: 18,
-            funds: 0,
+            funds: new BigNumber(0),
             tokenAddress: ''
         };
 
@@ -64,7 +65,7 @@ describe('ConnectionManagerDialogComponent', () => {
         component.data = {
             join: false,
             decimals: 18,
-            funds: 0,
+            funds: new BigNumber(0),
             tokenAddress: ''
         };
 

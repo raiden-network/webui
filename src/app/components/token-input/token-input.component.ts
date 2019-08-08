@@ -41,7 +41,10 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     @Input() errorPlaceholder: string;
 
     readonly form: FormGroup = this.fb.group({
-        amount: [0, this.amountValidator(() => this.tokenAmountDecimals)],
+        amount: [
+            new BigNumber(0),
+            this.amountValidator(() => this.tokenAmountDecimals)
+        ],
         decimals: true
     });
 
@@ -67,10 +70,6 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         this.updateCheckboxState();
     }
 
-    public get tokenAmount(): BigNumber {
-        return new BigNumber(this.inputControl.value);
-    }
-
     public get tokenAmountDecimals(): number {
         return this.decimalInput ? this._decimals : 0;
     }
@@ -84,7 +83,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     }
 
     public resetAmount() {
-        this.inputControl.reset(0);
+        this.inputControl.reset(new BigNumber(0));
     }
 
     public step(): string {
@@ -99,43 +98,14 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         return (1 / 10 ** this._decimals).toFixed(this._decimals);
     }
 
-    public precise(value) {
-        if (value.type !== 'input') {
-            return;
-        }
-
-        const tokens = value.target.value;
-
-        if (this.decimalInput && !value.inputType) {
-            this.inputControl.setValue(this.getTokenAmount(tokens));
-        }
-
-        if (!this.decimalInput && value.inputType) {
-            this.inputControl.setValue(new BigNumber(tokens).toFixed(0));
-        }
-    }
-
     onCheckChange(event: MatCheckboxChange) {
-        const currentAmount = parseFloat(this.inputControl.value);
-        let amount: string;
+        const currentAmount: BigNumber = this.inputControl.value;
+        let amount: BigNumber;
 
         if (event.checked) {
-            let fixedPoints: number;
-            const number = amountToDecimal(currentAmount, this._decimals);
-            const decimalPart = this.getDecimalPart(number);
-
-            if (decimalPart === 0 || currentAmount === 0) {
-                fixedPoints = 0;
-            } else {
-                fixedPoints = this._decimals;
-            }
-
-            amount = number.toFixed(fixedPoints);
+            amount = amountToDecimal(currentAmount, this._decimals);
         } else {
-            amount = amountFromDecimal(
-                currentAmount,
-                this._decimals
-            ).toString();
+            amount = amountFromDecimal(currentAmount, this._decimals);
         }
 
         this.inputControl.setValue(amount);
@@ -161,10 +131,11 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     }
 
     validate(c: AbstractControl): ValidationErrors | null {
-        if (this.allowZero && parseInt(this.inputControl.value, 10) === 0) {
+        const value: BigNumber = this.inputControl.value;
+        if (this.allowZero && value.isZero()) {
             return null;
         }
-        if (!this.inputControl.value) {
+        if (!value) {
             return { empty: true };
         }
         return this.inputControl.errors;
@@ -174,30 +145,24 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         if (!obj) {
             return;
         }
-        this.inputControl.setValue(obj, { emitEvent: false });
-    }
-
-    private getDecimalPart(currentAmount) {
-        const rounded = Math.floor(currentAmount);
-        return currentAmount % rounded;
+        this.inputControl.setValue(new BigNumber(obj), { emitEvent: false });
     }
 
     private amountValidator(tokenAmountDecimals: () => number): ValidatorFn {
         return (control: AbstractControl) => {
-            const controlValue = control.value;
-            const decimalPlaces = new BigNumber(controlValue).decimalPlaces();
+            const value: BigNumber = control.value;
 
-            if (decimalPlaces > tokenAmountDecimals()) {
+            if (!BigNumber.isBigNumber(value) || value.isNaN()) {
+                return {
+                    notANumber: true
+                };
+            } else if (value.decimalPlaces() > tokenAmountDecimals()) {
                 return {
                     tooManyDecimals: true
                 };
-            } else if (!this.allowZero && controlValue === 0) {
+            } else if (!this.allowZero && value.isZero()) {
                 return {
                     invalidAmount: true
-                };
-            } else if (controlValue === null) {
-                return {
-                    notANumber: true
                 };
             }
             return undefined;
@@ -210,26 +175,5 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         } else {
             this.checkboxControl.enable();
         }
-    }
-
-    private getTokenAmount(tokens: string): string {
-        const tokenNumber = new BigNumber(tokens);
-
-        if (this.decimalPartIsZero(tokenNumber)) {
-            return tokenNumber.toString();
-        }
-
-        if (tokenNumber.decimalPlaces() > 4) {
-            return tokenNumber.toFixed(this._decimals);
-        } else {
-            return tokens;
-        }
-    }
-
-    // noinspection JSMethodCanBeStatic
-    private decimalPartIsZero(tokenNumber) {
-        const noDecimals = tokenNumber.integerValue(BigNumber.ROUND_FLOOR);
-        const decimalPart = tokenNumber.modulo(noDecimals);
-        return decimalPart.isEqualTo(0);
     }
 }

@@ -32,6 +32,7 @@ import { of } from 'rxjs';
 import { UserToken } from '../../models/usertoken';
 import { clickElement } from '../../../testing/interaction-helper';
 import Spy = jasmine.Spy;
+import BigNumber from 'bignumber.js';
 
 describe('TokenNetworkComponent', () => {
     let component: TokenNetworkComponent;
@@ -45,14 +46,14 @@ describe('TokenNetworkComponent', () => {
         symbol: 'TST',
         name: 'Test Suite Token',
         decimals: 18,
-        balance: 20
+        balance: new BigNumber(20)
     };
 
     const token2: UserToken = {
         address: '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195',
         symbol: 'TST2',
         name: 'Test Suite Token 2',
-        balance: 20,
+        balance: new BigNumber(20),
         decimals: 0
     };
 
@@ -141,7 +142,7 @@ describe('TokenNetworkComponent', () => {
             expect(mintToken).toHaveBeenCalledWith(
                 token,
                 raidenService.raidenAddress,
-                10000000000000000
+                new BigNumber(10000000000000000)
             );
         });
     });
@@ -177,7 +178,7 @@ describe('TokenNetworkComponent', () => {
             expect(mintToken).toHaveBeenCalledWith(
                 token2,
                 raidenService.raidenAddress,
-                1000
+                new BigNumber(1000)
             );
         });
     });

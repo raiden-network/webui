@@ -7,10 +7,10 @@ import {
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { UserToken } from '../../models/usertoken';
-import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenService } from '../../services/raiden.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { TokenInputComponent } from '../token-input/token-input.component';
+import BigNumber from 'bignumber.js';
 
 export interface OpenDialogPayload {
     readonly ownAddress: string;
@@ -22,7 +22,7 @@ export interface OpenDialogResult {
     tokenAddress: string;
     partnerAddress: string;
     settleTimeout: number;
-    balance: number;
+    balance: BigNumber;
     decimals: number;
 }
 
@@ -35,7 +35,7 @@ export class OpenDialogComponent {
     public form: FormGroup = this.fb.group({
         address: '',
         token: '',
-        amount: 0,
+        amount: new BigNumber(0),
         settle_timeout: [
             this.data.defaultSettleTimeout,
             [
@@ -59,7 +59,6 @@ export class OpenDialogComponent {
         @Inject(MAT_DIALOG_DATA) public data: OpenDialogPayload,
         public dialogRef: MatDialogRef<OpenDialogComponent>,
         public raidenService: RaidenService,
-        private identiconCacheService: IdenticonCacheService,
         private fb: FormBuilder
     ) {}
 
@@ -69,7 +68,7 @@ export class OpenDialogComponent {
             tokenAddress: value.token,
             partnerAddress: value.address,
             settleTimeout: value.settle_timeout,
-            balance: this.tokenInput.tokenAmount.toNumber(),
+            balance: value.amount,
             decimals: this.tokenInput.tokenAmountDecimals
         };
 

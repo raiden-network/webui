@@ -25,6 +25,7 @@ import { SubsetPipe } from './pipes/subset.pipe';
 import { TokenPipe } from './pipes/token.pipe';
 import { RaidenConfig, Web3Factory } from './services/raiden.config';
 import { RaidenInterceptor } from './services/raiden.interceptor';
+import { LosslessJsonInterceptor } from './services/lossless-json.interceptor';
 import { RaidenService } from './services/raiden.service';
 import { SharedService } from './services/shared.service';
 import { DepositWithdrawDialogComponent } from './components/deposit-withdraw-dialog/deposit-withdraw-dialog.component';
@@ -63,6 +64,7 @@ import {
 import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
 import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
 import { PaymentIdentifierInputComponent } from './components/payment-identifier-input/payment-identifier-input.component';
+import { BigNumberConversionDirective } from './directives/big-number-conversion.directive';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -122,7 +124,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         AddAddressDialogComponent,
         ShortenAddressPipe,
         DisplayDecimalsPipe,
-        PaymentIdentifierInputComponent
+        PaymentIdentifierInputComponent,
+        BigNumberConversionDirective
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
@@ -144,6 +147,12 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         {
             provide: HTTP_INTERCEPTORS,
             useClass: RaidenInterceptor,
+            deps: [SharedService],
+            multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: LosslessJsonInterceptor,
             deps: [SharedService],
             multi: true
         },

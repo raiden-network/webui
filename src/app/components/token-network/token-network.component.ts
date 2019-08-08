@@ -29,6 +29,7 @@ import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { TokenNetworkActionsComponent } from '../token-network-actions/token-network-actions.component';
 import { Network } from '../../utils/network-info';
 import { backoff } from '../../shared/backoff.operator';
+import BigNumber from 'bignumber.js';
 
 @Component({
     selector: 'app-token-network',
@@ -148,7 +149,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     ) {
         const payload: ConnectionManagerDialogPayload = {
             tokenAddress: userToken.address,
-            funds: 0,
+            funds: new BigNumber(0),
             decimals: userToken.decimals,
             join: join
         };
@@ -185,9 +186,9 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         const payload: PaymentDialogPayload = {
             tokenAddress: userToken.address,
             targetAddress: '',
-            amount: 0,
+            amount: new BigNumber(0),
             decimals: userToken.decimals,
-            paymentIdentifier: 0
+            paymentIdentifier: null
         };
 
         const paymentDialogRef = this.dialog.open(PaymentDialogComponent, {
@@ -271,8 +272,8 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
                     const aBalance = amountToDecimal(a.balance, a.decimals);
                     const bBalance = amountToDecimal(b.balance, b.decimals);
                     return this.ascending
-                        ? aBalance - bBalance
-                        : bBalance - aBalance;
+                        ? aBalance.minus(bBalance).toNumber()
+                        : bBalance.minus(aBalance).toNumber();
                 };
                 break;
         }
@@ -312,10 +313,14 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         component.requestingTokens = true;
         const decimals = token.decimals;
         const scaleFactor = decimals >= 18 ? 1 : decimals / 18;
-        const amount = Math.round(
-            scaleFactor * amountFromDecimal(0.01, decimals) +
-                (1 - scaleFactor) * amountFromDecimal(1000, decimals)
-        );
+        const amount = amountFromDecimal(new BigNumber(0.01), decimals)
+            .times(scaleFactor)
+            .plus(
+                amountFromDecimal(new BigNumber(1000), decimals).times(
+                    1 - scaleFactor
+                )
+            )
+            .integerValue();
         const finishRequest = () => (component.requestingTokens = false);
         this.raidenService
             .mintToken(token, this.raidenService.raidenAddress, amount)

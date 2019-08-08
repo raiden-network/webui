@@ -32,20 +32,16 @@ export class PaymentIdentifierInputComponent implements ControlValueAccessor {
     @ViewChild(MatExpansionPanel)
     panel: MatExpansionPanel;
 
-    readonly identifierFc = new FormControl('', this.identifierValidator());
+    readonly identifierFc = new FormControl(null, this.identifierValidator());
 
     constructor() {}
-
-    public get paymentIdentifier(): BigNumber {
-        return new BigNumber(this.identifierFc.value);
-    }
 
     public resetPanel() {
         this.panel.close();
     }
 
     public onClose() {
-        this.identifierFc.reset('');
+        this.identifierFc.reset(null);
     }
 
     registerOnChange(fn: any): void {
@@ -64,10 +60,10 @@ export class PaymentIdentifierInputComponent implements ControlValueAccessor {
 
     writeValue(obj: any): void {
         if (!obj) {
-            this.identifierFc.reset('', { emitEvent: false });
+            this.identifierFc.reset(null, { emitEvent: false });
             return;
         }
-        this.identifierFc.setValue(obj, { emitEvent: false });
+        this.identifierFc.setValue(new BigNumber(obj), { emitEvent: false });
     }
 
     private identifierValidator(): ValidatorFn {
@@ -75,8 +71,8 @@ export class PaymentIdentifierInputComponent implements ControlValueAccessor {
             if (control.pristine && control.untouched) {
                 return undefined;
             }
-            const value = new BigNumber(control.value);
-            if (value.isNaN()) {
+            const value: BigNumber = control.value;
+            if (!BigNumber.isBigNumber(value) || value.isNaN()) {
                 return {
                     notANumber: true
                 };

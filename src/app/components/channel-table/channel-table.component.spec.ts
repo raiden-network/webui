@@ -44,6 +44,7 @@ import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { PageItemComponent } from '../page/page-item/page-item.component';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { clickElement } from '../../../testing/interaction-helper';
+import BigNumber from 'bignumber.js';
 
 describe('ChannelTableComponent', () => {
     let component: ChannelTableComponent;
@@ -57,58 +58,58 @@ describe('ChannelTableComponent', () => {
         symbol: 'TST',
         name: 'Test Suite Token',
         decimals: 8,
-        balance: 20
+        balance: new BigNumber(20)
     };
 
     const channel1: Channel = {
         state: 'opened',
-        channel_identifier: 1,
+        channel_identifier: new BigNumber(1),
         token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
         partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-        reveal_timeout: 600,
-        balance: 10,
-        total_deposit: 10,
-        total_withdraw: 10,
-        settle_timeout: 500,
+        reveal_timeout: new BigNumber(600),
+        balance: new BigNumber(10),
+        total_deposit: new BigNumber(10),
+        total_withdraw: new BigNumber(10),
+        settle_timeout: new BigNumber(500),
         userToken: token
     };
 
     const channel2: Channel = {
         state: 'opened',
-        channel_identifier: 2,
+        channel_identifier: new BigNumber(2),
         token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
         partner_address: '0xFC57d325f23b9121a8488fFdE2E6b3ef1208a20b',
-        reveal_timeout: 600,
-        balance: 0,
-        total_deposit: 10,
-        total_withdraw: 10,
-        settle_timeout: 500,
+        reveal_timeout: new BigNumber(600),
+        balance: new BigNumber(0),
+        total_deposit: new BigNumber(10),
+        total_withdraw: new BigNumber(10),
+        settle_timeout: new BigNumber(500),
         userToken: token
     };
 
     const channel3: Channel = {
         state: 'opened',
-        channel_identifier: 3,
+        channel_identifier: new BigNumber(3),
         token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
         partner_address: '0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8',
-        reveal_timeout: 600,
-        balance: 10,
-        total_deposit: 10,
-        total_withdraw: 10,
-        settle_timeout: 500,
+        reveal_timeout: new BigNumber(600),
+        balance: new BigNumber(10),
+        total_deposit: new BigNumber(10),
+        total_withdraw: new BigNumber(10),
+        settle_timeout: new BigNumber(500),
         userToken: token
     };
 
     const channel4: Channel = {
         state: 'closed',
-        channel_identifier: 4,
+        channel_identifier: new BigNumber(4),
         token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
         partner_address: '0x8A0cE8bDA200D64d858957080bf7eDDD3371135F',
-        reveal_timeout: 600,
-        balance: 60,
-        total_deposit: 60,
-        total_withdraw: 10,
-        settle_timeout: 500,
+        reveal_timeout: new BigNumber(600),
+        balance: new BigNumber(60),
+        total_deposit: new BigNumber(60),
+        total_withdraw: new BigNumber(10),
+        settle_timeout: new BigNumber(500),
         userToken: token
     };
 
@@ -182,14 +183,14 @@ describe('ChannelTableComponent', () => {
     it('should update action when channel has balance', fakeAsync(() => {
         const channel2Balance: Channel = {
             state: 'opened',
-            channel_identifier: 2,
+            channel_identifier: new BigNumber(2),
             token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             partner_address: '0xFC57d325f23b9121a8488fFdE2E6b3ef1208a20b',
-            reveal_timeout: 600,
-            balance: 10,
-            total_deposit: 10,
-            total_withdraw: 10,
-            settle_timeout: 500,
+            reveal_timeout: new BigNumber(600),
+            balance: new BigNumber(10),
+            total_deposit: new BigNumber(10),
+            total_withdraw: new BigNumber(10),
+            settle_timeout: new BigNumber(500),
             userToken: token
         };
 

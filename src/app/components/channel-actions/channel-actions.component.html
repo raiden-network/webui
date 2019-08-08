@@ -3,7 +3,7 @@
     id="pay-button"
     mat-raised-button
     color="accent"
-    [disabled]="channel.state !== 'opened' || channel.balance == 0"
+    [disabled]="channel.state !== 'opened' || channel.balance.isZero()"
     (click)="openPayDialog.emit(true)"
 >
     Pay

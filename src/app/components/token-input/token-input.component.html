@@ -14,7 +14,6 @@
         ngClass.xs="full-width-form-field"
     >
         <input
-            (input)="precise($event)"
             [placeholder]="placeholder"
             [required]="!allowZero"
             [step]="step()"
@@ -22,6 +21,7 @@
             matInput
             min="0"
             type="number"
+            convertToBigNumber
         />
 
         <mat-hint align="start">
@@ -38,13 +38,14 @@
                 The {{ errorPlaceholder }} should be a positive number
             </span>
             <span *ngIf="form.get('amount').errors['tooManyDecimals']">
-                <span *ngIf="decimals > 0; else integer_only">
+                <span *ngIf="tokenAmountDecimals > 0; else integer_only">
                     This token network only supports up to
                     {{ decimals }} decimals
                 </span>
 
                 <ng-template #integer_only>
-                    1 represents then 1/{{ decimals }} of the token
+                    1 represents then 1/{{ decimals }} of the token. Only
+                    integer values allowed.
                 </ng-template>
             </span>
             <span *ngIf="form.get('amount').errors['notANumber']">
