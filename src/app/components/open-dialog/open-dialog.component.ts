@@ -23,7 +23,6 @@ export interface OpenDialogResult {
     partnerAddress: string;
     settleTimeout: number;
     balance: BigNumber;
-    decimals: number;
 }
 
 @Component({
@@ -68,8 +67,7 @@ export class OpenDialogComponent {
             tokenAddress: value.token,
             partnerAddress: value.address,
             settleTimeout: value.settle_timeout,
-            balance: value.amount,
-            decimals: this.tokenInput.tokenAmountDecimals
+            balance: value.amount
         };
 
         this.dialogRef.close(result);

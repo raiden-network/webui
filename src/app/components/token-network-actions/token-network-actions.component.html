@@ -4,7 +4,7 @@
         class="match-parent-width"
         mat-raised-button
         color="accent"
-        [disabled]="!(connection.sum_deposits > 0)"
+        [disabled]="!connection.sum_deposits.isGreaterThan(0)"
         (click)="openPaymentDialog.emit(true)"
     >
         {{ 'Pay' | uppercase }}

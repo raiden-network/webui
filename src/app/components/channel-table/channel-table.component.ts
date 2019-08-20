@@ -199,7 +199,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                         result.tokenAddress,
                         result.targetAddress,
                         result.amount,
-                        result.decimals,
                         result.paymentIdentifier
                     );
                 })
@@ -229,7 +228,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                         channel.token_address,
                         channel.partner_address,
                         deposit.tokenAmount,
-                        deposit.tokenAmountDecimals,
                         depositMode
                     );
                 })
@@ -295,8 +293,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                         result.tokenAddress,
                         result.partnerAddress,
                         result.settleTimeout,
-                        result.balance,
-                        result.decimals
+                        result.balance
                     );
                 })
             )

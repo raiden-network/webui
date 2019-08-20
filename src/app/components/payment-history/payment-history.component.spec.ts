@@ -42,7 +42,7 @@ describe('PaymentHistoryComponent', () => {
         decimals: 8,
         balance: new BigNumber(20),
         connected: {
-            channels: new BigNumber(5),
+            channels: 5,
             funds: new BigNumber(10),
             sum_deposits: new BigNumber(50)
         }

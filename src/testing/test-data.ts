@@ -33,10 +33,10 @@ export const createChannel: (payload: {
     channel_identifier: payload.id,
     token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
     partner_address: '0xFC57d325f23b9121a8488fFdE2E6b3ef1208a20b',
-    reveal_timeout: new BigNumber(600),
+    reveal_timeout: 600,
     balance: payload.balance,
     total_deposit: payload.totalDeposit,
     total_withdraw: payload.totalWithdraw,
-    settle_timeout: new BigNumber(500),
+    settle_timeout: 500,
     userToken: null
 });

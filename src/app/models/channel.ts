@@ -9,7 +9,7 @@ export interface Channel {
     total_deposit: BigNumber;
     total_withdraw: BigNumber;
     balance: BigNumber;
-    settle_timeout: BigNumber;
-    reveal_timeout: BigNumber;
+    settle_timeout: number;
+    reveal_timeout: number;
     userToken: UserToken | null;
 }

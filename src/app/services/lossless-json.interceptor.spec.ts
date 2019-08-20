@@ -20,6 +20,10 @@ class MockRequestingService {
     getTextData(): Observable<any> {
         return this.http.get('someurl.com/data', { responseType: 'text' });
     }
+
+    putData(body: Object): Observable<any> {
+        return this.http.put('someurl.com/data', body);
+    }
 }
 
 describe(`LosslessJsonInterceptor`, () => {
@@ -56,6 +60,15 @@ describe(`LosslessJsonInterceptor`, () => {
             status: 200,
             statusText: ''
         });
+    });
+
+    it('should convert JSON request losslessly', () => {
+        service
+            .putData({ big: new BigNumber('18446744073709551616') })
+            .subscribe();
+
+        const request = httpMock.expectOne('someurl.com/data');
+        expect(request.request.body).toEqual('{"big":18446744073709551616}');
     });
 
     it('should do nothing for non JSON responses', () => {

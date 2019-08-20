@@ -153,7 +153,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         {
             provide: HTTP_INTERCEPTORS,
             useClass: LosslessJsonInterceptor,
-            deps: [SharedService],
             multi: true
         },
         RaidenConfig,

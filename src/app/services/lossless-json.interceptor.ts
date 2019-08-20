@@ -10,7 +10,10 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { losslessParse } from '../utils/lossless-json.converter';
+import {
+    losslessParse,
+    losslessStringify
+} from '../utils/lossless-json.converter';
 
 const XSSI_PREFIX = /^\)\]\}',?\n/;
 
@@ -24,7 +27,8 @@ export class LosslessJsonInterceptor implements HttpInterceptor {
             return next.handle(req);
         }
         req = req.clone({
-            responseType: 'text'
+            responseType: 'text',
+            body: losslessStringify(req.body)
         });
 
         return next.handle(req).pipe(

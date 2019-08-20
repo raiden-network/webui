@@ -169,7 +169,6 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
                         return this.raidenService.connectTokenNetwork(
                             result.funds,
                             result.tokenAddress,
-                            result.decimals,
                             result.join
                         );
                     } else {
@@ -204,7 +203,6 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
                             result.tokenAddress,
                             result.targetAddress,
                             result.amount,
-                            result.decimals,
                             result.paymentIdentifier
                         );
                     } else {

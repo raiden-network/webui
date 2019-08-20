@@ -66,11 +66,11 @@ describe('ChannelTableComponent', () => {
         channel_identifier: new BigNumber(1),
         token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
         partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-        reveal_timeout: new BigNumber(600),
+        reveal_timeout: 600,
         balance: new BigNumber(10),
         total_deposit: new BigNumber(10),
         total_withdraw: new BigNumber(10),
-        settle_timeout: new BigNumber(500),
+        settle_timeout: 500,
         userToken: token
     };
 
@@ -79,11 +79,11 @@ describe('ChannelTableComponent', () => {
         channel_identifier: new BigNumber(2),
         token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
         partner_address: '0xFC57d325f23b9121a8488fFdE2E6b3ef1208a20b',
-        reveal_timeout: new BigNumber(600),
+        reveal_timeout: 600,
         balance: new BigNumber(0),
         total_deposit: new BigNumber(10),
         total_withdraw: new BigNumber(10),
-        settle_timeout: new BigNumber(500),
+        settle_timeout: 500,
         userToken: token
     };
 
@@ -92,11 +92,11 @@ describe('ChannelTableComponent', () => {
         channel_identifier: new BigNumber(3),
         token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
         partner_address: '0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8',
-        reveal_timeout: new BigNumber(600),
+        reveal_timeout: 600,
         balance: new BigNumber(10),
         total_deposit: new BigNumber(10),
         total_withdraw: new BigNumber(10),
-        settle_timeout: new BigNumber(500),
+        settle_timeout: 500,
         userToken: token
     };
 
@@ -105,11 +105,11 @@ describe('ChannelTableComponent', () => {
         channel_identifier: new BigNumber(4),
         token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
         partner_address: '0x8A0cE8bDA200D64d858957080bf7eDDD3371135F',
-        reveal_timeout: new BigNumber(600),
+        reveal_timeout: 600,
         balance: new BigNumber(60),
         total_deposit: new BigNumber(60),
         total_withdraw: new BigNumber(10),
-        settle_timeout: new BigNumber(500),
+        settle_timeout: 500,
         userToken: token
     };
 
@@ -186,11 +186,11 @@ describe('ChannelTableComponent', () => {
             channel_identifier: new BigNumber(2),
             token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             partner_address: '0xFC57d325f23b9121a8488fFdE2E6b3ef1208a20b',
-            reveal_timeout: new BigNumber(600),
+            reveal_timeout: 600,
             balance: new BigNumber(10),
             total_deposit: new BigNumber(10),
             total_withdraw: new BigNumber(10),
-            settle_timeout: new BigNumber(500),
+            settle_timeout: 500,
             userToken: token
         };
 

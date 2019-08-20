@@ -111,7 +111,7 @@ describe('TokenInputComponent', () => {
 
         fixture.detectChanges();
         expect(input.value).toBe('0.000000000000000010');
-        expect(component.form.get('amount').value.isEqualTo(1e-17)).toBe(true);
+        expect(component.form.get('amount').value.isEqualTo(10)).toBe(true);
         expect(component.tokenAmountDecimals).toBe(18);
     });
 
@@ -193,9 +193,8 @@ describe('TokenInputComponent', () => {
         checkbox.click();
         fixture.detectChanges();
 
-        expect(component.form.get('amount').value.isEqualTo(0.00000001)).toBe(
-            true
-        );
+        expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
+        expect(input.value).toBe('0.00000001');
         expect(component.tokenAmountDecimals).toBe(8);
     });
 
@@ -209,15 +208,15 @@ describe('TokenInputComponent', () => {
         checkbox.click();
         fixture.detectChanges();
 
-        expect(component.form.get('amount').value.isEqualTo(0.00000001)).toBe(
-            true
-        );
+        expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
+        expect(input.value).toBe('0.00000001');
         expect(component.tokenAmountDecimals).toBe(8);
 
         checkbox.click();
         fixture.detectChanges();
 
         expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
+        expect(input.value).toBe('1');
         expect(component.tokenAmountDecimals).toBe(0);
     });
 
