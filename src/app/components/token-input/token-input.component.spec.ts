@@ -198,6 +198,32 @@ describe('TokenInputComponent', () => {
         expect(component.tokenAmountDecimals).toBe(8);
     });
 
+    it('should change the value to 0 for invalid inputs on checkbox change', () => {
+        component.decimals = 8;
+
+        mockFormInput('1Hello');
+
+        checkbox.click();
+        fixture.detectChanges();
+
+        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
+        expect(input.value).toBe('0');
+        expect(component.tokenAmountDecimals).toBe(0);
+    });
+
+    it('should change the value to 0 for inputs with too many decimals on checkbox change', () => {
+        component.decimals = 8;
+
+        mockFormInput('0.000000001');
+
+        checkbox.click();
+        fixture.detectChanges();
+
+        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
+        expect(input.value).toBe('0');
+        expect(component.tokenAmountDecimals).toBe(0);
+    });
+
     it('should automatically convert between decimal and integer', () => {
         component.form.get('decimals').setValue(false);
         component.decimals = 8;

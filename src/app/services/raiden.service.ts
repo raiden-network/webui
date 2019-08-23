@@ -372,8 +372,9 @@ export class RaidenService {
                             title: action,
                             description: `The channel ${
                                 response.channel_identifier
-                            } with partner
-                    ${response.partner_address} has been closed successfully`
+                            } with partner ${
+                                response.partner_address
+                            } has been closed successfully`
                         });
                     } else {
                         this.sharedService.error({

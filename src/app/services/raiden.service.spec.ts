@@ -850,4 +850,72 @@ describe('RaidenService', () => {
             service.userTokens
         );
     }));
+
+    it('should return a Channel for a token and a partner', () => {
+        const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
+
+        service.getChannel(token.address, partnerAddress).subscribe(
+            (channel: Channel) => {
+                expect(channel).toEqual(channel1);
+            },
+            error => {
+                fail(error);
+            }
+        );
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/channels/${token.address}/${partnerAddress}`,
+            method: 'GET'
+        });
+
+        request.flush(losslessStringify(channel1), {
+            status: 200,
+            statusText: ''
+        });
+    });
+
+    it('should inform the user when a channel has been closed successfully', () => {
+        const channel3: Channel = createChannel({
+            id: new BigNumber(2),
+            balance: new BigNumber(0),
+            totalDeposit: new BigNumber(10),
+            totalWithdraw: new BigNumber(10)
+        });
+        channel3.state = 'closed';
+
+        service.closeChannel(token.address, channel3.partner_address).subscribe(
+            (channel: Channel) => {
+                expect(channel).toEqual(channel3);
+            },
+            error => {
+                fail(error);
+            }
+        );
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/channels/${token.address}/${
+                channel3.partner_address
+            }`,
+            method: 'PATCH'
+        });
+
+        expect(losslessParse(request.request.body)).toEqual({
+            state: 'closed'
+        });
+
+        request.flush(losslessStringify(channel3), {
+            status: 200,
+            statusText: ''
+        });
+
+        expect(sharedService.info).toHaveBeenCalledTimes(1);
+        expect(sharedService.info).toHaveBeenCalledWith({
+            title: 'Close',
+            description: `The channel ${
+                channel3.channel_identifier
+            } with partner ${
+                channel3.partner_address
+            } has been closed successfully`
+        });
+    });
 });
