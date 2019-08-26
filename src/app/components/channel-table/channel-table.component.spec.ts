@@ -43,6 +43,7 @@ import { ChannelActionsComponent } from '../channel-actions/channel-actions.comp
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { PageItemComponent } from '../page/page-item/page-item.component';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
+import { clickElement } from '../../../testing/interaction-helper';
 
 describe('ChannelTableComponent', () => {
     let component: ChannelTableComponent;
@@ -50,6 +51,66 @@ describe('ChannelTableComponent', () => {
     let channelsSpy: Spy;
     let refreshingSpy: Spy;
     let tokenSpy: Spy;
+
+    const token: UserToken = {
+        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+        symbol: 'TST',
+        name: 'Test Suite Token',
+        decimals: 8,
+        balance: 20
+    };
+
+    const channel1: Channel = {
+        state: 'opened',
+        channel_identifier: 1,
+        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+        partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
+        reveal_timeout: 600,
+        balance: 10,
+        total_deposit: 10,
+        total_withdraw: 10,
+        settle_timeout: 500,
+        userToken: token
+    };
+
+    const channel2: Channel = {
+        state: 'opened',
+        channel_identifier: 2,
+        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+        partner_address: '0xFC57d325f23b9121a8488fFdE2E6b3ef1208a20b',
+        reveal_timeout: 600,
+        balance: 0,
+        total_deposit: 10,
+        total_withdraw: 10,
+        settle_timeout: 500,
+        userToken: token
+    };
+
+    const channel3: Channel = {
+        state: 'opened',
+        channel_identifier: 3,
+        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+        partner_address: '0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8',
+        reveal_timeout: 600,
+        balance: 10,
+        total_deposit: 10,
+        total_withdraw: 10,
+        settle_timeout: 500,
+        userToken: token
+    };
+
+    const channel4: Channel = {
+        state: 'closed',
+        channel_identifier: 4,
+        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+        partner_address: '0x8A0cE8bDA200D64d858957080bf7eDDD3371135F',
+        reveal_timeout: 600,
+        balance: 60,
+        total_deposit: 60,
+        total_withdraw: 10,
+        settle_timeout: 500,
+        userToken: token
+    };
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -119,40 +180,6 @@ describe('ChannelTableComponent', () => {
     });
 
     it('should update action when channel has balance', fakeAsync(() => {
-        const token: UserToken = {
-            address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            symbol: 'TST',
-            name: 'Test Suite Token',
-            decimals: 8,
-            balance: 20
-        };
-
-        const channel1: Channel = {
-            state: 'opened',
-            channel_identifier: 1,
-            token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-            reveal_timeout: 600,
-            balance: 10,
-            total_deposit: 10,
-            total_withdraw: 10,
-            settle_timeout: 500,
-            userToken: token
-        };
-
-        const channel2: Channel = {
-            state: 'opened',
-            channel_identifier: 2,
-            token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            partner_address: '0xFC57d325f23b9121a8488fFdE2E6b3ef1208a20b',
-            reveal_timeout: 600,
-            balance: 0,
-            total_deposit: 10,
-            total_withdraw: 10,
-            settle_timeout: 500,
-            userToken: token
-        };
-
         const channel2Balance: Channel = {
             state: 'opened',
             channel_identifier: 2,
@@ -161,32 +188,6 @@ describe('ChannelTableComponent', () => {
             reveal_timeout: 600,
             balance: 10,
             total_deposit: 10,
-            total_withdraw: 10,
-            settle_timeout: 500,
-            userToken: token
-        };
-
-        const channel3: Channel = {
-            state: 'opened',
-            channel_identifier: 3,
-            token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            partner_address: '0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8',
-            reveal_timeout: 600,
-            balance: 10,
-            total_deposit: 10,
-            total_withdraw: 10,
-            settle_timeout: 500,
-            userToken: token
-        };
-
-        const channel4: Channel = {
-            state: 'closed',
-            channel_identifier: 4,
-            token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            partner_address: '0x8A0cE8bDA200D64d858957080bf7eDDD3371135F',
-            reveal_timeout: 600,
-            balance: 60,
-            total_deposit: 60,
             total_withdraw: 10,
             settle_timeout: 500,
             userToken: token
@@ -232,4 +233,25 @@ describe('ChannelTableComponent', () => {
         component.ngOnDestroy();
         flush();
     }));
+
+    it('should update the page immediately when next page is clicked', () => {
+        component.pageSize = 3;
+        channelsSpy.and.returnValues(
+            of([channel1, channel2, channel3, channel4])
+        );
+        tokenSpy.and.returnValue(of(token));
+
+        fixture.detectChanges();
+
+        let channelListElement = fixture.debugElement.query(
+            By.css('.page-list')
+        );
+        expect(channelListElement.children.length).toBe(3);
+
+        clickElement(fixture.debugElement, '.mat-paginator-navigation-next');
+        fixture.detectChanges();
+
+        channelListElement = fixture.debugElement.query(By.css('.page-list'));
+        expect(channelListElement.children.length).toBe(1);
+    });
 });
