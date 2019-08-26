@@ -141,6 +141,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
     onPageEvent(event: PageEvent) {
         this.currentPage = event.pageIndex;
         this.pageSize = event.pageSize;
+        this.applyFilters(this.sorting);
     }
 
     changeOrder() {
