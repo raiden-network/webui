@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- [#144] Fixes channels pagination to update the page immediately.
 
 ## [0.9.2] - 2019-08-07
 ### Changed
@@ -71,6 +73,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#144]: https://github.com/raiden-network/webui/issues/144
 [#133]: https://github.com/raiden-network/webui/issues/133
 [#129]: https://github.com/raiden-network/webui/issues/129
 [#127]: https://github.com/raiden-network/webui/issues/127
