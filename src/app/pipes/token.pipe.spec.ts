@@ -1,5 +1,6 @@
 import { UserToken } from '../models/usertoken';
 import { TokenPipe } from './token.pipe';
+import BigNumber from 'bignumber.js';
 
 describe('TokenPipe', () => {
     let pipe: TokenPipe;
@@ -12,7 +13,7 @@ describe('TokenPipe', () => {
             address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             symbol: 'TST',
             name: 'Test Suite Token',
-            balance: 20,
+            balance: new BigNumber(20),
             decimals: 8
         };
     });

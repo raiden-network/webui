@@ -7,6 +7,7 @@ import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { SharedService } from './shared.service';
 import { backoff } from '../shared/backoff.operator';
+import BigNumber from 'bignumber.js';
 
 @Injectable({
     providedIn: 'root'
@@ -94,7 +95,10 @@ export class ChannelPollingService {
             const newChannel = newChannels.find(channel =>
                 this.isTheSameChannel(oldChannel, channel)
             );
-            if (!newChannel || newChannel.balance <= oldChannel.balance) {
+            if (
+                !newChannel ||
+                newChannel.balance.isLessThanOrEqualTo(oldChannel.balance)
+            ) {
                 continue;
             }
             this.informAboutBalanceUpdate(newChannel, oldChannel.balance);
@@ -104,8 +108,9 @@ export class ChannelPollingService {
     // noinspection JSMethodCanBeStatic
     private isTheSameChannel(channel1: Channel, channel2: Channel): boolean {
         return (
-            channel1.channel_identifier === channel2.channel_identifier &&
-            channel1.token_address === channel2.token_address
+            channel1.channel_identifier.isEqualTo(
+                channel2.channel_identifier
+            ) && channel1.token_address === channel2.token_address
         );
     }
 
@@ -122,9 +127,9 @@ export class ChannelPollingService {
 
     private informAboutBalanceUpdate(
         channel: Channel,
-        previousBalance: number
+        previousBalance: BigNumber
     ) {
-        const amount = channel.balance - previousBalance;
+        const amount = channel.balance.minus(previousBalance);
         const symbol = channel.userToken.symbol;
         const channelId = channel.channel_identifier;
         const partnerAddress = channel.partner_address;

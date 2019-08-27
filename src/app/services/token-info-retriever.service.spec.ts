@@ -11,6 +11,7 @@ import Spy = jasmine.Spy;
 import { TestProviders } from '../../testing/test-providers';
 import { AbiItem } from 'web3-utils/types';
 import { ContractOptions } from 'web3-eth-contract/types';
+import BigNumber from 'bignumber.js';
 
 describe('TokenInfoRetriever', () => {
     let service: TokenInfoRetrieverService;
@@ -126,7 +127,7 @@ describe('TokenInfoRetriever', () => {
             '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
         );
         expect(userToken.decimals).toBe(18);
-        expect(userToken.balance).toBe(50);
+        expect(userToken.balance).toEqual(new BigNumber(50));
     });
 
     it('should have only on request if token is already cached', async () => {
@@ -142,7 +143,7 @@ describe('TokenInfoRetriever', () => {
                 symbol: 'TST',
                 decimals: 18,
                 address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-                balance: 10
+                balance: new BigNumber(10)
             }
         };
         const tokens = await service.createBatch(
@@ -168,8 +169,8 @@ describe('TokenInfoRetriever', () => {
             '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
         );
         expect(userToken.decimals).toBe(18);
-        expect(userToken.balance).toBe(150);
+        expect(userToken.balance).toEqual(new BigNumber(150));
         expect(typeof userToken.decimals).toBe('number');
-        expect(typeof userToken.balance).toBe('number');
+        expect(BigNumber.isBigNumber(userToken.balance)).toBe(true);
     });
 });

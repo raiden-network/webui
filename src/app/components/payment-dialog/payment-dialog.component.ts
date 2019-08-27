@@ -7,13 +7,14 @@ import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenService } from '../../services/raiden.service';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { PaymentIdentifierInputComponent } from '../payment-identifier-input/payment-identifier-input.component';
+import BigNumber from 'bignumber.js';
 
 export interface PaymentDialogPayload {
     tokenAddress: string;
     targetAddress: string;
-    amount: number;
+    amount: BigNumber;
     decimals: number;
-    paymentIdentifier: number;
+    paymentIdentifier: BigNumber;
 }
 
 @Component({
@@ -50,25 +51,27 @@ export class PaymentDialogComponent implements OnInit {
                         ? { ownAddress: true }
                         : undefined
             ],
-            amount: 0,
+            amount: new BigNumber(0),
             token: data.tokenAddress,
-            payment_identifier: ''
+            payment_identifier: null
         });
     }
 
     public accept() {
         const value = this.form.value;
 
-        const paymentIdentifier = this.paymentIdentifierInput.paymentIdentifier;
+        const paymentIdentifier = value['payment_identifier'];
 
         const payload: PaymentDialogPayload = {
             tokenAddress: value['token'],
             targetAddress: value['target_address'],
             decimals: this.tokenInput.tokenAmountDecimals,
-            amount: this.tokenInput.tokenAmount.toNumber(),
-            paymentIdentifier: paymentIdentifier.isNaN()
-                ? undefined
-                : paymentIdentifier.toNumber()
+            amount: value['amount'],
+            paymentIdentifier:
+                BigNumber.isBigNumber(paymentIdentifier) &&
+                !paymentIdentifier.isNaN()
+                    ? paymentIdentifier
+                    : undefined
         };
 
         this.dialogRef.close(payload);
@@ -82,8 +85,8 @@ export class PaymentDialogComponent implements OnInit {
         this.form.setValue({
             target_address: targetAddress ? targetAddress : '',
             token: tokenAddress || '',
-            amount: 0,
-            payment_identifier: ''
+            amount: new BigNumber(0),
+            payment_identifier: null
         });
 
         this.tokenInput.resetAmount();

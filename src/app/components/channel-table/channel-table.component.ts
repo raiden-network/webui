@@ -41,6 +41,7 @@ import { AddressBookService } from '../../services/address-book.service';
 import { Addresses } from '../../models/address';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { DepositMode } from '../../utils/helpers';
+import BigNumber from 'bignumber.js';
 
 @Component({
     selector: 'app-channel-table',
@@ -73,7 +74,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
     page: PageBaseComponent;
 
     public channels$: Observable<Channel[]>;
-    public amount: number;
 
     visibleChannels: Channel[] = [];
     totalChannels = 0;
@@ -162,7 +162,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
 
     // noinspection JSMethodCanBeStatic
     trackByFn(index, item: Channel) {
-        return item.channel_identifier;
+        return item.channel_identifier.toNumber();
     }
 
     // noinspection JSMethodCanBeStatic
@@ -178,9 +178,9 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         const payload: PaymentDialogPayload = {
             tokenAddress: channel ? channel.token_address : '',
             targetAddress: channel ? channel.partner_address : '',
-            amount: this.amount,
+            amount: new BigNumber(0),
             decimals: channel ? channel.userToken.decimals : 0,
-            paymentIdentifier: 0
+            paymentIdentifier: null
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
@@ -199,7 +199,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                         result.tokenAddress,
                         result.targetAddress,
                         result.amount,
-                        result.decimals,
                         result.paymentIdentifier
                     );
                 })
@@ -229,7 +228,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                         channel.token_address,
                         channel.partner_address,
                         deposit.tokenAmount,
-                        deposit.tokenAmountDecimals,
                         depositMode
                     );
                 })
@@ -295,8 +293,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                         result.tokenAddress,
                         result.partnerAddress,
                         result.settleTimeout,
-                        result.balance,
-                        result.decimals
+                        result.balance
                     );
                 })
             )
@@ -307,12 +304,12 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         const channels: Array<Channel> = this.channels;
         let compareFn: (a: Channel, b: Channel) => number;
 
-        const compareNumbers: (
+        const compareBigNumbers: (
             ascending: boolean,
-            a: number,
-            b: number
+            a: BigNumber,
+            b: BigNumber
         ) => number = (ascending, a, b) => {
-            return this.ascending ? a - b : b - a;
+            return ascending ? a.minus(b).toNumber() : b.minus(a).toNumber();
         };
 
         switch (sorting) {
@@ -338,7 +335,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                 break;
             case ChannelSorting.Channel:
                 compareFn = (a, b) =>
-                    compareNumbers(
+                    compareBigNumbers(
                         this.ascending,
                         a.channel_identifier,
                         b.channel_identifier
@@ -354,7 +351,11 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                         b.balance,
                         b.userToken.decimals
                     );
-                    return compareNumbers(this.ascending, aBalance, bBalance);
+                    return compareBigNumbers(
+                        this.ascending,
+                        aBalance,
+                        bBalance
+                    );
                 };
                 break;
         }

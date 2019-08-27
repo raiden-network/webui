@@ -1,6 +1,7 @@
 import { Address } from '../app/models/address';
 import Web3 from 'web3';
 import { Channel } from '../app/models/channel';
+import BigNumber from 'bignumber.js';
 
 export function createTestAddresses(count: number = 15): Address[] {
     const web3 = new Web3('http://localhost:8545');
@@ -18,15 +19,15 @@ export function createTestAddresses(count: number = 15): Address[] {
 }
 
 export const createChannel: (payload: {
-    id: number;
-    balance: number;
-    totalDeposit: number;
-    totalWithdraw: number;
+    id: BigNumber;
+    balance: BigNumber;
+    totalDeposit: BigNumber;
+    totalWithdraw: BigNumber;
 }) => Channel = (payload: {
-    id: number;
-    balance: number;
-    totalDeposit: number;
-    totalWithdraw: number;
+    id: BigNumber;
+    balance: BigNumber;
+    totalDeposit: BigNumber;
+    totalWithdraw: BigNumber;
 }) => ({
     state: 'opened',
     channel_identifier: payload.id,

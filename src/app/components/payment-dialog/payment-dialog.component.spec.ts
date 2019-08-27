@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import BigNumber from 'bignumber.js';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { TokenPipe } from '../../pipes/token.pipe';
 import { SharedService } from '../../services/shared.service';
@@ -16,6 +17,7 @@ import {
 import { TestProviders } from '../../../testing/test-providers';
 import { mockFormInput } from '../../../testing/interaction-helper';
 import { PaymentIdentifierInputComponent } from '../payment-identifier-input/payment-identifier-input.component';
+import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
 
 describe('PaymentDialogComponent', () => {
     let component: PaymentDialogComponent;
@@ -51,10 +53,10 @@ describe('PaymentDialogComponent', () => {
     beforeEach(async(() => {
         const payload: PaymentDialogPayload = {
             tokenAddress: '',
-            amount: 0,
+            amount: new BigNumber(0),
             targetAddress: '',
             decimals: 0,
-            paymentIdentifier: 0
+            paymentIdentifier: null
         };
         TestBed.configureTestingModule({
             declarations: [
@@ -63,7 +65,8 @@ describe('PaymentDialogComponent', () => {
                 TokenInputComponent,
                 AddressInputComponent,
                 TokenNetworkSelectorComponent,
-                PaymentIdentifierInputComponent
+                PaymentIdentifierInputComponent,
+                BigNumberConversionDirective
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
@@ -92,15 +95,15 @@ describe('PaymentDialogComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should reset the form when the reset button is clicked', async () => {
+    it('should reset the form when the reset button is clicked', () => {
         mockAllInputs();
         const element = fixture.debugElement.query(By.css('#reset'));
         element.triggerEventHandler('click', {});
         expect(component.form.value).toEqual({
             target_address: '',
             token: '',
-            amount: 0,
-            payment_identifier: ''
+            amount: new BigNumber(0),
+            payment_identifier: null
         });
         expect(component.form.invalid).toBe(true);
     });
@@ -115,8 +118,8 @@ describe('PaymentDialogComponent', () => {
             tokenAddress: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             targetAddress: '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359',
             decimals: 0,
-            amount: 10,
-            paymentIdentifier: 999
+            amount: new BigNumber(10),
+            paymentIdentifier: new BigNumber(999)
         });
     });
 });

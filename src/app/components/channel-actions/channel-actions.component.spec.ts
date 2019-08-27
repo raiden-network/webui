@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChannelActionsComponent } from './channel-actions.component';
 import { By } from '@angular/platform-browser';
 import { DepositMode } from '../../utils/helpers';
+import BigNumber from 'bignumber.js';
 
 describe('ChannelActionsComponent', () => {
     let component: ChannelActionsComponent;
@@ -18,15 +19,15 @@ describe('ChannelActionsComponent', () => {
         fixture = TestBed.createComponent(ChannelActionsComponent);
         component = fixture.componentInstance;
         component.channel = {
-            channel_identifier: 1,
-            balance: 1,
+            channel_identifier: new BigNumber(1),
+            balance: new BigNumber(1),
             partner_address: '',
             reveal_timeout: 100,
             settle_timeout: 500,
             state: '',
             token_address: '',
-            total_deposit: 10,
-            total_withdraw: 10,
+            total_deposit: new BigNumber(10),
+            total_withdraw: new BigNumber(10),
             userToken: null
         };
         fixture.detectChanges();

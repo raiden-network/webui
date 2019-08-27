@@ -26,6 +26,7 @@ import { TestProviders } from '../../../testing/test-providers';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { PageItemComponent } from '../page/page-item/page-item.component';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
+import BigNumber from 'bignumber.js';
 
 describe('PaymentHistoryComponent', () => {
     let component: PaymentHistoryComponent;
@@ -39,11 +40,11 @@ describe('PaymentHistoryComponent', () => {
         symbol: 'TST',
         name: 'Test Suite Token',
         decimals: 8,
-        balance: 20,
+        balance: new BigNumber(20),
         connected: {
             channels: 5,
-            funds: 10,
-            sum_deposits: 50
+            funds: new BigNumber(10),
+            sum_deposits: new BigNumber(50)
         }
     };
 
@@ -52,84 +53,84 @@ describe('PaymentHistoryComponent', () => {
             event: 'EventPaymentSendFailed',
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             reason: 'insufficient funds',
-            identifier: 1536847754083,
+            identifier: new BigNumber(1536847754083),
             log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentReceivedSuccess',
-            amount: 5,
+            amount: new BigNumber(5),
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847755083,
+            identifier: new BigNumber(1536847755083),
             log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
-            amount: 35,
+            amount: new BigNumber(35),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847756083,
+            identifier: new BigNumber(1536847756083),
             log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
-            amount: 20,
+            amount: new BigNumber(20),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847757083,
+            identifier: new BigNumber(1536847757083),
             log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentReceivedSuccess',
-            amount: 5,
+            amount: new BigNumber(5),
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847758103,
+            identifier: new BigNumber(1536847758103),
             log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
-            amount: 11,
+            amount: new BigNumber(11),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847759000,
+            identifier: new BigNumber(1536847759000),
             log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
-            amount: 1,
+            amount: new BigNumber(1),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847760030,
+            identifier: new BigNumber(1536847760030),
             log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
-            amount: 4,
+            amount: new BigNumber(4),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847760130,
+            identifier: new BigNumber(1536847760130),
             log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentReceivedSuccess',
-            amount: 8,
+            amount: new BigNumber(8),
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847760230,
+            identifier: new BigNumber(1536847760230),
             log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSentSuccess',
-            amount: 2,
+            amount: new BigNumber(2),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847760330,
+            identifier: new BigNumber(1536847760330),
             log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentReceivedSuccess',
-            amount: 5,
+            amount: new BigNumber(5),
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-            identifier: 1536847760430,
+            identifier: new BigNumber(1536847760430),
             log_time: '2019-03-07T18:19:13.976'
         },
         {
             event: 'EventPaymentSendFailed',
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             reason: 'insufficient funds',
-            identifier: 1536847760442,
+            identifier: new BigNumber(1536847760442),
             log_time: '2019-03-07T18:19:13.976'
         }
     ];

@@ -15,6 +15,8 @@ import {
     mockInput,
     mockFormInput
 } from '../../../testing/interaction-helper';
+import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
+import BigNumber from 'bignumber.js';
 
 describe('PaymentIdentifierInputComponent', () => {
     let component: PaymentIdentifierInputComponent;
@@ -22,7 +24,10 @@ describe('PaymentIdentifierInputComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [PaymentIdentifierInputComponent],
+            declarations: [
+                PaymentIdentifierInputComponent,
+                BigNumberConversionDirective
+            ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
@@ -146,6 +151,6 @@ describe('PaymentIdentifierInputComponent', () => {
             By.css('input[type=number]')
         );
         expect(inputDebugElement.nativeElement.value).toBe('');
-        expect(component.identifierFc.value).toBe('');
+        expect(component.identifierFc.value).toBe(null);
     });
 });

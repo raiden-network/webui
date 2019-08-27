@@ -8,10 +8,11 @@ import {
 import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { TokenInputComponent } from '../token-input/token-input.component';
+import BigNumber from 'bignumber.js';
 
 export interface ConnectionManagerDialogPayload {
     tokenAddress: string;
-    funds: number;
+    funds: BigNumber;
     decimals: number;
     join: boolean;
 }
@@ -25,7 +26,7 @@ export class ConnectionManagerDialogComponent implements OnInit {
     @ViewChild(TokenInputComponent) tokenInput: TokenInputComponent;
 
     form = this.fb.group({
-        amount: 0
+        amount: new BigNumber(0)
     });
 
     constructor(
@@ -43,7 +44,7 @@ export class ConnectionManagerDialogComponent implements OnInit {
     public allocateFunds() {
         const payload: ConnectionManagerDialogPayload = {
             tokenAddress: this.data.tokenAddress,
-            funds: this.tokenInput.tokenAmount.toNumber(),
+            funds: this.form.value.amount,
             decimals: this.tokenInput.tokenAmountDecimals,
             join: this.data.join
         };

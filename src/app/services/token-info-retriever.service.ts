@@ -5,6 +5,7 @@ import { RaidenConfig } from './raiden.config';
 import { tokenabi } from './tokenabi';
 import Web3 from 'web3';
 import { BatchManager } from './batch-manager';
+import BigNumber from 'bignumber.js';
 
 @Injectable({
     providedIn: 'root'
@@ -26,7 +27,7 @@ export class TokenInfoRetrieverService {
             name: '',
             symbol: '',
             decimals: 18,
-            balance: 0
+            balance: new BigNumber(0)
         };
     }
 
@@ -108,6 +109,8 @@ export class TokenInfoRetrieverService {
 
             if (expectedType === 'number') {
                 value = Number(value);
+            } else if (BigNumber.isBigNumber(token[method])) {
+                value = new BigNumber(value);
             }
 
             token[method] = value;

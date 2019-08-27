@@ -18,7 +18,7 @@ import { Connections } from '../models/connection';
 import { PaymentEvent } from '../models/payment-event';
 import { SwapToken } from '../models/swaptoken';
 import { UserToken } from '../models/usertoken';
-import { amountFromDecimal, amountToDecimal } from '../utils/amount.converter';
+import { amountToDecimal } from '../utils/amount.converter';
 import { EnvironmentType } from './enviroment-type.enum';
 import { RaidenConfig } from './raiden.config';
 import { SharedService } from './shared.service';
@@ -28,6 +28,7 @@ import { fromWei } from 'web3-utils';
 import { Network } from '../utils/network-info';
 import { DepositMode } from '../utils/helpers';
 import { backoff } from '../shared/backoff.operator';
+import BigNumber from 'bignumber.js';
 
 @Injectable({
     providedIn: 'root'
@@ -109,6 +110,12 @@ export class RaidenService {
             .pipe(
                 flatMap((channels: Array<Channel>) => from(channels)),
                 map((channel: Channel) => {
+                    channel.settle_timeout = (<BigNumber>(
+                        (<unknown>channel.settle_timeout)
+                    )).toNumber();
+                    channel.reveal_timeout = (<BigNumber>(
+                        (<unknown>channel.reveal_timeout)
+                    )).toNumber();
                     channel.userToken = this.getUserToken(
                         channel.token_address
                     );
@@ -148,6 +155,14 @@ export class RaidenService {
                 Object.keys(userTokens).forEach(address => {
                     const token = userTokens[address];
                     if (connections) {
+                        if (
+                            connections[address] &&
+                            connections[address].channels
+                        ) {
+                            connections[address].channels = connections[
+                                address
+                            ].channels.toNumber();
+                        }
                         token.connected = connections[address];
                     }
 
@@ -177,47 +192,53 @@ export class RaidenService {
                     this.raidenConfig.api
                 }/channels/${tokenAddress}/${partnerAddress}`
             )
-            .pipe(catchError(error => this.handleError(error)));
+            .pipe(
+                map((channel: Channel) => {
+                    channel.settle_timeout = (<BigNumber>(
+                        (<unknown>channel.settle_timeout)
+                    )).toNumber();
+                    channel.reveal_timeout = (<BigNumber>(
+                        (<unknown>channel.reveal_timeout)
+                    )).toNumber();
+                    return channel;
+                }),
+                catchError(error => this.handleError(error))
+            );
     }
 
     public openChannel(
         tokenAddress: string,
         partnerAddress: string,
         settleTimeout: number,
-        balance: number,
-        decimals: number
+        balance: BigNumber
     ): Observable<Channel> {
-        const data = {
+        const body = {
             token_address: tokenAddress,
             partner_address: partnerAddress,
             settle_timeout: settleTimeout,
-            total_deposit: amountFromDecimal(balance, decimals)
+            total_deposit: balance
         };
         return this.http
-            .put<Channel>(`${this.raidenConfig.api}/channels`, data)
+            .put<Channel>(`${this.raidenConfig.api}/channels`, body)
             .pipe(catchError(error => this.handleError(error)));
     }
 
     public initiatePayment(
         tokenAddress: string,
         targetAddress: string,
-        amount: number,
-        decimals: number,
-        paymentIdentifier?: number
+        amount: BigNumber,
+        paymentIdentifier?: BigNumber
     ): Observable<void> {
-        const raidenAmount = amountFromDecimal(amount, decimals);
+        const identifier = paymentIdentifier
+            ? paymentIdentifier
+            : this.identifier;
 
         return this.http
             .post(
                 `${
                     this.raidenConfig.api
                 }/payments/${tokenAddress}/${targetAddress}`,
-                {
-                    amount: raidenAmount,
-                    identifier: paymentIdentifier
-                        ? paymentIdentifier
-                        : this.identifier
-                }
+                { amount, identifier }
             )
             .pipe(
                 tap(response => {
@@ -225,9 +246,7 @@ export class RaidenService {
                         'target_address' in response &&
                         'identifier' in response
                     ) {
-                        const formattedAmount = amount
-                            .toFixed(decimals)
-                            .toString();
+                        const formattedAmount = amount.toString();
                         this.sharedService.success({
                             title: 'Transfer successful',
                             description: `A payment of ${formattedAmount} was successfully sent to the partner ${targetAddress}`
@@ -271,22 +290,19 @@ export class RaidenService {
     public modifyDeposit(
         tokenAddress: string,
         partnerAddress: string,
-        amount: number,
-        decimals: number,
+        amount: BigNumber,
         mode: DepositMode
     ): Observable<Channel> {
-        const increase = amountFromDecimal(amount, decimals);
-
         return this.getChannel(tokenAddress, partnerAddress).pipe(
             switchMap(channel => {
                 const body: {
-                    total_deposit?: number;
-                    total_withdraw?: number;
+                    total_deposit?: BigNumber;
+                    total_withdraw?: BigNumber;
                 } = {};
                 if (mode === DepositMode.WITHDRAW) {
-                    body.total_withdraw = channel.total_withdraw + increase;
+                    body.total_withdraw = channel.total_withdraw.plus(amount);
                 } else {
-                    body.total_deposit = channel.total_deposit + increase;
+                    body.total_deposit = channel.total_deposit.plus(amount);
                 }
 
                 return this.http.patch<Channel>(
@@ -296,15 +312,21 @@ export class RaidenService {
                     body
                 );
             }),
+            map((channel: Channel) => {
+                channel.settle_timeout = (<BigNumber>(
+                    (<unknown>channel.settle_timeout)
+                )).toNumber();
+                channel.reveal_timeout = (<BigNumber>(
+                    (<unknown>channel.reveal_timeout)
+                )).toNumber();
+                return channel;
+            }),
             tap(response => {
                 const action =
                     mode === DepositMode.WITHDRAW ? 'Withdraw' : 'Deposit';
 
                 if ('balance' in response && 'state' in response) {
-                    const balance = amountToDecimal(response.balance, decimals);
-                    const formattedBalance = balance
-                        .toFixed(decimals)
-                        .toString();
+                    const formattedBalance = response.balance.toString();
                     this.sharedService.info({
                         title: action,
                         description: `The channel ${
@@ -334,6 +356,15 @@ export class RaidenService {
                 { state: 'closed' }
             )
             .pipe(
+                map((channel: Channel) => {
+                    channel.settle_timeout = (<BigNumber>(
+                        (<unknown>channel.settle_timeout)
+                    )).toNumber();
+                    channel.reveal_timeout = (<BigNumber>(
+                        (<unknown>channel.reveal_timeout)
+                    )).toNumber();
+                    return channel;
+                }),
                 tap(response => {
                     const action = 'Close';
                     if ('state' in response && response.state === 'closed') {
@@ -341,8 +372,9 @@ export class RaidenService {
                             title: action,
                             description: `The channel ${
                                 response.channel_identifier
-                            } with partner
-                    ${response.partner_address} has been closed successfully`
+                            } with partner ${
+                                response.partner_address
+                            } has been closed successfully`
                         });
                     } else {
                         this.sharedService.error({
@@ -371,14 +403,13 @@ export class RaidenService {
     }
 
     public connectTokenNetwork(
-        funds: number,
+        funds: BigNumber,
         tokenAddress: string,
-        decimals: number,
         join: boolean
     ): Observable<void> {
         return this.http
             .put(`${this.raidenConfig.api}/connections/${tokenAddress}`, {
-                funds: amountFromDecimal(funds, decimals)
+                funds
             })
             .pipe(
                 map(() => null),
@@ -415,7 +446,7 @@ export class RaidenService {
     }
 
     public swapTokens(swap: SwapToken): Observable<boolean> {
-        const data = {
+        const body = {
             role: swap.role,
             sending_token: swap.sending_token,
             sending_amount: swap.sending_amount,
@@ -427,7 +458,7 @@ export class RaidenService {
                 `${this.raidenConfig.api}/token_swaps/${swap.partner_address}/${
                     swap.identifier
                 }`,
-                data,
+                body,
                 { observe: 'response' }
             )
             .pipe(
@@ -441,15 +472,14 @@ export class RaidenService {
     public mintToken(
         token: UserToken,
         targetAddress: string,
-        amount: number
+        amount: BigNumber
     ): Observable<void> {
         return this.http
             .post(
                 `${this.raidenConfig.api}/_testing/tokens/${
                     token.address
                 }/mint`,
-                { to: targetAddress, value: amount },
-                { observe: 'response' }
+                { to: targetAddress, value: amount }
             )
             .pipe(
                 map(() => null),

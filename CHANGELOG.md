@@ -3,6 +3,8 @@
 ## [Unreleased]
 ### Changed
 - [#144] Fixes channels pagination to update the page immediately.
+- [#117] Converts most of the internal numeric values to BigNumber.js instances to prevent overflows.
+- [#131] Fixes the instant validation feedback for token amount input when decimals are unchecked.
 
 ## [0.9.2] - 2019-08-07
 ### Changed
@@ -75,11 +77,13 @@ token network.
 
 [#144]: https://github.com/raiden-network/webui/issues/144
 [#133]: https://github.com/raiden-network/webui/issues/133
+[#131]: https://github.com/raiden-network/webui/issues/131
 [#129]: https://github.com/raiden-network/webui/issues/129
 [#127]: https://github.com/raiden-network/webui/issues/127
 [#123]: https://github.com/raiden-network/webui/issues/123
 [#121]: https://github.com/raiden-network/webui/issues/121
 [#119]: https://github.com/raiden-network/webui/issues/119
+[#117]: https://github.com/raiden-network/webui/issues/117
 [#111]: https://github.com/raiden-network/webui/issues/111
 [#105]: https://github.com/raiden-network/webui/issues/105
 [#103]: https://github.com/raiden-network/webui/issues/103
