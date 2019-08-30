@@ -1,0 +1,14 @@
+.notification-container {
+    overflow-wrap: break-word;
+    padding: 10px 5px 5px 5px;
+    min-height: 100%;
+}
+
+.notification-title {
+    padding-left: 16px;
+    color: rgba(0, 0, 0, 0.59);
+}
+
+.notification-title-text {
+    margin: 0;
+}

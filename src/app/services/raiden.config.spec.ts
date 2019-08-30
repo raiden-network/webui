@@ -5,7 +5,7 @@ import {
     HttpClientTestingModule,
     HttpTestingController
 } from '@angular/common/http/testing';
-import { SharedService } from './shared.service';
+import { NotificationService } from './notification.service';
 import { EnvironmentType } from './enviroment-type.enum';
 import Web3 from 'web3';
 import { HttpProvider } from 'web3-providers/types';
@@ -14,7 +14,7 @@ import Spy = jasmine.Spy;
 describe('RaidenConfig', () => {
     let testingController: HttpTestingController;
     let raidenConfig: RaidenConfig;
-    let sharedService: SharedService;
+    let notificationService: NotificationService;
     let tracking: { current: number; failed: number[] };
     let httpProvider: HttpProvider;
     let send: Spy;
@@ -46,7 +46,7 @@ describe('RaidenConfig', () => {
 
         TestBed.configureTestingModule({
             imports: [HttpClientModule, HttpClientTestingModule],
-            providers: [RaidenConfig, SharedService, Web3Factory]
+            providers: [RaidenConfig, NotificationService, Web3Factory]
         });
 
         const web3Factory: Web3Factory = TestBed.get(Web3Factory);
@@ -78,7 +78,7 @@ describe('RaidenConfig', () => {
         testingController = TestBed.get(HttpTestingController);
         raidenConfig = TestBed.get(RaidenConfig);
 
-        sharedService = TestBed.get(SharedService);
+        notificationService = TestBed.get(NotificationService);
     });
 
     it('should be created', inject([RaidenConfig], (service: RaidenConfig) => {
@@ -153,7 +153,7 @@ describe('RaidenConfig', () => {
             environment_type: EnvironmentType.DEVELOPMENT
         });
 
-        expect(sharedService.getStackTrace()).toBe(null);
+        expect(notificationService.getStackTrace()).toBe(null);
         expect(tracking.current).toBe(1);
         flush();
     }));
@@ -194,9 +194,8 @@ describe('RaidenConfig', () => {
             environment_type: EnvironmentType.PRODUCTION
         });
 
-        expect(sharedService.getStackTrace()).toBe(null);
+        expect(notificationService.getStackTrace()).toBe(null);
         expect(tracking.current).toBe(1);
-        flush();
     }));
 
     it('should fallback if the primary web3 endpoint fails', fakeAsync(function() {
@@ -224,7 +223,7 @@ describe('RaidenConfig', () => {
 
         tick(2000);
 
-        expect(sharedService.getStackTrace()).toBe(null);
+        expect(notificationService.getStackTrace()).toBe(null);
         expect(tracking.current).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback
@@ -256,7 +255,7 @@ describe('RaidenConfig', () => {
 
         tick(2000);
 
-        expect(sharedService.getStackTrace()).toBeTruthy();
+        expect(notificationService.getStackTrace()).toBeTruthy();
         expect(tracking.current).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback

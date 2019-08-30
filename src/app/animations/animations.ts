@@ -7,7 +7,7 @@ import {
 } from '@angular/animations';
 
 export class Animations {
-    static flyout = [
+    static flyInOut = [
         trigger('flyInOut', [
             state('in', style({ opacity: 1, transform: 'translateX(0)' })),
             transition('void => *', [

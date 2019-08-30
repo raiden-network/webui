@@ -6,7 +6,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import BigNumber from 'bignumber.js';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { TokenPipe } from '../../pipes/token.pipe';
-import { SharedService } from '../../services/shared.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
@@ -73,8 +72,7 @@ describe('PaymentDialogComponent', () => {
                 TestProviders.MockMatDialogRef({ close: () => {} }),
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
-                TestProviders.HammerJSProvider(),
-                SharedService
+                TestProviders.HammerJSProvider()
             ],
             imports: [
                 MaterialComponentsModule,

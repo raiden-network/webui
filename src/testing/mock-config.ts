@@ -3,9 +3,9 @@ import { Utils } from 'web3-utils';
 import { HttpProvider } from 'web3-providers';
 import { RaidenConfig } from '../app/services/raiden.config';
 import { BatchManager } from '../app/services/batch-manager';
-import { SharedService } from '../app/services/shared.service';
 import { HttpClient } from '@angular/common/http';
 import { stub } from './stub';
+import { NotificationService } from '../app/services/notification.service';
 
 class MockWeb3 extends Web3 {
     isChecksum = false;
@@ -48,7 +48,7 @@ export class MockConfig extends RaidenConfig {
     private testBatchManager: BatchManager = new BatchManager(this.web3);
 
     constructor() {
-        super(stub<HttpClient>(), stub<SharedService>(), mockProvider);
+        super(stub<HttpClient>(), stub<NotificationService>(), mockProvider);
     }
 
     get batchManager(): BatchManager {

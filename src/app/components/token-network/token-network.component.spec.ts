@@ -17,7 +17,6 @@ import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { EnvironmentType } from '../../services/enviroment-type.enum';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
-import { SharedService } from '../../services/shared.service';
 import { MockConfig } from '../../../testing/mock-config';
 
 import { TokenNetworkComponent } from './token-network.component';
@@ -33,6 +32,7 @@ import { UserToken } from '../../models/usertoken';
 import { clickElement } from '../../../testing/interaction-helper';
 import Spy = jasmine.Spy;
 import BigNumber from 'bignumber.js';
+import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 
 describe('TokenNetworkComponent', () => {
     let component: TokenNetworkComponent;
@@ -73,7 +73,7 @@ describe('TokenNetworkComponent', () => {
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockRaidenConfigProvider(),
                 RaidenService,
-                SharedService
+                PendingTransferPollingService
             ],
             imports: [
                 MaterialComponentsModule,

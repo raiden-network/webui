@@ -4,13 +4,6 @@ import { addressValidator } from '../../shared/address.validator';
 import { Address, Addresses } from '../../models/address';
 import { AddressBookService } from '../../services/address-book.service';
 import { MatDialog, PageEvent } from '@angular/material';
-import {
-    animate,
-    state,
-    style,
-    transition,
-    trigger
-} from '@angular/animations';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import {
     ConfirmationDialogComponent,
@@ -24,28 +17,7 @@ import { AddAddressDialogComponent } from '../add-address-dialog/add-address-dia
 @Component({
     selector: 'app-address-book',
     templateUrl: './address-book.component.html',
-    styleUrls: ['./address-book.component.scss'],
-    animations: [
-        trigger('flyInOut', [
-            state('in', style({ opacity: 1, transform: 'translateX(0)' })),
-            transition('void => *', [
-                style({
-                    opacity: 0,
-                    transform: 'translateX(+100%)'
-                }),
-                animate('0.2s ease-in')
-            ]),
-            transition('* => void', [
-                animate(
-                    '0.2s 0.1s ease-out',
-                    style({
-                        opacity: 0,
-                        transform: 'translateX(100%)'
-                    })
-                )
-            ])
-        ])
-    ]
+    styleUrls: ['./address-book.component.scss']
 })
 export class AddressBookComponent implements OnInit {
     private _editedAddress: string;

@@ -5,9 +5,10 @@ import { Channel } from '../models/channel';
 import { amountToDecimal } from '../utils/amount.converter';
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
-import { SharedService } from './shared.service';
 import { backoff } from '../shared/backoff.operator';
 import BigNumber from 'bignumber.js';
+import { NotificationService } from './notification.service';
+import { UiMessage } from '../models/notification';
 
 @Injectable({
     providedIn: 'root'
@@ -22,7 +23,7 @@ export class ChannelPollingService {
 
     constructor(
         private raidenService: RaidenService,
-        private sharedService: SharedService,
+        private notificationService: NotificationService,
         private raidenConfig: RaidenConfig
     ) {
         let timeout;
@@ -118,11 +119,13 @@ export class ChannelPollingService {
         const channelId = channel.channel_identifier;
         const partnerAddress = channel.partner_address;
         const network = channel.userToken.name;
-
-        this.sharedService.info({
+        const message: UiMessage = {
             title: 'New channel',
             description: `A new channel: ${channelId} was opened with ${partnerAddress} on ${network}`
-        });
+        };
+
+        this.notificationService.info(message);
+        this.notificationService.addNotification(message);
     }
 
     private informAboutBalanceUpdate(
@@ -135,9 +138,12 @@ export class ChannelPollingService {
         const partnerAddress = channel.partner_address;
         const balance = amountToDecimal(amount, channel.userToken.decimals);
         const formattedBalance = balance.toFixed(channel.userToken.decimals);
-        this.sharedService.info({
+        const message: UiMessage = {
             title: 'Balance Update',
             description: `The balance of channel ${channelId} with ${partnerAddress} was updated by ${formattedBalance} ${symbol} tokens`
-        });
+        };
+
+        this.notificationService.info(message);
+        this.notificationService.addNotification(message);
     }
 }
