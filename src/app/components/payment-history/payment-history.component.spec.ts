@@ -19,7 +19,6 @@ import { MaterialComponentsModule } from '../../modules/material-components/mate
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { TokenPipe } from '../../pipes/token.pipe';
 import { RaidenService } from '../../services/raiden.service';
-import { SharedService } from '../../services/shared.service';
 
 import { PaymentHistoryComponent } from './payment-history.component';
 import { TestProviders } from '../../../testing/test-providers';
@@ -154,7 +153,6 @@ describe('PaymentHistoryComponent', () => {
                 TokenPipe
             ],
             providers: [
-                SharedService,
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockRaidenConfigProvider(),
                 {

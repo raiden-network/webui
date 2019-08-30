@@ -11,9 +11,9 @@ import { map } from 'rxjs/operators';
 import { MatSidenav } from '@angular/material';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
-import { SharedService } from './services/shared.service';
 import { MediaObserver } from '@angular/flex-layout';
 import { Network } from './utils/network-info';
+import { NotificationService } from './services/notification.service';
 
 @Component({
     selector: 'app-root',
@@ -27,25 +27,25 @@ export class AppComponent implements OnInit, OnDestroy {
     public menuSidenav: MatSidenav;
 
     public title = 'Raiden';
-    public raidenAddress;
+    public raidenAddress: string;
     public readonly balance$: Observable<string>;
     public readonly network$: Observable<Network>;
     public readonly production: boolean;
     public readonly faucetLink$: Observable<string>;
 
-    private _pendingRequests = 0;
+    private _numberOfNotifications = 0;
 
     get pendingRequests(): string {
-        return this._pendingRequests.toString();
+        return this._numberOfNotifications.toString();
     }
 
     private sub: Subscription;
 
     constructor(
-        private sharedService: SharedService,
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService,
-        private media: MediaObserver
+        private media: MediaObserver,
+        private notificationService: NotificationService
     ) {
         this.balance$ = raidenService.balance$;
         this.network$ = raidenService.network$;
@@ -68,10 +68,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this.raidenService.raidenAddress$.subscribe(
             address => (this.raidenAddress = address)
         );
-        this.sub = this.sharedService.pendingRequests.subscribe(
-            pendingRequests => {
+        this.sub = this.notificationService.numberOfNotifications$.subscribe(
+            numberOfNotifications => {
                 setTimeout(() => {
-                    this._pendingRequests = pendingRequests;
+                    this._numberOfNotifications = numberOfNotifications;
                 });
             }
         );
@@ -105,7 +105,11 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     hasRpcError(): boolean {
-        return this.sharedService.getStackTrace() !== null;
+        return this.notificationService.getStackTrace() !== null;
+    }
+
+    getRpcErrorTrace(): string {
+        return this.notificationService.getStackTrace();
     }
 
     attemptConnection() {

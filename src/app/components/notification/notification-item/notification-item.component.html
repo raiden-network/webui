@@ -1,0 +1,11 @@
+<mat-card>
+    <mat-card-title fxFlayout="row" fxLayoutAlign="space-between center">
+        {{ notification.title }}
+        <button mat-icon-button *ngIf="removable" (click)="remove.emit(true)">
+            <mat-icon aria-label="Remove notification icon">close</mat-icon>
+        </button>
+    </mat-card-title>
+    <mat-card-content>
+        {{ notification.description }}
+    </mat-card-content>
+</mat-card>

@@ -12,7 +12,6 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ClipboardModule } from 'ngx-clipboard';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { EMPTY } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { delay, startWith } from 'rxjs/operators';
@@ -28,7 +27,6 @@ import { SubsetPipe } from '../../pipes/subset.pipe';
 import { TokenPipe } from '../../pipes/token.pipe';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { RaidenService } from '../../services/raiden.service';
-import { SharedService } from '../../services/shared.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { OpenDialogComponent } from '../open-dialog/open-dialog.component';
 import { TokenInputComponent } from '../token-input/token-input.component';
@@ -45,6 +43,7 @@ import { PageItemComponent } from '../page/page-item/page-item.component';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { clickElement } from '../../../testing/interaction-helper';
 import BigNumber from 'bignumber.js';
+import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 
 describe('ChannelTableComponent', () => {
     let component: ChannelTableComponent;
@@ -135,15 +134,14 @@ describe('ChannelTableComponent', () => {
                 TokenNetworkSelectorComponent
             ],
             providers: [
-                SharedService,
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.HammerJSProvider(),
                 TestProviders.AddressBookStubProvider(),
                 RaidenService,
                 ChannelPollingService,
-                ToastrService,
                 HttpClient,
-                HttpHandler
+                HttpHandler,
+                PendingTransferPollingService
             ],
             imports: [
                 FormsModule,
@@ -152,7 +150,6 @@ describe('ChannelTableComponent', () => {
                 RouterTestingModule,
                 FormsModule,
                 ClipboardModule,
-                ToastrModule.forRoot(),
                 NoopAnimationsModule
             ]
         }).compileComponents();

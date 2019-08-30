@@ -9,20 +9,22 @@ import { Channel } from '../models/channel';
 import { UserToken } from '../models/usertoken';
 import { RaidenConfig, Web3Factory } from './raiden.config';
 import { RaidenService } from './raiden.service';
-import { SharedService } from './shared.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { TestProviders } from '../../testing/test-providers';
 import BigNumber from 'bignumber.js';
 import { DepositMode } from '../utils/helpers';
 import { createChannel } from '../../testing/test-data';
 import Spy = jasmine.Spy;
-import { amountToDecimal, amountFromDecimal } from '../utils/amount.converter';
+import { amountToDecimal } from '../utils/amount.converter';
 import { Connection } from '../models/connection';
 import { LosslessJsonInterceptor } from './lossless-json.interceptor';
 import {
     losslessParse,
     losslessStringify
 } from '../utils/lossless-json.converter';
+import { NotificationService } from './notification.service';
+import { PendingTransfer } from '../models/pending-transfer';
+import { UiMessage } from '../models/notification';
 
 describe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
@@ -36,7 +38,7 @@ describe('RaidenService', () => {
     const raidenAddress = '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C';
 
     let mockHttp: HttpTestingController;
-    let sharedService: SharedService;
+    let notificationService: NotificationService;
     let endpoint: String;
 
     let service: RaidenService;
@@ -58,10 +60,13 @@ describe('RaidenService', () => {
     });
 
     beforeEach(() => {
-        sharedService = jasmine.createSpyObj('SharedService', [
+        notificationService = jasmine.createSpyObj('NotificationService', [
             'error',
             'info',
-            'success'
+            'success',
+            'addPendingAction',
+            'removePendingAction',
+            'addNotification'
         ]);
         TestBed.configureTestingModule({
             imports: [HttpClientModule, HttpClientTestingModule],
@@ -69,8 +74,8 @@ describe('RaidenService', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 RaidenService,
                 {
-                    provide: SharedService,
-                    useValue: sharedService
+                    provide: NotificationService,
+                    useValue: notificationService
                 },
                 TokenInfoRetrieverService,
                 Web3Factory,
@@ -85,6 +90,7 @@ describe('RaidenService', () => {
         mockHttp = TestBed.get(HttpTestingController);
 
         endpoint = TestBed.get(RaidenConfig).api;
+        service = TestBed.get(RaidenService);
         service = TestBed.get(RaidenService);
 
         retrieverSpy = spyOn(
@@ -123,13 +129,19 @@ describe('RaidenService', () => {
     it('should inform the user when token network creation was completed successfully', () => {
         service
             .registerToken(tokenAddress)
-            .subscribe(value => expect(value).toBeFalsy());
+            .subscribe(value => expect(value).toBeFalsy())
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/tokens/${tokenAddress}`,
             method: 'PUT'
         });
         expect(losslessParse(request.request.body)).toEqual({});
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         request.flush(
             {
@@ -142,27 +154,42 @@ describe('RaidenService', () => {
             }
         );
 
-        expect(sharedService.success).toHaveBeenCalledTimes(1);
-        expect(sharedService.success).toHaveBeenCalledWith({
+        const notificationMessage: UiMessage = {
             title: 'Token registered',
             description: `Your token was successfully registered: ${tokenAddress}`
-        });
+        };
+        expect(notificationService.success).toHaveBeenCalledTimes(1);
+        expect(notificationService.success).toHaveBeenCalledWith(
+            notificationMessage
+        );
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     });
 
     it('When token network creation fails there should be a nice message', () => {
-        service.registerToken(tokenAddress).subscribe(
-            () => {
-                fail('On next should not be called');
-            },
-            error => {
-                expect(error).toBeTruthy('An error is expected');
-            }
-        );
+        service
+            .registerToken(tokenAddress)
+            .subscribe(
+                () => {
+                    fail('On next should not be called');
+                },
+                error => {
+                    expect(error).toBeTruthy('An error is expected');
+                }
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
 
         const registerRequest = mockHttp.expectOne({
             url: `${endpoint}/tokens/${tokenAddress}`,
             method: 'PUT'
         });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         const errorMessage = 'Token already registered';
         const errorBody = {
@@ -174,16 +201,49 @@ describe('RaidenService', () => {
             statusText: ''
         });
 
-        expect(sharedService.error).toHaveBeenCalledTimes(1);
-
-        // @ts-ignore
-        const payload = sharedService.error.calls.first().args[0];
-
-        expect(payload.title).toBe(
-            'Raiden Error',
-            'It should be a Raiden Error'
+        const notificationMessage: UiMessage = {
+            title: 'Raiden Error',
+            description: errorMessage
+        };
+        expect(notificationService.error).toHaveBeenCalledTimes(1);
+        expect(notificationService.error).toHaveBeenCalledWith(
+            notificationMessage
         );
-        expect(payload.description).toBe(errorMessage);
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
+    });
+
+    it('should request the api to open a channel', () => {
+        const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
+
+        service
+            .openChannel(tokenAddress, partnerAddress, 500, new BigNumber(10))
+            .subscribe((channel: Channel) => expect(channel).toEqual(channel1))
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
+
+        const openChannelRequest = mockHttp.expectOne({
+            url: `${endpoint}/channels`,
+            method: 'PUT'
+        });
+
+        expect(losslessParse(openChannelRequest.request.body)).toEqual({
+            token_address: tokenAddress,
+            partner_address: partnerAddress,
+            settle_timeout: new BigNumber(500),
+            total_deposit: new BigNumber(10)
+        });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
+
+        openChannelRequest.flush(losslessStringify(channel1), {
+            status: 200,
+            statusText: ''
+        });
     });
 
     it('Show a proper response when non-EIP addresses are passed in channel creation', () => {
@@ -198,12 +258,19 @@ describe('RaidenService', () => {
                 error => {
                     expect(error).toBeTruthy('An error was expected');
                 }
-            );
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
 
         const openChannelRequest = mockHttp.expectOne({
             url: `${endpoint}/channels`,
             method: 'PUT'
         });
+
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         const errorBody = {
             errors: { partner_address: ['Not a valid EIP55 encoded address'] }
@@ -214,17 +281,17 @@ describe('RaidenService', () => {
             statusText: ''
         });
 
-        expect(sharedService.error).toHaveBeenCalledTimes(1);
-
-        // @ts-ignore
-        const payload = sharedService.error.calls.first().args[0];
-
-        expect(payload.title).toBe(
-            'Raiden Error',
-            'It should be a Raiden Error'
+        const notificationMessage: UiMessage = {
+            title: 'Raiden Error',
+            description: 'partner_address: Not a valid EIP55 encoded address'
+        };
+        expect(notificationService.error).toHaveBeenCalledTimes(1);
+        expect(notificationService.error).toHaveBeenCalledWith(
+            notificationMessage
         );
-        expect(payload.description).toBe(
-            'partner_address: Not a valid EIP55 encoded address'
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
         );
     });
 
@@ -267,8 +334,8 @@ describe('RaidenService', () => {
 
         service.attemptConnection();
         tick();
-        expect(sharedService.info).toHaveBeenCalledTimes(1);
-        expect(sharedService.info).toHaveBeenCalledWith({
+        expect(notificationService.info).toHaveBeenCalledTimes(1);
+        expect(notificationService.info).toHaveBeenCalledWith({
             title: 'JSON RPC Connection',
             description: 'JSON-RPC connection established successfully'
         });
@@ -281,8 +348,8 @@ describe('RaidenService', () => {
 
         service.attemptConnection();
         tick();
-        expect(sharedService.error).toHaveBeenCalledTimes(1);
-        expect(sharedService.error).toHaveBeenCalledWith({
+        expect(notificationService.error).toHaveBeenCalledTimes(1);
+        expect(notificationService.error).toHaveBeenCalledWith({
             title: 'JSON RPC Connection',
             description: 'Could not establish a JSON-RPC connection'
         });
@@ -295,8 +362,8 @@ describe('RaidenService', () => {
 
         service.attemptConnection();
         tick();
-        expect(sharedService.error).toHaveBeenCalledTimes(1);
-        expect(sharedService.error).toHaveBeenCalledWith({
+        expect(notificationService.error).toHaveBeenCalledTimes(1);
+        expect(notificationService.error).toHaveBeenCalledWith({
             title: 'JSON RPC Connection',
             description: 'Could not establish a JSON-RPC connection'
         });
@@ -369,6 +436,11 @@ describe('RaidenService', () => {
                         balance: new BigNumber(100000000010)
                     })
                 );
+            })
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
             });
         tick();
 
@@ -385,6 +457,7 @@ describe('RaidenService', () => {
         expect(losslessParse(request.request.body)).toEqual({
             total_deposit: new BigNumber(100001000000)
         });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         request.flush(losslessStringify(body), {
             status: 200,
@@ -393,11 +466,18 @@ describe('RaidenService', () => {
 
         flush();
 
-        expect(sharedService.info).toHaveBeenCalledTimes(1);
-        expect(sharedService.info).toHaveBeenCalledWith({
+        const notificationMessage: UiMessage = {
             title: 'Deposit',
             description: `The channel 1 balance changed to 100000000010`
-        });
+        };
+        expect(notificationService.info).toHaveBeenCalledTimes(1);
+        expect(notificationService.info).toHaveBeenCalledWith(
+            notificationMessage
+        );
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     }));
 
     it('should inform the user when a withdraw was completed successfully', fakeAsync(() => {
@@ -425,6 +505,11 @@ describe('RaidenService', () => {
                         balance: new BigNumber(0)
                     })
                 );
+            })
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
             });
         tick();
 
@@ -441,6 +526,7 @@ describe('RaidenService', () => {
         expect(losslessParse(request.request.body)).toEqual({
             total_withdraw: new BigNumber(1000001000000)
         });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         request.flush(losslessStringify(body), {
             status: 200,
@@ -449,18 +535,29 @@ describe('RaidenService', () => {
 
         flush();
 
-        expect(sharedService.info).toHaveBeenCalledTimes(1);
-        expect(sharedService.info).toHaveBeenCalledWith({
+        const notificationMessage: UiMessage = {
             title: 'Withdraw',
             description: `The channel 1 balance changed to 0`
-        });
+        };
+        expect(notificationService.info).toHaveBeenCalledTimes(1);
+        expect(notificationService.info).toHaveBeenCalledWith(
+            notificationMessage
+        );
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     }));
 
     it('should inform the user when minting was completed successfully', () => {
         service
             .mintToken(token, '0xto', new BigNumber(1000))
-            .subscribe(value => expect(value).toBeFalsy());
-
+            .subscribe(value => expect(value).toBeFalsy())
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
         const request = mockHttp.expectOne({
             url: `${endpoint}/_testing/tokens/${token.address}/mint`,
             method: 'POST'
@@ -469,6 +566,7 @@ describe('RaidenService', () => {
             to: '0xto',
             value: new BigNumber(1000)
         });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         request.flush(
             { transaction_hash: '0xabc' },
@@ -482,29 +580,44 @@ describe('RaidenService', () => {
             new BigNumber(1000),
             token.decimals
         );
-        expect(sharedService.success).toHaveBeenCalledTimes(1);
-        expect(sharedService.success).toHaveBeenCalledWith({
+        const notificationMessage: UiMessage = {
             title: 'Mint',
             description: `${decimalValue} ${
                 token.symbol
             } have successfully been minted`
-        });
+        };
+        expect(notificationService.success).toHaveBeenCalledTimes(1);
+        expect(notificationService.success).toHaveBeenCalledWith(
+            notificationMessage
+        );
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     });
 
     it('should inform the user when minting was not successful', () => {
-        service.mintToken(token, '0xto', new BigNumber(1000)).subscribe(
-            () => {
-                fail('On next should not be called');
-            },
-            error => {
-                expect(error).toBeTruthy('An error was expected');
-            }
-        );
+        service
+            .mintToken(token, '0xto', new BigNumber(1000))
+            .subscribe(
+                () => {
+                    fail('On next should not be called');
+                },
+                error => {
+                    expect(error).toBeTruthy('An error was expected');
+                }
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/_testing/tokens/${token.address}/mint`,
             method: 'POST'
         });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         const errorMessage = 'Token does not have a mint method';
         const errorBody = {
@@ -516,22 +629,29 @@ describe('RaidenService', () => {
             statusText: ''
         });
 
-        expect(sharedService.error).toHaveBeenCalledTimes(1);
-
-        // @ts-ignore
-        const payload = sharedService.error.calls.first().args[0];
-
-        expect(payload.title).toBe(
-            'Raiden Error',
-            'It should be a Raiden Error'
+        const notificationMessage: UiMessage = {
+            title: 'Raiden Error',
+            description: errorMessage
+        };
+        expect(notificationService.error).toHaveBeenCalledTimes(1);
+        expect(notificationService.error).toHaveBeenCalledWith(
+            notificationMessage
         );
-        expect(payload.description).toBe(errorMessage);
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     });
 
     it('should inform the user when joining a token network was successful', fakeAsync(() => {
         service
             .connectTokenNetwork(new BigNumber(1000), tokenAddress, true)
-            .subscribe(value => expect(value).toBeFalsy());
+            .subscribe(value => expect(value).toBeFalsy())
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
         tick();
 
         const request = mockHttp.expectOne({
@@ -541,6 +661,7 @@ describe('RaidenService', () => {
         expect(losslessParse(request.request.body)).toEqual({
             funds: new BigNumber(1000)
         });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         request.flush(
             {},
@@ -551,17 +672,29 @@ describe('RaidenService', () => {
         );
         flush();
 
-        expect(sharedService.success).toHaveBeenCalledTimes(1);
-        expect(sharedService.success).toHaveBeenCalledWith({
+        const notificationMessage: UiMessage = {
             title: 'Joined Token Network',
             description: `You have successfully joined the Network of Token ${tokenAddress}`
-        });
+        };
+        expect(notificationService.success).toHaveBeenCalledTimes(1);
+        expect(notificationService.success).toHaveBeenCalledWith(
+            notificationMessage
+        );
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     }));
 
     it('should inform the user when adding funds to a token network was successful', fakeAsync(() => {
         service
             .connectTokenNetwork(new BigNumber(1000), tokenAddress, false)
-            .subscribe(value => expect(value).toBeFalsy());
+            .subscribe(value => expect(value).toBeFalsy())
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
         tick();
 
         const request = mockHttp.expectOne({
@@ -571,6 +704,7 @@ describe('RaidenService', () => {
         expect(losslessParse(request.request.body)).toEqual({
             funds: new BigNumber(1000)
         });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         request.flush(
             {},
@@ -581,11 +715,18 @@ describe('RaidenService', () => {
         );
         flush();
 
-        expect(sharedService.success).toHaveBeenCalledTimes(1);
-        expect(sharedService.success).toHaveBeenCalledWith({
+        const notificationMessage: UiMessage = {
             title: 'Funds Added',
             description: `You successfully added funds to the Network of Token ${tokenAddress}`
-        });
+        };
+        expect(notificationService.success).toHaveBeenCalledTimes(1);
+        expect(notificationService.success).toHaveBeenCalledWith(
+            notificationMessage
+        );
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     }));
 
     it('should inform the user when joining a token network was not successful', fakeAsync(() => {
@@ -598,13 +739,19 @@ describe('RaidenService', () => {
                 error => {
                     expect(error).toBeTruthy('An error was expected');
                 }
-            );
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
         tick();
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/connections/${tokenAddress}`,
             method: 'PUT'
         });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         const errorMessage = 'Insufficient balance';
         const errorBody = {
@@ -617,22 +764,29 @@ describe('RaidenService', () => {
         });
         flush();
 
-        expect(sharedService.error).toHaveBeenCalledTimes(1);
-
-        // @ts-ignore
-        const payload = sharedService.error.calls.first().args[0];
-
-        expect(payload.title).toBe(
-            'Raiden Error',
-            'It should be a Raiden Error'
+        const notificationMessage: UiMessage = {
+            title: 'Raiden Error',
+            description: errorMessage
+        };
+        expect(notificationService.error).toHaveBeenCalledTimes(1);
+        expect(notificationService.error).toHaveBeenCalledWith(
+            notificationMessage
         );
-        expect(payload.description).toBe(errorMessage);
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     }));
 
     it('should inform the user when leaving a token network was successful', fakeAsync(() => {
         service
             .leaveTokenNetwork(token)
-            .subscribe(value => expect(value).toBeFalsy());
+            .subscribe(value => expect(value).toBeFalsy())
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
         tick();
 
         const request = mockHttp.expectOne({
@@ -640,6 +794,7 @@ describe('RaidenService', () => {
             method: 'DELETE'
         });
         expect(losslessParse(request.request.body)).toBe(null);
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         request.flush(
             {},
@@ -650,30 +805,45 @@ describe('RaidenService', () => {
         );
         flush();
 
-        expect(sharedService.success).toHaveBeenCalledTimes(1);
-        expect(sharedService.success).toHaveBeenCalledWith({
+        const notificationMessage: UiMessage = {
             title: 'Left Token Network',
             description: `Successfully closed and settled all channels in ${
                 token.name
             } <${token.address}> token`
-        });
+        };
+        expect(notificationService.success).toHaveBeenCalledTimes(1);
+        expect(notificationService.success).toHaveBeenCalledWith(
+            notificationMessage
+        );
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     }));
 
     it('should inform the user when leaving a token network was not successful', fakeAsync(() => {
-        service.leaveTokenNetwork(token).subscribe(
-            () => {
-                fail('On next should not be called');
-            },
-            error => {
-                expect(error).toBeTruthy('An error was expected');
-            }
-        );
+        service
+            .leaveTokenNetwork(token)
+            .subscribe(
+                () => {
+                    fail('On next should not be called');
+                },
+                error => {
+                    expect(error).toBeTruthy('An error was expected');
+                }
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
         tick();
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/connections/${token.address}`,
             method: 'DELETE'
         });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         const errorMessage = 'Not a valid token network address';
         const errorBody = {
@@ -686,16 +856,18 @@ describe('RaidenService', () => {
         });
         flush();
 
-        expect(sharedService.error).toHaveBeenCalledTimes(1);
-
-        // @ts-ignore
-        const payload = sharedService.error.calls.first().args[0];
-
-        expect(payload.title).toBe(
-            'Raiden Error',
-            'It should be a Raiden Error'
+        const notificationMessage: UiMessage = {
+            title: 'Raiden Error',
+            description: errorMessage
+        };
+        expect(notificationService.error).toHaveBeenCalledTimes(1);
+        expect(notificationService.error).toHaveBeenCalledWith(
+            notificationMessage
         );
-        expect(payload.description).toBe(errorMessage);
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     }));
 
     it('should inform the user when a payment was successful', fakeAsync(() => {
@@ -732,11 +904,18 @@ describe('RaidenService', () => {
         });
         flush();
 
-        expect(sharedService.success).toHaveBeenCalledTimes(1);
-        expect(sharedService.success).toHaveBeenCalledWith({
+        const notificationMessage: UiMessage = {
             title: 'Transfer successful',
             description: `A payment of ${amount.toString()} was successfully sent to the partner ${targetAddress}`
-        });
+        };
+        expect(notificationService.success).toHaveBeenCalledTimes(1);
+        expect(notificationService.success).toHaveBeenCalledWith(
+            notificationMessage
+        );
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     }));
 
     it('should set a payment identifier for a payment when none is passed', fakeAsync(() => {
@@ -796,16 +975,18 @@ describe('RaidenService', () => {
         });
         flush();
 
-        expect(sharedService.error).toHaveBeenCalledTimes(1);
-
-        // @ts-ignore
-        const payload = sharedService.error.calls.first().args[0];
-
-        expect(payload.title).toBe(
-            'Raiden Error',
-            'It should be a Raiden Error'
+        const notificationMessage: UiMessage = {
+            title: 'Raiden Error',
+            description: errorMessage
+        };
+        expect(notificationService.error).toHaveBeenCalledTimes(1);
+        expect(notificationService.error).toHaveBeenCalledWith(
+            notificationMessage
         );
-        expect(payload.description).toBe(errorMessage);
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
     }));
 
     it('should give the tokens', fakeAsync(() => {
@@ -903,14 +1084,21 @@ describe('RaidenService', () => {
         });
         channel3.state = 'closed';
 
-        service.closeChannel(token.address, channel3.partner_address).subscribe(
-            (channel: Channel) => {
-                expect(channel).toEqual(channel3);
-            },
-            error => {
-                fail(error);
-            }
-        );
+        service
+            .closeChannel(token.address, channel3.partner_address)
+            .subscribe(
+                (channel: Channel) => {
+                    expect(channel).toEqual(channel3);
+                },
+                error => {
+                    fail(error);
+                }
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/channels/${token.address}/${
@@ -922,20 +1110,61 @@ describe('RaidenService', () => {
         expect(losslessParse(request.request.body)).toEqual({
             state: 'closed'
         });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         request.flush(losslessStringify(channel3), {
             status: 200,
             statusText: ''
         });
 
-        expect(sharedService.info).toHaveBeenCalledTimes(1);
-        expect(sharedService.info).toHaveBeenCalledWith({
+        const notificationMessage: UiMessage = {
             title: 'Close',
             description: `The channel ${
                 channel3.channel_identifier
             } with partner ${
                 channel3.partner_address
             } has been closed successfully`
+        };
+        expect(notificationService.info).toHaveBeenCalledTimes(1);
+        expect(notificationService.info).toHaveBeenCalledWith(
+            notificationMessage
+        );
+        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addNotification).toHaveBeenCalledWith(
+            notificationMessage
+        );
+    });
+
+    it('should return the pending transfers', () => {
+        const pendingTransfer: PendingTransfer = {
+            channel_identifier: new BigNumber(255),
+            initiator: '0x5E1a3601538f94c9e6D2B40F7589030ac5885FE7',
+            locked_amount: new BigNumber(119),
+            payment_identifier: new BigNumber(1),
+            role: 'initiator',
+            target: '0x00AF5cBfc8dC76cd599aF623E60F763228906F3E',
+            token_address: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
+            token_network_address: '0x111157460c0F41EfD9107239B7864c062aA8B978',
+            transferred_amount: new BigNumber(331)
+        };
+
+        service.getPendingTransfers().subscribe(
+            (pendingTransfers: Array<PendingTransfer>) => {
+                expect(pendingTransfers).toEqual([pendingTransfer]);
+            },
+            error => {
+                fail(error);
+            }
+        );
+
+        const getChannelsRequest = mockHttp.expectOne({
+            url: `${endpoint}/pending_transfers`,
+            method: 'GET'
+        });
+
+        getChannelsRequest.flush(losslessStringify([pendingTransfer]), {
+            status: 200,
+            statusText: ''
         });
     });
 });

@@ -87,21 +87,26 @@
             </a>
         </span>
     </div>
-    <span style="width: 32px; margin-right: 25px">
-        <img
-            alt="User address identicon"
-            class="round identicon"
-            [src]="identicon(raidenAddress)"
-        />
-    </span>
-
-    <span
-        [matBadge]="pendingRequests"
-        style="margin-right: 10px"
-        matBadgeOverlap="false"
-        matBadgeColor="primary"
-        matBadgePosition="after"
-    ></span>
+    <button
+        mat-button
+        (click)="notification_sidenav.toggle()"
+        class="notification-button"
+        matTooltip="Open notification panel"
+    >
+        <span
+            [matBadge]="pendingRequests"
+            matBadgeOverlap="true"
+            matBadgeColor="primary"
+            matBadgePosition="after"
+            class="notification-button-container"
+        >
+            <img
+                alt="User address identicon"
+                class="round identicon"
+                [src]="identicon(raidenAddress)"
+            />
+        </span>
+    </button>
 </mat-toolbar>
 
 <mat-sidenav-container class="sidenav-container">
@@ -154,11 +159,21 @@
                 errorDescription="A connection with the Web3 provider could not be established. \n
                     Please try again."
                 buttonText="Retry"
-                [errorStacktrace]="sharedService.getStackTrace()"
+                [errorStacktrace]="getRpcErrorTrace()"
                 (buttonClicked)="attemptConnection()"
             ></app-error>
         </ng-template>
     </mat-sidenav-content>
+    <mat-sidenav
+        mode="over"
+        position="end"
+        [autoFocus]="false"
+        ngClass.xs="notification-sidenav-mobile"
+        ngClass="notification-sidenav"
+        #notification_sidenav
+    >
+        <app-notification-panel></app-notification-panel>
+    </mat-sidenav>
 </mat-sidenav-container>
 
 <mat-toolbar fxHide fxShow.xs></mat-toolbar>

@@ -1,10 +1,3 @@
-import {
-    animate,
-    state,
-    style,
-    transition,
-    trigger
-} from '@angular/animations';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, PageEvent } from '@angular/material';
 import { EMPTY, Subscription } from 'rxjs';
@@ -42,32 +35,14 @@ import { Addresses } from '../../models/address';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { DepositMode } from '../../utils/helpers';
 import BigNumber from 'bignumber.js';
+import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
+import { Animations } from '../../animations/animations';
 
 @Component({
     selector: 'app-channel-table',
     templateUrl: './channel-table.component.html',
     styleUrls: ['./channel-table.component.scss'],
-    animations: [
-        trigger('flyInOut', [
-            state('in', style({ opacity: 1, transform: 'translateX(0)' })),
-            transition('void => *', [
-                style({
-                    opacity: 0,
-                    transform: 'translateX(+100%)'
-                }),
-                animate('0.2s ease-in')
-            ]),
-            transition('* => void', [
-                animate(
-                    '0.2s 0.1s ease-out',
-                    style({
-                        opacity: 0,
-                        transform: 'translateX(100%)'
-                    })
-                )
-            ])
-        ])
-    ]
+    animations: Animations.flyInOut
 })
 export class ChannelTableComponent implements OnInit, OnDestroy {
     @ViewChild(PageBaseComponent)
@@ -119,7 +94,8 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService,
         private identiconCacheService: IdenticonCacheService,
-        private addressBookService: AddressBookService
+        private addressBookService: AddressBookService,
+        private pendingTransferPollingService: PendingTransferPollingService
     ) {}
 
     ngOnInit() {
@@ -203,7 +179,10 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                     );
                 })
             )
-            .subscribe(() => this.refresh());
+            .subscribe(() => {
+                this.refresh();
+                this.pendingTransferPollingService.refresh();
+            });
     }
 
     public onDepositDialog(channel: Channel, depositMode: DepositMode) {

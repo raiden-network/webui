@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentType } from './enviroment-type.enum';
 import { BatchManager } from './batch-manager';
-import { SharedService } from './shared.service';
 import { HttpProvider } from 'web3-providers/types';
 import Web3 from 'web3';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Network, NetworkInfo } from '../utils/network-info';
+import { NotificationService } from './notification.service';
 
 interface RDNConfig {
     raiden: string;
@@ -55,7 +55,7 @@ export class RaidenConfig {
 
     constructor(
         private http: HttpClient,
-        private sharedService: SharedService,
+        private notificationService: NotificationService,
         private web3Factory: Web3Factory
     ) {}
 
@@ -76,7 +76,7 @@ export class RaidenConfig {
             return true;
         } catch (e) {
             console.error(e.message);
-            this.sharedService.displayableError = e;
+            this.notificationService.displayableError = e;
             return false;
         }
     }
@@ -128,7 +128,6 @@ export class RaidenConfig {
 
         this.config = Object.assign({}, default_config, rdnConfig);
         this.api = this.config.raiden;
-        this.sharedService.httpTimeout = this.config.http_timeout;
     }
 
     private provider(): HttpProvider {

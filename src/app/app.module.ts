@@ -24,10 +24,9 @@ import { KeysPipe } from './pipes/keys.pipe';
 import { SubsetPipe } from './pipes/subset.pipe';
 import { TokenPipe } from './pipes/token.pipe';
 import { RaidenConfig, Web3Factory } from './services/raiden.config';
-import { RaidenInterceptor } from './services/raiden.interceptor';
 import { LosslessJsonInterceptor } from './services/lossless-json.interceptor';
+import { TimeoutInterceptor } from './services/timeout.interceptor';
 import { RaidenService } from './services/raiden.service';
-import { SharedService } from './services/shared.service';
 import { DepositWithdrawDialogComponent } from './components/deposit-withdraw-dialog/deposit-withdraw-dialog.component';
 import { DecimalPipe } from './pipes/decimal.pipe';
 import { TokenInputComponent } from './components/token-input/token-input.component';
@@ -65,6 +64,8 @@ import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
 import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
 import { PaymentIdentifierInputComponent } from './components/payment-identifier-input/payment-identifier-input.component';
 import { BigNumberConversionDirective } from './directives/big-number-conversion.directive';
+import { NotificationPanelComponent } from './components/notification/notification-panel/notification-panel.component';
+import { NotificationItemComponent } from './components/notification/notification-item/notification-item.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -125,7 +126,9 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ShortenAddressPipe,
         DisplayDecimalsPipe,
         PaymentIdentifierInputComponent,
-        BigNumberConversionDirective
+        BigNumberConversionDirective,
+        NotificationPanelComponent,
+        NotificationItemComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
@@ -143,11 +146,10 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ClipboardModule
     ],
     providers: [
-        SharedService,
         {
             provide: HTTP_INTERCEPTORS,
-            useClass: RaidenInterceptor,
-            deps: [SharedService],
+            useClass: TimeoutInterceptor,
+            deps: [RaidenConfig],
             multi: true
         },
         {

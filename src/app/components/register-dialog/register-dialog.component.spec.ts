@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
-import { SharedService } from '../../services/shared.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
 
 import { RegisterDialogComponent } from './register-dialog.component';
@@ -20,8 +19,7 @@ describe('RegisterDialogComponent', () => {
                 TestProviders.MockMatDialogData(),
                 TestProviders.MockMatDialogRef(),
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-                SharedService
+                TestProviders.AddressBookStubProvider()
             ],
             imports: [
                 MaterialComponentsModule,

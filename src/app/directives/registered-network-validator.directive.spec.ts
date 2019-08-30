@@ -4,7 +4,6 @@ import { FormControl, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { UserToken } from '../models/usertoken';
 import { RaidenService } from '../services/raiden.service';
-import { SharedService } from '../services/shared.service';
 import { RegisteredNetworkValidatorDirective } from './registered-network-validator.directive';
 import { TestProviders } from '../../testing/test-providers';
 import BigNumber from 'bignumber.js';
@@ -45,10 +44,7 @@ describe('RegisteredNetworkValidatorDirective', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                SharedService
-            ],
+            providers: [TestProviders.MockRaidenConfigProvider()],
             imports: [HttpClientTestingModule]
         }).compileComponents();
     }));

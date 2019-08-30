@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { TokenPipe } from '../../pipes/token.pipe';
-import { SharedService } from '../../services/shared.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
@@ -15,11 +14,7 @@ import {
     ErrorStateMatcher,
     ShowOnDirtyErrorStateMatcher
 } from '@angular/material';
-import {
-    errorMessage,
-    mockInput,
-    mockFormInput
-} from '../../../testing/interaction-helper';
+import { errorMessage, mockInput } from '../../../testing/interaction-helper';
 
 describe('OpenDialogComponent', () => {
     let component: OpenDialogComponent;
@@ -40,7 +35,6 @@ describe('OpenDialogComponent', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.HammerJSProvider(),
-                SharedService,
                 {
                     provide: ErrorStateMatcher,
                     useClass: ShowOnDirtyErrorStateMatcher

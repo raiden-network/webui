@@ -6,7 +6,6 @@ import { MaterialComponentsModule } from '../../modules/material-components/mate
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TestProviders } from '../../../testing/test-providers';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SharedService } from '../../services/shared.service';
 import { LocalStorageAdapter } from '../../adapters/local-storage-adapter';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Component } from '@angular/core';
@@ -54,7 +53,6 @@ describe('AddAddressDialogComponent', () => {
                 TestProviders.MockMatDialogRef(spyObj),
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.HammerJSProvider(),
-                SharedService,
                 {
                     provide: LocalStorageAdapter,
                     useValue: {}

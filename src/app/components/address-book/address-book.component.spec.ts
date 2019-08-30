@@ -28,10 +28,8 @@ import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { PageItemComponent } from '../page/page-item/page-item.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SharedService } from '../../services/shared.service';
 import { of } from 'rxjs/internal/observable/of';
 import Spy = jasmine.Spy;
-import { last } from 'rxjs/operators';
 
 describe('AddressBookComponent', () => {
     let component: AddressBookComponent;
@@ -78,7 +76,6 @@ describe('AddressBookComponent', () => {
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.MockMatDialog(),
                 TestProviders.MockRaidenConfigProvider(),
-                SharedService,
                 {
                     provide: ErrorStateMatcher,
                     useClass: ShowOnDirtyErrorStateMatcher

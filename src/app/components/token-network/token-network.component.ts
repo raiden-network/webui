@@ -30,6 +30,7 @@ import { TokenNetworkActionsComponent } from '../token-network-actions/token-net
 import { Network } from '../../utils/network-info';
 import { backoff } from '../../shared/backoff.operator';
 import BigNumber from 'bignumber.js';
+import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 
 @Component({
     selector: 'app-token-network',
@@ -78,7 +79,8 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     constructor(
         public dialog: MatDialog,
         private raidenService: RaidenService,
-        private raidenConfig: RaidenConfig
+        private raidenConfig: RaidenConfig,
+        private pendingTransferPollingService: PendingTransferPollingService
     ) {
         this.network$ = raidenService.network$;
     }
@@ -212,6 +214,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
             )
             .subscribe(() => {
                 this.refreshTokens();
+                this.pendingTransferPollingService.refresh();
             });
     }
 

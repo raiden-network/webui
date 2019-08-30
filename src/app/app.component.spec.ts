@@ -10,7 +10,6 @@ import { MaterialComponentsModule } from './modules/material-components/material
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenConfig } from './services/raiden.config';
 import { RaidenService } from './services/raiden.service';
-import { SharedService } from './services/shared.service';
 import { ErrorComponent } from './components/error/error.component';
 import { MediaObserver } from '@angular/flex-layout';
 import Spy = jasmine.Spy;
@@ -21,6 +20,9 @@ import { EMPTY, Observable, ReplaySubject } from 'rxjs';
 import { TestProviders } from '../testing/test-providers';
 import { Network } from './utils/network-info';
 import { By } from '@angular/platform-browser';
+import { NotificationService } from './services/notification.service';
+import { NotificationPanelComponent } from './components/notification/notification-panel/notification-panel.component';
+import { NotificationItemComponent } from './components/notification/notification-item/notification-item.component';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -62,20 +64,22 @@ describe('AppComponent', () => {
                 ErrorComponent,
                 NavigationEntryComponent,
                 ShortenAddressPipe,
-                DisplayDecimalsPipe
+                DisplayDecimalsPipe,
+                NotificationPanelComponent,
+                NotificationItemComponent
             ],
             providers: [
                 {
                     provide: RaidenConfig,
                     useClass: MockConfig
                 },
-                SharedService,
                 {
                     provide: RaidenService,
                     useValue: service
                 },
                 ChannelPollingService,
-                TestProviders.HammerJSProvider()
+                TestProviders.HammerJSProvider(),
+                NotificationService
             ],
             imports: [
                 MaterialComponentsModule,

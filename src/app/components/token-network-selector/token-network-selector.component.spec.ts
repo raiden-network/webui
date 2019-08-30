@@ -18,7 +18,6 @@ import { MaterialComponentsModule } from '../../modules/material-components/mate
 import { TokenPipe } from '../../pipes/token.pipe';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
-import { SharedService } from '../../services/shared.service';
 import { MockConfig } from '../../../testing/mock-config';
 import {
     ErrorStateMatcher,
@@ -81,7 +80,6 @@ describe('TokenNetworkSelectorComponent', () => {
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
-                SharedService,
                 {
                     provide: ErrorStateMatcher,
                     useClass: ShowOnDirtyErrorStateMatcher

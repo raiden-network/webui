@@ -2,7 +2,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, TestBed } from '@angular/core/testing';
 import { RaidenConfig } from './raiden.config';
-import { SharedService } from './shared.service';
 
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { BatchManager } from './batch-manager';
@@ -23,7 +22,6 @@ describe('TokenInfoRetriever', () => {
             imports: [HttpClientModule, HttpClientTestingModule],
             providers: [
                 TokenInfoRetrieverService,
-                SharedService,
                 TestProviders.MockRaidenConfigProvider()
             ]
         });

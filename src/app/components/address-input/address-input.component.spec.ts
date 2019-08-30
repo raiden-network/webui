@@ -24,7 +24,6 @@ import {
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
-import { SharedService } from '../../services/shared.service';
 import { MockConfig } from '../../../testing/mock-config';
 
 import { AddressInputComponent } from './address-input.component';
@@ -95,7 +94,6 @@ describe('AddressInputComponent', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.HammerJSProvider(),
-                SharedService,
                 { provide: FormBuilder, useValue: formBuilder },
                 {
                     provide: ErrorStateMatcher,

@@ -16,7 +16,7 @@ import { Observable } from 'rxjs';
     styleUrls: ['./page-item.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    animations: Animations.flyout
+    animations: Animations.flyInOut
 })
 export class PageItemComponent implements OnInit {
     @Input() showActions = true;
