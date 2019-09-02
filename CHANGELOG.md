@@ -12,6 +12,8 @@
 
 ### Added
 - [#156] Exposes Raiden and WebUI version on About page with a button to copy environment to clipboard.
+- [#30] Adds a notification panel which shows pending and finished actions.
+- [#16] Adds notifications for in flight payments.
 
 ## [0.9.2] - 2019-08-07
 ### Changed
@@ -116,7 +118,9 @@ token network.
 [#34]: https://github.com/raiden-network/webui/issues/34
 [#33]: https://github.com/raiden-network/webui/issues/33
 [#31]: https://github.com/raiden-network/webui/issues/31
+[#30]: https://github.com/raiden-network/webui/issues/30
 [#29]: https://github.com/raiden-network/webui/issues/29
+[#16]: https://github.com/raiden-network/webui/issues/16
 [#15]: https://github.com/raiden-network/webui/issues/15
 [#13]: https://github.com/raiden-network/webui/issues/13
 [#11]: https://github.com/raiden-network/webui/issues/11
