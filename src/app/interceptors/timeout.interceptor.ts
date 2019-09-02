@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 
 import { timeout } from 'rxjs/operators';
 
-import { RaidenConfig } from './raiden.config';
+import { RaidenConfig } from '../services/raiden.config';
 
 @Injectable()
 export class TimeoutInterceptor implements HttpInterceptor {

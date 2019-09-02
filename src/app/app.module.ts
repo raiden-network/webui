@@ -24,8 +24,9 @@ import { KeysPipe } from './pipes/keys.pipe';
 import { SubsetPipe } from './pipes/subset.pipe';
 import { TokenPipe } from './pipes/token.pipe';
 import { RaidenConfig, Web3Factory } from './services/raiden.config';
-import { LosslessJsonInterceptor } from './services/lossless-json.interceptor';
-import { TimeoutInterceptor } from './services/timeout.interceptor';
+import { LosslessJsonInterceptor } from './interceptors/lossless-json.interceptor';
+import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
+import { ErrorHandlingInterceptor } from './interceptors/error-handling.interceptor';
 import { RaidenService } from './services/raiden.service';
 import { DepositWithdrawDialogComponent } from './components/deposit-withdraw-dialog/deposit-withdraw-dialog.component';
 import { DecimalPipe } from './pipes/decimal.pipe';
@@ -66,6 +67,7 @@ import { PaymentIdentifierInputComponent } from './components/payment-identifier
 import { BigNumberConversionDirective } from './directives/big-number-conversion.directive';
 import { NotificationPanelComponent } from './components/notification/notification-panel/notification-panel.component';
 import { NotificationItemComponent } from './components/notification/notification-item/notification-item.component';
+import { NotificationService } from './services/notification.service';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -148,13 +150,19 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
     providers: [
         {
             provide: HTTP_INTERCEPTORS,
-            useClass: TimeoutInterceptor,
-            deps: [RaidenConfig],
+            useClass: ErrorHandlingInterceptor,
+            deps: [NotificationService, RaidenConfig],
             multi: true
         },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: LosslessJsonInterceptor,
+            multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TimeoutInterceptor,
+            deps: [RaidenConfig],
             multi: true
         },
         RaidenConfig,
