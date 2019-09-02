@@ -8,6 +8,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TimeoutInterceptor } from './timeout.interceptor';
 import { TestProviders } from '../../testing/test-providers';
+import { RaidenConfig } from '../services/raiden.config';
 
 @Injectable()
 class MockRequestingService {
@@ -18,7 +19,7 @@ class MockRequestingService {
     }
 }
 
-describe(`LosslessJsonInterceptor`, () => {
+describe('TimeoutInterceptor', () => {
     let service: MockRequestingService;
     let httpMock: HttpTestingController;
 
@@ -30,6 +31,7 @@ describe(`LosslessJsonInterceptor`, () => {
                 {
                     provide: HTTP_INTERCEPTORS,
                     useClass: TimeoutInterceptor,
+                    deps: [RaidenConfig],
                     multi: true
                 },
                 TestProviders.MockRaidenConfigProvider()

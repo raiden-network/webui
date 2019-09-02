@@ -17,7 +17,7 @@ import { createChannel } from '../../testing/test-data';
 import Spy = jasmine.Spy;
 import { amountToDecimal } from '../utils/amount.converter';
 import { Connection } from '../models/connection';
-import { LosslessJsonInterceptor } from './lossless-json.interceptor';
+import { LosslessJsonInterceptor } from '../interceptors/lossless-json.interceptor';
 import {
     losslessParse,
     losslessStringify
@@ -25,6 +25,7 @@ import {
 import { NotificationService } from './notification.service';
 import { PendingTransfer } from '../models/pending-transfer';
 import { UiMessage } from '../models/notification';
+import { ErrorHandlingInterceptor } from '../interceptors/error-handling.interceptor';
 
 describe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
@@ -79,6 +80,12 @@ describe('RaidenService', () => {
                 },
                 TokenInfoRetrieverService,
                 Web3Factory,
+                {
+                    provide: HTTP_INTERCEPTORS,
+                    useClass: ErrorHandlingInterceptor,
+                    deps: [NotificationService],
+                    multi: true
+                },
                 {
                     provide: HTTP_INTERCEPTORS,
                     useClass: LosslessJsonInterceptor,
@@ -283,7 +290,7 @@ describe('RaidenService', () => {
 
         const notificationMessage: UiMessage = {
             title: 'Raiden Error',
-            description: 'partner_address: Not a valid EIP55 encoded address'
+            description: 'Not a valid EIP55 encoded address'
         };
         expect(notificationService.error).toHaveBeenCalledTimes(1);
         expect(notificationService.error).toHaveBeenCalledWith(

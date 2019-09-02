@@ -26,7 +26,7 @@ class MockRequestingService {
     }
 }
 
-describe(`LosslessJsonInterceptor`, () => {
+describe('LosslessJsonInterceptor', () => {
     let service: MockRequestingService;
     let httpMock: HttpTestingController;
 

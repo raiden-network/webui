@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { from, interval, Observable, of, throwError, zip } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
-    catchError,
     flatMap,
     map,
     share,
@@ -32,7 +31,6 @@ import BigNumber from 'bignumber.js';
 import { NotificationService } from './notification.service';
 import { PendingTransfer } from '../models/pending-transfer';
 import { UiMessage } from '../models/notification';
-import { losslessStringify } from '../utils/lossless-json.converter';
 
 @Injectable({
     providedIn: 'root'
@@ -53,7 +51,6 @@ export class RaidenService {
             .get<{ our_address: string }>(`${this.raidenConfig.api}/address`)
             .pipe(
                 map(data => (this._raidenAddress = data.our_address)),
-                catchError(error => this.handleError(error)),
                 backoff(this.raidenConfig.config.error_poll_interval),
                 shareReplay(1)
             );
@@ -131,8 +128,7 @@ export class RaidenService {
                     );
                     return channel;
                 }),
-                toArray(),
-                catchError(error => this.handleError(error))
+                toArray()
             );
 
         return tokens$.pipe(flatMap(() => fetchChannels));
@@ -188,8 +184,7 @@ export class RaidenService {
                 });
 
                 return Object.values(this.userTokens);
-            }),
-            catchError(error => this.handleError(error))
+            })
         );
     }
 
@@ -212,8 +207,7 @@ export class RaidenService {
                         (<unknown>channel.reveal_timeout)
                     )).toNumber();
                     return channel;
-                }),
-                catchError(error => this.handleError(error))
+                })
             );
     }
 
@@ -258,7 +252,6 @@ export class RaidenService {
                 )).toNumber();
                 return channel;
             }),
-            catchError(error => this.handleError(error)),
             finalize(() =>
                 this.notificationService.removePendingAction(
                     notificationIdentifier
@@ -293,8 +286,7 @@ export class RaidenService {
                     this.notificationService.success(message);
                     this.notificationService.addNotification(message);
                 }),
-                map(() => null),
-                catchError(error => this.handleError(error))
+                map(() => null)
             );
     }
 
@@ -317,8 +309,7 @@ export class RaidenService {
                     } else {
                         return events;
                     }
-                }),
-                catchError(error => this.handleError(error))
+                })
             );
     }
 
@@ -382,7 +373,6 @@ export class RaidenService {
                 this.notificationService.info(message);
                 this.notificationService.addNotification(message);
             }),
-            catchError(error => this.handleError(error)),
             finalize(() =>
                 this.notificationService.removePendingAction(
                     notificationIdentifier
@@ -436,7 +426,6 @@ export class RaidenService {
                 this.notificationService.info(message);
                 this.notificationService.addNotification(message);
             }),
-            catchError(error => this.handleError(error)),
             finalize(() =>
                 this.notificationService.removePendingAction(
                     notificationIdentifier
@@ -472,7 +461,6 @@ export class RaidenService {
                 this.notificationService.success(message);
                 this.notificationService.addNotification(message);
             }),
-            catchError(error => this.handleError(error)),
             finalize(() =>
                 this.notificationService.removePendingAction(
                     notificationIdentifier
@@ -519,7 +507,6 @@ export class RaidenService {
                 this.notificationService.success(message);
                 this.notificationService.addNotification(message);
             }),
-            catchError(error => this.handleError(error)),
             finalize(() =>
                 this.notificationService.removePendingAction(
                     notificationIdentifier
@@ -559,7 +546,6 @@ export class RaidenService {
                 this.notificationService.success(message);
                 this.notificationService.addNotification(message);
             }),
-            catchError(error => this.handleError(error)),
             finalize(() =>
                 this.notificationService.removePendingAction(
                     notificationIdentifier
@@ -587,17 +573,14 @@ export class RaidenService {
             .pipe(
                 switchMap(response =>
                     response.ok ? of(true) : throwError(response.toString())
-                ),
-                catchError(error => this.handleError(error))
+                )
             );
     }
 
     public getPendingTransfers(): Observable<PendingTransfer[]> {
-        return this.http
-            .get<PendingTransfer[]>(
-                `${this.raidenConfig.api}/pending_transfers`
-            )
-            .pipe(catchError(error => this.handleError(error)));
+        return this.http.get<PendingTransfer[]>(
+            `${this.raidenConfig.api}/pending_transfers`
+        );
     }
 
     public mintToken(
@@ -640,7 +623,6 @@ export class RaidenService {
                 this.notificationService.success(message);
                 this.notificationService.addNotification(message);
             }),
-            catchError(error => this.handleError(error)),
             finalize(() =>
                 this.notificationService.removePendingAction(
                     notificationIdentifier
@@ -651,54 +633,6 @@ export class RaidenService {
 
     public getUserToken(tokenAddress: string): UserToken | null {
         return this.userTokens[tokenAddress];
-    }
-
-    private handleError(error: Response | Error | any) {
-        // In a real world app, you might use a remote logging infrastructure
-        let errMsg: string;
-        if (error instanceof Response) {
-            let body;
-            try {
-                body = error.json() || '';
-            } catch (e) {
-                body = error.text();
-            }
-            const err = body || losslessStringify(body);
-            errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-        } else if (
-            error instanceof HttpErrorResponse &&
-            error.error['errors']
-        ) {
-            const errors = error.error.errors;
-
-            if (typeof errors === 'string') {
-                errMsg = errors;
-            } else if (typeof errors === 'object') {
-                errMsg = '';
-
-                for (const key in errors) {
-                    if (errors.hasOwnProperty(key)) {
-                        if (errMsg !== '') {
-                            errMsg += '\n';
-                        }
-                        errMsg += `${key}: ${errors[key]}`;
-                    }
-                }
-            } else {
-                errMsg = errors;
-            }
-        } else {
-            errMsg = error.message ? error.message : error.toString();
-        }
-        console.error(errMsg);
-        const message: UiMessage = {
-            title: 'Raiden Error',
-            description:
-                typeof errMsg === 'string' ? errMsg : losslessStringify(errMsg)
-        };
-        this.notificationService.error(message);
-        this.notificationService.addNotification(message);
-        return throwError(errMsg);
     }
 
     attemptConnection() {
