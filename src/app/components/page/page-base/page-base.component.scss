@@ -36,8 +36,6 @@
 
 .page-paginator {
     margin: 10px $page-margin;
-    min-height: 78px;
-    height: 78px;
 
     @include respond-to(handhelds) {
         margin: 10px 3px;
