@@ -21,7 +21,6 @@ import { EMPTY, Observable, ReplaySubject } from 'rxjs';
 import { TestProviders } from '../testing/test-providers';
 import { Network } from './utils/network-info';
 import { By } from '@angular/platform-browser';
-import { clickElement } from '../testing/interaction-helper';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -111,18 +110,30 @@ describe('AppComponent', () => {
 
     it('should have the menu always open if it is not mobile', function() {
         isActive.and.returnValue(false);
+        fixture.detectChanges();
         expect(app.isMobile()).toBe(false);
-        expect(app.menuOpen).toBe(true);
+        expect(app.menuSidenav.opened).toBe(true);
         app.closeMenu();
-        expect(app.menuOpen).toBe(true);
+        expect(app.menuSidenav.opened).toBe(true);
     });
 
     it('should allow the menu to be toggled on mobile devices', function() {
         isActive.and.returnValue(true);
+        fixture.detectChanges();
         expect(app.isMobile()).toBe(true);
-        expect(app.menuOpen).toBe(false);
+        expect(app.menuSidenav.opened).toBe(false);
         app.toggleMenu();
-        expect(app.menuOpen).toBe(true);
+        expect(app.menuSidenav.opened).toBe(true);
+    });
+
+    it('should allow the menu to be closed on mobile devices', function() {
+        isActive.and.returnValue(true);
+        fixture.detectChanges();
+        expect(app.isMobile()).toBe(true);
+        app.toggleMenu();
+        expect(app.menuSidenav.opened).toBe(true);
+        app.closeMenu();
+        expect(app.menuSidenav.opened).toBe(false);
     });
 
     it('should have a faucet button when network has a faucet', function() {

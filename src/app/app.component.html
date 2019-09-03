@@ -102,9 +102,11 @@
 <mat-sidenav-container class="sidenav-container">
     <mat-sidenav
         [mode]="isMobile() ? 'over' : 'side'"
-        [opened]="menuOpen"
+        [disableClose]="isMobile() ? false : true"
+        [opened]="isMobile() ? false : true"
         class="dark-theme"
         role="navigation"
+        #menu_sidenav
     >
         <mat-nav-list>
             <app-navigation-entry

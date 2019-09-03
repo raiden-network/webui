@@ -1,7 +1,14 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import {
+    Component,
+    HostBinding,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import { default as makeBlockie } from 'ethereum-blockies-base64';
 import { Observable, Subscription, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MatSidenav } from '@angular/material';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
 import { SharedService } from './services/shared.service';
@@ -16,6 +23,8 @@ import { Network } from './utils/network-info';
 export class AppComponent implements OnInit, OnDestroy {
     @HostBinding('@.disabled')
     public animationsDisabled = false;
+    @ViewChild('menu_sidenav')
+    public menuSidenav: MatSidenav;
 
     public title = 'Raiden';
     public raidenAddress;
@@ -31,7 +40,6 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     private sub: Subscription;
-    private _menuOpen: boolean;
 
     constructor(
         private sharedService: SharedService,
@@ -39,7 +47,6 @@ export class AppComponent implements OnInit, OnDestroy {
         private channelPollingService: ChannelPollingService,
         private media: MediaObserver
     ) {
-        this._menuOpen = false;
         this.balance$ = raidenService.balance$;
         this.network$ = raidenService.network$;
         this.production = raidenService.production;
@@ -51,18 +58,6 @@ export class AppComponent implements OnInit, OnDestroy {
                 network.faucet.replace('${ADDRESS}', raidenAddress)
             )
         );
-    }
-
-    get menuOpen(): boolean {
-        if (!this.isMobile()) {
-            return true;
-        } else {
-            return this._menuOpen;
-        }
-    }
-
-    toggleMenu() {
-        this._menuOpen = !this._menuOpen;
     }
 
     isMobile(): boolean {
@@ -117,7 +112,13 @@ export class AppComponent implements OnInit, OnDestroy {
         this.raidenService.attemptConnection();
     }
 
+    toggleMenu() {
+        this.menuSidenav.toggle();
+    }
+
     closeMenu() {
-        this._menuOpen = false;
+        if (this.isMobile()) {
+            this.menuSidenav.close();
+        }
     }
 }
