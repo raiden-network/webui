@@ -25,6 +25,7 @@ __pycache__
 
 # IDE - VSCode
 .vscode/*
+*.code-workspace
 
 # misc
 /.sass-cache
