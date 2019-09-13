@@ -13,59 +13,30 @@
 >
     <div class="information">
         <h1 ngClass="mat-display-2" ngClass.xs="headline">
-            Payment-Channel Network for Ethereum
+            Welcome to the Raiden WebUI
         </h1>
         <p>
-            Raiden is a technology that leverages off-chain state networks to
-            extend Ethereum with some nice properties for asset transfers:
+            The WebUI will give you an idea of what Raiden is capable of and how to utilize the Raiden REST API endpoints.
         </p>
+        <h2>
+            Get started by:
+        </h2>
         <ul>
             <li>
-                <strong>Scalable</strong>
                 <p>
-                    It scales linearly with the number of participants
-                    (1,000,000+ transfers per second possible)
+                    <a [routerLink]="'/tokens'">Joining a token network</a>
                 </p>
             </li>
             <li>
-                <strong>Fast</strong>
                 <p>
-                    Transfers are confirmed and final within a brief moment.
+                    <a target="_blank" href="https://docs.raiden.network/the-raiden-web-interface">Reading the updated WebUI tutorial</a>
                 </p>
             </li>
             <li>
-                <strong>Confidential</strong>
                 <p>
-                    Single transfers don’t show up in the global shared ledger
+                    <a target="_blank" href="https://raiden-network.readthedocs.io/en/latest/">Reading the complete Raiden documentation</a>
                 </p>
             </li>
-            <li>
-                <strong>Interoperable</strong>
-                <p>
-                    Works with any token that follows Ethereum’s standardized
-                    token API.
-                </p>
-            </li>
-            <li>
-                <strong>Low Fees</strong>
-                <p>
-                    Transaction fees can be 7 orders of magnitude lower than on
-                    the blockchain
-                </p>
-            </li>
-            <li>
-                <strong>Micro-payments</strong>
-                <p>
-                    Low transaction fees allow to efficiently transfer tiny
-                    values.
-                </p>
-            </li>
-        </ul>
-        <p>
-            <a target="_blank" href="http://raiden-network.readthedocs.io">
-                Click here
-            </a>
-            to visit the Raiden Network documentation.
-        </p>
+        </ul>       
     </div>
 </div>
