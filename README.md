@@ -44,18 +44,19 @@ channels along with closing and settling channels to name some of the functional
 
 ## Table of Contents
 
--   [About The Project](#about-the-project)
--   [Getting Started](#getting-started)
-    -   [Learn about Raiden](#learn-about-raiden)
-    -   [Using the WebUI](#using-the-webui)
-    -   [Prerequisites](#prerequisites)
-    -   [Development](#development)
-        -   [Configuration](#configuration)
-        -   [Running WebUI](#running-webui)
-        -   [Python Package](#python-package)
--   [Contributing](#contributing)
--   [License](#license)
--   [Contact](#contact)
+- [Table of Contents](#table-of-contents)
+- [About The Project](#about-the-project)
+- [Getting Started](#getting-started)
+  - [Learn about Raiden](#learn-about-raiden)
+  - [Using the WebUI](#using-the-webui)
+  - [Prerequisites](#prerequisites)
+  - [Development](#development)
+    - [Configuration](#configuration)
+    - [Running the WebUI](#running-the-webui)
+    - [Python package](#python-package)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
 ## About The Project
 
@@ -77,7 +78,7 @@ limited alpha release of the Raiden Network in December 2018.
 </p>
 
 
-Raiden WebUI is build using the following technologies:
+Raiden WebUI is built using the following technologies:
 
 -   [Angular](https://angular.io/)
 -   [Angular Material](https://material.angular.io/)
@@ -88,7 +89,7 @@ Raiden WebUI is build using the following technologies:
 
 ### Learn about Raiden
 
-If you didn't use Raiden before, you can
+If you haven't used Raiden before, you can:
 
 -   Checkout the [developer portal](http://developer.raiden.network)
 -   Look at the [documentation](https://raiden-network.readthedocs.io/en/stable/index.html)
@@ -97,14 +98,15 @@ If you didn't use Raiden before, you can
 
 ### Using the WebUI
 
-If you want to know how to use the Raiden WebUI you can find a nice
-[tutorial](https://raiden-network.readthedocs.io/en/latest/webui_tutorial.html) on the Raiden Documentation.
+If you want to learn how to use the Raiden WebUI an [updated tutorial](https://docs.raiden.network/the-raiden-web-interface) has been published in the new documentation for Raiden.
 
 ### Prerequisites
 
-If you are a just a user of the WebUI there is no need for you to do anything. A version of the WebUI is
-already bundled with each raiden release. The only thing you need to to to access the WebUI is for example to
-navigate to `http://127.0.0.1:5001` and interact with the Raiden WebUI.
+If you just want to use the WebUI all you need to do is install and run Raiden. A version of the WebUI comes bundled with each Raiden release and is accessible from `http://127.0.0.1:5001`.
+
+For details on how to easily install Raiden:
+
+Read the [Quick Start](https://docs.raiden.network/quick-start) section in the documentation.
 
 If you want to work on the WebUI codebase you need:
 
@@ -114,7 +116,7 @@ If you want to work on the WebUI codebase you need:
 
 ### Development
 
-Before you start working on the WebUI you need to install the WebUI's dependencies.
+Before you start working on the WebUI you need to install the WebUI dependencies.
 
 ```bash
 npm install
@@ -122,10 +124,10 @@ npm install
 
 #### Configuration
 
-Before you being to work on the WebUI you have to make sure that you have the proper configuration.
+Before you begin to work on the WebUI you have to make sure that you have the proper configuration.
 Check if the [proxy configuration](./proxy.config.json) corresponds to your actual environment configuration.
 
-Since you will not be running the WebUI embedded into raiden you need to provide both the Ethereum RPC endpoint
+Since you will not be running the WebUI embedded into Raiden you need to provide both the Ethereum RPC endpoint
 and the Raiden REST API endpoint to the `proxy.config.json`.
 
 By default the configurations looks like this:
@@ -149,7 +151,7 @@ The configuration assumes that the Ethereum RPC endpoint listens on `http://loca
 and the Raiden REST API is on `http://localhost:5001`. If you are using a different configuration make sure
 to update the corresponding fields in the configuration.
 
-For example if you run raiden on port `5002` and you use Infura as your RPC provider you would have to
+For example if you run Raiden on port `5002` and you use Infura as your RPC provider you would have to
 modify the `proxy.config.json` to like like:
 
 ```json
@@ -173,7 +175,7 @@ modify the `proxy.config.json` to like like:
 
 > **Important**: Modifications on `proxy.config.json` make sure never be part of your PR.
 
-#### Running WebUI
+#### Running the WebUI
 
 After you are done with the configuration you can start the development server:
 
