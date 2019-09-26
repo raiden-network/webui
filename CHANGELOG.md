@@ -7,6 +7,7 @@
 - [#131] Fixes the instant validation feedback for token amount input when decimals are unchecked.
 - [#139] Fixes the paginator to fit material card on mobile.
 - [#140] Fixes mobile navigation menu to toggle correctly.
+- [#157] Fixes the token symbol to be shortened when it would cause an overlay.
 
 ## [0.9.2] - 2019-08-07
 ### Changed
@@ -77,6 +78,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#157]: https://github.com/raiden-network/webui/issues/157
 [#144]: https://github.com/raiden-network/webui/issues/144
 [#140]: https://github.com/raiden-network/webui/issues/140
 [#139]: https://github.com/raiden-network/webui/issues/139
