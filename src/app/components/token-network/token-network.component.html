@@ -27,8 +27,13 @@
         *ngFor="let token of visibleTokens; trackBy: trackByFn"
     >
         <div fxLayout="column" fxFlex="0 0 8em" fxLayoutAlign="center center">
-            <div class="token-network-symbol" fxFlexOffset="10" fxFlex="row">
-                {{ token.symbol }}
+            <div
+                class="token-network-symbol"
+                fxFlexOffset="10"
+                fxFlex="row"
+                matTooltip="{{ token.symbol }}"
+            >
+                {{ token.symbol | ellipsis: 5 }}
             </div>
             <div
                 class="token-network-name"
