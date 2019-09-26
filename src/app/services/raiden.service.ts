@@ -97,6 +97,12 @@ export class RaidenService {
         return fromPromise(this.raidenConfig.web3.eth.getBlockNumber());
     }
 
+    public getVersion(): Observable<string> {
+        return this.http
+            .get<{ version: string }>(`${this.raidenConfig.api}/version`)
+            .pipe(map(response => response.version));
+    }
+
     public getChannels(): Observable<Array<Channel>> {
         let tokens$: Observable<any>;
         if (Object.keys(this.userTokens).length === 0) {
