@@ -9,6 +9,9 @@
 - [#140] Fixes mobile navigation menu to toggle correctly.
 - [#157] Fixes the token symbol to be shortened when it would cause an overlay.
 
+### Added
+- [#156] Exposes Raiden and WebUI version on About page with a button to copy environment to clipboard.
+
 ## [0.9.2] - 2019-08-07
 ### Changed
 - [#129] Fixes the address book download to have .json extension on Firefox.
@@ -79,6 +82,7 @@ token network.
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
 [#157]: https://github.com/raiden-network/webui/issues/157
+[#156]: https://github.com/raiden-network/webui/issues/156
 [#144]: https://github.com/raiden-network/webui/issues/144
 [#140]: https://github.com/raiden-network/webui/issues/140
 [#139]: https://github.com/raiden-network/webui/issues/139
