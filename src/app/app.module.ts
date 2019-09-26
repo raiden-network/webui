@@ -12,7 +12,7 @@ import { ChannelTableComponent } from './components/channel-table/channel-table.
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { HomeComponent } from './components/home/home.component';
 import { ConnectionManagerDialogComponent } from './components/connection-manager-dialog/connection-manager-dialog.component';
-import { LicenseComponent } from './components/license/license.component';
+import { AboutComponent } from './components/about/about.component';
 import { OpenDialogComponent } from './components/open-dialog/open-dialog.component';
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
 import { RegisterDialogComponent } from './components/register-dialog/register-dialog.component';
@@ -69,7 +69,7 @@ import { BigNumberConversionDirective } from './directives/big-number-conversion
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
-    { path: 'license', component: LicenseComponent },
+    { path: 'about', component: AboutComponent },
     { path: 'tokens', component: TokenNetworkComponent },
     { path: 'channels', component: ChannelTableComponent },
     { path: 'payments', component: PaymentHistoryComponent },
@@ -87,7 +87,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ChannelTableComponent,
         TokenNetworkComponent,
         HomeComponent,
-        LicenseComponent,
+        AboutComponent,
         PaymentDialogComponent,
         ConnectionManagerDialogComponent,
         RegisterDialogComponent,

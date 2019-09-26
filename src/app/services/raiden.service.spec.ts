@@ -100,6 +100,26 @@ describe('RaidenService', () => {
         }
     ));
 
+    it('should return the raiden version', () => {
+        const version = '0.100.5a1.dev157+geb2af878d';
+        service.getVersion().subscribe(value => expect(value).toBe(version));
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/version`,
+            method: 'GET'
+        });
+
+        request.flush(
+            {
+                version: version
+            },
+            {
+                status: 200,
+                statusText: ''
+            }
+        );
+    });
+
     it('should inform the user when token network creation was completed successfully', () => {
         service
             .registerToken(tokenAddress)
