@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.10.0] - 2019-09-27
 ### Changed
 - [#144] Fixes channels pagination to update the page immediately.
 - [#117] Converts most of the internal numeric values to BigNumber.js instances to prevent overflows.
@@ -76,6 +78,7 @@ token network.
 - First python package release.
 
 [Unreleased]: https://github.com/raiden-network/webui/compare/v0.9.2...HEAD
+[0.10.0]: https://github.com/raiden-network/webui/compare/v0.9.2...v0.10.0
 [0.9.2]: https://github.com/raiden-network/webui/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/raiden-network/webui/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/raiden-network/webui/compare/v0.8.0...v0.9.0
