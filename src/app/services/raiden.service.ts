@@ -16,7 +16,6 @@ import {
 import { Channel } from '../models/channel';
 import { Connections } from '../models/connection';
 import { PaymentEvent } from '../models/payment-event';
-import { SwapToken } from '../models/swaptoken';
 import { UserToken } from '../models/usertoken';
 import { amountToDecimal } from '../utils/amount.converter';
 import { EnvironmentType } from './enviroment-type.enum';
@@ -552,29 +551,6 @@ export class RaidenService {
                 )
             )
         );
-    }
-
-    public swapTokens(swap: SwapToken): Observable<boolean> {
-        const body = {
-            role: swap.role,
-            sending_token: swap.sending_token,
-            sending_amount: swap.sending_amount,
-            receiving_token: swap.receiving_token,
-            receiving_amount: swap.receiving_amount
-        };
-        return this.http
-            .put(
-                `${this.raidenConfig.api}/token_swaps/${swap.partner_address}/${
-                    swap.identifier
-                }`,
-                body,
-                { observe: 'response' }
-            )
-            .pipe(
-                switchMap(response =>
-                    response.ok ? of(true) : throwError(response.toString())
-                )
-            );
     }
 
     public getPendingTransfers(): Observable<PendingTransfer[]> {
