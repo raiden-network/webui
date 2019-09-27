@@ -154,7 +154,7 @@ describe('RaidenConfig', () => {
         });
 
         expect(sharedService.getStackTrace()).toBe(null);
-        expect(tracking.current).toBe(2);
+        expect(tracking.current).toBe(1);
         flush();
     }));
 
@@ -195,7 +195,8 @@ describe('RaidenConfig', () => {
         });
 
         expect(sharedService.getStackTrace()).toBe(null);
-        expect(tracking.current).toBe(2);
+        expect(tracking.current).toBe(1);
+        flush();
     }));
 
     it('should fallback if the primary web3 endpoint fails', fakeAsync(function() {
@@ -221,13 +222,14 @@ describe('RaidenConfig', () => {
                 statusText: ''
             });
 
-        tick();
+        tick(2000);
 
         expect(sharedService.getStackTrace()).toBe(null);
         expect(tracking.current).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback
         );
+        flush();
     }));
 
     it('should return false and set error on the promise if both web3 endpoints fail', fakeAsync(function() {
@@ -252,12 +254,13 @@ describe('RaidenConfig', () => {
                 statusText: ''
             });
 
-        tick();
+        tick(2000);
 
         expect(sharedService.getStackTrace()).toBeTruthy();
         expect(tracking.current).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback
         );
+        flush();
     }));
 });

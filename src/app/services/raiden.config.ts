@@ -75,25 +75,45 @@ export class RaidenConfig {
             await this.setupWeb3();
             return true;
         } catch (e) {
+            console.error(e.message);
             this.sharedService.displayableError = e;
             return false;
         }
     }
 
     private async setupWeb3(): Promise<void> {
-        const provider = this.provider(2000);
-        this.web3 = this.web3Factory.create(provider);
+        this.web3 = this.web3Factory.create(this.provider());
+
+        const getNetworkId: () => Promise<number> = () => {
+            return new Promise(async (resolve, reject) => {
+                const timeout = setTimeout(
+                    () =>
+                        reject(
+                            new Error(
+                                'A timeout occurred when trying to connect to the Web3 provider'
+                            )
+                        ),
+                    2000
+                );
+                try {
+                    const id = await this.web3.eth.net.getId();
+                    clearTimeout(timeout);
+                    resolve(id);
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        };
 
         try {
-            const id = await this.web3.eth.net.getId();
+            const id = await getNetworkId();
             this._network$.next(NetworkInfo.getNetwork(id));
-            this.web3 = this.web3Factory.create(this.provider());
             this.createBatchManager();
         } catch (e) {
             this.config.web3 = this.config.web3_fallback;
             this.web3 = this.web3Factory.create(this.provider());
             this.createBatchManager();
-            const id = await this.web3.eth.net.getId();
+            const id = await getNetworkId();
             this._network$.next(NetworkInfo.getNetwork(id));
         }
     }
@@ -111,7 +131,7 @@ export class RaidenConfig {
         this.sharedService.httpTimeout = this.config.http_timeout;
     }
 
-    private provider(timeout?: number): HttpProvider {
+    private provider(): HttpProvider {
         let host = this.config.web3;
         if (
             !RaidenConfig.isAbsolute(this.config.web3) &&
@@ -120,7 +140,7 @@ export class RaidenConfig {
             host = `${window.location.origin}${this.config.web3}`;
         }
 
-        return new Web3.providers.HttpProvider(host, { timeout });
+        return new Web3.providers.HttpProvider(host);
     }
 
     private createBatchManager() {

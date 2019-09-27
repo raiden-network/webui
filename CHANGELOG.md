@@ -8,6 +8,7 @@
 - [#139] Fixes the paginator to fit material card on mobile.
 - [#140] Fixes mobile navigation menu to toggle correctly.
 - [#157] Fixes the token symbol to be shortened when it would cause an overlay.
+- [#146] Fixes the error screen to appear in case of a rpc error.
 
 ### Added
 - [#156] Exposes Raiden and WebUI version on About page with a button to copy environment to clipboard.
@@ -83,6 +84,7 @@ token network.
 
 [#157]: https://github.com/raiden-network/webui/issues/157
 [#156]: https://github.com/raiden-network/webui/issues/156
+[#146]: https://github.com/raiden-network/webui/issues/146
 [#144]: https://github.com/raiden-network/webui/issues/144
 [#140]: https://github.com/raiden-network/webui/issues/140
 [#139]: https://github.com/raiden-network/webui/issues/139

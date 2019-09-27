@@ -22,7 +22,7 @@
             Raiden Network
         </a>
         <span class="network-info">
-            {{ (network$ | async).name }}
+            {{ (network$ | async)?.name }}
             <span class="environment">{{
                 production ? 'production' : 'development'
             }}</span>
@@ -59,7 +59,7 @@
                     (balance | displayDecimals) === balance ? '' : balance
                 "
                 >{{ balance | displayDecimals }}
-                {{ (network$ | async).shortName | uppercase }}
+                {{ (network$ | async)?.shortName | uppercase }}
             </span>
             <ng-template #mobile_balance>
                 <span
@@ -70,11 +70,11 @@
                             : balance
                     "
                     >{{ balance | displayDecimals: 3:true }}
-                    {{ (network$ | async).shortName | uppercase }}
+                    {{ (network$ | async)?.shortName | uppercase }}
                 </span>
             </ng-template>
             <a
-                *ngIf="(network$ | async).faucet"
+                *ngIf="(network$ | async)?.faucet"
                 [href]="faucetLink$ | async"
                 target="_blank"
                 mat-icon-button
