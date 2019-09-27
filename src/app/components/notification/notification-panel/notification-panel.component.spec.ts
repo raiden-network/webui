@@ -1,14 +1,7 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    fakeAsync,
-    flush,
-    tick
-} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import Spy = jasmine.Spy;
 
 import { NotificationPanelComponent } from './notification-panel.component';
@@ -19,6 +12,7 @@ import { PendingTransferPollingService } from '../../../services/pending-transfe
 import { NotificationService } from '../../../services/notification.service';
 import { NotificationMessage } from '../../../models/notification';
 import { clickElement } from '../../../../testing/interaction-helper';
+import { By } from '@angular/platform-browser';
 
 describe('NotificationPanelComponent', () => {
     let component: NotificationPanelComponent;
@@ -26,6 +20,7 @@ describe('NotificationPanelComponent', () => {
 
     let notificationService;
     let notificationsSubject: BehaviorSubject<NotificationMessage[]>;
+    let pendingActionsSubject: BehaviorSubject<NotificationMessage[]>;
     let removeSpy: Spy;
     let clearSpy: Spy;
 
@@ -35,11 +30,18 @@ describe('NotificationPanelComponent', () => {
         identifier: 1
     };
 
+    const pendingAction: NotificationMessage = {
+        title: 'Testing pending',
+        description: 'Test is pending.',
+        identifier: 2
+    };
+
     beforeEach(async(() => {
         notificationsSubject = new BehaviorSubject<NotificationMessage[]>([]);
+        pendingActionsSubject = new BehaviorSubject<NotificationMessage[]>([]);
         notificationService = {
             notifications$: notificationsSubject.asObservable(),
-            pendingActions$: of([]),
+            pendingActions$: pendingActionsSubject.asObservable(),
             clearNotifications: () => {},
             removeNotification: () => {}
         };
@@ -100,5 +102,16 @@ describe('NotificationPanelComponent', () => {
         clickElement(fixture.debugElement, '#clear-notifications');
 
         expect(clearSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should render the notification items', () => {
+        notificationsSubject.next([notification]);
+        pendingActionsSubject.next([pendingAction]);
+        fixture.detectChanges();
+
+        const notificationItems = fixture.debugElement.queryAll(
+            By.directive(NotificationItemComponent)
+        );
+        expect(notificationItems.length).toBe(2);
     });
 });
