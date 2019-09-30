@@ -6,7 +6,7 @@ import { MaterialComponentsModule } from '../../modules/material-components/mate
 import {
     ErrorStateMatcher,
     ShowOnDirtyErrorStateMatcher
-} from '@angular/material';
+} from '@angular/material/core';
 
 import { TokenInputComponent } from './token-input.component';
 import { TestProviders } from '../../../testing/test-providers';

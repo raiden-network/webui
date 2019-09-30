@@ -6,7 +6,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { DepositMode } from '../../utils/helpers';
 import BigNumber from 'bignumber.js';
@@ -27,7 +27,8 @@ export interface DepositWithdrawDialogResult {
     styleUrls: ['./deposit-withdraw-dialog.component.css']
 })
 export class DepositWithdrawDialogComponent implements OnInit {
-    @ViewChild(TokenInputComponent) tokenInput: TokenInputComponent;
+    @ViewChild(TokenInputComponent, { static: true })
+    tokenInput: TokenInputComponent;
 
     withdraw = false;
 

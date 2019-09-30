@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, PageEvent } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 import { EMPTY, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { flatMap } from 'rxjs/operators';
@@ -45,7 +46,7 @@ import { Animations } from '../../animations/animations';
     animations: Animations.flyInOut
 })
 export class ChannelTableComponent implements OnInit, OnDestroy {
-    @ViewChild(PageBaseComponent)
+    @ViewChild(PageBaseComponent, { static: true })
     page: PageBaseComponent;
 
     public channels$: Observable<Channel[]>;

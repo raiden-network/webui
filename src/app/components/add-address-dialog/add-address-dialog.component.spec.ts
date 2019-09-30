@@ -19,7 +19,7 @@ import Spy = jasmine.Spy;
 import {
     ErrorStateMatcher,
     ShowOnDirtyErrorStateMatcher
-} from '@angular/material';
+} from '@angular/material/core';
 
 // noinspection Angular2DeclarationMembershipInModule
 @Component({

@@ -14,13 +14,15 @@ import {
     FormsModule,
     ReactiveFormsModule
 } from '@angular/forms';
-import { MatHint, MatIcon, MatOption } from '@angular/material';
+import { MatOption } from '@angular/material/core';
+import { MatHint } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
     ErrorStateMatcher,
     ShowOnDirtyErrorStateMatcher
-} from '@angular/material';
+} from '@angular/material/core';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';

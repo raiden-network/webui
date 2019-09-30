@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, PageEvent } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 import { BehaviorSubject, EMPTY, Observable, Subscription } from 'rxjs';
 import { flatMap, switchMap, tap, finalize } from 'rxjs/operators';
 import { SortingData } from '../../models/sorting.data';
@@ -38,7 +39,7 @@ import { PendingTransferPollingService } from '../../services/pending-transfer-p
     styleUrls: ['./token-network.component.scss']
 })
 export class TokenNetworkComponent implements OnInit, OnDestroy {
-    @ViewChild(PageBaseComponent)
+    @ViewChild(PageBaseComponent, { static: true })
     page: PageBaseComponent;
 
     public refreshing = true;

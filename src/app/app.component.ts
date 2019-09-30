@@ -8,7 +8,7 @@ import {
 import { default as makeBlockie } from 'ethereum-blockies-base64';
 import { Observable, Subscription, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav } from '@angular/material/sidenav';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
 import { MediaObserver } from '@angular/flex-layout';
@@ -23,7 +23,7 @@ import { NotificationService } from './services/notification.service';
 export class AppComponent implements OnInit, OnDestroy {
     @HostBinding('@.disabled')
     public animationsDisabled = false;
-    @ViewChild('menu_sidenav')
+    @ViewChild('menu_sidenav', { static: true })
     public menuSidenav: MatSidenav;
 
     public title = 'Raiden';
@@ -44,7 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
     constructor(
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService,
-        private media: MediaObserver,
+        private mediaObserver: MediaObserver,
         private notificationService: NotificationService
     ) {
         this.balance$ = raidenService.balance$;
@@ -61,7 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     isMobile(): boolean {
-        return this.media.isActive('xs');
+        return this.mediaObserver.isActive('xs');
     }
 
     ngOnInit() {

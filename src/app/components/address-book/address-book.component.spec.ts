@@ -9,10 +9,10 @@ import { DragUploadDirective } from '../../directives/drag-upload.directive';
 import { AddressBookService } from '../../services/address-book.service';
 import { Address, Addresses } from '../../models/address';
 import {
-    MatDialog,
     ErrorStateMatcher,
     ShowOnDirtyErrorStateMatcher
-} from '@angular/material';
+} from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { By } from '@angular/platform-browser';
 import {
@@ -88,11 +88,7 @@ describe('AddressBookComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(AddressBookComponent);
         component = fixture.componentInstance;
-        mobileSpy = spyOnProperty(
-            component,
-            'isMobile$',
-            'get'
-        ).and.returnValue(of(false));
+        mobileSpy = spyOn(component, 'isMobile').and.returnValue(false);
     });
 
     it('should create', () => {
@@ -113,7 +109,7 @@ describe('AddressBookComponent', () => {
         );
         expect(
             (paginatorLabel.nativeElement as HTMLDivElement).textContent
-        ).toBe('1 - 10 of 15');
+        ).toBe('1 – 10 of 15');
         expect(addressListElement.children.length).toBe(10);
 
         expect(getLabels(addressListElement)).toEqual(getExpected(1, 10));
@@ -133,7 +129,7 @@ describe('AddressBookComponent', () => {
         );
         expect(
             (paginatorLabel.nativeElement as HTMLDivElement).textContent
-        ).toBe('11 - 15 of 15');
+        ).toBe('11 – 15 of 15');
         expect(addressListElement.children.length).toBe(5);
 
         expect(getLabels(addressListElement)).toEqual(getExpected(11, 15));

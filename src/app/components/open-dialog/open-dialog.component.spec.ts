@@ -13,7 +13,7 @@ import { TestProviders } from '../../../testing/test-providers';
 import {
     ErrorStateMatcher,
     ShowOnDirtyErrorStateMatcher
-} from '@angular/material';
+} from '@angular/material/core';
 import { errorMessage, mockInput } from '../../../testing/interaction-helper';
 
 describe('OpenDialogComponent', () => {

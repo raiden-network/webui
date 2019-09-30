@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SortingData } from '../../../models/sorting.data';
 import { MediaObserver } from '@angular/flex-layout';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {
     FilterDialogComponent,
     FilterDialogPayload
@@ -32,10 +32,13 @@ export class SortFilterPageHeaderComponent implements OnInit {
     @Output() sorted: EventEmitter<number> = new EventEmitter();
     @Output() ordered: EventEmitter<void> = new EventEmitter();
 
-    constructor(private media: MediaObserver, public dialog: MatDialog) {}
+    constructor(
+        private mediaObserver: MediaObserver,
+        public dialog: MatDialog
+    ) {}
 
     isMobile(): boolean {
-        return this.media.isActive('xs');
+        return this.mediaObserver.isActive('xs');
     }
 
     ngOnInit() {}

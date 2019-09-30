@@ -1,6 +1,6 @@
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { MatError } from '@angular/material';
+import { MatError } from '@angular/material/form-field';
 
 export function mockEvent(
     type: string,

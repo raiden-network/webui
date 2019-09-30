@@ -22,7 +22,7 @@ import { MockConfig } from '../../../testing/mock-config';
 import {
     ErrorStateMatcher,
     ShowOnDirtyErrorStateMatcher
-} from '@angular/material';
+} from '@angular/material/core';
 
 import { TokenNetworkSelectorComponent } from './token-network-selector.component';
 import {

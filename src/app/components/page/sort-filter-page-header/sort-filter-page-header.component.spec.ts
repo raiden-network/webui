@@ -5,7 +5,7 @@ import { MaterialComponentsModule } from '../../../modules/material-components/m
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TestProviders } from '../../../../testing/test-providers';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { MockMatDialog } from '../../../../testing/mock-mat-dialog';
 import Spy = jasmine.Spy;
 

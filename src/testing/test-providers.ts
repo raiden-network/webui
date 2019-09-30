@@ -4,7 +4,11 @@ import { AddressBookService } from '../app/services/address-book.service';
 import { stub } from './stub';
 import { RaidenConfig } from '../app/services/raiden.config';
 import { MockConfig } from './mock-config';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import {
+    MAT_DIALOG_DATA,
+    MatDialog,
+    MatDialogRef
+} from '@angular/material/dialog';
 import { MockMatDialog } from './mock-mat-dialog';
 
 export class TestProviders {

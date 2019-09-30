@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { flatMap, map, share, tap } from 'rxjs/operators';
@@ -22,7 +22,7 @@ interface PaymentHistoryParameters {
     styleUrls: ['./payment-history.component.scss']
 })
 export class PaymentHistoryComponent implements OnInit, OnDestroy {
-    @ViewChild(MatPaginator) paginator: MatPaginator;
+    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     readonly partnerInformation$: Observable<PaymentHistoryParameters>;
     pageSize = 10;
     private readonly history$: Observable<PaymentEvent[]>;
