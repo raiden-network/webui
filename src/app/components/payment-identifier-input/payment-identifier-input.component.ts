@@ -8,7 +8,7 @@ import {
     NG_VALUE_ACCESSOR,
     NG_VALIDATORS
 } from '@angular/forms';
-import { MatExpansionPanel } from '@angular/material';
+import { MatExpansionPanel } from '@angular/material/expansion';
 import BigNumber from 'bignumber.js';
 
 @Component({
@@ -29,7 +29,7 @@ import BigNumber from 'bignumber.js';
     ]
 })
 export class PaymentIdentifierInputComponent implements ControlValueAccessor {
-    @ViewChild(MatExpansionPanel)
+    @ViewChild(MatExpansionPanel, { static: true })
     panel: MatExpansionPanel;
 
     readonly identifierFc = new FormControl(null, this.identifierValidator());

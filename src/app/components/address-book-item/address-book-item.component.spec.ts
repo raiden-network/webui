@@ -7,10 +7,10 @@ import { By } from '@angular/platform-browser';
 import { Address } from '../../models/address';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import {
-    MatDialog,
     ErrorStateMatcher,
     ShowOnDirtyErrorStateMatcher
-} from '@angular/material';
+} from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
 import {
     clickElement,
     errorMessage,

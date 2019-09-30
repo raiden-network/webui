@@ -18,10 +18,9 @@ import {
     map,
     startWith,
     tap,
-    switchMap,
-    partition
+    switchMap
 } from 'rxjs/operators';
-import { merge, Observable, of, Subscription } from 'rxjs';
+import { merge, Observable, of, Subscription, partition } from 'rxjs';
 import AddressUtils from '../../utils/address-utils';
 import { isAddressValid } from '../../shared/address.validator';
 
@@ -91,9 +90,10 @@ export class AddressInputComponent
     }
 
     private setupValidation() {
-        const [ens, address] = partition((value: string | null | undefined) =>
-            AddressUtils.isDomain(value)
-        )(this.inputFieldFc.valueChanges);
+        const [ens, address] = partition(
+            this.inputFieldFc.valueChanges,
+            (value: string | null | undefined) => AddressUtils.isDomain(value)
+        );
 
         const resolveOnEns = () =>
             ens.pipe(

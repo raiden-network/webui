@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     ErrorStateMatcher,
     ShowOnDirtyErrorStateMatcher
-} from '@angular/material';
+} from '@angular/material/core';
 import { By } from '@angular/platform-browser';
 
 import { PaymentIdentifierInputComponent } from './payment-identifier-input.component';

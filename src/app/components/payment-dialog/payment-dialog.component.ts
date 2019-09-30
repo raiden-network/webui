@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserToken } from '../../models/usertoken';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 
@@ -25,8 +25,9 @@ export interface PaymentDialogPayload {
 export class PaymentDialogComponent implements OnInit {
     public form: FormGroup;
 
-    @ViewChild(TokenInputComponent) tokenInput: TokenInputComponent;
-    @ViewChild(PaymentIdentifierInputComponent)
+    @ViewChild(TokenInputComponent, { static: true })
+    tokenInput: TokenInputComponent;
+    @ViewChild(PaymentIdentifierInputComponent, { static: true })
     paymentIdentifierInput: PaymentIdentifierInputComponent;
 
     constructor(

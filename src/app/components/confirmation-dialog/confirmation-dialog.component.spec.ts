@@ -4,7 +4,7 @@ import { MaterialComponentsModule } from '../../modules/material-components/mate
 
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 
 describe('ConfirmationDialogComponent', () => {
     let component: ConfirmationDialogComponent;

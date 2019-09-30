@@ -80,7 +80,12 @@ describe('FileUploadComponent', () => {
             result[data[i].address] = data[i].label;
         }
 
-        window['FileReader'] = () => createMockReader(result);
+        // @ts-ignore
+        window['FileReader'] = class {
+            constructor() {
+                return createMockReader(result);
+            }
+        };
 
         const fileList = createMockFileList();
 
@@ -111,7 +116,12 @@ describe('FileUploadComponent', () => {
             result[data[i].address] = data[i].label;
         }
 
-        window['FileReader'] = () => createMockReader(result);
+        // @ts-ignore
+        window['FileReader'] = class {
+            constructor() {
+                return createMockReader(result);
+            }
+        };
 
         const fileList = createMockFileList('image.png');
 
@@ -136,7 +146,13 @@ describe('FileUploadComponent', () => {
 
         const reader = window['FileReader'];
         const result = { fake: true, invalid: 'yes' };
-        window['FileReader'] = () => createMockReader(result);
+
+        // @ts-ignore
+        window['FileReader'] = class {
+            constructor() {
+                return createMockReader(result);
+            }
+        };
 
         const fileList = createMockFileList('address.json');
 

@@ -7,8 +7,6 @@ import {
 } from '@angular/core';
 import { Animations } from '../../../animations/animations';
 import { MediaObserver } from '@angular/flex-layout';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-page-item',
@@ -27,11 +25,7 @@ export class PageItemComponent implements OnInit {
 
     ngOnInit() {}
 
-    get isMobile$(): Observable<boolean> {
-        return this.mediaObserver.media$.pipe(
-            map(change => {
-                return change.mqAlias === 'xs';
-            })
-        );
+    isMobile(): boolean {
+        return this.mediaObserver.isActive('xs');
     }
 }

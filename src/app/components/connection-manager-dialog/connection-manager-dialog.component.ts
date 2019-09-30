@@ -6,7 +6,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import BigNumber from 'bignumber.js';
 
@@ -23,7 +23,8 @@ export interface ConnectionManagerDialogPayload {
     styleUrls: ['./connection-manager-dialog.component.css']
 })
 export class ConnectionManagerDialogComponent implements OnInit {
-    @ViewChild(TokenInputComponent) tokenInput: TokenInputComponent;
+    @ViewChild(TokenInputComponent, { static: true })
+    tokenInput: TokenInputComponent;
 
     form = this.fb.group({
         amount: new BigNumber(0)

@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { addressValidator } from '../../shared/address.validator';
 import { Address, Addresses } from '../../models/address';
 import { AddressBookService } from '../../services/address-book.service';
-import { MatDialog, PageEvent } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import {
     ConfirmationDialogComponent,
@@ -40,16 +41,12 @@ export class AddressBookComponent implements OnInit {
     pageSize = 10;
     currentPage = 0;
 
-    get isMobile$(): Observable<boolean> {
-        return this.mediaObserver.media$.pipe(
-            map(change => {
-                return change.mqAlias === 'xs';
-            })
-        );
-    }
-
     get editedAddress(): string {
         return this._editedAddress;
+    }
+
+    isMobile(): boolean {
+        return this.mediaObserver.isActive('xs');
     }
 
     // noinspection JSMethodCanBeStatic

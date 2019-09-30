@@ -8,7 +8,7 @@
         <mat-card-title>Address Book</mat-card-title>
         <mat-card-content>
             <div
-                *ngIf="!(isMobile$ | async)"
+                *ngIf="!isMobile()"
                 [formGroup]="form"
                 fxLayout="row"
                 fxLayoutGap="14px"
@@ -65,7 +65,7 @@
                 </div>
             </div>
             <div fxLayout="row" fxLayoutAlign="end" class="action-buttons">
-                <div fxLayout="column" *ngIf="(isMobile$ | async)">
+                <div fxLayout="column" *ngIf="isMobile()">
                     <button
                         (click)="openAddDialog()"
                         id="open-add-dialog"

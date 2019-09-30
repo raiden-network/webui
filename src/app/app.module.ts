@@ -56,11 +56,13 @@ import { NavigationEntryComponent } from './components/navigation-entry/navigati
 import { SortFilterPageHeaderComponent } from './components/page/sort-filter-page-header/sort-filter-page-header.component';
 import { AddAddressDialogComponent } from './components/add-address-dialog/add-address-dialog.component';
 import {
-    MAT_DIALOG_DEFAULT_OPTIONS,
-    MatDialogConfig,
     ErrorStateMatcher,
     ShowOnDirtyErrorStateMatcher
-} from '@angular/material';
+} from '@angular/material/core';
+import {
+    MAT_DIALOG_DEFAULT_OPTIONS,
+    MatDialogConfig
+} from '@angular/material/dialog';
 import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
 import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
 import { PaymentIdentifierInputComponent } from './components/payment-identifier-input/payment-identifier-input.component';

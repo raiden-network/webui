@@ -5,7 +5,7 @@ import {
     FormGroup,
     Validators
 } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserToken } from '../../models/usertoken';
 import { RaidenService } from '../../services/raiden.service';
 import { AddressInputComponent } from '../address-input/address-input.component';
@@ -51,8 +51,10 @@ export class OpenDialogComponent {
         ]
     });
 
-    @ViewChild(TokenInputComponent) tokenInput: TokenInputComponent;
-    @ViewChild(AddressInputComponent) addressInput: AddressInputComponent;
+    @ViewChild(TokenInputComponent, { static: true })
+    tokenInput: TokenInputComponent;
+    @ViewChild(AddressInputComponent, { static: true })
+    addressInput: AddressInputComponent;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: OpenDialogPayload,

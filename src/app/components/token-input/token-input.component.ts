@@ -17,7 +17,7 @@ import {
     Validator,
     ValidatorFn
 } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { BigNumber } from 'bignumber.js';
 import {
     amountFromDecimal,
@@ -45,7 +45,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     @Input() allowZero: boolean;
     @Input() placeholder: string;
     @Input() errorPlaceholder: string;
-    @ViewChild('amountInput') amountInput: ElementRef;
+    @ViewChild('amountInput', { static: true }) amountInput: ElementRef;
 
     readonly form: FormGroup = this.fb.group({
         amount: [new BigNumber(0), this.amountValidator()],
