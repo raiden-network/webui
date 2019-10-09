@@ -1,4 +1,4 @@
-import { TestBed, TestComponentRenderer } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import {
     HttpClientTestingModule,
     HttpTestingController
@@ -28,8 +28,7 @@ describe('ErrorHandlingInterceptor', () => {
 
     beforeEach(() => {
         notificationService = jasmine.createSpyObj('NotificationService', [
-            'error',
-            'addNotification'
+            'addErrorNotification'
         ]);
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
@@ -79,12 +78,10 @@ describe('ErrorHandlingInterceptor', () => {
             title: 'Raiden Error',
             description: errorMessage
         };
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     });
@@ -114,12 +111,10 @@ describe('ErrorHandlingInterceptor', () => {
             title: 'Raiden Error',
             description: 'An Raiden API error occured.\nAnother error occured.'
         };
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     });
@@ -149,12 +144,10 @@ describe('ErrorHandlingInterceptor', () => {
             title: 'Raiden Error',
             description: 'Http failure response for localhost:5001/api: 400 '
         };
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     });
@@ -183,12 +176,10 @@ describe('ErrorHandlingInterceptor', () => {
             title: 'API not available',
             description: 'Could not connect to the Raiden API.'
         };
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
             notificationMessage
         );
 
@@ -209,7 +200,8 @@ describe('ErrorHandlingInterceptor', () => {
             }
         );
 
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
+        );
     });
 });

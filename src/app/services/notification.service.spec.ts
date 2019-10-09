@@ -3,6 +3,7 @@ import { ToastrService, ToastrModule } from 'ngx-toastr';
 
 import { NotificationService } from './notification.service';
 import { UiMessage } from '../models/notification';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('NotificationService', () => {
     let toastrService: ToastrService;
@@ -19,7 +20,7 @@ describe('NotificationService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [NotificationService],
-            imports: [ToastrModule.forRoot()]
+            imports: [ToastrModule.forRoot(), NoopAnimationsModule]
         });
     });
 
@@ -34,10 +35,12 @@ describe('NotificationService', () => {
         }
     ));
 
-    it('should be able to add and retrieve a notification', inject(
+    it('should be able to add and retrieve a notification for success', inject(
         [NotificationService],
         (service: NotificationService) => {
-            service.addNotification(testMessage);
+            const toastrSpy = spyOn(toastrService, 'success').and.callThrough();
+
+            service.addSuccessNotification(testMessage);
 
             const expectedNotification = Object.assign(
                 { identifier: 0 },
@@ -46,12 +49,63 @@ describe('NotificationService', () => {
             service.notifications$.subscribe(notifications =>
                 expect(notifications).toEqual([expectedNotification])
             );
+            expect(toastrSpy).toHaveBeenCalledTimes(1);
+            expect(toastrSpy).toHaveBeenCalledWith(
+                testMessage.description,
+                testMessage.title
+            );
+        }
+    ));
+
+    it('should be able to add and retrieve a notification for info', inject(
+        [NotificationService],
+        (service: NotificationService) => {
+            const toastrSpy = spyOn(toastrService, 'info').and.callThrough();
+
+            service.addInfoNotification(testMessage);
+
+            const expectedNotification = Object.assign(
+                { identifier: 0 },
+                testMessage
+            );
+            service.notifications$.subscribe(notifications =>
+                expect(notifications).toEqual([expectedNotification])
+            );
+            expect(toastrSpy).toHaveBeenCalledTimes(1);
+            expect(toastrSpy).toHaveBeenCalledWith(
+                testMessage.description,
+                testMessage.title
+            );
+        }
+    ));
+
+    it('should be able to add and retrieve a notification for error', inject(
+        [NotificationService],
+        (service: NotificationService) => {
+            const toastrSpy = spyOn(toastrService, 'error').and.callThrough();
+
+            service.addErrorNotification(testMessage);
+
+            const expectedNotification = Object.assign(
+                { identifier: 0 },
+                testMessage
+            );
+            service.notifications$.subscribe(notifications =>
+                expect(notifications).toEqual([expectedNotification])
+            );
+            expect(toastrSpy).toHaveBeenCalledTimes(1);
+            expect(toastrSpy).toHaveBeenCalledWith(
+                testMessage.description,
+                testMessage.title
+            );
         }
     ));
 
     it('should be able to add and retrieve a pending action', inject(
         [NotificationService],
         (service: NotificationService) => {
+            const toastrSpy = spyOn(toastrService, 'info').and.callThrough();
+
             service.addPendingAction(testMessage2);
 
             const expectedPendingAction = Object.assign(
@@ -61,14 +115,19 @@ describe('NotificationService', () => {
             service.pendingActions$.subscribe(pendingActions =>
                 expect(pendingActions).toEqual([expectedPendingAction])
             );
+            expect(toastrSpy).toHaveBeenCalledTimes(1);
+            expect(toastrSpy).toHaveBeenCalledWith(
+                testMessage2.description,
+                testMessage2.title
+            );
         }
     ));
 
     it('should correctly increase the identifier for new notifications and pending actions', inject(
         [NotificationService],
         (service: NotificationService) => {
-            service.addNotification(testMessage);
-            service.addNotification(testMessage2);
+            service.addSuccessNotification(testMessage);
+            service.addInfoNotification(testMessage2);
 
             const notification1 = Object.assign({ identifier: 0 }, testMessage);
             const notification2 = Object.assign(
@@ -99,8 +158,8 @@ describe('NotificationService', () => {
     it('should be able to remove a notification', inject(
         [NotificationService],
         (service: NotificationService) => {
-            service.addNotification(testMessage);
-            service.addNotification(testMessage2);
+            service.addSuccessNotification(testMessage);
+            service.addErrorNotification(testMessage2);
             service.removeNotification(1);
 
             const expectedNotification = Object.assign(
@@ -133,8 +192,8 @@ describe('NotificationService', () => {
     it('should be able to remove all notifications', inject(
         [NotificationService],
         (service: NotificationService) => {
-            service.addNotification(testMessage);
-            service.addNotification(testMessage2);
+            service.addInfoNotification(testMessage);
+            service.addErrorNotification(testMessage2);
             service.clearNotifications();
 
             service.notifications$.subscribe(notifications =>
@@ -155,67 +214,15 @@ describe('NotificationService', () => {
             service.addPendingAction(testMessage);
 
             expectatedValue++;
-            service.addNotification(testMessage);
+            service.addSuccessNotification(testMessage);
             expectatedValue++;
-            service.addNotification(testMessage2);
+            service.addInfoNotification(testMessage2);
 
             expectatedValue--;
             service.removePendingAction(0);
 
             expectatedValue = 0;
             service.clearNotifications();
-        }
-    ));
-
-    it('should show a notification for a success', inject(
-        [NotificationService],
-        (service: NotificationService) => {
-            const toastrSpy = spyOn(toastrService, 'success');
-            service.success(testMessage);
-            expect(toastrSpy).toHaveBeenCalledTimes(1);
-            expect(toastrSpy).toHaveBeenCalledWith(
-                testMessage.description,
-                testMessage.title
-            );
-        }
-    ));
-
-    it('should show a notification for an error', inject(
-        [NotificationService],
-        (service: NotificationService) => {
-            const toastrSpy = spyOn(toastrService, 'error');
-            service.error(testMessage);
-            expect(toastrSpy).toHaveBeenCalledTimes(1);
-            expect(toastrSpy).toHaveBeenCalledWith(
-                testMessage.description,
-                testMessage.title
-            );
-        }
-    ));
-
-    it('should show a notification for an info', inject(
-        [NotificationService],
-        (service: NotificationService) => {
-            const toastrSpy = spyOn(toastrService, 'info');
-            service.info(testMessage);
-            expect(toastrSpy).toHaveBeenCalledTimes(1);
-            expect(toastrSpy).toHaveBeenCalledWith(
-                testMessage.description,
-                testMessage.title
-            );
-        }
-    ));
-
-    it('should show a notification for a warning', inject(
-        [NotificationService],
-        (service: NotificationService) => {
-            const toastrSpy = spyOn(toastrService, 'warning');
-            service.warn(testMessage);
-            expect(toastrSpy).toHaveBeenCalledTimes(1);
-            expect(toastrSpy).toHaveBeenCalledWith(
-                testMessage.description,
-                testMessage.title
-            );
         }
     ));
 

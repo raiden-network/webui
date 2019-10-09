@@ -57,7 +57,9 @@ describe('PendingTransferPollingService', () => {
         notificationService = TestBed.get(NotificationService);
 
         getPendingTransfersSpy = spyOn(raidenService, 'getPendingTransfers');
-        spyOn(notificationService, 'info').and.callFake(() => {});
+        spyOn(notificationService, 'addInfoNotification').and.callFake(
+            () => {}
+        );
         spyOn(notificationService, 'addPendingAction').and.callFake(() => 1);
         spyOn(notificationService, 'removePendingAction').and.callFake(
             () => {}
@@ -83,15 +85,16 @@ describe('PendingTransferPollingService', () => {
             );
             service.pendingTransfers$.subscribe();
 
-            expect(notificationService.info).toHaveBeenCalledTimes(2);
             expect(notificationService.addPendingAction).toHaveBeenCalledTimes(
                 2
             );
             // @ts-ignore
-            let payload = notificationService.info.calls.first().args[0];
+            let payload = notificationService.addPendingAction.calls.first()
+                .args[0];
             expect(payload.title).toBe('Payment in flight');
             // @ts-ignore
-            payload = notificationService.info.calls.mostRecent().args[0];
+            payload = notificationService.addPendingAction.calls.mostRecent()
+                .args[0];
             expect(payload.title).toBe('Payment incoming');
         }
     ));

@@ -97,7 +97,6 @@ export class PendingTransferPollingService {
             pendingTransfer.notificationIdentifier = this.notificationService.addPendingAction(
                 message
             );
-            this.notificationService.info(message);
         }
     }
 

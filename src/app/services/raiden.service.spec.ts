@@ -62,12 +62,11 @@ describe('RaidenService', () => {
 
     beforeEach(() => {
         notificationService = jasmine.createSpyObj('NotificationService', [
-            'error',
-            'info',
-            'success',
             'addPendingAction',
             'removePendingAction',
-            'addNotification'
+            'addSuccessNotification',
+            'addInfoNotification',
+            'addErrorNotification'
         ]);
         TestBed.configureTestingModule({
             imports: [HttpClientModule, HttpClientTestingModule],
@@ -165,12 +164,10 @@ describe('RaidenService', () => {
             title: 'Token registered',
             description: `Your token was successfully registered: ${tokenAddress}`
         };
-        expect(notificationService.success).toHaveBeenCalledTimes(1);
-        expect(notificationService.success).toHaveBeenCalledWith(
-            notificationMessage
-        );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
+        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     });
@@ -212,12 +209,10 @@ describe('RaidenService', () => {
             title: 'Raiden Error',
             description: errorMessage
         };
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     });
@@ -292,12 +287,10 @@ describe('RaidenService', () => {
             title: 'Raiden Error',
             description: 'Not a valid EIP55 encoded address'
         };
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     });
@@ -341,8 +334,10 @@ describe('RaidenService', () => {
 
         service.attemptConnection();
         tick();
-        expect(notificationService.info).toHaveBeenCalledTimes(1);
-        expect(notificationService.info).toHaveBeenCalledWith({
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            1
+        );
+        expect(notificationService.addInfoNotification).toHaveBeenCalledWith({
             title: 'JSON RPC Connection',
             description: 'JSON-RPC connection established successfully'
         });
@@ -355,8 +350,10 @@ describe('RaidenService', () => {
 
         service.attemptConnection();
         tick();
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith({
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
+        );
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith({
             title: 'JSON RPC Connection',
             description: 'Could not establish a JSON-RPC connection'
         });
@@ -369,8 +366,10 @@ describe('RaidenService', () => {
 
         service.attemptConnection();
         tick();
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith({
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
+        );
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith({
             title: 'JSON RPC Connection',
             description: 'Could not establish a JSON-RPC connection'
         });
@@ -477,12 +476,10 @@ describe('RaidenService', () => {
             title: 'Deposit',
             description: `The channel 1 balance changed to 100000000010`
         };
-        expect(notificationService.info).toHaveBeenCalledTimes(1);
-        expect(notificationService.info).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     }));
@@ -546,12 +543,10 @@ describe('RaidenService', () => {
             title: 'Withdraw',
             description: `The channel 1 balance changed to 0`
         };
-        expect(notificationService.info).toHaveBeenCalledTimes(1);
-        expect(notificationService.info).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     }));
@@ -593,12 +588,10 @@ describe('RaidenService', () => {
                 token.symbol
             } have successfully been minted`
         };
-        expect(notificationService.success).toHaveBeenCalledTimes(1);
-        expect(notificationService.success).toHaveBeenCalledWith(
-            notificationMessage
-        );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
+        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     });
@@ -640,12 +633,10 @@ describe('RaidenService', () => {
             title: 'Raiden Error',
             description: errorMessage
         };
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     });
@@ -683,12 +674,10 @@ describe('RaidenService', () => {
             title: 'Joined Token Network',
             description: `You have successfully joined the Network of Token ${tokenAddress}`
         };
-        expect(notificationService.success).toHaveBeenCalledTimes(1);
-        expect(notificationService.success).toHaveBeenCalledWith(
-            notificationMessage
-        );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
+        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     }));
@@ -726,12 +715,10 @@ describe('RaidenService', () => {
             title: 'Funds Added',
             description: `You successfully added funds to the Network of Token ${tokenAddress}`
         };
-        expect(notificationService.success).toHaveBeenCalledTimes(1);
-        expect(notificationService.success).toHaveBeenCalledWith(
-            notificationMessage
-        );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
+        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     }));
@@ -775,12 +762,10 @@ describe('RaidenService', () => {
             title: 'Raiden Error',
             description: errorMessage
         };
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     }));
@@ -818,12 +803,10 @@ describe('RaidenService', () => {
                 token.name
             } <${token.address}> token`
         };
-        expect(notificationService.success).toHaveBeenCalledTimes(1);
-        expect(notificationService.success).toHaveBeenCalledWith(
-            notificationMessage
-        );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
+        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     }));
@@ -867,12 +850,10 @@ describe('RaidenService', () => {
             title: 'Raiden Error',
             description: errorMessage
         };
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     }));
@@ -915,12 +896,10 @@ describe('RaidenService', () => {
             title: 'Transfer successful',
             description: `A payment of ${amount.toString()} was successfully sent to the partner ${targetAddress}`
         };
-        expect(notificationService.success).toHaveBeenCalledTimes(1);
-        expect(notificationService.success).toHaveBeenCalledWith(
-            notificationMessage
-        );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
+        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     }));
@@ -986,12 +965,10 @@ describe('RaidenService', () => {
             title: 'Raiden Error',
             description: errorMessage
         };
-        expect(notificationService.error).toHaveBeenCalledTimes(1);
-        expect(notificationService.error).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     }));
@@ -1132,12 +1109,10 @@ describe('RaidenService', () => {
                 channel3.partner_address
             } has been closed successfully`
         };
-        expect(notificationService.info).toHaveBeenCalledTimes(1);
-        expect(notificationService.info).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
             notificationMessage
         );
     });

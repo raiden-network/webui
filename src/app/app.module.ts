@@ -70,6 +70,7 @@ import { BigNumberConversionDirective } from './directives/big-number-conversion
 import { NotificationPanelComponent } from './components/notification/notification-panel/notification-panel.component';
 import { NotificationItemComponent } from './components/notification/notification-item/notification-item.component';
 import { NotificationService } from './services/notification.service';
+import { RaidenToastComponent } from './components/notification/raiden-toast/raiden-toast.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -132,7 +133,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         PaymentIdentifierInputComponent,
         BigNumberConversionDirective,
         NotificationPanelComponent,
-        NotificationItemComponent
+        NotificationItemComponent,
+        RaidenToastComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
@@ -145,7 +147,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ToastrModule.forRoot({
             timeOut: 5000,
             extendedTimeOut: 10000,
-            preventDuplicates: true
+            preventDuplicates: false,
+            toastComponent: RaidenToastComponent
         }),
         ClipboardModule
     ],
@@ -200,7 +203,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         OpenDialogComponent,
         FilterDialogComponent,
         SortDialogComponent,
-        AddAddressDialogComponent
+        AddAddressDialogComponent,
+        RaidenToastComponent
     ],
     bootstrap: [AppComponent]
 })

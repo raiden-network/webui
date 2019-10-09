@@ -124,8 +124,7 @@ export class ChannelPollingService {
             description: `A new channel: ${channelId} was opened with ${partnerAddress} on ${network}`
         };
 
-        this.notificationService.info(message);
-        this.notificationService.addNotification(message);
+        this.notificationService.addInfoNotification(message);
     }
 
     private informAboutBalanceUpdate(
@@ -143,7 +142,6 @@ export class ChannelPollingService {
             description: `The balance of channel ${channelId} with ${partnerAddress} was updated by ${formattedBalance} ${symbol} tokens`
         };
 
-        this.notificationService.info(message);
-        this.notificationService.addNotification(message);
+        this.notificationService.addInfoNotification(message);
     }
 }

@@ -45,8 +45,9 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
                     title: 'API not available',
                     description: errMsg
                 };
-                this.notificationService.error(notificationMessage);
-                this.notificationService.addNotification(notificationMessage);
+                this.notificationService.addErrorNotification(
+                    notificationMessage
+                );
             }
 
             return throwError(errMsg);
@@ -78,8 +79,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
             title: 'Raiden Error',
             description: errMsg
         };
-        this.notificationService.error(message);
-        this.notificationService.addNotification(message);
+        this.notificationService.addErrorNotification(message);
         return throwError(errMsg);
     }
 }
