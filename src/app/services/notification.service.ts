@@ -9,6 +9,7 @@ import { UiMessage, NotificationMessage } from '../models/notification';
 })
 export class NotificationService {
     private numberOfNotificationsSubject = new BehaviorSubject<number>(0);
+    private newNotificationSubject = new BehaviorSubject<void>(null);
     private notificationsSubject = new BehaviorSubject<NotificationMessage[]>(
         []
     );
@@ -21,6 +22,9 @@ export class NotificationService {
     > = this.numberOfNotificationsSubject
         .asObservable()
         .pipe(scan((acc, value) => Math.max(acc + value, 0), 0));
+    public readonly newNotification$: Observable<
+        void
+    > = this.newNotificationSubject.asObservable();
     public readonly notifications$: Observable<
         NotificationMessage[]
     > = this.notificationsSubject.asObservable();
@@ -35,40 +39,23 @@ export class NotificationService {
 
     constructor(@Inject(Injector) private injector: Injector) {}
 
-    public success(message: UiMessage) {
-        this.toastrService.success(message.description, message.title);
+    public addSuccessNotification(message: UiMessage): number {
+        this.success(message);
+        return this.addNotification(message);
     }
 
-    public error(message: UiMessage) {
-        this.toastrService.error(message.description, message.title);
+    public addInfoNotification(message: UiMessage): number {
+        this.info(message);
+        return this.addNotification(message);
     }
 
-    public info(message: UiMessage) {
-        this.toastrService.info(message.description, message.title);
-    }
-
-    public warn(message: UiMessage) {
-        this.toastrService.warning(message.description, message.title);
-    }
-
-    public addNotification(message: UiMessage): number {
-        const identifier = this.getNewIdentifier();
-
-        this.notifications = [
-            {
-                identifier,
-                title: message.title,
-                description: message.description
-            },
-            ...this.notifications
-        ];
-
-        this.notificationsSubject.next(this.notifications);
-        this.numberOfNotificationsSubject.next(+1);
-        return identifier;
+    public addErrorNotification(message: UiMessage): number {
+        this.error(message);
+        return this.addNotification(message);
     }
 
     public addPendingAction(message: UiMessage): number {
+        this.info(message);
         const identifier = this.getNewIdentifier();
 
         this.pendingActions = [
@@ -125,6 +112,47 @@ export class NotificationService {
 
     private get toastrService(): ToastrService {
         return this.injector.get(ToastrService);
+    }
+
+    private success(message: UiMessage) {
+        this.toastrService
+            .success(message.description, message.title)
+            .onHidden.subscribe(() => {
+                this.newNotificationSubject.next(null);
+            });
+    }
+
+    private error(message: UiMessage) {
+        this.toastrService
+            .error(message.description, message.title)
+            .onHidden.subscribe(() => {
+                this.newNotificationSubject.next(null);
+            });
+    }
+
+    private info(message: UiMessage) {
+        this.toastrService
+            .info(message.description, message.title)
+            .onHidden.subscribe(() => {
+                this.newNotificationSubject.next(null);
+            });
+    }
+
+    private addNotification(message: UiMessage): number {
+        const identifier = this.getNewIdentifier();
+
+        this.notifications = [
+            {
+                identifier,
+                title: message.title,
+                description: message.description
+            },
+            ...this.notifications
+        ];
+
+        this.notificationsSubject.next(this.notifications);
+        this.numberOfNotificationsSubject.next(+1);
+        return identifier;
     }
 
     private getNewIdentifier(): number {

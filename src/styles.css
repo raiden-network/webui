@@ -107,3 +107,7 @@ app-page-base {
     height: 0px;
     visibility: hidden;
 }
+
+#toast-container {
+    min-width: 300px;
+}

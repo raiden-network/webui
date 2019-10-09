@@ -92,6 +92,7 @@
         (click)="notification_sidenav.toggle()"
         class="notification-button"
         matTooltip="Open notification panel"
+        [style.background-color]="notificationBlink"
     >
         <span
             [matBadge]="pendingRequests"

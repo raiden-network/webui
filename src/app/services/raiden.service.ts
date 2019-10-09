@@ -282,8 +282,7 @@ export class RaidenService {
                         title: 'Transfer successful',
                         description: `A payment of ${amount.toString()} was successfully sent to the partner ${targetAddress}`
                     };
-                    this.notificationService.success(message);
-                    this.notificationService.addNotification(message);
+                    this.notificationService.addSuccessNotification(message);
                 }),
                 map(() => null)
             );
@@ -369,8 +368,7 @@ export class RaidenService {
                     } balance changed to ${response.balance.toString()}`
                 };
 
-                this.notificationService.info(message);
-                this.notificationService.addNotification(message);
+                this.notificationService.addInfoNotification(message);
             }),
             finalize(() =>
                 this.notificationService.removePendingAction(
@@ -422,8 +420,7 @@ export class RaidenService {
                         response.partner_address
                     } has been closed successfully`
                 };
-                this.notificationService.info(message);
-                this.notificationService.addNotification(message);
+                this.notificationService.addInfoNotification(message);
             }),
             finalize(() =>
                 this.notificationService.removePendingAction(
@@ -438,11 +435,12 @@ export class RaidenService {
 
         return of(null).pipe(
             tap(() => {
+                const message: UiMessage = {
+                    title: 'Registering token',
+                    description: `The token ${tokenAddress} will be registered`
+                };
                 notificationIdentifier = this.notificationService.addPendingAction(
-                    {
-                        title: 'Registering token',
-                        description: `The token ${tokenAddress} will be registered`
-                    }
+                    message
                 );
             }),
             switchMap(() =>
@@ -457,8 +455,7 @@ export class RaidenService {
                     title: 'Token registered',
                     description: `Your token was successfully registered: ${tokenAddress}`
                 };
-                this.notificationService.success(message);
-                this.notificationService.addNotification(message);
+                this.notificationService.addSuccessNotification(message);
             }),
             finalize(() =>
                 this.notificationService.removePendingAction(
@@ -503,8 +500,7 @@ export class RaidenService {
                         ? `You have successfully joined the Network of Token ${tokenAddress}`
                         : `You successfully added funds to the Network of Token ${tokenAddress}`
                 };
-                this.notificationService.success(message);
-                this.notificationService.addNotification(message);
+                this.notificationService.addSuccessNotification(message);
             }),
             finalize(() =>
                 this.notificationService.removePendingAction(
@@ -542,8 +538,7 @@ export class RaidenService {
                         userToken.name
                     } <${userToken.address}> token`
                 };
-                this.notificationService.success(message);
-                this.notificationService.addNotification(message);
+                this.notificationService.addSuccessNotification(message);
             }),
             finalize(() =>
                 this.notificationService.removePendingAction(
@@ -596,8 +591,7 @@ export class RaidenService {
                     } have successfully been minted`
                 };
 
-                this.notificationService.success(message);
-                this.notificationService.addNotification(message);
+                this.notificationService.addSuccessNotification(message);
             }),
             finalize(() =>
                 this.notificationService.removePendingAction(
@@ -614,12 +608,12 @@ export class RaidenService {
     attemptConnection() {
         const onResult = (success: boolean) => {
             if (success) {
-                this.notificationService.info({
+                this.notificationService.addInfoNotification({
                     title: 'JSON RPC Connection',
                     description: 'JSON-RPC connection established successfully'
                 });
             } else {
-                this.notificationService.error({
+                this.notificationService.addErrorNotification({
                     title: 'JSON RPC Connection',
                     description: 'Could not establish a JSON-RPC connection'
                 });

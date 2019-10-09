@@ -1,6 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- [#167] Improves the animation of disappearing toast notifications to make it clear where the notification panel is accessible.
+
+### Added
+- [#167] Shows toast notifications for new pending actions.
 
 ## [0.10.0] - 2019-09-27
 ### Changed
@@ -87,6 +92,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#167]: https://github.com/raiden-network/webui/issues/167
 [#157]: https://github.com/raiden-network/webui/issues/157
 [#156]: https://github.com/raiden-network/webui/issues/156
 [#146]: https://github.com/raiden-network/webui/issues/146

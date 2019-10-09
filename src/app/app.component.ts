@@ -32,6 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public readonly network$: Observable<Network>;
     public readonly production: boolean;
     public readonly faucetLink$: Observable<string>;
+    public notificationBlink = 'none';
 
     private _numberOfNotifications = 0;
 
@@ -75,6 +76,17 @@ export class AppComponent implements OnInit, OnDestroy {
                 });
             }
         );
+
+        const newNotificationSubscription = this.notificationService.newNotification$.subscribe(
+            () => {
+                this.notificationBlink = 'rgba(255, 255, 255, 0.5)';
+                setTimeout(() => {
+                    this.notificationBlink = 'black';
+                }, 150);
+            }
+        );
+        this.sub.add(newNotificationSubscription);
+
         const pollingSubscription = this.channelPollingService
             .channels()
             .subscribe();

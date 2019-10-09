@@ -126,8 +126,9 @@ describe('ChannelPollingService', () => {
         pollingService = TestBed.get(ChannelPollingService);
 
         raidenServiceSpy = spyOn(raidenService, 'getChannels');
-        spyOn(notificationService, 'info').and.callFake(() => {});
-        spyOn(notificationService, 'addNotification').and.callFake(() => {});
+        spyOn(notificationService, 'addInfoNotification').and.callFake(
+            () => {}
+        );
     });
 
     it('should be created', inject(
@@ -151,12 +152,10 @@ describe('ChannelPollingService', () => {
                 channel1.userToken.symbol
             } tokens`
         };
-        expect(notificationService.info).toHaveBeenCalledTimes(1);
-        expect(notificationService.info).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
             notificationMessage
         );
 
@@ -169,8 +168,9 @@ describe('ChannelPollingService', () => {
             from([[channel1], [channel1UpdatedNegative]])
         );
         const subscription = pollingService.channels().subscribe();
-        expect(notificationService.info).toHaveBeenCalledTimes(0);
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(0);
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            0
+        );
         subscription.unsubscribe();
         flush();
     }));
@@ -178,8 +178,9 @@ describe('ChannelPollingService', () => {
     it('should not send notification about channel the first time loading the channels', fakeAsync(() => {
         raidenServiceSpy.and.returnValues(from([[channel1], [channel1]]));
         const subscription = pollingService.channels().subscribe();
-        expect(notificationService.info).toHaveBeenCalledTimes(0);
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(0);
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            0
+        );
         subscription.unsubscribe();
         flush();
     }));
@@ -199,12 +200,10 @@ describe('ChannelPollingService', () => {
                 channel1.userToken.name
             }`
         };
-        expect(notificationService.info).toHaveBeenCalledTimes(1);
-        expect(notificationService.info).toHaveBeenCalledWith(
-            notificationMessage
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            1
         );
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(1);
-        expect(notificationService.addNotification).toHaveBeenCalledWith(
+        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
             notificationMessage
         );
 
@@ -218,10 +217,12 @@ describe('ChannelPollingService', () => {
         );
         const subscription = pollingService.channels().subscribe();
 
-        expect(notificationService.info).toHaveBeenCalledTimes(2);
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(2);
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            2
+        );
         // @ts-ignore
-        const payload = notificationService.info.calls.first().args[0];
+        const payload = notificationService.addInfoNotification.calls.first()
+            .args[0];
         expect(payload.title).toBe('New channel');
         subscription.unsubscribe();
         flush();
@@ -230,8 +231,9 @@ describe('ChannelPollingService', () => {
     it('should not show a notification if no new channels are detected', fakeAsync(() => {
         raidenServiceSpy.and.returnValues(from([[channel1], [channel1]]));
         const subscription = pollingService.channels().subscribe();
-        expect(notificationService.info).toHaveBeenCalledTimes(0);
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(0);
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            0
+        );
         subscription.unsubscribe();
         flush();
     }));
@@ -241,8 +243,9 @@ describe('ChannelPollingService', () => {
             from([[channel1, channel2], [channel1]])
         );
         const subscription = pollingService.channels().subscribe();
-        expect(notificationService.info).toHaveBeenCalledTimes(0);
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(0);
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            0
+        );
         subscription.unsubscribe();
         flush();
     }));
@@ -252,8 +255,9 @@ describe('ChannelPollingService', () => {
             from([[channel1, channel1Network2], [channel1Network2]])
         );
         const subscription = pollingService.channels().subscribe();
-        expect(notificationService.info).toHaveBeenCalledTimes(0);
-        expect(notificationService.addNotification).toHaveBeenCalledTimes(0);
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            0
+        );
         subscription.unsubscribe();
         flush();
     }));
