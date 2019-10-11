@@ -195,7 +195,7 @@ describe('ErrorHandlingInterceptor', () => {
         request.flush(
             {},
             {
-                status: 504,
+                status: 0,
                 statusText: ''
             }
         );

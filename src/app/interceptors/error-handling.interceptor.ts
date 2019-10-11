@@ -37,7 +37,10 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
     private handleError(error: HttpErrorResponse | Error) {
         let errMsg: string;
 
-        if (error instanceof HttpErrorResponse && error.status === 504) {
+        if (
+            error instanceof HttpErrorResponse &&
+            (error.status === 504 || error.status === 0)
+        ) {
             errMsg = 'Could not connect to the Raiden API.';
             if (!this.raidenApiUnavailable) {
                 this.raidenApiUnavailable = true;
