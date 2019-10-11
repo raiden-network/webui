@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - [#167] Improves the animation of disappearing toast notifications to make it clear where the notification panel is accessible.
+- [#171] Fixes the Raiden API not available notification on Firefox to only appear once.
 
 ### Added
 - [#167] Shows toast notifications for new pending actions.
@@ -92,6 +93,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#171]: https://github.com/raiden-network/webui/issues/171
 [#167]: https://github.com/raiden-network/webui/issues/167
 [#157]: https://github.com/raiden-network/webui/issues/157
 [#156]: https://github.com/raiden-network/webui/issues/156
