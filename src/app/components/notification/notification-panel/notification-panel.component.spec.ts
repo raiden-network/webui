@@ -89,7 +89,10 @@ describe('NotificationPanelComponent', () => {
         notificationsSubject.next([notification]);
         fixture.detectChanges();
 
-        clickElement(fixture.debugElement, '.mat-icon-button');
+        clickElement(
+            fixture.debugElement,
+            '.notification-container .mat-icon-button'
+        );
 
         expect(removeSpy).toHaveBeenCalledTimes(1);
         expect(removeSpy).toHaveBeenCalledWith(notification.identifier);
