@@ -11,5 +11,5 @@ export interface Channel {
     balance: BigNumber;
     settle_timeout: number;
     reveal_timeout: number;
-    userToken: UserToken | null;
+    userToken?: UserToken;
 }

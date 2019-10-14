@@ -121,7 +121,7 @@ export class ChannelPollingService {
         const network = channel.userToken.name;
         const message: UiMessage = {
             title: 'New channel',
-            description: `A new channel: ${channelId} was opened with ${partnerAddress} on ${network}`
+            description: `A new channel (${channelId}) was opened with ${partnerAddress} in ${network} network`
         };
 
         this.notificationService.addInfoNotification(message);
@@ -136,10 +136,10 @@ export class ChannelPollingService {
         const channelId = channel.channel_identifier;
         const partnerAddress = channel.partner_address;
         const balance = amountToDecimal(amount, channel.userToken.decimals);
-        const formattedBalance = balance.toFixed(channel.userToken.decimals);
+        const formattedBalance = balance.toFixed();
         const message: UiMessage = {
             title: 'Balance Update',
-            description: `The balance of channel ${channelId} with ${partnerAddress} was updated by ${formattedBalance} ${symbol} tokens`
+            description: `The balance of channel ${channelId} with ${partnerAddress} was updated by ${formattedBalance} ${symbol}`
         };
 
         this.notificationService.addInfoNotification(message);

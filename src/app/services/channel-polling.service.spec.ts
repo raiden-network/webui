@@ -148,9 +148,9 @@ describe('ChannelPollingService', () => {
             title: 'Balance Update',
             description: `The balance of channel ${
                 channel1.channel_identifier
-            } with ${channel1.partner_address} was updated by 0.00000010 ${
+            } with ${channel1.partner_address} was updated by 0.0000001 ${
                 channel1.userToken.symbol
-            } tokens`
+            }`
         };
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             1
@@ -194,11 +194,11 @@ describe('ChannelPollingService', () => {
 
         const notificationMessage: UiMessage = {
             title: 'New channel',
-            description: `A new channel: ${
+            description: `A new channel (${
                 channel1.channel_identifier
-            } was opened with ${channel1.partner_address} on ${
+            }) was opened with ${channel1.partner_address} in ${
                 channel1.userToken.name
-            }`
+            } network`
         };
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             1

@@ -174,7 +174,7 @@ describe('ErrorHandlingInterceptor', () => {
 
         const notificationMessage: UiMessage = {
             title: 'API not available',
-            description: 'Could not connect to the Raiden API.'
+            description: 'Could not connect to the Raiden API'
         };
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
