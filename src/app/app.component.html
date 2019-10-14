@@ -173,7 +173,9 @@
         ngClass="notification-sidenav"
         #notification_sidenav
     >
-        <app-notification-panel></app-notification-panel>
+        <app-notification-panel
+            (close)="notification_sidenav.close()"
+        ></app-notification-panel>
     </mat-sidenav>
 </mat-sidenav-container>
 

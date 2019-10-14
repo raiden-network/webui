@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    Output,
+    EventEmitter
+} from '@angular/core';
 import { NotificationService } from '../../../services/notification.service';
 import { Subscription } from 'rxjs';
 import { NotificationMessage } from '../../../models/notification';
@@ -12,6 +18,7 @@ import { Animations } from '../../../animations/animations';
     animations: Animations.flyInOut
 })
 export class NotificationPanelComponent implements OnInit, OnDestroy {
+    @Output() close: EventEmitter<boolean> = new EventEmitter();
     public notifications: NotificationMessage[];
     public pendingActions: NotificationMessage[];
 

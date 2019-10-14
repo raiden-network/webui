@@ -1,4 +1,13 @@
-<div fxLayout="column" fxLayoutGap="40px" class="notification-container">
+<div fxLayout="row" fxLayoutAlign="end" class="notification-header">
+    <button
+        class="notification-close"
+        mat-icon-button
+        (click)="close.emit(true)"
+    >
+        <mat-icon aria-label="Close notification panel icon">close</mat-icon>
+    </button>
+</div>
+<div fxLayout="column" class="notification-container" fxLayoutGap="40px">
     <div
         fxLayout="column"
         fxLayoutAlign="center center"
@@ -27,10 +36,11 @@
     <div fxLayout="column" fxLayoutGap="10px" *ngIf="notifications.length > 0">
         <div
             fxFlayout="row"
-            fxLayoutAlign="space-between center"
+            fxLayoutAlign="start center"
+            fxLayoutGap="10px"
             class="notification-title"
         >
-            <h1 fxFlexAlign="center" class="mat-h1 notification-title-text">
+            <h1 fxFlexAlign="start" class="mat-h1 notification-title-text">
                 Notifications
             </h1>
             <button
