@@ -7,6 +7,7 @@ import { backoff } from '../shared/backoff.operator';
 import { NotificationService } from './notification.service';
 import { UiMessage } from '../models/notification';
 import { PendingTransfer } from '../models/pending-transfer';
+import { amountToDecimal } from '../utils/amount.converter';
 
 @Injectable({
     providedIn: 'root'
@@ -75,23 +76,24 @@ export class PendingTransferPollingService {
         );
         for (const pendingTransfer of pendingTransfers) {
             let message: UiMessage;
+            const token = pendingTransfer.userToken;
+            const formattedAmount = amountToDecimal(
+                pendingTransfer.locked_amount,
+                token.decimals
+            ).toFixed();
             if (pendingTransfer.role === 'initiator') {
                 message = {
                     title: 'Payment in flight',
-                    description: `A payment of ${
-                        pendingTransfer.locked_amount
-                    } of the token ${
-                        pendingTransfer.token_address
-                    } is being sent to the partner ${pendingTransfer.target}`
+                    description: `A payment of ${formattedAmount} ${
+                        token.symbol
+                    } is being sent to ${pendingTransfer.target}`
                 };
             } else {
                 message = {
                     title: 'Payment incoming',
-                    description: `A payment of ${
-                        pendingTransfer.locked_amount
-                    } of the token ${
-                        pendingTransfer.token_address
-                    } is incoming from the partner ${pendingTransfer.initiator}`
+                    description: `A payment of ${formattedAmount} ${
+                        token.symbol
+                    } is incoming from ${pendingTransfer.initiator}`
                 };
             }
             pendingTransfer.notificationIdentifier = this.notificationService.addPendingAction(

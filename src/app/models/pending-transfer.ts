@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { UserToken } from './usertoken';
 
 export interface PendingTransfer {
     readonly channel_identifier: BigNumber;
@@ -11,4 +12,5 @@ export interface PendingTransfer {
     readonly token_network_address: string;
     readonly transferred_amount: BigNumber;
     notificationIdentifier?: number;
+    userToken?: UserToken;
 }

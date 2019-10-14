@@ -103,6 +103,7 @@ describe('RaidenService', () => {
             TestBed.get(TokenInfoRetrieverService),
             'createBatch'
         );
+        spyOn(service, 'getUserToken').and.returnValue(token);
     });
 
     afterEach(inject(
@@ -162,7 +163,7 @@ describe('RaidenService', () => {
 
         const notificationMessage: UiMessage = {
             title: 'Token registered',
-            description: `Your token was successfully registered: ${tokenAddress}`
+            description: `Token ${tokenAddress} was successfully registered`
         };
         expect(
             notificationService.addSuccessNotification
@@ -296,7 +297,6 @@ describe('RaidenService', () => {
     });
 
     it('should have user token included in the channels', fakeAsync(() => {
-        spyOn(service, 'getUserToken').and.returnValue(token);
         spyOn(service, 'getTokens').and.returnValue(of([token]));
 
         service.getChannels().subscribe(
@@ -474,7 +474,9 @@ describe('RaidenService', () => {
 
         const notificationMessage: UiMessage = {
             title: 'Deposit',
-            description: `The channel 1 balance changed to 100000000010`
+            description: `1000 ${
+                token.symbol
+            } were deposited to channel 1 with 0xpartn`
         };
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             1
@@ -541,7 +543,9 @@ describe('RaidenService', () => {
 
         const notificationMessage: UiMessage = {
             title: 'Withdraw',
-            description: `The channel 1 balance changed to 0`
+            description: `10000 ${
+                token.symbol
+            } were withdrawn from channel 1 with 0xpartn`
         };
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             1
@@ -586,7 +590,7 @@ describe('RaidenService', () => {
             title: 'Mint',
             description: `${decimalValue} ${
                 token.symbol
-            } have successfully been minted`
+            } were successfully minted`
         };
         expect(
             notificationService.addSuccessNotification
@@ -671,8 +675,10 @@ describe('RaidenService', () => {
         flush();
 
         const notificationMessage: UiMessage = {
-            title: 'Joined Token Network',
-            description: `You have successfully joined the Network of Token ${tokenAddress}`
+            title: 'Joined token network',
+            description: `${
+                token.name
+            } network was joined successfully with 0.00001 ${token.symbol}`
         };
         expect(
             notificationService.addSuccessNotification
@@ -712,8 +718,10 @@ describe('RaidenService', () => {
         flush();
 
         const notificationMessage: UiMessage = {
-            title: 'Funds Added',
-            description: `You successfully added funds to the Network of Token ${tokenAddress}`
+            title: 'Funds added',
+            description: `Funds for ${
+                token.name
+            } network were successfully changed to 0.00001 ${token.symbol}`
         };
         expect(
             notificationService.addSuccessNotification
@@ -798,10 +806,10 @@ describe('RaidenService', () => {
         flush();
 
         const notificationMessage: UiMessage = {
-            title: 'Left Token Network',
+            title: 'Left token network',
             description: `Successfully closed and settled all channels in ${
                 token.name
-            } <${token.address}> token`
+            } network`
         };
         expect(
             notificationService.addSuccessNotification
@@ -894,7 +902,9 @@ describe('RaidenService', () => {
 
         const notificationMessage: UiMessage = {
             title: 'Transfer successful',
-            description: `A payment of ${amount.toString()} was successfully sent to the partner ${targetAddress}`
+            description: `A payment of 0.0000001 ${
+                token.symbol
+            } was successfully sent to ${targetAddress}`
         };
         expect(
             notificationService.addSuccessNotification
@@ -1066,6 +1076,9 @@ describe('RaidenService', () => {
             totalDeposit: new BigNumber(10),
             totalWithdraw: new BigNumber(10)
         });
+        spyOn(service, 'getChannel').and.returnValue(
+            of(Object.assign({}, channel3))
+        );
         channel3.state = 'closed';
 
         service
@@ -1103,11 +1116,9 @@ describe('RaidenService', () => {
 
         const notificationMessage: UiMessage = {
             title: 'Close',
-            description: `The channel ${
-                channel3.channel_identifier
-            } with partner ${
+            description: `Channel ${channel3.channel_identifier} with ${
                 channel3.partner_address
-            } has been closed successfully`
+            } in ${token.name} network was closed successfully`
         };
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             1
@@ -1117,7 +1128,7 @@ describe('RaidenService', () => {
         );
     });
 
-    it('should return the pending transfers', () => {
+    it('should return the pending transfers with the user token included', () => {
         const pendingTransfer: PendingTransfer = {
             channel_identifier: new BigNumber(255),
             initiator: '0x5E1a3601538f94c9e6D2B40F7589030ac5885FE7',
@@ -1125,14 +1136,17 @@ describe('RaidenService', () => {
             payment_identifier: new BigNumber(1),
             role: 'initiator',
             target: '0x00AF5cBfc8dC76cd599aF623E60F763228906F3E',
-            token_address: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
+            token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             token_network_address: '0x111157460c0F41EfD9107239B7864c062aA8B978',
             transferred_amount: new BigNumber(331)
         };
+        spyOn(service, 'getTokens').and.returnValue(of([token]));
 
         service.getPendingTransfers().subscribe(
             (pendingTransfers: Array<PendingTransfer>) => {
-                expect(pendingTransfers).toEqual([pendingTransfer]);
+                expect(pendingTransfers).toEqual([
+                    Object.assign({}, pendingTransfer, { userToken: token })
+                ]);
             },
             error => {
                 fail(error);
