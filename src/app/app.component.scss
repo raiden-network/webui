@@ -48,11 +48,6 @@ mat-sidenav-content {
 }
 
 .account-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-    padding-left: 8px;
     padding-right: 8px;
 
     .balance-info {
@@ -64,17 +59,14 @@ mat-sidenav-content {
         font-weight: 300;
         font-size: 14px;
     }
+}
 
-    .account {
-        font-size: 16px;
-        line-height: 22px;
-    }
+.account {
+    font-size: 16px;
+    line-height: 22px;
 }
 
 .info-container {
-    display: flex;
-    flex-direction: column;
-
     @include respond-to('medium-screens') {
         margin-left: 25px;
     }
@@ -95,13 +87,14 @@ mat-sidenav-content {
     }
 }
 
-#faucet-button {
+.faucet-button {
     padding: 0;
     line-height: 100%;
     height: 100%;
 }
 
 .notification-button {
+    margin-left: 8px;
     padding: 0;
     border-radius: 0;
     height: 100%;
