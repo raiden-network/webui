@@ -142,7 +142,7 @@ describe('AppComponent', () => {
 
     it('should have a faucet button when network has a faucet', function() {
         expect(
-            fixture.debugElement.query(By.css('#faucet-button'))
+            fixture.debugElement.query(By.css('.faucet-button'))
         ).toBeTruthy();
     });
 
@@ -154,13 +154,13 @@ describe('AppComponent', () => {
         });
         fixture.detectChanges();
         expect(
-            fixture.debugElement.query(By.css('#faucet-button'))
+            fixture.debugElement.query(By.css('.faucet-button'))
         ).toBeFalsy();
     });
 
     it('should insert the address correctly into the href attribute of the faucet button', function() {
         const href = fixture.debugElement
-            .query(By.css('#faucet-button'))
+            .query(By.css('.faucet-button'))
             .nativeElement.getAttribute('href');
         expect(href).toBe(
             'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'

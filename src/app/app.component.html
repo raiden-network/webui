@@ -17,7 +17,7 @@
             ngClass="favicon"
         />
     </span>
-    <span *ngIf="!isMobile()" class="info-container">
+    <span *ngIf="!isMobile()" class="info-container" fxLayout="column">
         <a class="rn" target="_blank" href="http://raiden.network/">
             Raiden Network
         </a>
@@ -29,7 +29,56 @@
         </span>
     </span>
     <span class="toolbar-spacer"></span>
-    <span>
+    <div fxLayout="row" fxLayoutAlign="start center">
+        <span *ngIf="!isMobile()" class="account" fxFlexAlign="start">
+            Your account:
+        </span>
+        <div class="account-info" fxLayout="column" fxLayoutAlign="center end">
+            <span
+                class="truncate account"
+                [matTooltip]="raidenAddress"
+                matTooltipClass="expanded-tooltip"
+                matTooltipShowDelay="600"
+                matTooltipPosition="before"
+            >
+                {{ raidenAddress | shortenAddress }}
+            </span>
+            <span class="balance-info" *ngIf="(balance$ | async) as balance">
+                <span
+                    *ngIf="!isMobile(); else mobile_balance"
+                    class="balance"
+                    [matTooltip]="
+                        (balance | displayDecimals) === balance ? '' : balance
+                    "
+                    >{{ balance | displayDecimals }}
+                    {{ (network$ | async)?.shortName | uppercase }}
+                </span>
+                <ng-template #mobile_balance>
+                    <span
+                        class="balance"
+                        [matTooltip]="
+                            (balance | displayDecimals: 3:true) === balance
+                                ? ''
+                                : balance
+                        "
+                        >{{ balance | displayDecimals: 3:true }}
+                        {{ (network$ | async)?.shortName | uppercase }}
+                    </span>
+                </ng-template>
+                <a
+                    *ngIf="(network$ | async)?.faucet"
+                    [href]="faucetLink$ | async"
+                    target="_blank"
+                    mat-icon-button
+                    class="faucet-button"
+                    matTooltip="Open ether faucet"
+                >
+                    <mat-icon aria-label="Open ether faucet">
+                        card_giftcard
+                    </mat-icon>
+                </a>
+            </span>
+        </div>
         <button
             mat-icon-button
             ngxClipboard
@@ -40,52 +89,6 @@
                 content_copy
             </mat-icon>
         </button>
-    </span>
-    <div class="account-info">
-        <span
-            class="truncate account"
-            [matTooltip]="raidenAddress"
-            matTooltipClass="expanded-tooltip"
-            matTooltipShowDelay="600"
-            matTooltipPosition="before"
-        >
-            {{ raidenAddress | shortenAddress }}
-        </span>
-        <span class="balance-info" *ngIf="(balance$ | async) as balance">
-            <span
-                *ngIf="!isMobile(); else mobile_balance"
-                class="balance"
-                [matTooltip]="
-                    (balance | displayDecimals) === balance ? '' : balance
-                "
-                >{{ balance | displayDecimals }}
-                {{ (network$ | async)?.shortName | uppercase }}
-            </span>
-            <ng-template #mobile_balance>
-                <span
-                    class="balance"
-                    [matTooltip]="
-                        (balance | displayDecimals: 3:true) === balance
-                            ? ''
-                            : balance
-                    "
-                    >{{ balance | displayDecimals: 3:true }}
-                    {{ (network$ | async)?.shortName | uppercase }}
-                </span>
-            </ng-template>
-            <a
-                *ngIf="(network$ | async)?.faucet"
-                [href]="faucetLink$ | async"
-                target="_blank"
-                mat-icon-button
-                id="faucet-button"
-                matTooltip="Open ether faucet"
-            >
-                <mat-icon aria-label="Open ether faucet">
-                    card_giftcard
-                </mat-icon>
-            </a>
-        </span>
     </div>
     <button
         mat-button
