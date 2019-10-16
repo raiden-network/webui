@@ -12,4 +12,5 @@ export interface Channel {
     settle_timeout: number;
     reveal_timeout: number;
     userToken?: UserToken;
+    depositPending?: boolean;
 }
