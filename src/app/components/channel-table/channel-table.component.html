@@ -97,7 +97,11 @@
             </div>
 
             <div class="item-label" fxLayout="row">Balance</div>
-            <div class="item-info" fxLayout="row">
+            <div
+                class="item-info"
+                fxLayout="row"
+                *ngIf="!channel.depositPending; else deposit_pending"
+            >
                 <span
                     *ngIf="
                         (channel.balance
@@ -117,6 +121,12 @@
                     {{ channel.userToken.symbol }}
                 </sup>
             </div>
+            <ng-template #deposit_pending>
+                <div class="item-info">
+                    awaiting
+                </div>
+            </ng-template>
+
             <div class="channel-status" fxLayout="row">
                 <span class="item-label">Status:</span>
                 <span class="light space">{{ channel.state | status }}</span>

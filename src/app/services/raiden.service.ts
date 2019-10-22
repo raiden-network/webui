@@ -39,6 +39,9 @@ export class RaidenService {
     readonly balance$: Observable<string>;
     readonly network$: Observable<Network>;
     private userTokens: { [id: string]: UserToken | null } = {};
+    private pendingChannels: {
+        [tokenAddress: string]: { [partnerAddress: string]: boolean | null };
+    } = {};
 
     constructor(
         private http: HttpClient,
@@ -125,6 +128,16 @@ export class RaidenService {
                     channel.userToken = this.getUserToken(
                         channel.token_address
                     );
+                    if (
+                        this.pendingChannels[channel.token_address] &&
+                        this.pendingChannels[channel.token_address][
+                            channel.partner_address
+                        ]
+                    ) {
+                        channel.depositPending = true;
+                    } else {
+                        channel.depositPending = false;
+                    }
                     return channel;
                 }),
                 toArray()
@@ -239,6 +252,11 @@ export class RaidenService {
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
                 );
+
+                if (!this.pendingChannels[tokenAddress]) {
+                    this.pendingChannels[tokenAddress] = {};
+                }
+                this.pendingChannels[tokenAddress][partnerAddress] = true;
             }),
             switchMap(() =>
                 this.http.put<Channel>(
@@ -255,11 +273,12 @@ export class RaidenService {
                 )).toNumber();
                 return channel;
             }),
-            finalize(() =>
+            finalize(() => {
                 this.notificationService.removePendingAction(
                     notificationIdentifier
-                )
-            )
+                );
+                delete this.pendingChannels[tokenAddress][partnerAddress];
+            })
         );
     }
 

@@ -1,7 +1,8 @@
 {
     "/api": {
         "target": "http://localhost:5001",
-        "proxyTimeout": 600000
+        "proxyTimeout": 600000,
+        "timeout": 600000
     },
     "/web3": {
         "target": "http://localhost:8545",

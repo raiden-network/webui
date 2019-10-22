@@ -9,6 +9,7 @@
 ### Added
 - [#167] Shows toast notifications for new pending actions.
 - [#172] Adds a close button to notification panel.
+- [#83] Marks balance of newly opened channels as `awaiting` while the deposit is pending.
 
 ## [0.10.0] - 2019-09-27
 ### Changed
@@ -120,6 +121,7 @@ token network.
 [#94]: https://github.com/raiden-network/webui/issues/94
 [#87]: https://github.com/raiden-network/webui/issues/87
 [#85]: https://github.com/raiden-network/webui/issues/85
+[#83]: https://github.com/raiden-network/webui/issues/83
 [#79]: https://github.com/raiden-network/webui/issues/79
 [#66]: https://github.com/raiden-network/webui/issues/66
 [#60]: https://github.com/raiden-network/webui/issues/60

@@ -1153,14 +1153,68 @@ describe('RaidenService', () => {
             }
         );
 
-        const getChannelsRequest = mockHttp.expectOne({
+        const getPendingTransfersRequest = mockHttp.expectOne({
             url: `${endpoint}/pending_transfers`,
             method: 'GET'
         });
 
-        getChannelsRequest.flush(losslessStringify([pendingTransfer]), {
+        getPendingTransfersRequest.flush(losslessStringify([pendingTransfer]), {
             status: 200,
             statusText: ''
         });
     });
+
+    it('should mark channels deposit as pending while they are opened', fakeAsync(() => {
+        spyOn(service, 'getTokens').and.returnValue(of([token]));
+        const channel3: Channel = createChannel({
+            id: new BigNumber(2),
+            balance: new BigNumber(0),
+            totalDeposit: new BigNumber(10),
+            totalWithdraw: new BigNumber(10)
+        });
+        channel3.partner_address = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
+
+        service
+            .openChannel(
+                channel1.token_address,
+                channel1.partner_address,
+                500,
+                new BigNumber(10)
+            )
+            .subscribe();
+        const openChannelRequest = mockHttp.expectOne({
+            url: `${endpoint}/channels`,
+            method: 'PUT'
+        });
+
+        service.getChannels().subscribe((channels: Array<Channel>) => {
+            channels.forEach(channel => {
+                if (
+                    channel.channel_identifier.isEqualTo(
+                        channel1.channel_identifier
+                    )
+                ) {
+                    expect(channel.depositPending).toBe(true);
+                } else {
+                    expect(channel.depositPending).toBe(false);
+                }
+            });
+        });
+        const getChannelsRequest = mockHttp.expectOne({
+            url: `${endpoint}/channels`,
+            method: 'GET'
+        });
+
+        getChannelsRequest.flush(losslessStringify([channel1, channel3]), {
+            status: 200,
+            statusText: ''
+        });
+        tick();
+
+        openChannelRequest.flush(losslessStringify(channel1), {
+            status: 200,
+            statusText: ''
+        });
+        flush();
+    }));
 });
