@@ -79,7 +79,7 @@ You have to also upload the packages from the `dist/*` folder to the created rel
 After the package is properly uploaded on PyPI the new package should be tested with the binary distribution.
 
 In order to create a new binary distribution of raiden containing the new WebUI package you have to
-go to the directory where you cloned the Raiden repository and modify the `constraints.txt`.
+go to the directory where you cloned the Raiden repository and modify the `requirements/requirements.txt`, `requirements/requirements-ci.txt` and `requirements/requirements-dev.txt`.
 
 You have to find the webui constraint and updated to the version of the new package.
 
@@ -96,12 +96,13 @@ raiden-webui==0.8.0
 ```
 
 Then you have to manually build the binary that will include the new version of the WebUI.
+Please make sure you are using the same versions for the following command as in this [config file](https://github.com/raiden-network/raiden/blob/develop/.circleci/config.yml#L42).
 
 ```bash
-export GETH_URL_LINUX='https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.0-5f540757.tar.gz'
-export SOLC_URL_LINUX='https://github.com/ethereum/solidity/releases/download/v0.4.23/solc-static-linux'
-export SOLC_VERSION='v0.4.23'
-export GETH_VERSION='1.8.0'
+export GETH_URL_LINUX='https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.9.2-e76047e9.tar.gz'
+export SOLC_URL_LINUX='https://github.com/ethereum/solidity/releases/download/v0.5.4/solc-static-linux'
+export SOLC_VERSION='v0.5.4'
+export GETH_VERSION='1.9.2'
 make bundle-docker
 ```
 
