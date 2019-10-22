@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.10.1] - 2019-10-22
 ### Changed
 - [#167] Improves the animation of disappearing toast notifications to make it clear where the notification panel is accessible.
 - [#171] Fixes the Raiden API not available notification on Firefox to only appear once.
@@ -86,7 +88,8 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v0.9.2...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v0.10.1...HEAD
+[0.10.1]: https://github.com/raiden-network/webui/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/raiden-network/webui/compare/v0.9.2...v0.10.0
 [0.9.2]: https://github.com/raiden-network/webui/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/raiden-network/webui/compare/v0.9.0...v0.9.1
