@@ -1,4 +1,10 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+    HttpClient,
+    HttpErrorResponse,
+    HttpEventType,
+    HttpEvent,
+    HttpRequest
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from, interval, Observable, of, throwError, zip } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
@@ -11,7 +17,8 @@ import {
     switchMap,
     tap,
     toArray,
-    finalize
+    finalize,
+    filter
 } from 'rxjs/operators';
 import { Channel } from '../models/channel';
 import { Connections } from '../models/connection';
@@ -291,31 +298,54 @@ export class RaidenService {
         const identifier = paymentIdentifier
             ? paymentIdentifier
             : this.identifier;
+        let notificationIdentifier;
 
-        return this.http
-            .post(
-                `${
-                    this.raidenConfig.api
-                }/payments/${tokenAddress}/${targetAddress}`,
-                { amount, identifier }
+        return of(null).pipe(
+            tap(() => {
+                const token = this.getUserToken(tokenAddress);
+                const formattedAmount = amountToDecimal(
+                    amount,
+                    token.decimals
+                ).toFixed();
+                const message: UiMessage = {
+                    title: 'Payment sending',
+                    description: `A payment of ${formattedAmount} ${
+                        token.symbol
+                    } to ${targetAddress} has been initiated`
+                };
+                notificationIdentifier = this.notificationService.addPendingAction(
+                    message
+                );
+            }),
+            switchMap(() =>
+                this.http.post(
+                    `${
+                        this.raidenConfig.api
+                    }/payments/${tokenAddress}/${targetAddress}`,
+                    { amount, identifier }
+                )
+            ),
+            tap(() => {
+                const token = this.getUserToken(tokenAddress);
+                const formattedAmount = amountToDecimal(
+                    amount,
+                    token.decimals
+                ).toFixed();
+                const message: UiMessage = {
+                    title: 'Transfer successful',
+                    description: `A payment of ${formattedAmount} ${
+                        token.symbol
+                    } was successfully sent to ${targetAddress}`
+                };
+                this.notificationService.addSuccessNotification(message);
+            }),
+            map(() => null),
+            finalize(() =>
+                this.notificationService.removePendingAction(
+                    notificationIdentifier
+                )
             )
-            .pipe(
-                tap(() => {
-                    const token = this.getUserToken(tokenAddress);
-                    const formattedAmount = amountToDecimal(
-                        amount,
-                        token.decimals
-                    ).toFixed();
-                    const message: UiMessage = {
-                        title: 'Transfer successful',
-                        description: `A payment of ${formattedAmount} ${
-                            token.symbol
-                        } was successfully sent to ${targetAddress}`
-                    };
-                    this.notificationService.addSuccessNotification(message);
-                }),
-                map(() => null)
-            );
+        );
     }
 
     public getPaymentHistory(

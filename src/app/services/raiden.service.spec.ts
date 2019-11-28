@@ -877,7 +877,12 @@ describe('RaidenService', () => {
                 amount,
                 paymentIdentifier
             )
-            .subscribe(value => expect(value).toBeFalsy());
+            .subscribe(value => expect(value).toBeFalsy())
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
         tick();
 
         const request = mockHttp.expectOne({
@@ -888,6 +893,7 @@ describe('RaidenService', () => {
             amount,
             identifier: paymentIdentifier
         });
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         const body = {
             target_address: targetAddress,
