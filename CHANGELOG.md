@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- [#184] Fixes showing no notification when initiating a payment.
 
 ## [0.10.1] - 2019-10-22
 ### Changed
@@ -99,6 +101,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#184]: https://github.com/raiden-network/webui/issues/184
 [#172]: https://github.com/raiden-network/webui/issues/172
 [#171]: https://github.com/raiden-network/webui/issues/171
 [#168]: https://github.com/raiden-network/webui/issues/168
