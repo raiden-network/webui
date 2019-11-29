@@ -54,6 +54,8 @@ export class PendingTransferPollingService {
             backoff(this.raidenConfig.config.error_poll_interval),
             share()
         );
+
+        this.raidenService.paymentInitiated$.subscribe(() => this.refresh());
     }
 
     public refresh() {

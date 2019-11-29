@@ -878,7 +878,7 @@ describe('RaidenService', () => {
                 paymentIdentifier
             )
             .subscribe(value => expect(value).toBeFalsy());
-        tick();
+        tick(500);
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
@@ -921,7 +921,7 @@ describe('RaidenService', () => {
         service
             .initiatePayment(tokenAddress, targetAddress, amount)
             .subscribe();
-        tick();
+        tick(500);
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
@@ -953,7 +953,7 @@ describe('RaidenService', () => {
                     expect(error).toBeTruthy('An error was expected');
                 }
             );
-        tick();
+        tick(500);
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
@@ -981,6 +981,45 @@ describe('RaidenService', () => {
         expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
             notificationMessage
         );
+    }));
+
+    it('should trigger the payment initiated observable when payment sent', fakeAsync(() => {
+        const targetAddress = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
+        const amount = new BigNumber(10);
+        const paymentIdentifier = new BigNumber(3);
+        let emitted = false;
+        service.paymentInitiated$.subscribe(() => {
+            emitted = true;
+        });
+        service
+            .initiatePayment(
+                tokenAddress,
+                targetAddress,
+                amount,
+                paymentIdentifier
+            )
+            .subscribe(value => expect(value).toBeFalsy());
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
+            method: 'POST'
+        });
+        expect(losslessParse(request.request.body)).toEqual({
+            amount,
+            identifier: paymentIdentifier
+        });
+        tick(500);
+        expect(emitted).toBe(true);
+
+        const body = {
+            target_address: targetAddress,
+            identifier: paymentIdentifier
+        };
+        request.flush(body, {
+            status: 200,
+            statusText: ''
+        });
+        flush();
     }));
 
     it('should give the tokens', fakeAsync(() => {

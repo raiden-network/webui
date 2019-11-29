@@ -33,6 +33,7 @@ describe('AppComponent', () => {
         balance$: ReplaySubject<string>;
         production: boolean;
         raidenAddress$: ReplaySubject<string>;
+        paymentInitiated$: Observable<void>;
         getChannels: () => Observable<any>;
     };
 
@@ -46,6 +47,7 @@ describe('AppComponent', () => {
             balance$: balanceMock,
             production: true,
             raidenAddress$: addressMock,
+            paymentInitiated$: EMPTY,
             getChannels: () => EMPTY
         };
 

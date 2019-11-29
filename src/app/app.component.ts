@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { default as makeBlockie } from 'ethereum-blockies-base64';
 import { Observable, Subscription, zip } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, delay, tap } from 'rxjs/operators';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
@@ -71,20 +71,21 @@ export class AppComponent implements OnInit, OnDestroy {
         );
         this.sub = this.notificationService.numberOfNotifications$.subscribe(
             numberOfNotifications => {
-                setTimeout(() => {
-                    this._numberOfNotifications = numberOfNotifications;
-                });
+                this._numberOfNotifications = numberOfNotifications;
             }
         );
 
-        const newNotificationSubscription = this.notificationService.newNotification$.subscribe(
-            () => {
-                this.notificationBlink = 'rgba(255, 255, 255, 0.5)';
-                setTimeout(() => {
+        const newNotificationSubscription = this.notificationService.newNotification$
+            .pipe(
+                tap(() => {
+                    this.notificationBlink = 'rgba(255, 255, 255, 0.5)';
+                }),
+                delay(150),
+                tap(() => {
                     this.notificationBlink = 'black';
-                }, 150);
-            }
-        );
+                })
+            )
+            .subscribe();
         this.sub.add(newNotificationSubscription);
 
         const pollingSubscription = this.channelPollingService
