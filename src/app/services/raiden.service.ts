@@ -648,6 +648,39 @@ export class RaidenService {
                     from(pendingTransfers)
                 ),
                 map((pendingTransfer: PendingTransfer) => {
+                    // Quickfix for https://github.com/raiden-network/raiden/issues/5411
+                    // Can be removed when fixed in client
+                    if (
+                        typeof pendingTransfer.channel_identifier === 'string'
+                    ) {
+                        // @ts-ignore
+                        pendingTransfer.channel_identifier = new BigNumber(
+                            pendingTransfer.channel_identifier
+                        );
+                    }
+                    if (typeof pendingTransfer.locked_amount === 'string') {
+                        // @ts-ignore
+                        pendingTransfer.locked_amount = new BigNumber(
+                            pendingTransfer.locked_amount
+                        );
+                    }
+                    if (
+                        typeof pendingTransfer.payment_identifier === 'string'
+                    ) {
+                        // @ts-ignore
+                        pendingTransfer.payment_identifier = new BigNumber(
+                            pendingTransfer.payment_identifier
+                        );
+                    }
+                    if (
+                        typeof pendingTransfer.transferred_amount === 'string'
+                    ) {
+                        // @ts-ignore
+                        pendingTransfer.transferred_amount = new BigNumber(
+                            pendingTransfer.transferred_amount
+                        );
+                    }
+
                     pendingTransfer.userToken = this.getUserToken(
                         pendingTransfer.token_address
                     );
