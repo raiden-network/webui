@@ -110,12 +110,17 @@ export class PendingTransferPollingService {
     ) {
         const pendingTransfers = oldPendingTransfers.filter(
             oldPendingTransfer => {
-                return !newPendingTransfers.find(newPendingTransfer =>
-                    this.isTheSamePendingTransfer(
+                return !newPendingTransfers.find(newPendingTransfer => {
+                    const isTheSame = this.isTheSamePendingTransfer(
                         oldPendingTransfer,
                         newPendingTransfer
-                    )
-                );
+                    );
+                    if (isTheSame) {
+                        newPendingTransfer.notificationIdentifier =
+                            oldPendingTransfer.notificationIdentifier;
+                    }
+                    return isTheSame;
+                });
             }
         );
         for (const pendingTransfer of pendingTransfers) {
