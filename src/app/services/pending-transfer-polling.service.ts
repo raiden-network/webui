@@ -130,12 +130,14 @@ export class PendingTransferPollingService {
         pendingTransfer2: PendingTransfer
     ) {
         return (
-            pendingTransfer1.channel_identifier ===
-                pendingTransfer2.channel_identifier &&
+            pendingTransfer1.channel_identifier.isEqualTo(
+                pendingTransfer2.channel_identifier
+            ) &&
             pendingTransfer1.token_address === pendingTransfer2.token_address &&
             pendingTransfer1.role === pendingTransfer2.role &&
-            pendingTransfer1.transferred_amount ===
+            pendingTransfer1.transferred_amount.isEqualTo(
                 pendingTransfer2.transferred_amount
+            )
         );
     }
 }
