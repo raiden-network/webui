@@ -1,6 +1,11 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+    HttpClient,
+    HttpRequest,
+    HttpEventType,
+    HttpEvent
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, interval, Observable, of, throwError, zip } from 'rxjs';
+import { from, interval, Observable, of, zip, BehaviorSubject } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
     flatMap,
@@ -11,7 +16,9 @@ import {
     switchMap,
     tap,
     toArray,
-    finalize
+    finalize,
+    filter,
+    delay
 } from 'rxjs/operators';
 import { Channel } from '../models/channel';
 import { Connections } from '../models/connection';
@@ -35,9 +42,16 @@ import { UiMessage } from '../models/notification';
     providedIn: 'root'
 })
 export class RaidenService {
+    private paymentInitiatedSubject: BehaviorSubject<
+        void
+    > = new BehaviorSubject(null);
+
     readonly raidenAddress$: Observable<string>;
     readonly balance$: Observable<string>;
     readonly network$: Observable<Network>;
+    public readonly paymentInitiated$: Observable<
+        void
+    > = this.paymentInitiatedSubject.asObservable();
     private userTokens: { [id: string]: UserToken | null } = {};
     private pendingChannels: {
         [tokenAddress: string]: { [partnerAddress: string]: boolean | null };
@@ -291,31 +305,43 @@ export class RaidenService {
         const identifier = paymentIdentifier
             ? paymentIdentifier
             : this.identifier;
+        const request = new HttpRequest(
+            'POST',
+            `${
+                this.raidenConfig.api
+            }/payments/${tokenAddress}/${targetAddress}`,
+            { amount, identifier },
+            { reportProgress: true }
+        );
 
-        return this.http
-            .post(
-                `${
-                    this.raidenConfig.api
-                }/payments/${tokenAddress}/${targetAddress}`,
-                { amount, identifier }
-            )
-            .pipe(
-                tap(() => {
-                    const token = this.getUserToken(tokenAddress);
-                    const formattedAmount = amountToDecimal(
-                        amount,
-                        token.decimals
-                    ).toFixed();
-                    const message: UiMessage = {
-                        title: 'Transfer successful',
-                        description: `A payment of ${formattedAmount} ${
-                            token.symbol
-                        } was successfully sent to ${targetAddress}`
-                    };
-                    this.notificationService.addSuccessNotification(message);
-                }),
-                map(() => null)
-            );
+        return this.http.request(request).pipe(
+            flatMap((event: HttpEvent<any>) =>
+                event.type === HttpEventType.Sent
+                    ? of(event).pipe(
+                          delay(500),
+                          tap(() => this.paymentInitiatedSubject.next(null))
+                      )
+                    : of(event)
+            ),
+            filter(
+                (event: HttpEvent<any>) => event.type === HttpEventType.Response
+            ),
+            tap(() => {
+                const token = this.getUserToken(tokenAddress);
+                const formattedAmount = amountToDecimal(
+                    amount,
+                    token.decimals
+                ).toFixed();
+                const message: UiMessage = {
+                    title: 'Transfer successful',
+                    description: `A payment of ${formattedAmount} ${
+                        token.symbol
+                    } was successfully sent to ${targetAddress}`
+                };
+                this.notificationService.addSuccessNotification(message);
+            }),
+            map(() => null)
+        );
     }
 
     public getPaymentHistory(
