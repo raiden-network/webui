@@ -75,6 +75,8 @@ describe('PendingTransferPollingService', () => {
         spyOn(notificationService, 'removePendingAction').and.callFake(
             () => {}
         );
+        pendingTransfer1.notificationIdentifier = undefined;
+        pendingTransfer2.notificationIdentifier = undefined;
     });
 
     it('should be created', inject(
@@ -134,6 +136,38 @@ describe('PendingTransferPollingService', () => {
             expect(
                 notificationService.removePendingAction
             ).toHaveBeenCalledWith(pendingTransfer1.notificationIdentifier);
+        }
+    ));
+
+    it('should keep the notification identifier on same pending transfers', inject(
+        [PendingTransferPollingService],
+        (service: PendingTransferPollingService) => {
+            const pendingTransfer1Clone: PendingTransfer = Object.assign(
+                {},
+                pendingTransfer1
+            );
+            getPendingTransfersSpy.and.returnValues(
+                from([[], [pendingTransfer1], [pendingTransfer1Clone]])
+            );
+            let notificationIdentifier: number;
+            let emittedTimes = 0;
+            service.pendingTransfers$
+                .subscribe((pendingTransfers: PendingTransfer[]) => {
+                    if (emittedTimes === 1) {
+                        notificationIdentifier =
+                            pendingTransfers[0].notificationIdentifier;
+                    } else if (emittedTimes === 2) {
+                        expect(pendingTransfers[0].notificationIdentifier).toBe(
+                            notificationIdentifier
+                        );
+                    }
+                    emittedTimes++;
+                })
+                .add(() => {
+                    expect(
+                        notificationService.removePendingAction
+                    ).toHaveBeenCalledTimes(0);
+                });
         }
     ));
 });
