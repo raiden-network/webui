@@ -5,6 +5,7 @@
 - [#194] Fixes that no notifications for pending transfers were shown.
 - [#179] Shows an error message if ENS is not supported on current network.
 - [#184] Fixes showing no notification when initiating a payment.
+- [#181] Fixes that the pending transfer notifications were not removed.
 
 ## [0.10.1] - 2019-10-22
 ### Changed
@@ -105,6 +106,7 @@ token network.
 
 [#194]: https://github.com/raiden-network/webui/issues/194
 [#184]: https://github.com/raiden-network/webui/issues/184
+[#181]: https://github.com/raiden-network/webui/issues/181
 [#179]: https://github.com/raiden-network/webui/issues/179
 [#172]: https://github.com/raiden-network/webui/issues/172
 [#171]: https://github.com/raiden-network/webui/issues/171
