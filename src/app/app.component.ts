@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { default as makeBlockie } from 'ethereum-blockies-base64';
 import { Observable, Subscription, zip } from 'rxjs';
-import { map, delay, tap } from 'rxjs/operators';
+import { map, tap, debounceTime } from 'rxjs/operators';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
@@ -80,12 +80,11 @@ export class AppComponent implements OnInit, OnDestroy {
                 tap(() => {
                     this.notificationBlink = 'rgba(255, 255, 255, 0.5)';
                 }),
-                delay(150),
-                tap(() => {
-                    this.notificationBlink = 'black';
-                })
+                debounceTime(150)
             )
-            .subscribe();
+            .subscribe(() => {
+                this.notificationBlink = 'black';
+            });
         this.sub.add(newNotificationSubscription);
 
         const pollingSubscription = this.channelPollingService
