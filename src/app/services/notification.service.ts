@@ -1,6 +1,6 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { scan } from 'rxjs/operators';
 import { UiMessage, NotificationMessage } from '../models/notification';
 
@@ -9,7 +9,7 @@ import { UiMessage, NotificationMessage } from '../models/notification';
 })
 export class NotificationService {
     private numberOfNotificationsSubject = new BehaviorSubject<number>(0);
-    private newNotificationSubject = new BehaviorSubject<void>(null);
+    private newNotificationSubject = new Subject<void>();
     private notificationsSubject = new BehaviorSubject<NotificationMessage[]>(
         []
     );
