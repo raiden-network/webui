@@ -1,4 +1,4 @@
-import { inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
 import { ToastrService, ToastrModule } from 'ngx-toastr';
 
 import { NotificationService } from './notification.service';
@@ -20,7 +20,10 @@ describe('NotificationService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [NotificationService],
-            imports: [ToastrModule.forRoot(), NoopAnimationsModule]
+            imports: [
+                ToastrModule.forRoot({ timeOut: 50, easeTime: 0 }),
+                NoopAnimationsModule
+            ]
         });
     });
 
@@ -37,10 +40,15 @@ describe('NotificationService', () => {
 
     it('should be able to add and retrieve a notification for success', inject(
         [NotificationService],
-        (service: NotificationService) => {
+        fakeAsync((service: NotificationService) => {
             const toastrSpy = spyOn(toastrService, 'success').and.callThrough();
+            let newNotificationEmitted = false;
+            service.newNotification$.subscribe(() => {
+                newNotificationEmitted = true;
+            });
 
             service.addSuccessNotification(testMessage);
+            tick(50);
 
             const expectedNotification = Object.assign(
                 { identifier: 0 },
@@ -54,15 +62,22 @@ describe('NotificationService', () => {
                 testMessage.description,
                 testMessage.title
             );
-        }
+            expect(newNotificationEmitted).toBe(true);
+            flush();
+        })
     ));
 
     it('should be able to add and retrieve a notification for info', inject(
         [NotificationService],
-        (service: NotificationService) => {
+        fakeAsync((service: NotificationService) => {
             const toastrSpy = spyOn(toastrService, 'info').and.callThrough();
+            let newNotificationEmitted = false;
+            service.newNotification$.subscribe(() => {
+                newNotificationEmitted = true;
+            });
 
             service.addInfoNotification(testMessage);
+            tick(50);
 
             const expectedNotification = Object.assign(
                 { identifier: 0 },
@@ -76,15 +91,22 @@ describe('NotificationService', () => {
                 testMessage.description,
                 testMessage.title
             );
-        }
+            expect(newNotificationEmitted).toBe(true);
+            flush();
+        })
     ));
 
     it('should be able to add and retrieve a notification for error', inject(
         [NotificationService],
-        (service: NotificationService) => {
+        fakeAsync((service: NotificationService) => {
             const toastrSpy = spyOn(toastrService, 'error').and.callThrough();
+            let newNotificationEmitted = false;
+            service.newNotification$.subscribe(() => {
+                newNotificationEmitted = true;
+            });
 
             service.addErrorNotification(testMessage);
+            tick(50);
 
             const expectedNotification = Object.assign(
                 { identifier: 0 },
@@ -98,7 +120,9 @@ describe('NotificationService', () => {
                 testMessage.description,
                 testMessage.title
             );
-        }
+            expect(newNotificationEmitted).toBe(true);
+            flush();
+        })
     ));
 
     it('should be able to add and retrieve a pending action', inject(

@@ -1,8 +1,16 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    TestBed,
+    fakeAsync,
+    tick,
+    flush
+} from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ClipboardModule } from 'ngx-clipboard';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
 import { MockConfig } from '../testing/mock-config';
@@ -28,7 +36,7 @@ describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
     let app: AppComponent;
     let isActive: Spy;
-    let service: {
+    let raidenService: {
         network$: ReplaySubject<Network>;
         balance$: ReplaySubject<string>;
         production: boolean;
@@ -36,13 +44,14 @@ describe('AppComponent', () => {
         paymentInitiated$: Observable<void>;
         getChannels: () => Observable<any>;
     };
+    let notificationService: NotificationService;
 
     beforeEach(() => {
         const networkMock = new ReplaySubject<Network>(1);
         const balanceMock = new ReplaySubject<string>(1);
         const addressMock = new ReplaySubject<string>(1);
 
-        service = {
+        raidenService = {
             network$: networkMock,
             balance$: balanceMock,
             production: true,
@@ -78,7 +87,7 @@ describe('AppComponent', () => {
                 },
                 {
                     provide: RaidenService,
-                    useValue: service
+                    useValue: raidenService
                 },
                 ChannelPollingService,
                 TestProviders.HammerJSProvider(),
@@ -89,7 +98,8 @@ describe('AppComponent', () => {
                 RouterTestingModule,
                 ClipboardModule,
                 HttpClientTestingModule,
-                NoopAnimationsModule
+                NoopAnimationsModule,
+                ToastrModule.forRoot({ timeOut: 50, easeTime: 0 })
             ]
         }).compileComponents();
 
@@ -99,6 +109,7 @@ describe('AppComponent', () => {
         fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
         app = fixture.debugElement.componentInstance;
+        notificationService = TestBed.get(NotificationService);
     });
 
     afterEach(() => {
@@ -150,7 +161,7 @@ describe('AppComponent', () => {
     });
 
     it('should not have a faucet button when network does not have a faucet', function() {
-        service.network$.next({
+        raidenService.network$.next({
             name: 'Test',
             shortName: 'tst',
             ensSupported: false,
@@ -170,4 +181,16 @@ describe('AppComponent', () => {
             'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
         );
     });
+
+    it('should update the color of the notification panel button for new notifications', fakeAsync(() => {
+        notificationService.addSuccessNotification({
+            title: 'Test',
+            description: 'Testing'
+        });
+        tick(50);
+        expect(app.notificationBlink).toBe('rgba(255, 255, 255, 0.5)');
+        tick(150);
+        expect(app.notificationBlink).toBe('black');
+        flush();
+    }));
 });
