@@ -20,9 +20,17 @@ import {
     tap,
     switchMap
 } from 'rxjs/operators';
-import { merge, Observable, of, Subscription, partition } from 'rxjs';
+import {
+    merge,
+    Observable,
+    of,
+    Subscription,
+    partition,
+    combineLatest
+} from 'rxjs';
 import AddressUtils from '../../utils/address-utils';
 import { isAddressValid } from '../../shared/address.validator';
+import { Network } from '../../utils/network-info';
 
 @Component({
     selector: 'app-address-input',
@@ -54,6 +62,7 @@ export class AddressInputComponent
     private _value = '';
     private _errors: ValidationErrors | null = { emptyAddress: true };
     readonly inputFieldFc = new FormControl('');
+    readonly network$: Observable<Network>;
 
     filteredOptions$: Observable<Address[]>;
     // noinspection JSUnusedLocalSymbols
@@ -72,7 +81,9 @@ export class AddressInputComponent
         private identiconCacheService: IdenticonCacheService,
         private raidenService: RaidenService,
         private addressBookService: AddressBookService
-    ) {}
+    ) {
+        this.network$ = raidenService.network$;
+    }
 
     ngOnInit(): void {
         this.setupValidation();
@@ -96,23 +107,30 @@ export class AddressInputComponent
         );
 
         const resolveOnEns = () =>
-            ens.pipe(
-                tap(() => (this.searching = true)),
-                debounceTime(800),
-                switchMap(value => this.raidenService.resolveEnsName(value)),
-                tap(() => (this.searching = false)),
-                map(value => {
-                    if (value) {
-                        return { value: value };
-                    } else {
-                        return {
-                            value: '',
-                            errors: {
-                                unableToResolveEns: true
-                            }
-                        };
-                    }
-                })
+            combineLatest([ens.pipe(debounceTime(800)), this.network$]).pipe(
+                switchMap(([value, network]) =>
+                    network.ensSupported
+                        ? of(value).pipe(
+                              tap(() => (this.searching = true)),
+                              switchMap(name =>
+                                  this.raidenService.resolveEnsName(name)
+                              ),
+                              tap(() => (this.searching = false)),
+                              map(resolvedAddress => {
+                                  if (resolvedAddress) {
+                                      return { value: resolvedAddress };
+                                  } else {
+                                      return {
+                                          value: '',
+                                          errors: {
+                                              unableToResolveEns: true
+                                          }
+                                      };
+                                  }
+                              })
+                          )
+                        : of({ value: '', errors: { ensUnsupported: true } })
+                )
             );
 
         const handleAddress = () =>
@@ -133,17 +151,18 @@ export class AddressInputComponent
             );
 
         this.subscription = merge(resolveOnEns(), handleAddress()).subscribe(
-            (value: InputResult) => {
-                this._value = value.value;
-                this._errors = value.errors;
+            (result: InputResult) => {
+                this._value = result.value;
+                this._errors = result.errors;
 
-                this.onChange(value.value);
+                this.onChange(result.value);
 
-                if (value.errors) {
-                    this.inputFieldFc.setErrors(value.errors);
+                if (result.errors) {
+                    this.inputFieldFc.setErrors(result.errors);
                 } else {
                     this.inputFieldFc.setErrors({
                         unableToResolveEns: null,
+                        ensUnsupported: null,
                         ownAddress: null,
                         emptyAddress: null,
                         invalidFormat: null,

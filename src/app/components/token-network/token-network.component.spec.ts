@@ -92,6 +92,7 @@ describe('TokenNetworkComponent', () => {
             of({
                 name: 'Test',
                 shortName: 'tst',
+                ensSupported: false,
                 chainId: 9001
             })
         );

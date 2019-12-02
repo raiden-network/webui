@@ -4,30 +4,35 @@ export class NetworkInfo {
             name: 'Mainnet',
             shortName: 'eth',
             chainId: 1,
+            ensSupported: true,
             faucet: undefined
         },
         {
             name: 'Ropsten',
             shortName: 'rop',
             chainId: 3,
+            ensSupported: true,
             faucet: 'https://faucet.ropsten.be/?${ADDRESS}'
         },
         {
             name: 'Rinkeby',
             shortName: 'rin',
             chainId: 4,
+            ensSupported: true,
             faucet: 'https://faucet.rinkeby.io/'
         },
         {
             name: 'Görli',
             shortName: 'gor',
             chainId: 5,
+            ensSupported: false,
             faucet: 'https://goerli-faucet.slock.it/?address=${ADDRESS}'
         },
         {
             name: 'Kovan',
             shortName: 'kov',
             chainId: 42,
+            ensSupported: false,
             faucet: 'https://faucet.kovan.network/'
         }
     ];
@@ -41,6 +46,7 @@ export class NetworkInfo {
                 name: `Chain-id: ${chainId}`,
                 shortName: 'eth',
                 chainId: chainId,
+                ensSupported: false,
                 faucet: undefined
             };
         } else {
@@ -53,5 +59,6 @@ export interface Network {
     readonly name: string;
     readonly shortName: string;
     readonly chainId: number;
+    readonly ensSupported: boolean;
     readonly faucet?: string;
 }

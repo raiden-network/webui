@@ -22,6 +22,7 @@ describe('AboutComponent', () => {
     const network: Network = {
         name: 'Görli',
         shortName: 'gor',
+        ensSupported: false,
         chainId: 5
     };
 

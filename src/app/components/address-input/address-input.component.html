@@ -82,6 +82,11 @@
             <span *ngIf="inputFieldFc.errors['invalidFormat']">
                 The {{ errorPlaceholder }} address is not in a valid format
             </span>
+
+            <span *ngIf="inputFieldFc.errors['ensUnsupported']">
+                {{ (network$ | async).name }} network is unsupported for ENS
+                resolution
+            </span>
         </mat-error>
     </mat-form-field>
 </div>
