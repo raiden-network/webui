@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - [#194] Fixes that no notifications for pending transfers were shown.
+- [#179] Shows an error message if ENS is not supported on current network.
 
 ## [0.10.1] - 2019-10-22
 ### Changed
@@ -102,6 +103,7 @@ token network.
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
 [#194]: https://github.com/raiden-network/webui/issues/194
+[#179]: https://github.com/raiden-network/webui/issues/179
 [#172]: https://github.com/raiden-network/webui/issues/172
 [#171]: https://github.com/raiden-network/webui/issues/171
 [#168]: https://github.com/raiden-network/webui/issues/168
