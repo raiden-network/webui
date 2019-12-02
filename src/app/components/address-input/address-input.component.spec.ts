@@ -281,6 +281,23 @@ describe('AddressInputComponent', () => {
             );
             flush();
         }));
+
+        it('should display an error if ens is not supported', fakeAsync(() => {
+            mockConfig.updateNetwork({
+                name: 'Test',
+                shortName: 'tst',
+                ensSupported: false,
+                chainId: 9001
+            });
+
+            mockFormInput(input, 'inputFieldFc', 'test.eth');
+            tick(2000);
+            fixture.detectChanges();
+            expect(errorMessage(fixture.debugElement)).toBe(
+                'Test network is unsupported for ENS resolution'
+            );
+            flush();
+        }));
     });
 
     describe('as an autocomplete', () => {

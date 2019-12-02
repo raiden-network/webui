@@ -6,6 +6,7 @@ import { BatchManager } from '../app/services/batch-manager';
 import { HttpClient } from '@angular/common/http';
 import { stub } from './stub';
 import { NotificationService } from '../app/services/notification.service';
+import { Network } from '../app/utils/network-info';
 
 class MockWeb3 extends Web3 {
     isChecksum = false;
@@ -43,12 +44,21 @@ const mockProvider = {
     }
 };
 
+const mockNetwork = {
+    name: 'Test',
+    shortName: 'tst',
+    ensSupported: true,
+    chainId: 9001
+};
+
 export class MockConfig extends RaidenConfig {
     public web3: Web3 = mockProvider.web3;
     private testBatchManager: BatchManager = new BatchManager(this.web3);
 
     constructor() {
         super(stub<HttpClient>(), stub<NotificationService>(), mockProvider);
+        // @ts-ignore
+        this._network$.next(mockNetwork);
     }
 
     get batchManager(): BatchManager {
@@ -61,6 +71,11 @@ export class MockConfig extends RaidenConfig {
 
     updateChecksumAddress(address: string): void {
         this.mock.checksumAddress = address;
+    }
+
+    updateNetwork(network: Network) {
+        // @ts-ignore
+        this._network$.next(network);
     }
 
     setIsChecksum(isChecksum: boolean): void {

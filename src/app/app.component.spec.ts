@@ -53,6 +53,7 @@ describe('AppComponent', () => {
             name: 'Test',
             shortName: 'tst',
             chainId: 9001,
+            ensSupported: false,
             faucet: 'http://faucet.test/?${ADDRESS}'
         });
         balanceMock.next('0.00000001');
@@ -150,6 +151,7 @@ describe('AppComponent', () => {
         service.network$.next({
             name: 'Test',
             shortName: 'tst',
+            ensSupported: false,
             chainId: 9001
         });
         fixture.detectChanges();

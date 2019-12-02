@@ -7,6 +7,7 @@ describe('NetworkInfo', () => {
                 name: 'Mainnet',
                 shortName: 'eth',
                 chainId: 1,
+                ensSupported: true,
                 faucet: undefined
             });
         });
@@ -16,6 +17,7 @@ describe('NetworkInfo', () => {
                 name: 'Ropsten',
                 shortName: 'rop',
                 chainId: 3,
+                ensSupported: true,
                 faucet: 'https://faucet.ropsten.be/?${ADDRESS}'
             });
         });
@@ -25,6 +27,7 @@ describe('NetworkInfo', () => {
                 name: 'Rinkeby',
                 shortName: 'rin',
                 chainId: 4,
+                ensSupported: true,
                 faucet: 'https://faucet.rinkeby.io/'
             });
         });
@@ -34,6 +37,7 @@ describe('NetworkInfo', () => {
                 name: 'Görli',
                 shortName: 'gor',
                 chainId: 5,
+                ensSupported: false,
                 faucet: 'https://goerli-faucet.slock.it/?address=${ADDRESS}'
             });
         });
@@ -43,6 +47,7 @@ describe('NetworkInfo', () => {
                 name: 'Kovan',
                 shortName: 'kov',
                 chainId: 42,
+                ensSupported: false,
                 faucet: 'https://faucet.kovan.network/'
             });
         });
@@ -52,6 +57,7 @@ describe('NetworkInfo', () => {
                 name: 'Chain-id: 123',
                 shortName: 'eth',
                 chainId: 123,
+                ensSupported: false,
                 faucet: undefined
             });
         });
