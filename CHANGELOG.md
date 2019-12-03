@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.10.2] - 2019-12-03
 ### Changed
 - [#194] Fixes that no notifications for pending transfers were shown.
 - [#179] Shows an error message if ENS is not supported on current network.
@@ -93,7 +95,8 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v0.10.1...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v0.10.2...HEAD
+[0.10.2]: https://github.com/raiden-network/webui/compare/v0.10.1...v0.10.2
 [0.10.1]: https://github.com/raiden-network/webui/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/raiden-network/webui/compare/v0.9.2...v0.10.0
 [0.9.2]: https://github.com/raiden-network/webui/compare/v0.9.1...v0.9.2
