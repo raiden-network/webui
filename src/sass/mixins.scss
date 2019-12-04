@@ -14,5 +14,9 @@ $break-large: 1024px;
         @media only screen and (min-width: $break-large) {
             @content;
         }
+    } @else if $media == lt-wide-screens {
+        @media only screen and (max-width: $break-large - 1) {
+            @content;
+        }
     }
 }

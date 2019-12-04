@@ -72,8 +72,8 @@ $icon_width_mobile: $circle_width_mobile/2;
     border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 2px;
 
-    @include respond-to(handhelds) {
-        width: 320px;
+    @include respond-to(lt-wide-screens) {
+        width: 100%;
     }
 }
 
@@ -84,6 +84,9 @@ $icon_width_mobile: $circle_width_mobile/2;
     font-size: 12px;
 }
 
-button {
-    margin-top: 2rem;
+.error-container {
+    width: 600px;
+    @include respond-to(lt-wide-screens) {
+        width: 100%;
+    }
 }
