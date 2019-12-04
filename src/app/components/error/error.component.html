@@ -1,46 +1,49 @@
-<div class="error" fxLayout="row" fxLayout.xs="column" fxLayoutGap="2rem">
+<div
+    class="error"
+    fxLayout="row"
+    fxLayout.lt-md="column"
+    fxLayoutGap="2rem"
+    fxLayoutAlign="center"
+>
     <div fxLayout="column" fxLayout.xs="row" fxLayoutAlign="start center">
         <div class="icon">
             <mat-icon>warning</mat-icon>
         </div>
     </div>
     <div
-        class="mat-typography"
+        class="mat-typography error-container"
         fxLayout="column"
-        fxLayout.xs="row"
         fxLayoutGap="1.5rem"
     >
-        <div>
-            <div fxLayout="row" class="title">
-                {{ errorTitle }}
+        <div fxLayout="row" class="title">
+            {{ errorTitle }}
+        </div>
+        <div class="description">
+            <div fxLayout="row" *ngFor="let row of descriptionRows">
+                {{ row }}
             </div>
-            <div class="description">
-                <div fxLayout="row" *ngFor="let row of descriptionRows">
-                    {{ row }}
-                </div>
-            </div>
+        </div>
 
-            <div
-                *ngIf="errorStacktrace && showError"
-                class="stacktrace"
-                fxLayout="row"
+        <div
+            *ngIf="errorStacktrace && showError"
+            class="stacktrace"
+            fxLayout="row"
+        >
+            <pre>{{ errorStacktrace }}</pre>
+        </div>
+
+        <div fxLayout="row" *ngIf="buttonText">
+            <button
+                *ngIf="errorStacktrace"
+                mat-button
+                color="accent"
+                (click)="showError = !showError"
             >
-                <pre>{{ errorStacktrace }}</pre>
-            </div>
-
-            <div fxLayout="row" *ngIf="buttonText">
-                <button
-                    *ngIf="errorStacktrace"
-                    mat-button
-                    color="accent"
-                    (click)="showError = !showError"
-                >
-                    {{ (showError ? 'Hide Error' : 'Show Error') | uppercase }}
-                </button>
-                <button mat-stroked-button color="accent" (click)="clicked()">
-                    {{ buttonText | uppercase }}
-                </button>
-            </div>
+                {{ (showError ? 'Hide Error' : 'Show Error') | uppercase }}
+            </button>
+            <button mat-stroked-button color="accent" (click)="clicked()">
+                {{ buttonText | uppercase }}
+            </button>
         </div>
     </div>
 </div>
