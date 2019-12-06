@@ -65,8 +65,9 @@ $icon_width_mobile: $circle_width_mobile/2;
     }
 }
 
-.error .stacktrace {
-    height: 400px;
+.error .error-content {
+    min-height: 60px;
+    max-height: 400px;
     width: 600px;
     overflow-y: scroll;
     border: 1px solid rgba(0, 0, 0, 0.3);
@@ -77,7 +78,7 @@ $icon_width_mobile: $circle_width_mobile/2;
     }
 }
 
-.error .stacktrace pre {
+.error .error-content pre {
     padding: 1rem;
     font-family: 'Roboto Mono', monospace;
     margin-top: 1rem;

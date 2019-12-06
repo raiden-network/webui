@@ -45,7 +45,10 @@ export class ChannelPollingService {
                 this.checkForNewChannels(oldChannels, newChannels);
                 return newChannels;
             }, []),
-            backoff(this.raidenConfig.config.error_poll_interval),
+            backoff(
+                this.raidenConfig.config.error_poll_interval,
+                this.raidenService.globalRetry$
+            ),
             share()
         );
     }

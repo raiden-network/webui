@@ -250,10 +250,11 @@ describe('NotificationService', () => {
         }
     ));
 
-    it('should have undefined status for the error trace by default', inject(
+    it('should have null status for the errors by default', inject(
         [NotificationService],
         (service: NotificationService) => {
-            expect(service.getStackTrace()).toBe(null);
+            expect(service.apiError).toBe(null);
+            expect(service.rpcError).toBe(null);
         }
     ));
 });

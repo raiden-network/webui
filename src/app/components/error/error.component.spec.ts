@@ -12,7 +12,7 @@ import { By } from '@angular/platform-browser';
             [errorDescription]="errorDescription"
             [buttonText]="buttonText"
             [showError]="showError"
-            [errorStacktrace]="errorStacktrace"
+            [errorContent]="errorContent"
             (buttonClicked)="buttonClicked.emit($event)"
         ></app-error>
     `
@@ -21,7 +21,7 @@ class TestHostComponent {
     errorTitle: string;
     errorDescription: string;
     buttonText: string;
-    errorStacktrace: string;
+    errorContent: string;
     showError = false;
     buttonClicked: EventEmitter<any> = new EventEmitter();
 }
@@ -64,7 +64,7 @@ describe('ErrorComponent', () => {
         expect(descriptionRows).toEqual(['one', 'two', 'three']);
     });
 
-    it('should not display a show error button if no stacktrace available', async function() {
+    it('should not display a show error button if no content available', async function() {
         component.buttonText = 'Test';
         fixture.detectChanges();
         await fixture.whenStable();
@@ -89,9 +89,9 @@ describe('ErrorComponent', () => {
         button.click();
     });
 
-    it('should have the ability to display an error if there is a stacktrace', async function() {
+    it('should have the ability to display an error if there is a content', async function() {
         component.buttonText = 'Test';
-        component.errorStacktrace = 'Test text';
+        component.errorContent = 'Test text';
         fixture.detectChanges();
         await fixture.whenStable();
 
@@ -106,11 +106,11 @@ describe('ErrorComponent', () => {
         await fixture.whenStable();
         expect(button.innerText.trim()).toBe('HIDE ERROR');
 
-        const stacktraceArea = fixture.debugElement.query(
-            By.css('.stacktrace')
+        const contentArea = fixture.debugElement.query(
+            By.css('.error-content')
         );
-        expect(stacktraceArea).toBeTruthy();
-        const preElement = stacktraceArea.query(By.css('pre'))
+        expect(contentArea).toBeTruthy();
+        const preElement = contentArea.query(By.css('pre'))
             .nativeElement as HTMLPreElement;
         expect(preElement.innerText.trim()).toBe('Test text');
     });

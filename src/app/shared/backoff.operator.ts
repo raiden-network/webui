@@ -1,10 +1,21 @@
-import { pipe, timer, UnaryFunction, Observable } from 'rxjs';
-import { retryWhen, switchMap } from 'rxjs/operators';
+import { pipe, timer, UnaryFunction, Observable, EMPTY, merge } from 'rxjs';
+import { retryWhen, switchMap, first } from 'rxjs/operators';
 
 export function backoff(
-    milliseconds: number
+    milliseconds: number,
+    refreshObservable$?: Observable<void>
 ): UnaryFunction<Observable<any>, Observable<any>> {
+    let refresh$: Observable<any> = refreshObservable$;
+    if (!refreshObservable$) {
+        refresh$ = EMPTY;
+    }
     return pipe(
-        retryWhen(errors => errors.pipe(switchMap(() => timer(milliseconds))))
+        retryWhen(errors =>
+            errors.pipe(
+                switchMap(() =>
+                    merge(timer(milliseconds), refresh$).pipe(first())
+                )
+            )
+        )
     );
 }

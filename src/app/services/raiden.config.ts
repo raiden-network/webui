@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentType } from './enviroment-type.enum';
 import { BatchManager } from './batch-manager';
@@ -22,7 +22,7 @@ interface RDNConfig {
 }
 
 const default_config: RDNConfig = {
-    raiden: '/api/1',
+    raiden: '/api/v1',
     web3: '/web3',
     web3_fallback: 'http://localhost:8545',
     poll_interval: 5000,
@@ -47,6 +47,7 @@ export class RaidenConfig {
     public api: string;
     public web3: Web3;
 
+    private http: HttpClient;
     private _network$: ReplaySubject<Network> = new ReplaySubject(1);
 
     public get network$(): Observable<Network> {
@@ -54,10 +55,12 @@ export class RaidenConfig {
     }
 
     constructor(
-        private http: HttpClient,
+        private handler: HttpBackend,
         private notificationService: NotificationService,
         private web3Factory: Web3Factory
-    ) {}
+    ) {
+        this.http = new HttpClient(handler);
+    }
 
     private _batchManager: BatchManager;
 
@@ -73,10 +76,11 @@ export class RaidenConfig {
         await this.loadConfiguration(url);
         try {
             await this.setupWeb3();
+            this.notificationService.rpcError = null;
             return true;
         } catch (e) {
             console.error(e.message);
-            this.notificationService.displayableError = e;
+            this.notificationService.rpcError = e;
             return false;
         }
     }

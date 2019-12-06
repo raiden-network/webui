@@ -1,8 +1,13 @@
 import { Inject, Injectable, Injector } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { scan } from 'rxjs/operators';
 import { UiMessage, NotificationMessage } from '../models/notification';
+
+export interface ApiErrorResponse extends HttpErrorResponse {
+    retrying?: boolean;
+}
 
 @Injectable({
     providedIn: 'root'
@@ -31,7 +36,8 @@ export class NotificationService {
     public readonly pendingActions$: Observable<
         NotificationMessage[]
     > = this.pendingActionsSubject.asObservable();
-    public displayableError: Error;
+    public rpcError: Error = null;
+    public apiError: ApiErrorResponse = null;
 
     private notifications: NotificationMessage[] = [];
     private pendingActions: NotificationMessage[] = [];
@@ -100,14 +106,6 @@ export class NotificationService {
             return true;
         });
         this.pendingActionsSubject.next(this.pendingActions);
-    }
-
-    public getStackTrace(): string {
-        if (this.displayableError) {
-            return this.displayableError.stack;
-        } else {
-            return null;
-        }
     }
 
     private get toastrService(): ToastrService {

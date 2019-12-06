@@ -141,7 +141,7 @@ describe('RaidenConfig', () => {
         tick();
 
         expect(raidenConfig.config).toEqual({
-            raiden: '/api/1',
+            raiden: '/api/v1',
             web3: '/web3',
             web3_fallback: 'http://localhost:8545',
             poll_interval: 5000,
@@ -153,7 +153,7 @@ describe('RaidenConfig', () => {
             environment_type: EnvironmentType.DEVELOPMENT
         });
 
-        expect(notificationService.getStackTrace()).toBe(null);
+        expect(notificationService.rpcError).toBe(null);
         expect(tracking.current).toBe(1);
         flush();
     }));
@@ -194,7 +194,7 @@ describe('RaidenConfig', () => {
             environment_type: EnvironmentType.PRODUCTION
         });
 
-        expect(notificationService.getStackTrace()).toBe(null);
+        expect(notificationService.rpcError).toBe(null);
         expect(tracking.current).toBe(1);
     }));
 
@@ -223,7 +223,7 @@ describe('RaidenConfig', () => {
 
         tick(2000);
 
-        expect(notificationService.getStackTrace()).toBe(null);
+        expect(notificationService.rpcError).toBe(null);
         expect(tracking.current).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback
@@ -255,7 +255,7 @@ describe('RaidenConfig', () => {
 
         tick(2000);
 
-        expect(notificationService.getStackTrace()).toBeTruthy();
+        expect(notificationService.rpcError).toBeTruthy();
         expect(tracking.current).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback

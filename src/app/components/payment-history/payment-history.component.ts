@@ -72,7 +72,10 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
                     this.raidenConfig.config.poll_interval
                 );
             }),
-            backoff(this.raidenConfig.config.error_poll_interval)
+            backoff(
+                this.raidenConfig.config.error_poll_interval,
+                this.raidenService.globalRetry$
+            )
         );
     }
 

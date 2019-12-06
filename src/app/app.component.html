@@ -156,15 +156,26 @@
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content class="container-content">
-        <router-outlet *ngIf="!hasRpcError(); else rpc_error"></router-outlet>
+        <router-outlet *ngIf="!hasError(); else api_error"></router-outlet>
+        <ng-template #api_error>
+            <app-error
+                *ngIf="hasApiError(); else rpc_error"
+                errorTitle="Raiden API connection error!"
+                errorDescription="A connection with the Raiden API could not be established. \n
+                    Please try again."
+                buttonText="Retry"
+                [errorContent]="getApiErrorMessage()"
+                (buttonClicked)="attemptApiConnection()"
+            ></app-error>
+        </ng-template>
         <ng-template #rpc_error>
             <app-error
                 errorTitle="JSON RPC connection error!"
                 errorDescription="A connection with the Web3 provider could not be established. \n
                     Please try again."
                 buttonText="Retry"
-                [errorStacktrace]="getRpcErrorTrace()"
-                (buttonClicked)="attemptConnection()"
+                [errorContent]="getRpcErrorTrace()"
+                (buttonClicked)="attemptRpcConnection()"
             ></app-error>
         </ng-template>
     </mat-sidenav-content>

@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
         return this._numberOfNotifications.toString();
     }
 
-    private sub: Subscription;
+    private subscription: Subscription;
 
     constructor(
         private raidenService: RaidenService,
@@ -66,14 +66,16 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.raidenService.raidenAddress$.subscribe(
+        this.subscription = this.raidenService.raidenAddress$.subscribe(
             address => (this.raidenAddress = address)
         );
-        this.sub = this.notificationService.numberOfNotifications$.subscribe(
+
+        const numberOfNotificationsSubscription = this.notificationService.numberOfNotifications$.subscribe(
             numberOfNotifications => {
                 this._numberOfNotifications = numberOfNotifications;
             }
         );
+        this.subscription.add(numberOfNotificationsSubscription);
 
         const newNotificationSubscription = this.notificationService.newNotification$
             .pipe(
@@ -85,12 +87,12 @@ export class AppComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 this.notificationBlink = 'black';
             });
-        this.sub.add(newNotificationSubscription);
+        this.subscription.add(newNotificationSubscription);
 
         const pollingSubscription = this.channelPollingService
             .channels()
             .subscribe();
-        this.sub.add(pollingSubscription);
+        this.subscription.add(pollingSubscription);
 
         this.disableAnimationsOnAndroid();
     }
@@ -104,7 +106,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.sub.unsubscribe();
+        this.subscription.unsubscribe();
     }
 
     // noinspection JSMethodCanBeStatic
@@ -116,16 +118,37 @@ export class AppComponent implements OnInit, OnDestroy {
         }
     }
 
-    hasRpcError(): boolean {
-        return this.notificationService.getStackTrace() !== null;
+    hasError(): boolean {
+        return (
+            this.notificationService.rpcError !== null ||
+            this.notificationService.apiError !== null
+        );
+    }
+
+    hasApiError(): boolean {
+        return this.notificationService.apiError !== null;
     }
 
     getRpcErrorTrace(): string {
-        return this.notificationService.getStackTrace();
+        if (this.notificationService.rpcError === null) {
+            return null;
+        }
+        return this.notificationService.rpcError.stack;
     }
 
-    attemptConnection() {
-        this.raidenService.attemptConnection();
+    getApiErrorMessage(): string {
+        if (this.notificationService.apiError === null) {
+            return null;
+        }
+        return this.notificationService.apiError.message;
+    }
+
+    attemptRpcConnection() {
+        this.raidenService.attemptRpcConnection();
+    }
+
+    attemptApiConnection() {
+        this.raidenService.attemptApiConnection();
     }
 
     toggleMenu() {

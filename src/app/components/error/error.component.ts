@@ -16,7 +16,7 @@ export class ErrorComponent implements OnChanges {
     @Input() errorTitle: string;
     @Input() errorDescription: string;
     @Input() buttonText: string;
-    @Input() errorStacktrace: string;
+    @Input() errorContent: string;
     @Input() showError = false;
     @Output() buttonClicked: EventEmitter<any> = new EventEmitter();
 
