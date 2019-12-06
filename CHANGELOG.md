@@ -3,9 +3,11 @@
 ## [Unreleased]
 ### Changed
 - [#205] Dialogs can be submitted by pressing enter.
+- [#190] Updates the user address when Raiden is restarted with a different address.
 
 ### Added
 - [#16] Adds a confirmation dialog for payments which are retried by the user.
+- [#18] Shows the error screen when API is down.
 
 ## [0.10.4] - 2019-12-10
 ### Changed
@@ -126,6 +128,7 @@ token network.
 [#208]: https://github.com/raiden-network/webui/issues/208
 [#205]: https://github.com/raiden-network/webui/issues/205
 [#194]: https://github.com/raiden-network/webui/issues/194
+[#190]: https://github.com/raiden-network/webui/issues/190
 [#184]: https://github.com/raiden-network/webui/issues/184
 [#181]: https://github.com/raiden-network/webui/issues/181
 [#179]: https://github.com/raiden-network/webui/issues/179
@@ -170,6 +173,7 @@ token network.
 [#31]: https://github.com/raiden-network/webui/issues/31
 [#30]: https://github.com/raiden-network/webui/issues/30
 [#29]: https://github.com/raiden-network/webui/issues/29
+[#18]: https://github.com/raiden-network/webui/issues/18
 [#16]: https://github.com/raiden-network/webui/issues/16
 [#15]: https://github.com/raiden-network/webui/issues/15
 [#13]: https://github.com/raiden-network/webui/issues/13
