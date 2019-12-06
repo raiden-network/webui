@@ -318,7 +318,7 @@ describe('RaidenService', () => {
             method: 'GET'
         });
 
-        getChannelsRequest.flush([channel1, channel2], {
+        getChannelsRequest.flush(losslessStringify([channel1, channel2]), {
             status: 200,
             statusText: 'All good'
         });

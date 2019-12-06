@@ -1,22 +1,21 @@
 import BigNumber from 'bignumber.js';
-import { LosslessNumber, parse, stringify } from 'lossless-json';
 
 export function losslessParse(json: string): any {
-    return parse(json, (key, value) => {
-        if (value && value.isLosslessNumber) {
-            return new BigNumber(value.toString());
-        } else {
-            return value;
-        }
-    });
+    const numberRegex = /^\d+$/;
+    const obj = JSON.parse(json, (key, value) =>
+        (typeof value === 'string' && numberRegex.test(value)) ||
+        typeof value === 'number'
+            ? new BigNumber(value)
+            : value
+    );
+    return obj;
 }
 
 export function losslessStringify(obj: any): string {
-    return stringify(obj, (key, value) => {
-        if (BigNumber.isBigNumber(value)) {
-            return new LosslessNumber(value.toString());
-        } else {
-            return value;
-        }
-    });
+    const str = JSON.stringify(obj, (key, value) =>
+        BigNumber.isBigNumber(value) || typeof value === 'number'
+            ? value.toString()
+            : value
+    );
+    return str;
 }

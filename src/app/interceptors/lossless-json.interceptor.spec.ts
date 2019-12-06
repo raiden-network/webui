@@ -56,7 +56,7 @@ describe('LosslessJsonInterceptor', () => {
         });
 
         const request = httpMock.expectOne('someurl.com/data');
-        request.flush('{"big":18446744073709551616,"text":"Hello"}', {
+        request.flush('{"big":"18446744073709551616","text":"Hello"}', {
             status: 200,
             statusText: ''
         });
@@ -68,7 +68,7 @@ describe('LosslessJsonInterceptor', () => {
             .subscribe();
 
         const request = httpMock.expectOne('someurl.com/data');
-        expect(request.request.body).toEqual('{"big":18446744073709551616}');
+        expect(request.request.body).toEqual('{"big":"18446744073709551616"}');
     });
 
     it('should do nothing for non JSON responses', () => {
