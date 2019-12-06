@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- [#208] Adapts the WebUI to the changed typing of integer values of the Raiden API.
 
 ## [0.10.2] - 2019-12-03
 ### Changed
@@ -107,6 +109,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#208]: https://github.com/raiden-network/webui/issues/208
 [#194]: https://github.com/raiden-network/webui/issues/194
 [#184]: https://github.com/raiden-network/webui/issues/184
 [#181]: https://github.com/raiden-network/webui/issues/181
