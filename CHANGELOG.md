@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.10.3] - 2019-12-06
 ### Changed
 - [#208] Adapts the WebUI to the changed typing of integer values of the Raiden API.
 
@@ -97,7 +99,8 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v0.10.2...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v0.10.3...HEAD
+[0.10.3]: https://github.com/raiden-network/webui/compare/v0.10.2...v0.10.3
 [0.10.2]: https://github.com/raiden-network/webui/compare/v0.10.1...v0.10.2
 [0.10.1]: https://github.com/raiden-network/webui/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/raiden-network/webui/compare/v0.9.2...v0.10.0
