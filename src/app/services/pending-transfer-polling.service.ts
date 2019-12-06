@@ -51,7 +51,10 @@ export class PendingTransferPollingService {
                 },
                 []
             ),
-            backoff(this.raidenConfig.config.error_poll_interval),
+            backoff(
+                this.raidenConfig.config.error_poll_interval,
+                this.raidenService.globalRetry$
+            ),
             shareReplay({ refCount: true, bufferSize: 1 })
         );
 

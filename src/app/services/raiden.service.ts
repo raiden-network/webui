@@ -5,7 +5,15 @@ import {
     HttpEvent
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, interval, Observable, of, zip, BehaviorSubject } from 'rxjs';
+import {
+    from,
+    interval,
+    Observable,
+    of,
+    zip,
+    BehaviorSubject,
+    Subject
+} from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
     flatMap,
@@ -45,6 +53,10 @@ export class RaidenService {
     private paymentInitiatedSubject: BehaviorSubject<
         void
     > = new BehaviorSubject(null);
+    private globalRetrySubject: Subject<void> = new Subject();
+    private addressRefreshSubject: BehaviorSubject<void> = new BehaviorSubject(
+        null
+    );
 
     readonly raidenAddress$: Observable<string>;
     readonly balance$: Observable<string>;
@@ -52,6 +64,10 @@ export class RaidenService {
     public readonly paymentInitiated$: Observable<
         void
     > = this.paymentInitiatedSubject.asObservable();
+    public readonly globalRetry$: Observable<
+        void
+    > = this.globalRetrySubject.asObservable();
+
     private userTokens: { [id: string]: UserToken | null } = {};
     private pendingChannels: {
         [tokenAddress: string]: { [partnerAddress: string]: boolean | null };
@@ -63,13 +79,16 @@ export class RaidenService {
         private tokenInfoRetriever: TokenInfoRetrieverService,
         private notificationService: NotificationService
     ) {
-        this.raidenAddress$ = this.http
-            .get<{ our_address: string }>(`${this.raidenConfig.api}/address`)
-            .pipe(
-                map(data => (this._raidenAddress = data.our_address)),
-                backoff(this.raidenConfig.config.error_poll_interval),
-                shareReplay(1)
-            );
+        this.raidenAddress$ = this.addressRefreshSubject.pipe(
+            switchMap(() =>
+                this.http.get<{ our_address: string }>(
+                    `${this.raidenConfig.api}/address`
+                )
+            ),
+            map(data => (this._raidenAddress = data.our_address)),
+            backoff(this.raidenConfig.config.error_poll_interval),
+            shareReplay(1)
+        );
 
         const fetch: () => Observable<string> = () => {
             return this.raidenAddress$.pipe(
@@ -736,7 +755,7 @@ export class RaidenService {
         return this.userTokens[tokenAddress];
     }
 
-    attemptConnection() {
+    public async attemptRpcConnection() {
         const onResult = (success: boolean) => {
             if (success) {
                 this.notificationService.addInfoNotification({
@@ -751,10 +770,21 @@ export class RaidenService {
             }
         };
 
-        this.raidenConfig
-            .load(environment.configFile)
-            .then(onResult)
-            .catch(() => onResult(false));
+        try {
+            const result = await this.raidenConfig.load(environment.configFile);
+            onResult(result);
+        } catch (e) {
+            onResult(false);
+        }
+    }
+
+    public attemptApiConnection() {
+        this.notificationService.apiError.retrying = true;
+        this.globalRetrySubject.next(null);
+    }
+
+    public refreshAddress() {
+        this.addressRefreshSubject.next(null);
     }
 
     public resolveEnsName(name: string): Observable<string> {

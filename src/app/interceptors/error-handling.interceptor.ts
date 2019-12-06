@@ -13,12 +13,14 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { NotificationService } from '../services/notification.service';
 import { UiMessage } from '../models/notification';
+import { RaidenService } from '../services/raiden.service';
 
 @Injectable()
 export class ErrorHandlingInterceptor implements HttpInterceptor {
-    private raidenApiUnavailable = false;
-
-    constructor(private notificationService: NotificationService) {}
+    constructor(
+        private notificationService: NotificationService,
+        private raidenService: RaidenService
+    ) {}
 
     intercept(
         req: HttpRequest<any>,
@@ -26,8 +28,13 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
     ): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
             tap(event => {
-                if (event instanceof HttpResponse) {
-                    this.raidenApiUnavailable = false;
+                if (
+                    event instanceof HttpResponse &&
+                    this.notificationService.apiError !== null
+                ) {
+                    this.raidenService.attemptRpcConnection();
+                    this.raidenService.refreshAddress();
+                    this.notificationService.apiError = null;
                 }
             }),
             catchError(error => this.handleError(error))
@@ -42,8 +49,12 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
             (error.status === 504 || error.status === 0)
         ) {
             errMsg = 'Could not connect to the Raiden API';
-            if (!this.raidenApiUnavailable) {
-                this.raidenApiUnavailable = true;
+            if (
+                this.notificationService.apiError === null ||
+                this.notificationService.apiError.retrying
+            ) {
+                this.notificationService.apiError = error;
+                console.error(`${errMsg}: ${error.message}`);
                 const notificationMessage: UiMessage = {
                     title: 'API not available',
                     description: errMsg

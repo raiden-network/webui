@@ -1,4 +1,8 @@
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+    HttpClientModule,
+    HTTP_INTERCEPTORS,
+    HttpErrorResponse
+} from '@angular/common/http';
 import {
     HttpClientTestingModule,
     HttpTestingController
@@ -68,6 +72,8 @@ describe('RaidenService', () => {
             'addInfoNotification',
             'addErrorNotification'
         ]);
+        notificationService.apiError = null;
+
         TestBed.configureTestingModule({
             imports: [HttpClientModule, HttpClientTestingModule],
             providers: [
@@ -82,7 +88,7 @@ describe('RaidenService', () => {
                 {
                     provide: HTTP_INTERCEPTORS,
                     useClass: ErrorHandlingInterceptor,
-                    deps: [NotificationService],
+                    deps: [NotificationService, RaidenService],
                     multi: true
                 },
                 {
@@ -97,7 +103,7 @@ describe('RaidenService', () => {
 
         endpoint = TestBed.get(RaidenConfig).api;
         service = TestBed.get(RaidenService);
-        service = TestBed.get(RaidenService);
+        notificationService = TestBed.get(NotificationService);
 
         retrieverSpy = spyOn(
             TestBed.get(TokenInfoRetrieverService),
@@ -332,7 +338,7 @@ describe('RaidenService', () => {
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.returnValue(Promise.resolve(true));
 
-        service.attemptConnection();
+        service.attemptRpcConnection();
         tick();
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             1
@@ -348,7 +354,7 @@ describe('RaidenService', () => {
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.returnValue(Promise.resolve(false));
 
-        service.attemptConnection();
+        service.attemptRpcConnection();
         tick();
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
@@ -364,7 +370,7 @@ describe('RaidenService', () => {
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.callFake(() => Promise.reject(new Error('failed')));
 
-        service.attemptConnection();
+        service.attemptRpcConnection();
         tick();
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
@@ -1256,4 +1262,69 @@ describe('RaidenService', () => {
         });
         flush();
     }));
+
+    it('should refresh the raiden address', () => {
+        const newAddress = '0x5E1a3601538f94c9e6D2B40F7589030ac5885FE7';
+        let emittedTimes = 0;
+        service.raidenAddress$.subscribe(
+            value => {
+                if (emittedTimes === 0) {
+                    expect(value).toBe(raidenAddress);
+                } else if (emittedTimes === 1) {
+                    expect(value).toBe(newAddress);
+                }
+                emittedTimes++;
+            },
+            error => {
+                fail(error);
+            }
+        );
+
+        let request = mockHttp.expectOne({
+            url: `${endpoint}/address`,
+            method: 'GET'
+        });
+        request.flush(
+            {
+                our_address: raidenAddress
+            },
+            {
+                status: 200,
+                statusText: ''
+            }
+        );
+
+        service.refreshAddress();
+
+        request = mockHttp.expectOne({
+            url: `${endpoint}/address`,
+            method: 'GET'
+        });
+        request.flush(
+            {
+                our_address: newAddress
+            },
+            {
+                status: 200,
+                statusText: ''
+            }
+        );
+
+        expect(emittedTimes).toBe(2);
+    });
+
+    it('should emit a global retry when attempting to connect to the API', () => {
+        let emitted = false;
+        notificationService.apiError = new HttpErrorResponse({});
+        service.globalRetry$.subscribe(
+            () => {
+                emitted = true;
+            },
+            error => {
+                fail(error);
+            }
+        );
+        service.attemptApiConnection();
+        expect(emitted).toBe(true);
+    });
 });

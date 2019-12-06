@@ -31,6 +31,8 @@ import { By } from '@angular/platform-browser';
 import { NotificationService } from './services/notification.service';
 import { NotificationPanelComponent } from './components/notification/notification-panel/notification-panel.component';
 import { NotificationItemComponent } from './components/notification/notification-item/notification-item.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { clickElement } from '../testing/interaction-helper';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -42,7 +44,10 @@ describe('AppComponent', () => {
         production: boolean;
         raidenAddress$: ReplaySubject<string>;
         paymentInitiated$: Observable<void>;
+        globalRetry$: Observable<void>;
         getChannels: () => Observable<any>;
+        attemptRpcConnection: () => void;
+        attemptApiConnection: () => void;
     };
     let notificationService: NotificationService;
 
@@ -57,7 +62,10 @@ describe('AppComponent', () => {
             production: true,
             raidenAddress$: addressMock,
             paymentInitiated$: EMPTY,
-            getChannels: () => EMPTY
+            globalRetry$: EMPTY,
+            getChannels: () => EMPTY,
+            attemptRpcConnection: () => {},
+            attemptApiConnection: () => {}
         };
 
         networkMock.next({
@@ -193,4 +201,80 @@ describe('AppComponent', () => {
         expect(app.notificationBlink).toBe('black');
         flush();
     }));
+
+    it('should insert the address correctly into the href attribute of the faucet button', function() {
+        const href = fixture.debugElement
+            .query(By.css('.faucet-button'))
+            .nativeElement.getAttribute('href');
+        expect(href).toBe(
+            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
+        );
+    });
+
+    it('should show the API error screen and call raiden service on retry', function() {
+        const attemptConnectionSpy = spyOn(
+            fixture.componentInstance,
+            'attemptApiConnection'
+        );
+        const error = new HttpErrorResponse({});
+        // @ts-ignore
+        error.message = 'API error occurred.';
+        notificationService.apiError = error;
+        fixture.detectChanges();
+
+        const errorComponent = fixture.debugElement.query(
+            By.directive(ErrorComponent)
+        );
+        expect(errorComponent).toBeTruthy();
+        const title = errorComponent.query(By.css('.title'));
+        expect(title.nativeElement.innerText).toBe(
+            'Raiden API connection error!'
+        );
+        clickElement(errorComponent, '#retry');
+        expect(attemptConnectionSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should show the RPC error screen and call raiden service on retry', function() {
+        const attemptConnectionSpy = spyOn(
+            fixture.componentInstance,
+            'attemptRpcConnection'
+        );
+        notificationService.rpcError = new Error('RPC error occurred.');
+        fixture.detectChanges();
+
+        const errorComponent = fixture.debugElement.query(
+            By.directive(ErrorComponent)
+        );
+        expect(errorComponent).toBeTruthy();
+        const title = errorComponent.query(By.css('.title'));
+        expect(title.nativeElement.innerText).toBe(
+            'JSON RPC connection error!'
+        );
+        clickElement(errorComponent, '#retry');
+        expect(attemptConnectionSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should show the API error screen when there is an API and a RPC error', function() {
+        const error = new HttpErrorResponse({});
+        // @ts-ignore
+        error.message = 'API error occurred.';
+        notificationService.apiError = error;
+        notificationService.rpcError = new Error('RPC error occurred.');
+        fixture.detectChanges();
+
+        const errorComponent = fixture.debugElement.query(
+            By.directive(ErrorComponent)
+        );
+        expect(errorComponent).toBeTruthy();
+        const title = errorComponent.query(By.css('.title'));
+        expect(title.nativeElement.innerText).toBe(
+            'Raiden API connection error!'
+        );
+    });
+
+    it('should return null for api error message and rpc stacktrace by default', function() {
+        const component = fixture.componentInstance;
+        expect(component.getApiErrorMessage()).toBeNull();
+        expect(component.getRpcErrorTrace()).toBeNull();
+    });
 });

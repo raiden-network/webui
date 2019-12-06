@@ -133,7 +133,10 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
                     },
                     () => (this.refreshing = false)
                 ),
-                backoff(this.raidenConfig.config.error_poll_interval)
+                backoff(
+                    this.raidenConfig.config.error_poll_interval,
+                    this.raidenService.globalRetry$
+                )
             )
             .subscribe((tokens: Array<UserToken>) => {
                 this.tokens = tokens;

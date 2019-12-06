@@ -156,7 +156,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         {
             provide: HTTP_INTERCEPTORS,
             useClass: ErrorHandlingInterceptor,
-            deps: [NotificationService, RaidenConfig],
+            deps: [NotificationService, RaidenService],
             multi: true
         },
         {
