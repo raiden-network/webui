@@ -361,7 +361,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
 
     private searchFilter(channel: Channel): boolean {
         const searchString = this.filter.toLocaleLowerCase();
-        const identifier = channel.channel_identifier.toString();
+        const identifier = channel.channel_identifier.toFixed();
         const partner = channel.partner_address.toLocaleLowerCase();
         const tokenAddress = channel.token_address.toLocaleLowerCase();
         const channelState = channel.state.toLocaleLowerCase();
