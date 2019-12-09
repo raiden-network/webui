@@ -20,4 +20,22 @@ describe('LosslessJsonConverter', () => {
             '{"big":"18446744073709551616","text":"Hello"}'
         );
     });
+
+    it('should not use exponential notation', () => {
+        const stringified = losslessStringify({
+            big: new BigNumber('10000000000000000000000'),
+            text: 'Hello'
+        });
+        expect(stringified).toBe(
+            '{"big":"10000000000000000000000","text":"Hello"}'
+        );
+    });
+
+    it('should stringify normal numbers', () => {
+        const stringified = losslessStringify({
+            number: 100,
+            text: 'Hello'
+        });
+        expect(stringified).toBe('{"number":"100","text":"Hello"}');
+    });
 });
