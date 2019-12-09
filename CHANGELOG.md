@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- [#212] Fixes a bug that could cause the body parameters of API requests to be wrongly formatted.
 
 ## [0.10.3] - 2019-12-06
 ### Changed
@@ -112,6 +114,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#212]: https://github.com/raiden-network/webui/issues/212
 [#208]: https://github.com/raiden-network/webui/issues/208
 [#194]: https://github.com/raiden-network/webui/issues/194
 [#184]: https://github.com/raiden-network/webui/issues/184
