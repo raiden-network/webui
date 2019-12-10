@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
 
 import { PendingTransferPollingService } from './pending-transfer-polling.service';
 import { RaidenService } from './raiden.service';
@@ -9,7 +9,7 @@ import { TestProviders } from '../../testing/test-providers';
 import { NotificationService } from './notification.service';
 import { PendingTransfer } from '../models/pending-transfer';
 import BigNumber from 'bignumber.js';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
 import { UserToken } from '../models/usertoken';
 
 describe('PendingTransferPollingService', () => {
@@ -68,13 +68,9 @@ describe('PendingTransferPollingService', () => {
         notificationService = TestBed.get(NotificationService);
 
         getPendingTransfersSpy = spyOn(raidenService, 'getPendingTransfers');
-        spyOn(notificationService, 'addInfoNotification').and.callFake(
-            () => {}
-        );
+        spyOn(notificationService, 'addInfoNotification');
         spyOn(notificationService, 'addPendingAction').and.callFake(() => 1);
-        spyOn(notificationService, 'removePendingAction').and.callFake(
-            () => {}
-        );
+        spyOn(notificationService, 'removePendingAction');
         pendingTransfer1.notificationIdentifier = undefined;
         pendingTransfer2.notificationIdentifier = undefined;
     });
@@ -169,5 +165,17 @@ describe('PendingTransferPollingService', () => {
                     ).toHaveBeenCalledTimes(0);
                 });
         }
+    ));
+
+    it('should refresh the pending transfers every polling interval', inject(
+        [PendingTransferPollingService],
+        fakeAsync((service: PendingTransferPollingService) => {
+            getPendingTransfersSpy.and.returnValue(of([pendingTransfer1]));
+            service.pendingTransfers$.subscribe();
+            const refreshSpy = spyOn(service, 'refresh');
+            tick(5000);
+            expect(refreshSpy).toHaveBeenCalledTimes(1);
+            flush();
+        })
     ));
 });

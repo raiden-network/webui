@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { scan, share, switchMap, tap } from 'rxjs/operators';
+import { scan, switchMap, tap, shareReplay } from 'rxjs/operators';
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { backoff } from '../shared/backoff.operator';
@@ -52,7 +52,7 @@ export class PendingTransferPollingService {
                 []
             ),
             backoff(this.raidenConfig.config.error_poll_interval),
-            share()
+            shareReplay({ refCount: true, bufferSize: 1 })
         );
 
         this.raidenService.paymentInitiated$.subscribe(() => this.refresh());
@@ -144,6 +144,9 @@ export class PendingTransferPollingService {
             pendingTransfer1.role === pendingTransfer2.role &&
             pendingTransfer1.transferred_amount.isEqualTo(
                 pendingTransfer2.transferred_amount
+            ) &&
+            pendingTransfer1.locked_amount.isEqualTo(
+                pendingTransfer2.locked_amount
             )
         );
     }
