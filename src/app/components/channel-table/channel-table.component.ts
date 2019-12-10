@@ -218,13 +218,11 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
     public onClose(channel: Channel) {
         const payload: ConfirmationDialogPayload = {
             title: 'Close Channel',
-            message:
-                `Are you sure you want to close channel ${
-                    channel.channel_identifier
-                }<br/>` +
-                `with <b>${channel.partner_address}</b><br/> on <b>${
-                    channel.userToken.name
-                }<b/> (${channel.userToken.address})`
+            message: `Are you sure you want to close channel ${
+                channel.channel_identifier
+            } with <strong>${channel.partner_address}</strong> on <strong>${
+                channel.userToken.name
+            }<strong/> (${channel.userToken.address})?`
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {

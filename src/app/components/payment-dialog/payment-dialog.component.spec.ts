@@ -187,9 +187,9 @@ describe('PaymentDialogComponent', () => {
         const confirmationPayload = {
             title: 'Retrying payment',
             message:
-                `There is already a payment of <b>10 ${
+                `There is already a payment of <strong>10 ${
                     token.symbol
-                }</b> being sent to <b>0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359</b>. <br/>` +
+                }</strong> being sent to <strong>0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359</strong>. <br/>` +
                 'Are you sure you want to send the same payment again?'
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
