@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- [#16] Adds a confirmation dialog for payments which are retried by the user.
 
 ## [0.10.4] - 2019-12-10
 ### Changed
