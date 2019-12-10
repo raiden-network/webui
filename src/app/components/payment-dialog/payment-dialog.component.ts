@@ -120,11 +120,11 @@ export class PaymentDialogComponent implements OnInit {
                         const confirmationPayload: ConfirmationDialogPayload = {
                             title: 'Retrying payment',
                             message:
-                                `There is already a payment of <b>${formattedAmount} ${
+                                `There is already a payment of <strong>${formattedAmount} ${
                                     token.symbol
-                                }</b> being sent to <b>${
+                                }</strong> being sent to <strong>${
                                     payload.targetAddress
-                                }</b>. <br/>` +
+                                }</strong>. <br/>` +
                                 'Are you sure you want to send the same payment again?'
                         };
                         const dialog = this.dialog.open(

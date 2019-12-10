@@ -71,10 +71,9 @@ export class AddressBookItemComponent implements OnChanges {
         const address = this.address;
         const payload: ConfirmationDialogPayload = {
             title: 'Delete Address',
-            message:
-                `Are you sure you want to delete the entry <b>${
-                    address.label
-                }</b> ` + `for address <b>${address.address}</b>.`
+            message: `Are you sure you want to delete the entry <strong>${
+                address.label
+            }</strong> for address <strong>${address.address}</strong>?`
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
