@@ -253,4 +253,17 @@ describe('TokenInputComponent', () => {
         expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
         expect(component.tokenAmountDecimals).toBe(0);
     });
+
+    it('should clear input field on focus', () => {
+        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
+        input.dispatchEvent(new Event('focus'));
+        expect(component.form.get('amount').value).toBe('');
+    });
+
+    it('should not clear input field a second time on focus', () => {
+        input.dispatchEvent(new Event('focus'));
+        mockFormInput('1');
+        input.dispatchEvent(new Event('focus'));
+        expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
+    });
 });

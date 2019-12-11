@@ -181,6 +181,12 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         this.inputControl.setValue(new BigNumber(obj), { emitEvent: false });
     }
 
+    onFocus(): void {
+        if (!this.inputControl.dirty) {
+            this.inputControl.setValue('');
+        }
+    }
+
     private amountValidator(): ValidatorFn {
         return (control: AbstractControl) => {
             const value: BigNumber = control.value;
