@@ -159,6 +159,12 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
 
     validate(c: AbstractControl): ValidationErrors | null {
         const value: BigNumber = this.inputControl.value;
+
+        if (!BigNumber.isBigNumber(value) || value.isNaN()) {
+            return {
+                notANumber: true
+            };
+        }
         if (this.allowZero && value.isZero()) {
             return null;
         }

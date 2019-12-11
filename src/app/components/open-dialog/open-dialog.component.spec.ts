@@ -37,7 +37,7 @@ describe('OpenDialogComponent', () => {
         address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
         symbol: 'TST',
         name: 'Test Suite Token',
-        decimals: 18,
+        decimals: 8,
         balance: new BigNumber(20)
     };
 
@@ -124,7 +124,7 @@ describe('OpenDialogComponent', () => {
         mockFormInput(
             fixture.debugElement.query(By.directive(TokenInputComponent)),
             'inputControl',
-            '0'
+            '1'
         );
         const close = spyOn(component.dialogRef, 'close');
         const dialog = fixture.debugElement.query(
@@ -136,7 +136,7 @@ describe('OpenDialogComponent', () => {
             tokenAddress: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             partnerAddress: '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359',
             settleTimeout: 500,
-            balance: new BigNumber(0)
+            balance: new BigNumber(100000000)
         });
     });
 
