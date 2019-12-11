@@ -20,7 +20,7 @@ import { BigNumberConversionDirective } from '../../directives/big-number-conver
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { of } from 'rxjs';
 import { PendingTransfer } from '../../models/pending-transfer';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogContent } from '@angular/material/dialog';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { RaidenService } from '../../services/raiden.service';
@@ -30,6 +30,18 @@ describe('PaymentDialogComponent', () => {
     let component: PaymentDialogComponent;
     let fixture: ComponentFixture<PaymentDialogComponent>;
     let pendingTransferPollingService: PendingTransferPollingService;
+
+    const pendingTransfer: PendingTransfer = {
+        channel_identifier: new BigNumber(255),
+        initiator: '0x5E1a3601538f94c9e6D2B40F7589030ac5885FE7',
+        locked_amount: new BigNumber(119),
+        payment_identifier: new BigNumber(1),
+        role: 'initiator',
+        target: '0x00AF5cBfc8dC76cd599aF623E60F763228906F3E',
+        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+        token_network_address: '0x111157460c0F41EfD9107239B7864c062aA8B978',
+        transferred_amount: new BigNumber(331)
+    };
 
     const token: UserToken = {
         address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
@@ -134,17 +146,6 @@ describe('PaymentDialogComponent', () => {
     });
 
     it('should close the dialog with the result when send button is clicked', () => {
-        const pendingTransfer: PendingTransfer = {
-            channel_identifier: new BigNumber(255),
-            initiator: '0x5E1a3601538f94c9e6D2B40F7589030ac5885FE7',
-            locked_amount: new BigNumber(119),
-            payment_identifier: new BigNumber(1),
-            role: 'initiator',
-            target: '0x00AF5cBfc8dC76cd599aF623E60F763228906F3E',
-            token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            token_network_address: '0x111157460c0F41EfD9107239B7864c062aA8B978',
-            transferred_amount: new BigNumber(331)
-        };
         // @ts-ignore
         pendingTransferPollingService.pendingTransfers$ = of([pendingTransfer]);
 
@@ -163,7 +164,7 @@ describe('PaymentDialogComponent', () => {
     });
 
     it('should open the confirmation dialog if there is an identical payment pending', () => {
-        const pendingTransfer: PendingTransfer = {
+        const pendingTransfer2: PendingTransfer = {
             channel_identifier: new BigNumber(255),
             initiator: '0x5E1a3601538f94c9e6D2B40F7589030ac5885FE7',
             locked_amount: new BigNumber(10),
@@ -175,7 +176,9 @@ describe('PaymentDialogComponent', () => {
             transferred_amount: new BigNumber(331)
         };
         // @ts-ignore
-        pendingTransferPollingService.pendingTransfers$ = of([pendingTransfer]);
+        pendingTransferPollingService.pendingTransfers$ = of([
+            pendingTransfer2
+        ]);
         const dialog = TestBed.get(MatDialog) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
@@ -207,7 +210,7 @@ describe('PaymentDialogComponent', () => {
     });
 
     it('should not open the confirmation dialog if the payment identifier is different', () => {
-        const pendingTransfer: PendingTransfer = {
+        const pendingTransfer2: PendingTransfer = {
             channel_identifier: new BigNumber(255),
             initiator: '0x5E1a3601538f94c9e6D2B40F7589030ac5885FE7',
             locked_amount: new BigNumber(10),
@@ -219,7 +222,9 @@ describe('PaymentDialogComponent', () => {
             transferred_amount: new BigNumber(331)
         };
         // @ts-ignore
-        pendingTransferPollingService.pendingTransfers$ = of([pendingTransfer]);
+        pendingTransferPollingService.pendingTransfers$ = of([
+            pendingTransfer2
+        ]);
         const dialog = TestBed.get(MatDialog) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
@@ -240,7 +245,7 @@ describe('PaymentDialogComponent', () => {
     });
 
     it('should not close the dialog if confirmation is denied', () => {
-        const pendingTransfer: PendingTransfer = {
+        const pendingTransfer2: PendingTransfer = {
             channel_identifier: new BigNumber(255),
             initiator: '0x5E1a3601538f94c9e6D2B40F7589030ac5885FE7',
             locked_amount: new BigNumber(10),
@@ -252,7 +257,9 @@ describe('PaymentDialogComponent', () => {
             transferred_amount: new BigNumber(331)
         };
         // @ts-ignore
-        pendingTransferPollingService.pendingTransfers$ = of([pendingTransfer]);
+        pendingTransferPollingService.pendingTransfers$ = of([
+            pendingTransfer2
+        ]);
         const dialog = TestBed.get(MatDialog) as MockMatDialog;
         dialog.cancelled = true;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
@@ -263,6 +270,18 @@ describe('PaymentDialogComponent', () => {
         element.triggerEventHandler('click', {});
 
         expect(dialogSpy).toHaveBeenCalledTimes(1);
+        expect(close).toHaveBeenCalledTimes(0);
+    });
+
+    it('should not submit the dialog by enter if the form is invalid', () => {
+        // @ts-ignore
+        pendingTransferPollingService.pendingTransfers$ = of([pendingTransfer]);
+
+        const close = spyOn(component.dialogRef, 'close');
+        const dialog = fixture.debugElement.query(
+            By.directive(MatDialogContent)
+        );
+        dialog.triggerEventHandler('keyup.enter', {});
         expect(close).toHaveBeenCalledTimes(0);
     });
 });

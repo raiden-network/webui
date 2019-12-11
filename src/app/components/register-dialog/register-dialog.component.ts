@@ -21,6 +21,9 @@ export class RegisterDialogComponent {
     ) {}
 
     public registerToken() {
+        if (this.form.invalid) {
+            return;
+        }
         const tokenAddress = this.form.get('token_address').value;
         this.dialogRef.close(tokenAddress);
     }

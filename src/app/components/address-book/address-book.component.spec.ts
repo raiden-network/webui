@@ -486,4 +486,16 @@ describe('AddressBookComponent', () => {
             'The label cannot be empty!'
         );
     });
+
+    it('should not add an address by enter if the form is invalid', function() {
+        const addresses: Address[] = [];
+        serviceStub.getArray = () => addresses;
+        serviceStub.save = address => addresses.push(address);
+
+        fixture.detectChanges();
+
+        const form = fixture.debugElement.query(By.css('#addresses-form'));
+        form.triggerEventHandler('keyup.enter', {});
+        expect(fixture.debugElement.query(By.css('.page-list'))).toBeNull();
+    });
 });

@@ -12,6 +12,8 @@
                 [formGroup]="form"
                 fxLayout="row"
                 fxLayoutGap="14px"
+                (keyup.enter)="save()"
+                id="addresses-form"
             >
                 <app-address-input
                     id="addresses-address"
