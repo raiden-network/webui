@@ -70,6 +70,9 @@ export class AddressBookComponent implements OnInit {
     }
 
     save() {
+        if (this.form.invalid) {
+            return;
+        }
         const addressControl = this.form.get('address');
         const labelControl = this.form.get('label');
         const address: Address = {

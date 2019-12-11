@@ -49,7 +49,10 @@ export class DepositWithdrawDialogComponent implements OnInit {
         this.cdRef.detectChanges();
     }
 
-    deposit() {
+    accept() {
+        if (this.form.invalid) {
+            return;
+        }
         const tokenAmount = this.form.value.amount;
         const tokenAmountDecimals = this.tokenInput.tokenAmountDecimals;
         this.dialogRef.close({ tokenAmount, tokenAmountDecimals });

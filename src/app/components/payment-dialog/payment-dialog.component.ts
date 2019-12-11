@@ -73,6 +73,10 @@ export class PaymentDialogComponent implements OnInit {
     }
 
     public accept() {
+        if (this.form.invalid) {
+            return;
+        }
+
         const value = this.form.value;
 
         const paymentIdentifier = value['payment_identifier'];

@@ -43,6 +43,9 @@ export class ConnectionManagerDialogComponent implements OnInit {
     }
 
     public allocateFunds() {
+        if (this.form.invalid) {
+            return;
+        }
         const payload: ConnectionManagerDialogPayload = {
             tokenAddress: this.data.tokenAddress,
             funds: this.form.value.amount,
