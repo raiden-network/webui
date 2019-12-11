@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- [#205] Dialogs can be submitted by pressing enter.
+
 ### Added
 - [#16] Adds a confirmation dialog for payments which are retried by the user.
 
@@ -121,6 +124,7 @@ token network.
 
 [#212]: https://github.com/raiden-network/webui/issues/212
 [#208]: https://github.com/raiden-network/webui/issues/208
+[#205]: https://github.com/raiden-network/webui/issues/205
 [#194]: https://github.com/raiden-network/webui/issues/194
 [#184]: https://github.com/raiden-network/webui/issues/184
 [#181]: https://github.com/raiden-network/webui/issues/181
