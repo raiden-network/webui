@@ -104,7 +104,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         this.subscription = this.channels$.subscribe((channels: Channel[]) => {
             this.channels = channels;
             this.totalChannels = channels.length;
-            this.applyFilters(this.sorting);
+            this.applyFilters();
         });
 
         this.refresh();
@@ -118,22 +118,22 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
     onPageEvent(event: PageEvent) {
         this.currentPage = event.pageIndex;
         this.pageSize = event.pageSize;
-        this.applyFilters(this.sorting);
+        this.applyFilters();
     }
 
     changeOrder() {
         this.ascending = !this.ascending;
-        this.applyFilters(this.sorting);
+        this.applyFilters();
     }
 
     applyKeywordFilter() {
-        this.applyFilters(this.sorting);
+        this.applyFilters();
         this.page.firstPage();
     }
 
     clearFilter() {
         this.filter = '';
-        this.applyFilters(this.sorting);
+        this.applyFilters();
         this.page.firstPage();
     }
 
@@ -278,7 +278,12 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
             .subscribe(() => this.refresh());
     }
 
-    applyFilters(sorting: ChannelSorting) {
+    changeSorting(sorting: ChannelSorting) {
+        this.sorting = sorting;
+        this.applyFilters();
+    }
+
+    applyFilters() {
         const channels: Array<Channel> = this.channels;
         let compareFn: (a: Channel, b: Channel) => number;
 
@@ -290,7 +295,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
             return ascending ? a.minus(b).toNumber() : b.minus(a).toNumber();
         };
 
-        switch (sorting) {
+        switch (this.sorting) {
             case ChannelSorting.State:
                 compareFn = (a, b) =>
                     StringUtils.compare(this.ascending, a.state, b.state);

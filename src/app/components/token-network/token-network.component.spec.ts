@@ -33,6 +33,7 @@ import { clickElement } from '../../../testing/interaction-helper';
 import Spy = jasmine.Spy;
 import BigNumber from 'bignumber.js';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
+import { TokenSorting } from './token.sorting.enum';
 
 describe('TokenNetworkComponent', () => {
     let component: TokenNetworkComponent;
@@ -51,9 +52,9 @@ describe('TokenNetworkComponent', () => {
 
     const token2: UserToken = {
         address: '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195',
-        symbol: 'TST2',
+        symbol: 'AAA',
         name: 'Test Suite Token 2',
-        balance: new BigNumber(20),
+        balance: new BigNumber(10),
         decimals: 0
     };
 
@@ -162,15 +163,10 @@ describe('TokenNetworkComponent', () => {
             fixture.destroy();
             flush();
         }));
-    });
-
-    describe('with a different token', () => {
-        beforeEach(() => {
-            tokenSpy.and.returnValue(of([token2]));
-            fixture.detectChanges();
-        });
 
         it('should request 1000 tokens when token has no decimals', () => {
+            tokenSpy.and.returnValue(of([token2]));
+            fixture.detectChanges();
             const mintToken = spyOn(raidenService, 'mintToken').and.returnValue(
                 of(null)
             );
@@ -182,5 +178,21 @@ describe('TokenNetworkComponent', () => {
                 new BigNumber(1000)
             );
         });
+
+        it('should not reset the sorting after polling', fakeAsync(() => {
+            tokenSpy.and.returnValue(of([token, token2]));
+            fixture.detectChanges();
+            expect(component.visibleTokens).toEqual([token2, token]);
+            component.changeSorting(TokenSorting.Symbol);
+            fixture.detectChanges();
+            expect(component.sorting).toEqual(TokenSorting.Symbol);
+            expect(component.visibleTokens).toEqual([token, token2]);
+
+            tick(5000);
+            fixture.detectChanges();
+            expect(component.visibleTokens).toEqual([token, token2]);
+            fixture.destroy();
+            flush();
+        }));
     });
 });
