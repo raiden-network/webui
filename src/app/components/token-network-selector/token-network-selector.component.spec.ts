@@ -243,4 +243,15 @@ describe('TokenNetworkSelectorComponent', () => {
         expect(valueChange).toBe(1, 'A value change event should be emitted');
         flush();
     }));
+
+    it('should only show connected tokens when only connected is true', () => {
+        component.onlyConnectedTokens = true;
+        component.filteredOptions$.subscribe(
+            value => {
+                expect(value.length).toBe(1);
+                expect(value[0]).toEqual(connectedToken);
+            },
+            error => fail(error)
+        );
+    });
 });

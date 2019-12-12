@@ -3,7 +3,8 @@ import {
     EventEmitter,
     forwardRef,
     OnInit,
-    Output
+    Output,
+    Input
 } from '@angular/core';
 import {
     AbstractControl,
@@ -41,6 +42,7 @@ import { checkAddressChecksum, toChecksumAddress } from 'web3-utils';
 })
 export class TokenNetworkSelectorComponent
     implements OnInit, ControlValueAccessor, Validator {
+    @Input() onlyConnectedTokens = false;
     @Output() valueChanged = new EventEmitter<UserToken>();
     public filteredOptions$: Observable<UserToken[]>;
     readonly tokenFc = new FormControl('', [this.addressValidatorFn()]);
@@ -50,6 +52,11 @@ export class TokenNetworkSelectorComponent
 
     ngOnInit() {
         this.tokens$ = this.raidenService.getTokens().pipe(
+            map(value =>
+                this.onlyConnectedTokens
+                    ? value.filter(token => !!token.connected)
+                    : value
+            ),
             map(value => value.sort(this._compareTokens)),
             share()
         );
