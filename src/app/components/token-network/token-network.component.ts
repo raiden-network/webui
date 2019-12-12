@@ -12,6 +12,7 @@ import {
     amountFromDecimal
 } from '../../utils/amount.converter';
 import { StringUtils } from '../../utils/string.utils';
+import { TokenUtils } from '../../utils/token.utils';
 import {
     ConfirmationDialogComponent,
     ConfirmationDialogPayload
@@ -50,7 +51,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     visibleTokens: Array<UserToken> = [];
     tokens: Array<UserToken> = [];
     totalTokens = 0;
-    sorting = TokenSorting.Balance;
+    sorting = TokenSorting.Connected;
     ascending = false;
     filter = '';
     readonly network$: Observable<Network>;
@@ -71,6 +72,10 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         {
             value: TokenSorting.Name,
             label: 'Name'
+        },
+        {
+            value: TokenSorting.Connected,
+            label: 'Connected'
         }
     ];
     private tokensSubject: BehaviorSubject<void> = new BehaviorSubject(null);
@@ -277,7 +282,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
                 compareFn = (a, b) =>
                     StringUtils.compare(this.ascending, a.address, b.address);
                 break;
-            default:
+            case TokenSorting.Balance:
                 compareFn = (a, b) => {
                     const aBalance = amountToDecimal(a.balance, a.decimals);
                     const bBalance = amountToDecimal(b.balance, b.decimals);
@@ -285,6 +290,12 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
                         ? aBalance.minus(bBalance).toNumber()
                         : bBalance.minus(aBalance).toNumber();
                 };
+                break;
+            default:
+                compareFn = (a, b) =>
+                    this.ascending
+                        ? TokenUtils.compareTokens(a, b) * -1
+                        : TokenUtils.compareTokens(a, b);
                 break;
         }
 
