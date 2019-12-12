@@ -141,7 +141,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
             .subscribe((tokens: Array<UserToken>) => {
                 this.tokens = tokens;
                 this.totalTokens = tokens.length;
-                this.applyFilters(this.sorting);
+                this.applyFilters();
             });
     }
 
@@ -252,14 +252,19 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     onPageEvent(event: PageEvent) {
         this.currentPage = event.pageIndex;
         this.pageSize = event.pageSize;
-        this.applyFilters(this.sorting);
+        this.applyFilters();
     }
 
-    applyFilters(sorting: number) {
-        const userTokens: Array<UserToken> = this.tokens;
-        let compareFn: (a, b) => number;
+    changeSorting(sorting: TokenSorting) {
+        this.sorting = sorting;
+        this.applyFilters();
+    }
 
-        switch (sorting) {
+    applyFilters() {
+        const userTokens: Array<UserToken> = this.tokens;
+        let compareFn: (a: UserToken, b: UserToken) => number;
+
+        switch (this.sorting) {
             case TokenSorting.Name:
                 compareFn = (a, b) =>
                     StringUtils.compare(this.ascending, a.name, b.name);
@@ -300,17 +305,17 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
 
     changeOrder() {
         this.ascending = !this.ascending;
-        this.applyFilters(this.sorting);
+        this.applyFilters();
     }
 
     applyKeywordFilter() {
-        this.applyFilters(this.sorting);
+        this.applyFilters();
         this.page.firstPage();
     }
 
     clearFilter() {
         this.filter = '';
-        this.applyFilters(this.sorting);
+        this.applyFilters();
         this.page.firstPage();
     }
 

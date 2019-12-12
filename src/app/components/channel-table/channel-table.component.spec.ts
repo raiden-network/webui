@@ -44,6 +44,7 @@ import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { clickElement } from '../../../testing/interaction-helper';
 import BigNumber from 'bignumber.js';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
+import { ChannelSorting } from './channel.sorting.enum';
 
 describe('ChannelTableComponent', () => {
     let component: ChannelTableComponent;
@@ -163,7 +164,7 @@ describe('ChannelTableComponent', () => {
         );
         channelsSpy = spyOn(channelPollingService, 'channels');
         refreshingSpy = spyOn(channelPollingService, 'refreshing');
-        tokenSpy = spyOn(service, 'getUserToken');
+        tokenSpy = spyOn(service, 'getUserToken').and.returnValue(of(token));
 
         component = fixture.componentInstance;
     });
@@ -202,8 +203,6 @@ describe('ChannelTableComponent', () => {
         );
         channelsSpy.and.returnValues(mockResponse);
 
-        tokenSpy.and.returnValue(of(token));
-
         tick(5000);
         fixture.detectChanges();
 
@@ -237,7 +236,6 @@ describe('ChannelTableComponent', () => {
         channelsSpy.and.returnValues(
             of([channel1, channel2, channel3, channel4])
         );
-        tokenSpy.and.returnValue(of(token));
 
         fixture.detectChanges();
 
@@ -252,4 +250,20 @@ describe('ChannelTableComponent', () => {
         channelListElement = fixture.debugElement.query(By.css('.page-list'));
         expect(channelListElement.children.length).toBe(1);
     });
+
+    it('should not reset the sorting after polling', fakeAsync(() => {
+        channelsSpy.and.returnValues(of([channel1, channel2]));
+        fixture.detectChanges();
+        expect(component.visibleChannels).toEqual([channel1, channel2]);
+        component.changeSorting(ChannelSorting.Partner);
+        fixture.detectChanges();
+        expect(component.sorting).toEqual(ChannelSorting.Partner);
+        expect(component.visibleChannels).toEqual([channel2, channel1]);
+
+        tick(5000);
+        fixture.detectChanges();
+        expect(component.visibleChannels).toEqual([channel2, channel1]);
+        fixture.destroy();
+        flush();
+    }));
 });

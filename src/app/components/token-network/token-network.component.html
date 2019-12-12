@@ -11,7 +11,7 @@
         (cleared)="clearFilter()"
         (filtered)="this.filter = $event; applyKeywordFilter()"
         (ordered)="changeOrder()"
-        (sorted)="applyFilters($event)"
+        (sorted)="changeSorting($event)"
         [ascending]="ascending"
         [keyword]="filter"
         [showButton]="!production"
