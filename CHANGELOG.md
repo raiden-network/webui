@@ -4,6 +4,7 @@
 ### Changed
 - [#205] Dialogs can be submitted by pressing enter.
 - [#190] Updates the user address when Raiden is restarted with a different address.
+- [#218] Fixes the sorting on the tokens and channels pages to not get reset when polling.
 
 ### Added
 - [#16] Adds a confirmation dialog for payments which are retried by the user.
@@ -124,6 +125,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#218]: https://github.com/raiden-network/webui/issues/218
 [#212]: https://github.com/raiden-network/webui/issues/212
 [#208]: https://github.com/raiden-network/webui/issues/208
 [#205]: https://github.com/raiden-network/webui/issues/205
