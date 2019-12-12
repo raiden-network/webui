@@ -55,7 +55,12 @@ describe('TokenNetworkComponent', () => {
         symbol: 'AAA',
         name: 'Test Suite Token 2',
         balance: new BigNumber(10),
-        decimals: 0
+        decimals: 0,
+        connected: {
+            channels: 5,
+            funds: new BigNumber(10),
+            sum_deposits: new BigNumber(50)
+        }
     };
 
     beforeEach(async(() => {
@@ -194,5 +199,29 @@ describe('TokenNetworkComponent', () => {
             fixture.destroy();
             flush();
         }));
+
+        it('should sort tokens by connection status by default', () => {
+            tokenSpy.and.returnValue(of([token, token2]));
+            fixture.detectChanges();
+            expect(component.visibleTokens).toEqual([token2, token]);
+            expect(component.sorting).toEqual(TokenSorting.Connected);
+        });
+
+        it('should sort tokens in ascending order when order changed', () => {
+            tokenSpy.and.returnValue(of([token, token2]));
+            fixture.detectChanges();
+            component.changeOrder();
+            fixture.detectChanges();
+            expect(component.visibleTokens).toEqual([token, token2]);
+        });
+
+        it('should sort tokens by balance', () => {
+            tokenSpy.and.returnValue(of([token, token2]));
+            fixture.detectChanges();
+            component.changeSorting(TokenSorting.Balance);
+            fixture.detectChanges();
+            expect(component.visibleTokens).toEqual([token2, token]);
+            expect(component.sorting).toEqual(TokenSorting.Balance);
+        });
     });
 });

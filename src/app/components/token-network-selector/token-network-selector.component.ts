@@ -20,8 +20,8 @@ import { Observable } from 'rxjs';
 import { flatMap, map, share, startWith } from 'rxjs/operators';
 import { UserToken } from '../../models/usertoken';
 import { RaidenService } from '../../services/raiden.service';
-import { amountToDecimal } from '../../utils/amount.converter';
 import { checkAddressChecksum, toChecksumAddress } from 'web3-utils';
+import { TokenUtils } from '../../utils/token.utils';
 
 @Component({
     selector: 'app-token-network-selector',
@@ -57,7 +57,7 @@ export class TokenNetworkSelectorComponent
                     ? value.filter(token => !!token.connected)
                     : value
             ),
-            map(value => value.sort(this._compareTokens)),
+            map(value => value.sort(TokenUtils.compareTokens)),
             share()
         );
 
@@ -117,19 +117,6 @@ export class TokenNetworkSelectorComponent
 
     checksum(): string {
         return toChecksumAddress(this.tokenFc.value);
-    }
-
-    // noinspection JSMethodCanBeStatic
-    private _compareTokens(a: UserToken, b: UserToken): number {
-        const aConnected = !!a.connected;
-        const bConnected = !!b.connected;
-        if (aConnected === bConnected) {
-            return amountToDecimal(b.balance, b.decimals)
-                .minus(amountToDecimal(a.balance, a.decimals))
-                .toNumber();
-        } else {
-            return aConnected ? -1 : 1;
-        }
     }
 
     private _filter(value?: string): Observable<UserToken[]> {
