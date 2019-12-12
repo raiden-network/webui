@@ -12,6 +12,7 @@
     <app-token-network-selector
         formControlName="token"
         (valueChanged)="tokenNetworkSelected($event)"
+        onlyConnectedTokens="true"
     >
     </app-token-network-selector>
     <app-token-input
