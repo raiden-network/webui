@@ -29,10 +29,12 @@
         </span>
     </span>
     <span class="toolbar-spacer"></span>
-    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px">
-        <span *ngIf="!isMobile()" class="account" fxFlexAlign="start">
-            Your account:
-        </span>
+    <div
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap.gt-xs="8px"
+        class="header-content"
+    >
         <div class="account-info" fxLayout="column" fxLayoutAlign="center end">
             <span
                 class="truncate account"
@@ -41,7 +43,14 @@
                 matTooltipShowDelay="600"
                 matTooltipPosition="before"
             >
-                {{ raidenAddress | shortenAddress }}
+                <span
+                    *ngIf="!isSmallScreen()"
+                    class="account-label"
+                    fxFlexAlign="start"
+                >
+                    Your account:
+                </span>
+                <span>{{ raidenAddress | shortenAddress }}</span>
             </span>
             <span class="balance-info" *ngIf="(balance$ | async) as balance">
                 <span
@@ -89,28 +98,28 @@
                 content_copy
             </mat-icon>
         </button>
-    </div>
-    <button
-        mat-button
-        (click)="notification_sidenav.toggle()"
-        class="notification-button"
-        matTooltip="Open notification panel"
-        [style.background-color]="notificationBlink"
-    >
-        <span
-            [matBadge]="pendingRequests"
-            matBadgeOverlap="true"
-            matBadgeColor="primary"
-            matBadgePosition="after"
-            class="notification-button-container"
+        <button
+            mat-button
+            (click)="notification_sidenav.toggle()"
+            class="notification-button"
+            matTooltip="Open notification panel"
+            [style.background-color]="notificationBlink"
         >
-            <img
-                alt="User address identicon"
-                class="round identicon"
-                [src]="identicon(raidenAddress)"
-            />
-        </span>
-    </button>
+            <span
+                [matBadge]="pendingRequests"
+                matBadgeOverlap="true"
+                matBadgeColor="primary"
+                matBadgePosition="after"
+                class="notification-button-container"
+            >
+                <img
+                    alt="User address identicon"
+                    class="round identicon"
+                    [src]="identicon(raidenAddress)"
+                />
+            </span>
+        </button>
+    </div>
 </mat-toolbar>
 
 <mat-sidenav-container class="sidenav-container">
