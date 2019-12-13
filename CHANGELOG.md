@@ -7,6 +7,7 @@
 - [#218] Fixes the sorting on the tokens and channels pages to not get reset when polling.
 - [#141] Only shows the connected tokens in the payment dialog token field.
 - [#203] Clears token amount input field on focus.
+- [#207] Fixes header content to fit on lower resolutions.
 
 ### Added
 - [#16] Adds a confirmation dialog for payments which are retried by the user.
@@ -132,6 +133,7 @@ token network.
 [#218]: https://github.com/raiden-network/webui/issues/218
 [#212]: https://github.com/raiden-network/webui/issues/212
 [#208]: https://github.com/raiden-network/webui/issues/208
+[#207]: https://github.com/raiden-network/webui/issues/207
 [#205]: https://github.com/raiden-network/webui/issues/205
 [#203]: https://github.com/raiden-network/webui/issues/203
 [#196]: https://github.com/raiden-network/webui/issues/196
