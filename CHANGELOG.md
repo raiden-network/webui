@@ -11,6 +11,7 @@
 - [#16] Adds a confirmation dialog for payments which are retried by the user.
 - [#18] Shows the error screen when API is down.
 - [#12] Adds a token sorting option to show connected networks first.
+- [#196] Shows channels while they are being opened.
 
 ## [0.10.4] - 2019-12-10
 ### Changed
@@ -131,6 +132,7 @@ token network.
 [#212]: https://github.com/raiden-network/webui/issues/212
 [#208]: https://github.com/raiden-network/webui/issues/208
 [#205]: https://github.com/raiden-network/webui/issues/205
+[#196]: https://github.com/raiden-network/webui/issues/196
 [#194]: https://github.com/raiden-network/webui/issues/194
 [#190]: https://github.com/raiden-network/webui/issues/190
 [#184]: https://github.com/raiden-network/webui/issues/184
