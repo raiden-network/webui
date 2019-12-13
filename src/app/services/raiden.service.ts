@@ -46,6 +46,10 @@ import { NotificationService } from './notification.service';
 import { PendingTransfer } from '../models/pending-transfer';
 import { UiMessage } from '../models/notification';
 
+interface PendingChannelsMap {
+    [tokenAddress: string]: { [partnerAddress: string]: Channel };
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -56,6 +60,9 @@ export class RaidenService {
     private globalRetrySubject: Subject<void> = new Subject();
     private addressRefreshSubject: BehaviorSubject<void> = new BehaviorSubject(
         null
+    );
+    private pendingChannelsSubject = new BehaviorSubject<PendingChannelsMap>(
+        {}
     );
 
     readonly raidenAddress$: Observable<string>;
@@ -69,9 +76,7 @@ export class RaidenService {
     > = this.globalRetrySubject.asObservable();
 
     private userTokens: { [id: string]: UserToken | null } = {};
-    private pendingChannels: {
-        [tokenAddress: string]: { [partnerAddress: string]: boolean | null };
-    } = {};
+    private pendingChannels: PendingChannelsMap = {};
 
     constructor(
         private http: HttpClient,
@@ -289,7 +294,20 @@ export class RaidenService {
                 if (!this.pendingChannels[tokenAddress]) {
                     this.pendingChannels[tokenAddress] = {};
                 }
-                this.pendingChannels[tokenAddress][partnerAddress] = true;
+                this.pendingChannels[tokenAddress][partnerAddress] = {
+                    channel_identifier: new BigNumber(0),
+                    state: 'Waiting for open',
+                    total_deposit: new BigNumber(0),
+                    total_withdraw: new BigNumber(0),
+                    balance: new BigNumber(0),
+                    reveal_timeout: 0,
+                    settle_timeout: settleTimeout,
+                    token_address: tokenAddress,
+                    partner_address: partnerAddress,
+                    depositPending: true,
+                    userToken: token
+                };
+                this.pendingChannelsSubject.next(this.pendingChannels);
             }),
             switchMap(() =>
                 this.http.put<Channel>(
@@ -311,6 +329,7 @@ export class RaidenService {
                     notificationIdentifier
                 );
                 delete this.pendingChannels[tokenAddress][partnerAddress];
+                this.pendingChannelsSubject.next(this.pendingChannels);
             })
         );
     }
@@ -748,6 +767,20 @@ export class RaidenService {
                     notificationIdentifier
                 )
             )
+        );
+    }
+
+    public getPendingChannels(): Observable<Channel[]> {
+        return this.pendingChannelsSubject.pipe(
+            map((pendingChannelsMap: PendingChannelsMap) => {
+                let pendingChannels: Channel[] = [];
+                Object.values(pendingChannelsMap).forEach(partnerMap => {
+                    pendingChannels = pendingChannels.concat(
+                        Object.values(partnerMap)
+                    );
+                });
+                return pendingChannels;
+            })
         );
     }
 
