@@ -49,6 +49,7 @@ import { ChannelSorting } from './channel.sorting.enum';
 describe('ChannelTableComponent', () => {
     let component: ChannelTableComponent;
     let fixture: ComponentFixture<ChannelTableComponent>;
+    let raidenService: RaidenService;
     let channelsSpy: Spy;
     let refreshingSpy: Spy;
     let tokenSpy: Spy;
@@ -158,13 +159,15 @@ describe('ChannelTableComponent', () => {
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ChannelTableComponent);
-        const service: RaidenService = TestBed.get(RaidenService);
+        raidenService = TestBed.get(RaidenService);
         const channelPollingService: ChannelPollingService = TestBed.get(
             ChannelPollingService
         );
         channelsSpy = spyOn(channelPollingService, 'channels');
         refreshingSpy = spyOn(channelPollingService, 'refreshing');
-        tokenSpy = spyOn(service, 'getUserToken').and.returnValue(of(token));
+        tokenSpy = spyOn(raidenService, 'getUserToken').and.returnValue(
+            of(token)
+        );
 
         component = fixture.componentInstance;
     });
@@ -266,4 +269,17 @@ describe('ChannelTableComponent', () => {
         fixture.destroy();
         flush();
     }));
+
+    it('should contain pending channels', () => {
+        channelsSpy.and.returnValue(of([channel1, channel3]));
+        spyOn(raidenService, 'getPendingChannels').and.returnValue(
+            of([channel2, channel3])
+        );
+        fixture.detectChanges();
+        expect(component.visibleChannels).toEqual([
+            channel1,
+            channel3,
+            channel2
+        ]);
+    });
 });

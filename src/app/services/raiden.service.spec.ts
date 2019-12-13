@@ -1327,4 +1327,47 @@ describe('RaidenService', () => {
         service.attemptApiConnection();
         expect(emitted).toBe(true);
     });
+
+    it('should give the pending channels', fakeAsync(() => {
+        const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
+        service
+            .openChannel(tokenAddress, partnerAddress, 500, new BigNumber(10))
+            .subscribe();
+        const openChannelRequest = mockHttp.expectOne({
+            url: `${endpoint}/channels`,
+            method: 'PUT'
+        });
+        let emittedTimes = 0;
+
+        service.getPendingChannels().subscribe(value => {
+            if (emittedTimes === 0) {
+                expect(value).toEqual([
+                    {
+                        channel_identifier: new BigNumber(0),
+                        state: 'Waiting for open',
+                        total_deposit: new BigNumber(0),
+                        total_withdraw: new BigNumber(0),
+                        balance: new BigNumber(0),
+                        settle_timeout: 500,
+                        reveal_timeout: 0,
+                        token_address: tokenAddress,
+                        partner_address: partnerAddress,
+                        depositPending: true,
+                        userToken: token
+                    }
+                ]);
+            }
+            if (emittedTimes === 1) {
+                expect(value).toEqual([]);
+            }
+            emittedTimes++;
+        });
+        tick();
+
+        openChannelRequest.flush(losslessStringify(channel1), {
+            status: 200,
+            statusText: ''
+        });
+        flush();
+    }));
 });

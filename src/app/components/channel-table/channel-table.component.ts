@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
-import { EMPTY, Subscription } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
-import { flatMap } from 'rxjs/operators';
+import { EMPTY, Subscription, combineLatest } from 'rxjs';
+import { flatMap, map } from 'rxjs/operators';
 import { Channel } from '../../models/channel';
 import { SortingData } from '../../models/sorting.data';
 import { ChannelPollingService } from '../../services/channel-polling.service';
@@ -48,8 +47,6 @@ import { Animations } from '../../animations/animations';
 export class ChannelTableComponent implements OnInit, OnDestroy {
     @ViewChild(PageBaseComponent, { static: true })
     page: PageBaseComponent;
-
-    public channels$: Observable<Channel[]>;
 
     visibleChannels: Channel[] = [];
     totalChannels = 0;
@@ -100,12 +97,30 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.channels$ = this.channelPollingService.channels();
-        this.subscription = this.channels$.subscribe((channels: Channel[]) => {
-            this.channels = channels;
-            this.totalChannels = channels.length;
-            this.applyFilters();
-        });
+        this.subscription = combineLatest([
+            this.channelPollingService.channels(),
+            this.raidenService.getPendingChannels()
+        ])
+            .pipe(
+                map(([channels, pendingChannels]) => {
+                    const uniquePendingChannels = pendingChannels.filter(
+                        pendingChannel =>
+                            !channels.find(
+                                channel =>
+                                    channel.partner_address ===
+                                        pendingChannel.partner_address &&
+                                    channel.token_address ===
+                                        pendingChannel.token_address
+                            )
+                    );
+                    return channels.concat(uniquePendingChannels);
+                })
+            )
+            .subscribe((channels: Channel[]) => {
+                this.channels = channels;
+                this.totalChannels = channels.length;
+                this.applyFilters();
+            });
 
         this.refresh();
         this._addresses = this.addressBookService.get();
@@ -139,7 +154,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
 
     // noinspection JSMethodCanBeStatic
     trackByFn(index, item: Channel) {
-        return item.channel_identifier.toNumber();
+        return `${item.token_address}_${item.partner_address}`;
     }
 
     // noinspection JSMethodCanBeStatic
