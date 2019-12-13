@@ -65,6 +65,10 @@ export class AppComponent implements OnInit, OnDestroy {
         return this.mediaObserver.isActive('xs');
     }
 
+    isSmallScreen(): boolean {
+        return this.mediaObserver.isActive('lt-md');
+    }
+
     ngOnInit() {
         this.subscription = this.raidenService.raidenAddress$.subscribe(
             address => (this.raidenAddress = address)

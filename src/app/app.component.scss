@@ -64,6 +64,10 @@ mat-sidenav-content {
     line-height: 22px;
 }
 
+.account-label {
+    padding-right: 64px;
+}
+
 .info-container {
     @include respond-to('medium-screens') {
         margin-left: 25px;
@@ -85,6 +89,10 @@ mat-sidenav-content {
     }
 }
 
+.header-content {
+    height: 100%;
+}
+
 .faucet-button {
     padding: 0;
     line-height: 100%;
@@ -92,7 +100,6 @@ mat-sidenav-content {
 }
 
 .notification-button {
-    margin-left: 8px;
     padding: 0;
     border-radius: 0;
     height: 100%;
