@@ -19,7 +19,6 @@ import { RegisterDialogComponent } from './components/register-dialog/register-d
 import { TokenNetworkComponent } from './components/token-network/token-network.component';
 import { MaterialComponentsModule } from './modules/material-components/material-components.module';
 import { EllipsisPipe } from './pipes/ellipsis.pipe';
-import { SubsetPipe } from './pipes/subset.pipe';
 import { TokenPipe } from './pipes/token.pipe';
 import { RaidenConfig, Web3Factory } from './services/raiden.config';
 import { LosslessJsonInterceptor } from './interceptors/lossless-json.interceptor';
@@ -96,7 +95,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ConnectionManagerDialogComponent,
         RegisterDialogComponent,
         OpenDialogComponent,
-        SubsetPipe,
         TokenPipe,
         EllipsisPipe,
         ConfirmationDialogComponent,
