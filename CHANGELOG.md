@@ -10,6 +10,7 @@
 - [#141] Only shows the connected tokens in the payment dialog token field.
 - [#203] Clears token amount input field on focus.
 - [#207] Fixes header content to fit on lower resolutions.
+- Removes non-decimal input for token amounts.
 
 ### Added
 - [#16] Adds a confirmation dialog for payments which are retried by the user.
