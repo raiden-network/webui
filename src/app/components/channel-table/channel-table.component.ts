@@ -171,7 +171,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
             tokenAddress: channel ? channel.token_address : '',
             targetAddress: channel ? channel.partner_address : '',
             amount: new BigNumber(0),
-            decimals: channel ? channel.userToken.decimals : 0,
             paymentIdentifier: null
         };
 

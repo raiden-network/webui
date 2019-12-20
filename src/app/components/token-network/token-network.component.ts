@@ -197,7 +197,6 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
             tokenAddress: userToken.address,
             targetAddress: '',
             amount: new BigNumber(0),
-            decimals: userToken.decimals,
             paymentIdentifier: null
         };
 

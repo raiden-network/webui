@@ -8,9 +8,7 @@ import {
 import {
     AbstractControl,
     ControlValueAccessor,
-    FormBuilder,
     FormControl,
-    FormGroup,
     NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
     ValidationErrors,
@@ -47,96 +45,33 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     @Input() errorPlaceholder: string;
     @ViewChild('amountInput', { static: true }) amountInput: ElementRef;
 
-    readonly form: FormGroup = this.fb.group({
-        amount: [new BigNumber(0), this.amountValidator()],
-        decimals: true
-    });
+    readonly inputControl = new FormControl(
+        new BigNumber(0),
+        this.amountValidator()
+    );
+    decimals = 0;
 
-    private readonly inputControl: FormControl;
-    private readonly checkboxControl: FormControl;
+    constructor() {}
 
-    constructor(private fb: FormBuilder) {
-        this.inputControl = this.form.get('amount') as FormControl;
-        this.checkboxControl = this.form.get('decimals') as FormControl;
-    }
-
-    private _decimals = 0;
-
-    public get decimals(): number {
-        return this._decimals;
-    }
-
-    public set decimals(decimals: number) {
-        this._decimals = decimals;
-        if (!this.checkboxControl) {
-            return;
-        }
-        this.updateCheckboxState();
-    }
-
-    public get tokenAmountDecimals(): number {
-        return this.decimalInput ? this._decimals : 0;
-    }
-
-    private get decimalInput(): boolean {
-        const control = this.checkboxControl;
-        if (!control) {
-            return false;
-        }
-        return control.value;
-    }
-
-    public resetAmount() {
+    resetAmount() {
         this.inputControl.reset(new BigNumber(0));
     }
 
-    public step(): string {
-        if (this.decimalInput) {
-            return this.minimumAmount().toString();
-        } else {
-            return '1';
-        }
-    }
-
     minimumAmount(): string {
-        return (1 / 10 ** this._decimals).toFixed(this._decimals);
+        return (1 / 10 ** this.decimals).toFixed(this.decimals);
     }
 
     convertFromDecimal() {
         const amount: BigNumber = this.inputControl.value;
         if (
-            this.decimalInput &&
             BigNumber.isBigNumber(amount) &&
-            amount.decimalPlaces() <= this._decimals
+            amount.decimalPlaces() <= this.decimals
         ) {
             this.inputControl.setValue(
-                amountFromDecimal(amount, this._decimals),
+                amountFromDecimal(amount, this.decimals),
                 { emitModelToViewChange: false }
             );
         }
-    }
-
-    onCheckChange(event: MatCheckboxChange) {
-        const amount: BigNumber = this.inputControl.value;
-
-        if (!BigNumber.isBigNumber(amount) || amount.isNaN()) {
-            this.inputControl.setValue(new BigNumber(0));
-        } else if (event.checked) {
-            const decimalAmount = amountToDecimal(amount, this._decimals);
-            this.amountInput.nativeElement.value = decimalAmount.toFixed(
-                decimalAmount.decimalPlaces()
-            );
-        } else {
-            if (amount.decimalPlaces() > 0) {
-                this.inputControl.setValue(
-                    amountFromDecimal(amount, this._decimals)
-                );
-            } else {
-                this.amountInput.nativeElement.value = amount.toString();
-            }
-        }
-
-        this.inputControl.markAsTouched();
     }
 
     registerOnChange(fn: any): void {
@@ -206,13 +141,5 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
             }
             return undefined;
         };
-    }
-
-    private updateCheckboxState() {
-        if (this._decimals === 0) {
-            this.checkboxControl.disable();
-        } else {
-            this.checkboxControl.enable();
-        }
     }
 }

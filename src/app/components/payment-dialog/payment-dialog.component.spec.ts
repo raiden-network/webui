@@ -83,7 +83,6 @@ describe('PaymentDialogComponent', () => {
             tokenAddress: '',
             amount: new BigNumber(0),
             targetAddress: '',
-            decimals: 0,
             paymentIdentifier: null
         };
         TestBed.configureTestingModule({
@@ -157,7 +156,6 @@ describe('PaymentDialogComponent', () => {
         expect(close).toHaveBeenCalledWith({
             tokenAddress: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             targetAddress: '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359',
-            decimals: 0,
             amount: new BigNumber(10),
             paymentIdentifier: new BigNumber(999)
         });
@@ -203,7 +201,6 @@ describe('PaymentDialogComponent', () => {
         expect(close).toHaveBeenCalledWith({
             tokenAddress: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             targetAddress: '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359',
-            decimals: 0,
             amount: new BigNumber(10),
             paymentIdentifier: new BigNumber(999)
         });
@@ -238,7 +235,6 @@ describe('PaymentDialogComponent', () => {
         expect(close).toHaveBeenCalledWith({
             tokenAddress: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             targetAddress: '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359',
-            decimals: 0,
             amount: new BigNumber(10),
             paymentIdentifier: new BigNumber(999)
         });

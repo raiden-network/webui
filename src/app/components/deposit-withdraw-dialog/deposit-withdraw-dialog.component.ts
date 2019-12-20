@@ -18,7 +18,6 @@ export interface DepositWithdrawDialogPayload {
 
 export interface DepositWithdrawDialogResult {
     readonly tokenAmount: BigNumber;
-    readonly tokenAmountDecimals: number;
 }
 
 @Component({
@@ -54,7 +53,6 @@ export class DepositWithdrawDialogComponent implements OnInit {
             return;
         }
         const tokenAmount = this.form.value.amount;
-        const tokenAmountDecimals = this.tokenInput.tokenAmountDecimals;
-        this.dialogRef.close({ tokenAmount, tokenAmountDecimals });
+        this.dialogRef.close({ tokenAmount });
     }
 }

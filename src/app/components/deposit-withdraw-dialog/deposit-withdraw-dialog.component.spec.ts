@@ -68,8 +68,7 @@ describe('DepositDialogComponent', () => {
         dialog.triggerEventHandler('keyup.enter', {});
         expect(close).toHaveBeenCalledTimes(1);
         expect(close).toHaveBeenCalledWith({
-            tokenAmount: new BigNumber(1000000000),
-            tokenAmountDecimals: 8
+            tokenAmount: new BigNumber(1000000000)
         });
     });
 
