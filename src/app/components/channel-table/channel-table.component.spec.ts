@@ -15,8 +15,6 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { EMPTY } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { delay, startWith } from 'rxjs/operators';
-// @ts-ignore
-import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { Channel } from '../../models/channel';
 import { UserToken } from '../../models/usertoken';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -132,7 +130,6 @@ describe('ChannelTableComponent', () => {
                 DecimalPipe,
                 DisplayDecimalsPipe,
                 StatusPipe,
-                CdkDetailRowDirective,
                 TokenNetworkSelectorComponent
             ],
             providers: [

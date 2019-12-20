@@ -17,7 +17,6 @@ import { OpenDialogComponent } from './components/open-dialog/open-dialog.compon
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
 import { RegisterDialogComponent } from './components/register-dialog/register-dialog.component';
 import { TokenNetworkComponent } from './components/token-network/token-network.component';
-import { CdkDetailRowDirective } from './directives/cdk-detail-row.directive';
 import { MaterialComponentsModule } from './modules/material-components/material-components.module';
 import { EllipsisPipe } from './pipes/ellipsis.pipe';
 import { KeysPipe } from './pipes/keys.pipe';
@@ -102,7 +101,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         SubsetPipe,
         TokenPipe,
         EllipsisPipe,
-        CdkDetailRowDirective,
         ConfirmationDialogComponent,
         DepositWithdrawDialogComponent,
         DecimalPipe,
