@@ -13,7 +13,7 @@ import { TokenInputComponent } from '../token-input/token-input.component';
 import { PaymentIdentifierInputComponent } from '../payment-identifier-input/payment-identifier-input.component';
 import BigNumber from 'bignumber.js';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
-import { first, switchMap, map, tap } from 'rxjs/operators';
+import { first, switchMap, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import {
     ConfirmationDialogComponent,
@@ -25,7 +25,6 @@ export interface PaymentDialogPayload {
     tokenAddress: string;
     targetAddress: string;
     amount: BigNumber;
-    decimals: number;
     paymentIdentifier: BigNumber;
 }
 
@@ -54,7 +53,6 @@ export class PaymentDialogComponent implements OnInit {
 
     ngOnInit() {
         const data = this.data;
-        this.tokenInput.decimals = data.decimals;
 
         const raidenAddress = this.raidenService.raidenAddress;
 
@@ -78,13 +76,13 @@ export class PaymentDialogComponent implements OnInit {
         }
 
         const value = this.form.value;
+        const decimals = this.tokenInput.decimals;
 
         const paymentIdentifier = value['payment_identifier'];
 
         const payload: PaymentDialogPayload = {
             tokenAddress: value['token'],
             targetAddress: value['target_address'],
-            decimals: this.tokenInput.tokenAmountDecimals,
             amount: value['amount'],
             paymentIdentifier:
                 BigNumber.isBigNumber(paymentIdentifier) &&
@@ -119,7 +117,7 @@ export class PaymentDialogComponent implements OnInit {
                         );
                         const formattedAmount = amountToDecimal(
                             payload.amount,
-                            payload.decimals
+                            decimals
                         ).toFixed();
                         const confirmationPayload: ConfirmationDialogPayload = {
                             title: 'Retrying payment',
@@ -172,7 +170,6 @@ export class PaymentDialogComponent implements OnInit {
         });
 
         this.tokenInput.resetAmount();
-        this.tokenInput.decimals = this.data.decimals;
         this.paymentIdentifierInput.resetPanel();
     }
 

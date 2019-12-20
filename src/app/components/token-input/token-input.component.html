@@ -1,75 +1,45 @@
-<div
-    [formGroup]="form"
+<mat-form-field
+    [hideRequiredMarker]="true"
+    fxFlex="1 1 auto"
+    fxLayout="column"
+    fxLayout.xs="row"
+    ngClass.xs="full-width-form-field"
     class="form"
-    fxLayout="row"
-    fxLayout.xs="column"
-    fxLayoutGap="0px"
-    fxLayoutGap.xs="20px"
 >
-    <mat-form-field
-        [hideRequiredMarker]="true"
-        fxFlex="1 1 auto"
-        fxLayout="column"
-        fxLayout.xs="row"
-        ngClass.xs="full-width-form-field"
+    <input
+        [placeholder]="placeholder"
+        [required]="!allowZero"
+        [step]="minimumAmount()"
+        [formControl]="inputControl"
+        matInput
+        min="0"
+        type="number"
+        convertToBigNumber
+        (input)="convertFromDecimal()"
+        (focus)="onFocus()"
+        #amountInput
+    />
+
+    <mat-hint align="start">
+        <span> The smallest allowed value is {{ minimumAmount() }} </span>
+    </mat-hint>
+
+    <mat-error
+        *ngIf="
+            inputControl.invalid && (inputControl.touched || inputControl.dirty)
+        "
     >
-        <input
-            [placeholder]="placeholder"
-            [required]="!allowZero"
-            [step]="step()"
-            formControlName="amount"
-            matInput
-            min="0"
-            type="number"
-            convertToBigNumber
-            (input)="convertFromDecimal()"
-            (focus)="onFocus()"
-            #amountInput
-        />
-
-        <mat-hint align="start">
-            <span *ngIf="form.get('decimals').value; else alternative">
-                The smallest allowed value is {{ step() }}
+        <span *ngIf="inputControl.errors['invalidAmount']">
+            The {{ errorPlaceholder }} should be a positive number
+        </span>
+        <span *ngIf="inputControl.errors['tooManyDecimals']">
+            <span>
+                This token network only supports up to
+                {{ decimals }} decimals
             </span>
-            <ng-template #alternative>
-                1 represents the {{ minimumAmount() }} of the token
-            </ng-template>
-        </mat-hint>
-
-        <mat-error *ngIf="form.invalid && (form.touched || form.dirty)">
-            <span *ngIf="form.get('amount').errors['invalidAmount']">
-                The {{ errorPlaceholder }} should be a positive number
-            </span>
-            <span *ngIf="form.get('amount').errors['tooManyDecimals']">
-                <span *ngIf="tokenAmountDecimals > 0; else integer_only">
-                    This token network only supports up to
-                    {{ decimals }} decimals
-                </span>
-
-                <ng-template #integer_only>
-                    1 represents then 1/{{ decimals }} of the token. Only
-                    integer values allowed.
-                </ng-template>
-            </span>
-            <span *ngIf="form.get('amount').errors['notANumber']">
-                The {{ errorPlaceholder }} should be a valid number
-            </span>
-        </mat-error>
-    </mat-form-field>
-
-    <mat-checkbox
-        (change)="onCheckChange($event)"
-        class="checkbox"
-        formControlName="decimals"
-        fxFlex="0 0 6.5em"
-        fxFlex.xs="0 0 auto"
-        fxFlexAlign="center"
-        fxFlexAlign.xs="start"
-        fxLayout="column"
-        fxLayout.xs="row"
-        matTooltip="Allows you to insert decimals, or integers representing the smallest denomination"
-        matTooltipPosition="above"
-    >
-        Decimals
-    </mat-checkbox>
-</div>
+        </span>
+        <span *ngIf="inputControl.errors['notANumber']">
+            The {{ errorPlaceholder }} should be a valid number
+        </span>
+    </mat-error>
+</mat-form-field>

@@ -49,7 +49,7 @@ export class ConnectionManagerDialogComponent implements OnInit {
         const payload: ConnectionManagerDialogPayload = {
             tokenAddress: this.data.tokenAddress,
             funds: this.form.value.amount,
-            decimals: this.tokenInput.tokenAmountDecimals,
+            decimals: this.tokenInput.decimals,
             join: this.data.join
         };
         this.dialogRef.close(payload);
