@@ -20,7 +20,6 @@ import { UserToken } from '../../models/usertoken';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { EllipsisPipe } from '../../pipes/ellipsis.pipe';
-import { KeysPipe } from '../../pipes/keys.pipe';
 import { SubsetPipe } from '../../pipes/subset.pipe';
 import { TokenPipe } from '../../pipes/token.pipe';
 import { ChannelPollingService } from '../../services/channel-polling.service';
@@ -125,7 +124,6 @@ describe('ChannelTableComponent', () => {
                 ChannelActionsComponent,
                 TokenPipe,
                 EllipsisPipe,
-                KeysPipe,
                 SubsetPipe,
                 DecimalPipe,
                 DisplayDecimalsPipe,
