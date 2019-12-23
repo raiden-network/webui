@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- [#227] Removes non-decimal input for token amounts.
 
 ## [0.11.0] - 2019-12-20
 ### Changed
@@ -10,7 +12,6 @@
 - [#141] Only shows the connected tokens in the payment dialog token field.
 - [#203] Clears token amount input field on focus.
 - [#207] Fixes header content to fit on lower resolutions.
-- Removes non-decimal input for token amounts.
 
 ### Added
 - [#16] Adds a confirmation dialog for payments which are retried by the user.
@@ -134,6 +135,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#227]: https://github.com/raiden-network/webui/issues/227
 [#218]: https://github.com/raiden-network/webui/issues/218
 [#212]: https://github.com/raiden-network/webui/issues/212
 [#208]: https://github.com/raiden-network/webui/issues/208
