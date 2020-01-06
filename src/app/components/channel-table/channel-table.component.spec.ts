@@ -33,7 +33,7 @@ import { StatusPipe } from '../../pipes/status.pipe';
 import Spy = jasmine.Spy;
 import { TestProviders } from '../../../testing/test-providers';
 import { SortFilterPageHeaderComponent } from '../page/sort-filter-page-header/sort-filter-page-header.component';
-import { ChannelActionsComponent } from '../channel-actions/channel-actions.component';
+import { ChannelActionsComponent } from '../channel/channel-actions/channel-actions.component';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { PageItemComponent } from '../page/page-item/page-item.component';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
@@ -41,6 +41,7 @@ import { clickElement } from '../../../testing/interaction-helper';
 import BigNumber from 'bignumber.js';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { ChannelSorting } from './channel.sorting.enum';
+import { ChannelComponent } from '../channel/channel.component';
 
 describe('ChannelTableComponent', () => {
     let component: ChannelTableComponent;
@@ -121,6 +122,7 @@ describe('ChannelTableComponent', () => {
                 PageBaseComponent,
                 PageItemComponent,
                 ChannelActionsComponent,
+                ChannelComponent,
                 TokenPipe,
                 EllipsisPipe,
                 DecimalPipe,

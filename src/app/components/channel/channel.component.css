@@ -1,0 +1,24 @@
+.channel-id {
+    text-align: center;
+    font-size: 14px;
+}
+
+.channel-status {
+    font-size: 13px;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.space {
+    margin-left: 6px;
+}
+
+.light {
+    font-weight: 300;
+}
+
+.gray {
+    color: #424242 !important;
+}

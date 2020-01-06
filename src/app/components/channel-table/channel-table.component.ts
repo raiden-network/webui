@@ -6,20 +6,10 @@ import { flatMap, map } from 'rxjs/operators';
 import { Channel } from '../../models/channel';
 import { SortingData } from '../../models/sorting.data';
 import { ChannelPollingService } from '../../services/channel-polling.service';
-import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import { amountToDecimal } from '../../utils/amount.converter';
 import { StringUtils } from '../../utils/string.utils';
-import {
-    ConfirmationDialogComponent,
-    ConfirmationDialogPayload
-} from '../confirmation-dialog/confirmation-dialog.component';
-import {
-    DepositWithdrawDialogComponent,
-    DepositWithdrawDialogPayload,
-    DepositWithdrawDialogResult
-} from '../deposit-withdraw-dialog/deposit-withdraw-dialog.component';
 import {
     OpenDialogComponent,
     OpenDialogPayload,
@@ -30,10 +20,7 @@ import {
     PaymentDialogPayload
 } from '../payment-dialog/payment-dialog.component';
 import { ChannelSorting } from './channel.sorting.enum';
-import { AddressBookService } from '../../services/address-book.service';
-import { Addresses } from '../../models/address';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
-import { DepositMode } from '../../utils/helpers';
 import BigNumber from 'bignumber.js';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { Animations } from '../../animations/animations';
@@ -84,15 +71,12 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
     private currentPage = 0;
     private channels: Channel[];
     private subscription: Subscription;
-    private _addresses: Addresses;
 
     constructor(
         public dialog: MatDialog,
         private raidenConfig: RaidenConfig,
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService,
-        private identiconCacheService: IdenticonCacheService,
-        private addressBookService: AddressBookService,
         private pendingTransferPollingService: PendingTransferPollingService
     ) {}
 
@@ -123,7 +107,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
             });
 
         this.refresh();
-        this._addresses = this.addressBookService.get();
     }
 
     ngOnDestroy() {
@@ -157,19 +140,10 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         return `${item.token_address}_${item.partner_address}`;
     }
 
-    // noinspection JSMethodCanBeStatic
-    identicon(channel: Channel): string {
-        return this.identiconCacheService.getIdenticon(channel.partner_address);
-    }
-
-    addressLabel(address: string): string | undefined {
-        return this._addresses[address];
-    }
-
-    public onPay(channel: Channel = null) {
+    public onPay() {
         const payload: PaymentDialogPayload = {
-            tokenAddress: channel ? channel.token_address : '',
-            targetAddress: channel ? channel.partner_address : '',
+            tokenAddress: '',
+            targetAddress: '',
             amount: new BigNumber(0),
             paymentIdentifier: null
         };
@@ -198,66 +172,6 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                 this.refresh();
                 this.pendingTransferPollingService.refresh();
             });
-    }
-
-    public onDepositDialog(channel: Channel, depositMode: DepositMode) {
-        const payload: DepositWithdrawDialogPayload = {
-            decimals: channel.userToken.decimals,
-            depositMode: depositMode
-        };
-
-        const dialog = this.dialog.open(DepositWithdrawDialogComponent, {
-            data: payload
-        });
-
-        dialog
-            .afterClosed()
-            .pipe(
-                flatMap((deposit?: DepositWithdrawDialogResult) => {
-                    if (!deposit) {
-                        return EMPTY;
-                    }
-
-                    return this.raidenService.modifyDeposit(
-                        channel.token_address,
-                        channel.partner_address,
-                        deposit.tokenAmount,
-                        depositMode
-                    );
-                })
-            )
-            .subscribe(() => this.refresh());
-    }
-
-    public onClose(channel: Channel) {
-        const payload: ConfirmationDialogPayload = {
-            title: 'Close Channel',
-            message: `Are you sure you want to close channel ${
-                channel.channel_identifier
-            } with <strong>${channel.partner_address}</strong> on <strong>${
-                channel.userToken.name
-            }<strong/> (${channel.userToken.address})?`
-        };
-
-        const dialog = this.dialog.open(ConfirmationDialogComponent, {
-            data: payload
-        });
-
-        dialog
-            .afterClosed()
-            .pipe(
-                flatMap(result => {
-                    if (!result) {
-                        return EMPTY;
-                    }
-
-                    return this.raidenService.closeChannel(
-                        channel.token_address,
-                        channel.partner_address
-                    );
-                })
-            )
-            .subscribe(() => this.refresh());
     }
 
     public onOpenChannel() {

@@ -40,7 +40,7 @@ import { StatusPipe } from './pipes/status.pipe';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { ErrorComponent } from './components/error/error.component';
 import { TokenNetworkActionsComponent } from './components/token-network-actions/token-network-actions.component';
-import { ChannelActionsComponent } from './components/channel-actions/channel-actions.component';
+import { ChannelActionsComponent } from './components/channel/channel-actions/channel-actions.component';
 import { FilterDialogComponent } from './components/page/dialogs/filter-dialog/filter-dialog.component';
 import { SortDialogComponent } from './components/page/dialogs/sort-dialog/sort-dialog.component';
 import {
@@ -68,6 +68,7 @@ import { NotificationPanelComponent } from './components/notification/notificati
 import { NotificationItemComponent } from './components/notification/notification-item/notification-item.component';
 import { NotificationService } from './services/notification.service';
 import { RaidenToastComponent } from './components/notification/raiden-toast/raiden-toast.component';
+import { ChannelComponent } from './components/channel/channel.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -128,7 +129,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         BigNumberConversionDirective,
         NotificationPanelComponent,
         NotificationItemComponent,
-        RaidenToastComponent
+        RaidenToastComponent,
+        ChannelComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
