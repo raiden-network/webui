@@ -46,6 +46,7 @@ describe('AppComponent', () => {
         paymentInitiated$: Observable<void>;
         globalRetry$: Observable<void>;
         getChannels: () => Observable<any>;
+        getPendingChannels: () => Observable<any>;
         attemptRpcConnection: () => void;
         attemptApiConnection: () => void;
     };
@@ -64,6 +65,7 @@ describe('AppComponent', () => {
             paymentInitiated$: EMPTY,
             globalRetry$: EMPTY,
             getChannels: () => EMPTY,
+            getPendingChannels: () => EMPTY,
             attemptRpcConnection: () => {},
             attemptApiConnection: () => {}
         };

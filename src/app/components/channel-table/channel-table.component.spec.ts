@@ -264,17 +264,4 @@ describe('ChannelTableComponent', () => {
         fixture.destroy();
         flush();
     }));
-
-    it('should contain pending channels', () => {
-        channelsSpy.and.returnValue(of([channel1, channel3]));
-        spyOn(raidenService, 'getPendingChannels').and.returnValue(
-            of([channel2, channel3])
-        );
-        fixture.detectChanges();
-        expect(component.visibleChannels).toEqual([
-            channel1,
-            channel3,
-            channel2
-        ]);
-    });
 });
