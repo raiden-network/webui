@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
-import { BehaviorSubject, EMPTY, Observable, Subscription } from 'rxjs';
-import { flatMap, switchMap, tap, finalize } from 'rxjs/operators';
+import { EMPTY, Observable, Subscription } from 'rxjs';
+import { flatMap, finalize } from 'rxjs/operators';
 import { SortingData } from '../../models/sorting.data';
 import { UserToken } from '../../models/usertoken';
-import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import {
     amountToDecimal,
@@ -30,9 +29,9 @@ import { TokenSorting } from './token.sorting.enum';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { TokenNetworkActionsComponent } from '../token-network-actions/token-network-actions.component';
 import { Network } from '../../utils/network-info';
-import { backoff } from '../../shared/backoff.operator';
 import BigNumber from 'bignumber.js';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
+import { TokenPollingService } from '../../services/token-polling.service';
 
 @Component({
     selector: 'app-token-network',
@@ -43,7 +42,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     @ViewChild(PageBaseComponent, { static: true })
     page: PageBaseComponent;
 
-    public refreshing = true;
+    refreshing$: Observable<boolean>;
 
     currentPage = 0;
     pageSize = 10;
@@ -78,17 +77,17 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
             label: 'Connected'
         }
     ];
-    private tokensSubject: BehaviorSubject<void> = new BehaviorSubject(null);
 
     private subscription: Subscription;
 
     constructor(
         public dialog: MatDialog,
         private raidenService: RaidenService,
-        private raidenConfig: RaidenConfig,
-        private pendingTransferPollingService: PendingTransferPollingService
+        private pendingTransferPollingService: PendingTransferPollingService,
+        private tokenPollingService: TokenPollingService
     ) {
         this.network$ = raidenService.network$;
+        this.refreshing$ = this.tokenPollingService.refreshing();
     }
 
     public get production(): boolean {
@@ -120,34 +119,13 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        let timeout;
-        this.subscription = this.tokensSubject
-            .pipe(
-                tap(() => {
-                    clearTimeout(timeout);
-                    this.refreshing = true;
-                }),
-                switchMap(() => this.raidenService.getTokens(true)),
-                tap(
-                    () => {
-                        timeout = setTimeout(
-                            () => this.refreshTokens(),
-                            this.raidenConfig.config.poll_interval
-                        );
-                        this.refreshing = false;
-                    },
-                    () => (this.refreshing = false)
-                ),
-                backoff(
-                    this.raidenConfig.config.error_poll_interval,
-                    this.raidenService.globalRetry$
-                )
-            )
-            .subscribe((tokens: Array<UserToken>) => {
+        this.subscription = this.tokenPollingService.tokens$.subscribe(
+            (tokens: Array<UserToken>) => {
                 this.tokens = tokens;
                 this.totalTokens = tokens.length;
                 this.applyFilters();
-            });
+            }
+        );
     }
 
     ngOnDestroy() {
@@ -349,7 +327,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     }
 
     private refreshTokens() {
-        this.tokensSubject.next(null);
+        this.tokenPollingService.refresh();
     }
 
     private searchFilter(token: UserToken): boolean {

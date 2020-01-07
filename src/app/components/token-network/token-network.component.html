@@ -1,7 +1,7 @@
 <app-page-base
     (pageChanged)="onPageEvent($event)"
     [pageSize]="pageSize"
-    [refreshing]="refreshing"
+    [refreshing]="refreshing$ | async"
     [totalElements]="totalTokens"
     noItemsMessage="No tokens found!"
 >

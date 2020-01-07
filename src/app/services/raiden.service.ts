@@ -184,7 +184,9 @@ export class RaidenService {
         return tokens$.pipe(flatMap(() => fetchChannels$));
     }
 
-    public getTokens(refresh: boolean = false): Observable<Array<UserToken>> {
+    public getTokens(
+        refreshConnections: boolean = false
+    ): Observable<Array<UserToken>> {
         const tokens$: Observable<{
             [address: string]: UserToken;
         }> = zip(
@@ -201,7 +203,7 @@ export class RaidenService {
                 )
             )
         );
-        const connections$: Observable<Connections | null> = refresh
+        const connections$: Observable<Connections | null> = refreshConnections
             ? this.http.get<Connections>(`${this.raidenConfig.api}/connections`)
             : of(null);
 
