@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
 import { Channel } from '../models/channel';
 import { UserToken } from '../models/usertoken';
 
@@ -261,4 +261,14 @@ describe('ChannelPollingService', () => {
         subscription.unsubscribe();
         flush();
     }));
+
+    it('should respond with pending channels', () => {
+        raidenServiceSpy.and.returnValue(of([channel1Updated]));
+        spyOn(raidenService, 'getPendingChannels').and.returnValue(
+            of([channel1, channel2])
+        );
+        pollingService.channels().subscribe((channels: Channel[]) => {
+            expect(channels).toEqual([channel1Updated, channel2]);
+        });
+    });
 });

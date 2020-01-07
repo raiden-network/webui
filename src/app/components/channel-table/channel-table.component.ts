@@ -81,25 +81,8 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.subscription = combineLatest([
-            this.channelPollingService.channels(),
-            this.raidenService.getPendingChannels()
-        ])
-            .pipe(
-                map(([channels, pendingChannels]) => {
-                    const uniquePendingChannels = pendingChannels.filter(
-                        pendingChannel =>
-                            !channels.find(
-                                channel =>
-                                    channel.partner_address ===
-                                        pendingChannel.partner_address &&
-                                    channel.token_address ===
-                                        pendingChannel.token_address
-                            )
-                    );
-                    return channels.concat(uniquePendingChannels);
-                })
-            )
+        this.subscription = this.channelPollingService
+            .channels()
             .subscribe((channels: Channel[]) => {
                 this.channels = channels;
                 this.totalChannels = channels.length;

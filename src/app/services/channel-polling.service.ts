@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { scan, share, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { scan, switchMap, tap, map, shareReplay } from 'rxjs/operators';
 import { Channel } from '../models/channel';
 import { amountToDecimal } from '../utils/amount.converter';
 import { RaidenConfig } from './raiden.config';
@@ -49,7 +49,7 @@ export class ChannelPollingService {
                 this.raidenConfig.config.error_poll_interval,
                 this.raidenService.globalRetry$
             ),
-            share()
+            shareReplay({ refCount: true, bufferSize: 1 })
         );
     }
 
@@ -58,7 +58,24 @@ export class ChannelPollingService {
     }
 
     public channels(): Observable<Channel[]> {
-        return this.channels$;
+        return combineLatest([
+            this.channels$,
+            this.raidenService.getPendingChannels()
+        ]).pipe(
+            map(([channels, pendingChannels]) => {
+                const uniquePendingChannels = pendingChannels.filter(
+                    pendingChannel =>
+                        !channels.find(
+                            channel =>
+                                channel.partner_address ===
+                                    pendingChannel.partner_address &&
+                                channel.token_address ===
+                                    pendingChannel.token_address
+                        )
+                );
+                return channels.concat(uniquePendingChannels);
+            })
+        );
     }
 
     public refresh() {
