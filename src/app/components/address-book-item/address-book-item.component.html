@@ -64,7 +64,7 @@
             <button
                 id="edit-address"
                 mat-icon-button
-                color="primary"
+                color="accent"
                 [disabled]="
                     editMode && form.touched && form.dirty && !form.valid
                 "
@@ -79,7 +79,7 @@
             <button
                 id="delete-address"
                 mat-icon-button
-                color="primary"
+                color="accent"
                 (click)="showConfirmation()"
             >
                 <mat-icon aria-label="Delete icon">delete</mat-icon>
@@ -89,7 +89,7 @@
             <button
                 id="cancel-edit"
                 mat-icon-button
-                color="primary"
+                color="accent"
                 (click)="cancel()"
             >
                 <mat-icon aria-label="Cancel icon">cancel</mat-icon>

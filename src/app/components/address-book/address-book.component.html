@@ -57,7 +57,7 @@
                     <button
                         id="addresses-save"
                         mat-mini-fab
-                        color="primary"
+                        color="accent"
                         [disabled]="!form.valid"
                         (click)="save()"
                         matTooltip="Adds a new address to the address book"
@@ -72,7 +72,7 @@
                         (click)="openAddDialog()"
                         id="open-add-dialog"
                         mat-icon-button
-                        color="primary"
+                        color="accent"
                         matTooltip="Opens the dialog to add a new address"
                     >
                         <mat-icon aria-label="Import icon">
@@ -84,7 +84,7 @@
                     <button
                         id="addresses-import"
                         mat-icon-button
-                        color="primary"
+                        color="accent"
                         (click)="uploader.showDropArea = !uploader.showDropArea"
                         matTooltip="Opens the drop area where you can drag the file to import"
                     >
@@ -98,7 +98,7 @@
                     <button
                         id="addresses-export"
                         mat-icon-button
-                        color="primary"
+                        color="accent"
                         (click)="saveAddresses()"
                         [disabled]="totalAddresses === 0"
                         matTooltip="Downloads the address book as a JSON file"
@@ -113,7 +113,7 @@
                     <button
                         id="addresses-delete"
                         mat-icon-button
-                        color="primary"
+                        color="accent"
                         (click)="confirmDelete()"
                         matTooltip="Deletes all the addresses in the Address book"
                     >
