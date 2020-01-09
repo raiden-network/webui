@@ -8,7 +8,7 @@ export class DisplayDecimalsPipe implements PipeTransform {
     transform(
         value?: string,
         maxDecimals: number = 5,
-        shortVersion: boolean = false
+        shortVersion: boolean = true
     ): string {
         if (!value) {
             return '';
@@ -24,7 +24,7 @@ export class DisplayDecimalsPipe implements PipeTransform {
                 const suffix =
                     maxDecimals !== 0 && !shortVersion ? '[...]' : '';
                 return (
-                    '~' +
+                    (!shortVersion ? '~' : '') +
                     bn.toFixed(maxDecimals, BigNumber.ROUND_FLOOR) +
                     suffix
                 );
