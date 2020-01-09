@@ -5,20 +5,26 @@ import {
     OnInit,
     ViewChild
 } from '@angular/core';
-import { default as makeBlockie } from 'ethereum-blockies-base64';
 import { Observable, Subscription, zip } from 'rxjs';
-import { map, tap, debounceTime } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
 import { MediaObserver } from '@angular/flex-layout';
 import { Network } from './utils/network-info';
 import { NotificationService } from './services/notification.service';
+import { TokenPollingService } from './services/token-polling.service';
+import { Channel } from './models/channel';
+import { UserToken } from './models/usertoken';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Animations } from './animations/animations';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+    styleUrls: ['./app.component.scss'],
+    animations: Animations.easeInOut
 })
 export class AppComponent implements OnInit, OnDestroy {
     @HostBinding('@.disabled')
@@ -26,19 +32,14 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild('menu_sidenav', { static: true })
     public menuSidenav: MatSidenav;
 
-    public title = 'Raiden';
     public raidenAddress: string;
+    public totalChannels = 0;
+    public joinedNetworks = 0;
     public readonly balance$: Observable<string>;
     public readonly network$: Observable<Network>;
-    public readonly production: boolean;
     public readonly faucetLink$: Observable<string>;
-    public notificationBlink = 'none';
-
-    private _numberOfNotifications = 0;
-
-    get pendingRequests(): string {
-        return this._numberOfNotifications.toString();
-    }
+    public showAddress = false;
+    public showNetworkInfo = false;
 
     private subscription: Subscription;
 
@@ -46,17 +47,44 @@ export class AppComponent implements OnInit, OnDestroy {
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService,
         private mediaObserver: MediaObserver,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private tokenPollingService: TokenPollingService,
+        private matIconRegistry: MatIconRegistry,
+        private domSanitizer: DomSanitizer
     ) {
         this.balance$ = raidenService.balance$;
         this.network$ = raidenService.network$;
-        this.production = raidenService.production;
         this.faucetLink$ = zip(
             raidenService.network$,
             raidenService.raidenAddress$
         ).pipe(
             map(([network, raidenAddress]) =>
                 network.faucet.replace('${ADDRESS}', raidenAddress)
+            )
+        );
+
+        this.matIconRegistry.addSvgIcon(
+            'copy',
+            this.domSanitizer.bypassSecurityTrustResourceUrl(
+                'assets/icons/copy.svg'
+            )
+        );
+        this.matIconRegistry.addSvgIcon(
+            'qr_code',
+            this.domSanitizer.bypassSecurityTrustResourceUrl(
+                'assets/icons/qr.svg'
+            )
+        );
+        this.matIconRegistry.addSvgIcon(
+            'notification',
+            this.domSanitizer.bypassSecurityTrustResourceUrl(
+                'assets/icons/notification.svg'
+            )
+        );
+        this.matIconRegistry.addSvgIcon(
+            'search',
+            this.domSanitizer.bypassSecurityTrustResourceUrl(
+                'assets/icons/search.svg'
             )
         );
     }
@@ -74,52 +102,33 @@ export class AppComponent implements OnInit, OnDestroy {
             address => (this.raidenAddress = address)
         );
 
-        const numberOfNotificationsSubscription = this.notificationService.numberOfNotifications$.subscribe(
-            numberOfNotifications => {
-                this._numberOfNotifications = numberOfNotifications;
+        const channelsSubscription = this.channelPollingService
+            .channels()
+            .subscribe((channels: Channel[]) => {
+                this.totalChannels = channels.length;
+            });
+        this.subscription.add(channelsSubscription);
+
+        const tokenNetworksSubscription = this.tokenPollingService.tokens$.subscribe(
+            (tokens: UserToken[]) => {
+                const connectedTokens = tokens.filter(
+                    (token: UserToken) => !!token.connected
+                );
+                this.joinedNetworks = connectedTokens.length;
             }
         );
-        this.subscription.add(numberOfNotificationsSubscription);
+        this.subscription.add(tokenNetworksSubscription);
 
-        const newNotificationSubscription = this.notificationService.newNotification$
-            .pipe(
-                tap(() => {
-                    this.notificationBlink = 'rgba(255, 255, 255, 0.5)';
-                }),
-                debounceTime(150)
-            )
-            .subscribe(() => {
-                this.notificationBlink = 'black';
-            });
-        this.subscription.add(newNotificationSubscription);
-
-        const pollingSubscription = this.channelPollingService
-            .channels()
-            .subscribe();
-        this.subscription.add(pollingSubscription);
+        this.showNetworkInfo = true;
+        setTimeout(() => {
+            this.hideNetworkInfo();
+        }, 5000);
 
         this.disableAnimationsOnAndroid();
     }
 
-    private disableAnimationsOnAndroid() {
-        const userAgent = navigator.userAgent.toLowerCase();
-        const isAndroid = userAgent.indexOf('android') > -1;
-        if (isAndroid) {
-            this.animationsDisabled = true;
-        }
-    }
-
     ngOnDestroy() {
         this.subscription.unsubscribe();
-    }
-
-    // noinspection JSMethodCanBeStatic
-    identicon(address: string): string {
-        if (address) {
-            return makeBlockie(address);
-        } else {
-            return '';
-        }
     }
 
     hasError(): boolean {
@@ -162,6 +171,18 @@ export class AppComponent implements OnInit, OnDestroy {
     closeMenu() {
         if (this.isMobile()) {
             this.menuSidenav.close();
+        }
+    }
+
+    hideNetworkInfo() {
+        this.showNetworkInfo = false;
+    }
+
+    private disableAnimationsOnAndroid() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const isAndroid = userAgent.indexOf('android') > -1;
+        if (isAndroid) {
+            this.animationsDisabled = true;
         }
     }
 }

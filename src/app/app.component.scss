@@ -1,118 +1,120 @@
 @import '../sass/mixins';
-.rn {
-    color: white !important;
-}
 
-a.active {
-    color: #1f86e8 !important;
-}
-
-.toolbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-}
-
-.mat-toolbar.mat-primary {
-    background-color: black !important;
-}
-
-$sidenav-top: 64px;
-.sidenav-container {
+.mat-sidenav-container {
     position: absolute;
-    top: $sidenav-top;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
 }
 
+.menu {
+    background-color: #191919;
+}
+
+.content {
+    height: calc(100% - 234px);
+}
+
 mat-sidenav-content {
     height: 100%;
-    padding-top: 20px;
+    padding-top: 16px;
     @include respond-to(handhelds) {
         padding-top: 6px;
     }
 }
 
-.toolbar-spacer {
-    flex: 1 1 auto;
+.mat-toolbar {
+    background-color: #191919;
+    max-width: 60%;
+    margin: auto;
 }
 
-.favicon-mobile {
-    height: 25px !important;
-}
-
-.favicon {
-    height: 40px;
-}
-
-.account-info {
-    .balance-info {
-        line-height: 100%;
-    }
-
-    .balance {
-        line-height: 20px;
-        font-weight: 300;
-        font-size: 14px;
-    }
-}
-
-.account {
-    font-size: 16px;
-    line-height: 22px;
-}
-
-.account-label {
-    padding-right: 64px;
-}
-
-.info-container {
-    @include respond-to('medium-screens') {
-        margin-left: 25px;
-    }
-
-    @include respond-to('wide-screens') {
-        margin-left: 25px;
-    }
-
-    .network-info {
-        font-size: 14px;
-        line-height: 16px;
-        font-weight: 400;
-
-        .environment {
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.76);
-        }
-    }
-}
-
-.header-content {
-    height: 100%;
-}
-
-.faucet-button {
+.header {
+    height: 53px;
+    color: #b8b8b8;
+    font-size: 41px;
+    font-weight: 300;
     padding: 0;
-    line-height: 100%;
-    height: 100%;
+    margin-bottom: 16px;
 }
 
-.notification-button {
-    padding: 0;
-    border-radius: 0;
-    height: 100%;
+.header--secondary {
+    height: 66px !important;
+    border-top: 1px solid rgba(151, 151, 151, 0.11);
 }
 
-.notification-button-container {
-    display: block;
-    margin: 16px;
+.header--info {
+    margin-bottom: 30px !important;
 }
 
-.notification-button-container .identicon {
-    width: 32px;
-    margin: 0;
+.header__logo {
+    height: 44px;
+}
+
+.header__logo-mobile {
+    height: 25px;
+}
+
+.header__number {
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.header__label {
+    text-transform: uppercase;
+    letter-spacing: 0.91px;
+    font-size: 11px;
+    opacity: 0.5;
+    line-height: 13px;
+    font-weight: 400;
+}
+
+.header__account-button {
+    height: 38px;
+    width: 118px;
+}
+
+.header__address {
+    font-size: 13px;
+    letter-spacing: 1.07px;
+    line-height: 15px;
+}
+
+.header__icon {
+    height: 20px;
+    width: 20px;
+}
+
+.header__link {
+    outline: none;
+}
+
+.search {
+    border-radius: 25px;
+    background-color: #393939;
+}
+
+.search__icon {
+    margin-left: 18px;
+    height: 17px;
+    width: 17px;
+    line-height: 17px;
+    font-size: 17px;
+}
+
+.search__input {
+    width: 130px;
+    height: 32px;
+    padding: 0 18px;
+    background: none;
+    border: none;
+    box-shadow: none;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    font-size: 13px;
+    line-height: 15px;
+    color: #ffffff;
+    opacity: 0.5;
 }
 
 .notification-sidenav {
@@ -123,4 +125,20 @@ mat-sidenav-content {
 .notification-sidenav-mobile {
     width: 100%;
     background-color: rgba(250, 250, 250, 1);
+}
+
+.network-info {
+    width: 100%;
+    height: 100%;
+    border-radius: 25px;
+    background-color: #ffffff;
+    color: #000000;
+    font-size: 16px;
+    position: relative;
+}
+
+.network-info__close {
+    position: absolute;
+    right: 0;
+    margin-right: 20px;
 }

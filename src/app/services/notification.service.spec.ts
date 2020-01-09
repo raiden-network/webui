@@ -42,10 +42,6 @@ describe('NotificationService', () => {
         [NotificationService],
         fakeAsync((service: NotificationService) => {
             const toastrSpy = spyOn(toastrService, 'success').and.callThrough();
-            let newNotificationEmitted = false;
-            service.newNotification$.subscribe(() => {
-                newNotificationEmitted = true;
-            });
 
             service.addSuccessNotification(testMessage);
             tick(50);
@@ -62,7 +58,6 @@ describe('NotificationService', () => {
                 testMessage.description,
                 testMessage.title
             );
-            expect(newNotificationEmitted).toBe(true);
             flush();
         })
     ));
@@ -71,11 +66,6 @@ describe('NotificationService', () => {
         [NotificationService],
         fakeAsync((service: NotificationService) => {
             const toastrSpy = spyOn(toastrService, 'info').and.callThrough();
-            let newNotificationEmitted = false;
-            service.newNotification$.subscribe(() => {
-                newNotificationEmitted = true;
-            });
-
             service.addInfoNotification(testMessage);
             tick(50);
 
@@ -91,7 +81,6 @@ describe('NotificationService', () => {
                 testMessage.description,
                 testMessage.title
             );
-            expect(newNotificationEmitted).toBe(true);
             flush();
         })
     ));
@@ -100,10 +89,6 @@ describe('NotificationService', () => {
         [NotificationService],
         fakeAsync((service: NotificationService) => {
             const toastrSpy = spyOn(toastrService, 'error').and.callThrough();
-            let newNotificationEmitted = false;
-            service.newNotification$.subscribe(() => {
-                newNotificationEmitted = true;
-            });
 
             service.addErrorNotification(testMessage);
             tick(50);
@@ -120,7 +105,6 @@ describe('NotificationService', () => {
                 testMessage.description,
                 testMessage.title
             );
-            expect(newNotificationEmitted).toBe(true);
             flush();
         })
     ));
@@ -223,30 +207,6 @@ describe('NotificationService', () => {
             service.notifications$.subscribe(notifications =>
                 expect(notifications).toEqual([])
             );
-        }
-    ));
-
-    it('should emit the number of notifications', inject(
-        [NotificationService],
-        (service: NotificationService) => {
-            let expectatedValue = 0;
-            service.numberOfNotifications$.subscribe(numberOfNotifications =>
-                expect(numberOfNotifications).toBe(expectatedValue)
-            );
-
-            expectatedValue++;
-            service.addPendingAction(testMessage);
-
-            expectatedValue++;
-            service.addSuccessNotification(testMessage);
-            expectatedValue++;
-            service.addInfoNotification(testMessage2);
-
-            expectatedValue--;
-            service.removePendingAction(0);
-
-            expectatedValue = 0;
-            service.clearNotifications();
         }
     ));
 

@@ -1,12 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    fakeAsync,
-    tick,
-    flush
-} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -131,11 +124,6 @@ describe('AppComponent', () => {
         fixture.destroy();
     }));
 
-    it(`should have as title 'Raiden!'`, async(() => {
-        expect(app.title).toEqual('Raiden');
-        fixture.destroy();
-    }));
-
     it('should have the menu always open if it is not mobile', function() {
         isActive.and.returnValue(false);
         fixture.detectChanges();
@@ -165,12 +153,16 @@ describe('AppComponent', () => {
     });
 
     it('should have a faucet button when network has a faucet', function() {
+        clickElement(fixture.debugElement, '.header__account-button');
+        fixture.detectChanges();
         expect(
-            fixture.debugElement.query(By.css('.faucet-button'))
+            fixture.debugElement.query(By.css('.header__faucet'))
         ).toBeTruthy();
     });
 
     it('should not have a faucet button when network does not have a faucet', function() {
+        clickElement(fixture.debugElement, '.header__account-button');
+        fixture.detectChanges();
         raidenService.network$.next({
             name: 'Test',
             shortName: 'tst',
@@ -179,34 +171,15 @@ describe('AppComponent', () => {
         });
         fixture.detectChanges();
         expect(
-            fixture.debugElement.query(By.css('.faucet-button'))
+            fixture.debugElement.query(By.css('.header__faucet'))
         ).toBeFalsy();
     });
 
     it('should insert the address correctly into the href attribute of the faucet button', function() {
+        clickElement(fixture.debugElement, '.header__account-button');
+        fixture.detectChanges();
         const href = fixture.debugElement
-            .query(By.css('.faucet-button'))
-            .nativeElement.getAttribute('href');
-        expect(href).toBe(
-            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
-        );
-    });
-
-    it('should update the color of the notification panel button for new notifications', fakeAsync(() => {
-        notificationService.addSuccessNotification({
-            title: 'Test',
-            description: 'Testing'
-        });
-        tick(50);
-        expect(app.notificationBlink).toBe('rgba(255, 255, 255, 0.5)');
-        tick(150);
-        expect(app.notificationBlink).toBe('black');
-        flush();
-    }));
-
-    it('should insert the address correctly into the href attribute of the faucet button', function() {
-        const href = fixture.debugElement
-            .query(By.css('.faucet-button'))
+            .query(By.css('.header__faucet'))
             .nativeElement.getAttribute('href');
         expect(href).toBe(
             'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'

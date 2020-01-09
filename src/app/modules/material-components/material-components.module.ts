@@ -44,7 +44,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatRippleModule,
         MatSortModule,
         MatSidenavModule,
-        MatBadgeModule,
         MatCheckboxModule,
         MatExpansionModule
     ],

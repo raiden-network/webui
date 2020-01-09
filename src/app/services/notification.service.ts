@@ -13,8 +13,6 @@ export interface ApiErrorResponse extends HttpErrorResponse {
     providedIn: 'root'
 })
 export class NotificationService {
-    private numberOfNotificationsSubject = new BehaviorSubject<number>(0);
-    private newNotificationSubject = new Subject<void>();
     private notificationsSubject = new BehaviorSubject<NotificationMessage[]>(
         []
     );
@@ -22,14 +20,6 @@ export class NotificationService {
         []
     );
 
-    public readonly numberOfNotifications$: Observable<
-        number
-    > = this.numberOfNotificationsSubject
-        .asObservable()
-        .pipe(scan((acc, value) => Math.max(acc + value, 0), 0));
-    public readonly newNotification$: Observable<
-        void
-    > = this.newNotificationSubject.asObservable();
     public readonly notifications$: Observable<
         NotificationMessage[]
     > = this.notificationsSubject.asObservable();
@@ -74,37 +64,26 @@ export class NotificationService {
         ];
 
         this.pendingActionsSubject.next(this.pendingActions);
-        this.numberOfNotificationsSubject.next(+1);
         return identifier;
     }
 
     public clearNotifications() {
-        this.numberOfNotificationsSubject.next(-this.notifications.length);
-
         this.notifications = [];
 
         this.notificationsSubject.next(this.notifications);
     }
 
     public removeNotification(identifier: number) {
-        this.notifications = this.notifications.filter(notification => {
-            if (notification.identifier === identifier) {
-                this.numberOfNotificationsSubject.next(-1);
-                return false;
-            }
-            return true;
-        });
+        this.notifications = this.notifications.filter(
+            notification => notification.identifier !== identifier
+        );
         this.notificationsSubject.next(this.notifications);
     }
 
     public removePendingAction(identifier: number) {
-        this.pendingActions = this.pendingActions.filter(pendingAction => {
-            if (pendingAction.identifier === identifier) {
-                this.numberOfNotificationsSubject.next(-1);
-                return false;
-            }
-            return true;
-        });
+        this.pendingActions = this.pendingActions.filter(
+            pendingAction => pendingAction.identifier !== identifier
+        );
         this.pendingActionsSubject.next(this.pendingActions);
     }
 
@@ -113,27 +92,15 @@ export class NotificationService {
     }
 
     private success(message: UiMessage) {
-        this.toastrService
-            .success(message.description, message.title)
-            .onHidden.subscribe(() => {
-                this.newNotificationSubject.next(null);
-            });
+        this.toastrService.success(message.description, message.title);
     }
 
     private error(message: UiMessage) {
-        this.toastrService
-            .error(message.description, message.title)
-            .onHidden.subscribe(() => {
-                this.newNotificationSubject.next(null);
-            });
+        this.toastrService.error(message.description, message.title);
     }
 
     private info(message: UiMessage) {
-        this.toastrService
-            .info(message.description, message.title)
-            .onHidden.subscribe(() => {
-                this.newNotificationSubject.next(null);
-            });
+        this.toastrService.info(message.description, message.title);
     }
 
     private addNotification(message: UiMessage): number {
@@ -149,7 +116,6 @@ export class NotificationService {
         ];
 
         this.notificationsSubject.next(this.notifications);
-        this.numberOfNotificationsSubject.next(+1);
         return identifier;
     }
 
