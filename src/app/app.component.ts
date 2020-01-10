@@ -29,7 +29,8 @@ const icon_names = [
     'channel',
     'go',
     'left',
-    'right'
+    'right',
+    'faucet'
 ];
 
 @Component({
