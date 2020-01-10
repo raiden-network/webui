@@ -63,30 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
             )
         );
 
-        this.matIconRegistry.addSvgIcon(
-            'copy',
-            this.domSanitizer.bypassSecurityTrustResourceUrl(
-                'assets/icons/copy.svg'
-            )
-        );
-        this.matIconRegistry.addSvgIcon(
-            'qr_code',
-            this.domSanitizer.bypassSecurityTrustResourceUrl(
-                'assets/icons/qr.svg'
-            )
-        );
-        this.matIconRegistry.addSvgIcon(
-            'notification',
-            this.domSanitizer.bypassSecurityTrustResourceUrl(
-                'assets/icons/notification.svg'
-            )
-        );
-        this.matIconRegistry.addSvgIcon(
-            'search',
-            this.domSanitizer.bypassSecurityTrustResourceUrl(
-                'assets/icons/search.svg'
-            )
-        );
+        this.registerGlobalIcons();
     }
 
     isMobile(): boolean {
@@ -109,7 +86,7 @@ export class AppComponent implements OnInit, OnDestroy {
             });
         this.subscription.add(channelsSubscription);
 
-        const tokenNetworksSubscription = this.tokenPollingService.tokens$.subscribe(
+        const tokensSubscription = this.tokenPollingService.tokens$.subscribe(
             (tokens: UserToken[]) => {
                 const connectedTokens = tokens.filter(
                     (token: UserToken) => !!token.connected
@@ -117,12 +94,17 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.joinedNetworks = connectedTokens.length;
             }
         );
-        this.subscription.add(tokenNetworksSubscription);
+        this.subscription.add(tokensSubscription);
 
-        this.showNetworkInfo = true;
-        setTimeout(() => {
-            this.hideNetworkInfo();
-        }, 5000);
+        const networkSubscription = this.network$.subscribe(network => {
+            if (network.chainId !== 1) {
+                this.showNetworkInfo = true;
+                setTimeout(() => {
+                    this.hideNetworkInfo();
+                }, 5000);
+            }
+        });
+        this.subscription.add(networkSubscription);
 
         this.disableAnimationsOnAndroid();
     }
@@ -184,5 +166,32 @@ export class AppComponent implements OnInit, OnDestroy {
         if (isAndroid) {
             this.animationsDisabled = true;
         }
+    }
+
+    private registerGlobalIcons() {
+        this.matIconRegistry.addSvgIcon(
+            'copy',
+            this.domSanitizer.bypassSecurityTrustResourceUrl(
+                'assets/icons/copy.svg'
+            )
+        );
+        this.matIconRegistry.addSvgIcon(
+            'qr_code',
+            this.domSanitizer.bypassSecurityTrustResourceUrl(
+                'assets/icons/qr.svg'
+            )
+        );
+        this.matIconRegistry.addSvgIcon(
+            'notification',
+            this.domSanitizer.bypassSecurityTrustResourceUrl(
+                'assets/icons/notification.svg'
+            )
+        );
+        this.matIconRegistry.addSvgIcon(
+            'search',
+            this.domSanitizer.bypassSecurityTrustResourceUrl(
+                'assets/icons/search.svg'
+            )
+        );
     }
 }

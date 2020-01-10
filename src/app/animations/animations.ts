@@ -36,7 +36,7 @@ export class Animations {
                 style({
                     opacity: 0
                 }),
-                animate('0.2s ease-in')
+                animate('0.2s 0.1s ease-in')
             ]),
             transition('* => void', [
                 animate(
