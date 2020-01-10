@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { RaidenService } from './raiden.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserToken } from '../models/usertoken';
-import { tap, switchMap, shareReplay } from 'rxjs/operators';
+import { tap, switchMap, shareReplay, startWith } from 'rxjs/operators';
 import { backoff } from '../shared/backoff.operator';
 import { RaidenConfig } from './raiden.config';
 
@@ -35,6 +35,7 @@ export class TokenPollingService {
                 );
                 this.refreshingSubject.next(false);
             }),
+            startWith([]),
             backoff(
                 this.raidenConfig.config.error_poll_interval,
                 this.raidenService.globalRetry$

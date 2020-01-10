@@ -4,15 +4,6 @@
     height: 100%;
 }
 
-.information {
-    font-size: 1.2em;
-    @include respond-to(handhelds) {
-        height: 100%;
-        font-size: 0.8rem;
-        margin-top: 10px;
-    }
-}
-
-a {
-    color: white;
+.page {
+    margin: 0 auto;
 }

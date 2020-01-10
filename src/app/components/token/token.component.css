@@ -1,0 +1,66 @@
+.card {
+    height: 132px;
+    width: 278px; /* todo remove*/
+    border-radius: 25px;
+    padding: 23px 25px;
+    color: #b8b8b8;
+    font-size: 13px;
+    line-height: 15px;
+}
+
+.card--focus {
+    background-color: #ffffff;
+    box-shadow: 0 17px 63px 0 rgba(0, 0, 0, 0.3);
+    color: #000000 !important;
+}
+
+.card--middle {
+    background-color: rgba(148, 148, 148, 0.18);
+}
+
+.card--last {
+    background: linear-gradient(
+        90deg,
+        rgba(198, 198, 198, 0.18) 0%,
+        rgba(148, 148, 148, 0.08) 100%,
+        rgba(148, 148, 148, 0) 100%
+    );
+}
+
+.card__state {
+    opacity: 0.53;
+}
+
+.card__network {
+    width: 100%;
+    font-size: 41px;
+    font-weight: 300;
+    line-height: 48px;
+}
+
+.card__go-icon {
+    width: 11px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 20px;
+    opacity: 0.53;
+}
+
+.card__values {
+    width: 100%;
+}
+
+.card__icon {
+    height: 18px;
+    width: 18px;
+    line-height: 18px;
+    font-size: 18px;
+}
+
+.card__icon--transparent {
+    opacity: 0.25;
+}
+
+.card--focus .card__icon {
+    opacity: 1;
+}

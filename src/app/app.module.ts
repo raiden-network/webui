@@ -69,6 +69,8 @@ import { NotificationItemComponent } from './components/notification/notificatio
 import { NotificationService } from './services/notification.service';
 import { RaidenToastComponent } from './components/notification/raiden-toast/raiden-toast.component';
 import { ChannelComponent } from './components/channel/channel.component';
+import { TokenComponent } from './components/token/token.component';
+import { TokenCarouselComponent } from './components/token-carousel/token-carousel.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -130,7 +132,9 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         NotificationPanelComponent,
         NotificationItemComponent,
         RaidenToastComponent,
-        ChannelComponent
+        ChannelComponent,
+        TokenComponent,
+        TokenCarouselComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

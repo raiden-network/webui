@@ -1,0 +1,38 @@
+<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between center">
+    <button
+        class="navigation"
+        mat-fab
+        color="primary"
+        [disabled]="currentSelection === 0"
+        (click)="previousToken()"
+    >
+        <mat-icon
+            class="navigation__icon"
+            svgIcon="left"
+            aria-label="Previous token network"
+        >
+        </mat-icon>
+    </button>
+    <app-token
+        *ngFor="let item of visibleItems; let i = index; trackBy: trackByFn"
+        [token]="isAllNetworksView(item) ? undefined : item"
+        [openChannels]="getNumberOfChannels(item)"
+        [position]="i"
+        [allNetworksView]="isAllNetworksView(item)"
+    >
+    </app-token>
+    <button
+        class="navigation"
+        mat-fab
+        color="primary"
+        [disabled]="currentSelection === 3"
+        (click)="nextToken()"
+    >
+        <mat-icon
+            class="navigation__icon"
+            svgIcon="right"
+            aria-label="Next token network"
+        >
+        </mat-icon>
+    </button>
+</div>

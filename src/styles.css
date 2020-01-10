@@ -74,6 +74,20 @@ body {
     line-height: 32px !important;
 }
 
+.mat-fab {
+    box-shadow: none !important;
+}
+
+.mat-fab .mat-button-wrapper {
+    padding: 0 !important;
+}
+
+.mat-fab:disabled {
+    border: 2px solid #979797;
+    opacity: 0.32;
+    background: none !important;
+}
+
 .full-width-form-field {
     width: 100%;
 }

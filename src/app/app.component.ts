@@ -20,6 +20,18 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Animations } from './animations/animations';
 
+const icon_names = [
+    'copy',
+    'qr',
+    'notification',
+    'search',
+    'token',
+    'channel',
+    'go',
+    'left',
+    'right'
+];
+
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -63,7 +75,7 @@ export class AppComponent implements OnInit, OnDestroy {
             )
         );
 
-        this.registerGlobalIcons();
+        this.registerIcons();
     }
 
     isMobile(): boolean {
@@ -168,30 +180,14 @@ export class AppComponent implements OnInit, OnDestroy {
         }
     }
 
-    private registerGlobalIcons() {
-        this.matIconRegistry.addSvgIcon(
-            'copy',
-            this.domSanitizer.bypassSecurityTrustResourceUrl(
-                'assets/icons/copy.svg'
-            )
-        );
-        this.matIconRegistry.addSvgIcon(
-            'qr_code',
-            this.domSanitizer.bypassSecurityTrustResourceUrl(
-                'assets/icons/qr.svg'
-            )
-        );
-        this.matIconRegistry.addSvgIcon(
-            'notification',
-            this.domSanitizer.bypassSecurityTrustResourceUrl(
-                'assets/icons/notification.svg'
-            )
-        );
-        this.matIconRegistry.addSvgIcon(
-            'search',
-            this.domSanitizer.bypassSecurityTrustResourceUrl(
-                'assets/icons/search.svg'
-            )
-        );
+    private registerIcons() {
+        icon_names.forEach(icon => {
+            this.matIconRegistry.addSvgIcon(
+                icon,
+                this.domSanitizer.bypassSecurityTrustResourceUrl(
+                    `assets/icons/${icon}.svg`
+                )
+            );
+        });
     }
 }

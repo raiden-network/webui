@@ -1,0 +1,67 @@
+<div
+    class="card"
+    [class.card--focus]="position === 0"
+    [class.card--middle]="position === 1"
+    [class.card--last]="position > 1"
+    fxLayout="column"
+    fxLayoutAlign="space-between start"
+>
+    <div class="card__state">
+        <span *ngIf="position === 0; else inactive">
+            Viewing
+        </span>
+        <ng-template #inactive>
+            View network
+        </ng-template>
+    </div>
+    <div
+        class="card__network"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+    >
+        <span
+            *ngIf="!allNetworksView; else all_networks"
+            [matTooltip]="token.name"
+        >
+            {{ token.symbol }}
+        </span>
+        <ng-template #all_networks>
+            All Networks
+        </ng-template>
+        <mat-icon
+            *ngIf="position > 0"
+            class="card__go-icon"
+            svgIcon="go"
+            aria-hidden="true"
+        ></mat-icon>
+    </div>
+    <div class="card__values" fxLayout="row" fxLayoutAlign="space-between">
+        <div
+            *ngIf="
+                !allNetworksView &&
+                (token.balance | decimal: token.decimals) as balance
+            "
+            [matTooltip]="
+                (balance | displayDecimals: 3) === balance ? '' : balance
+            "
+            fxLayout="row"
+            fxLayoutAlign="center center"
+            fxLayoutGap="4px"
+        >
+            <mat-icon
+                class="card__icon"
+                svgIcon="token"
+                aria-hidden="true"
+            ></mat-icon>
+            <span>{{ balance | displayDecimals: 3 }} Tokens</span>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="4px">
+            <mat-icon
+                class="card__icon card__icon--transparent"
+                svgIcon="channel"
+                aria-hidden="true"
+            ></mat-icon>
+            <span>{{ openChannels }} Open channels</span>
+        </div>
+    </div>
+</div>
