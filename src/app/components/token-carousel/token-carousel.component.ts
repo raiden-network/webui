@@ -1,9 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+    ElementRef
+} from '@angular/core';
 import { UserToken } from '../../models/usertoken';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { Subscription } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { TokenUtils } from '../../utils/token.utils';
+import { Animations } from '../../animations/animations';
 
 interface AllNetworksView {
     allNetworksView: boolean;
@@ -12,7 +19,8 @@ interface AllNetworksView {
 @Component({
     selector: 'app-token-carousel',
     templateUrl: './token-carousel.component.html',
-    styleUrls: ['./token-carousel.component.css']
+    styleUrls: ['./token-carousel.component.css'],
+    animations: Animations.easeInOut
 })
 export class TokenCarouselComponent implements OnInit, OnDestroy {
     visibleItems: Array<UserToken | AllNetworksView> = [];
@@ -20,6 +28,7 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     selectables = 0;
     totalChannels = 0;
 
+    @ViewChild('tokens', { static: true }) private carousel: ElementRef;
     private tokens: UserToken[] = [];
     private subscription: Subscription;
 
@@ -81,6 +90,11 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         } else {
             return 0;
         }
+    }
+
+    select(index: number) {
+        this.currentSelection = index;
+        this.applySelection();
     }
 
     private applySelection() {

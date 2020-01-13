@@ -5,6 +5,11 @@
 
 .navigation__icon {
     color: #ffffff;
-    height: 41px;
-    width: 41px;
+    height: 100%;
+    width: 100%;
+    line-height: 10px;
+}
+
+.tokens {
+    overflow: hidden;
 }

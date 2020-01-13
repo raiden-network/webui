@@ -5,6 +5,7 @@
     [class.card--last]="position > 1"
     fxLayout="column"
     fxLayoutAlign="space-between start"
+    (click)="select.emit(true)"
 >
     <div class="card__state">
         <span *ngIf="position === 0; else inactive">

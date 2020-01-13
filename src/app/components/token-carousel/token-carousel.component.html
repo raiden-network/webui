@@ -1,7 +1,7 @@
 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between center">
     <button
         class="navigation"
-        mat-fab
+        mat-flat-button
         color="primary"
         [disabled]="currentSelection === 0"
         (click)="previousToken()"
@@ -13,19 +13,30 @@
         >
         </mat-icon>
     </button>
-    <app-token
-        *ngFor="let item of visibleItems; let i = index; trackBy: trackByFn"
-        [token]="isAllNetworksView(item) ? undefined : item"
-        [openChannels]="getNumberOfChannels(item)"
-        [position]="i"
-        [allNetworksView]="isAllNetworksView(item)"
+    <div
+        class="tokens"
+        fxLayout="row"
+        fxLayoutGap="20px"
+        fxLayoutAlign="center"
+        fxFlex
     >
-    </app-token>
+        <app-token
+            *ngFor="let item of visibleItems; let i = index; trackBy: trackByFn"
+            [token]="isAllNetworksView(item) ? undefined : item"
+            [openChannels]="getNumberOfChannels(item)"
+            [position]="i"
+            [allNetworksView]="isAllNetworksView(item)"
+            fxFlex="0 1 300px"
+            (select)="select(currentSelection + i)"
+            [@easeInOut]="'in'"
+        >
+        </app-token>
+    </div>
     <button
         class="navigation"
-        mat-fab
+        mat-flat-button
         color="primary"
-        [disabled]="currentSelection === 3"
+        [disabled]="currentSelection === selectables - 1"
         (click)="nextToken()"
     >
         <mat-icon

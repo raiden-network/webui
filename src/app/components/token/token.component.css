@@ -1,6 +1,6 @@
 .card {
     height: 132px;
-    width: 278px; /* todo remove*/
+    min-width: 280px;
     border-radius: 25px;
     padding: 23px 25px;
     color: #b8b8b8;
@@ -16,6 +16,7 @@
 
 .card--middle {
     background-color: rgba(148, 148, 148, 0.18);
+    cursor: pointer;
 }
 
 .card--last {
@@ -25,6 +26,7 @@
         rgba(148, 148, 148, 0.08) 100%,
         rgba(148, 148, 148, 0) 100%
     );
+    cursor: pointer;
 }
 
 .card__state {

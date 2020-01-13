@@ -14,10 +14,7 @@
                             </mask>
                             <circle stroke="#29292B" cx="4.5" cy="4.5" r="5"></circle>
                             <g stroke-linejoin="round" stroke-dasharray="1" mask="url(#mask-token-2)" stroke="#000000">
-                                <mask id="mask-token-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="-0.5" y="-0.5" width="6" height="6">
-                                    <rect x="1.5" y="1.5" width="6" height="6"></rect>
-                                </mask>
-                                <circle mask="url(#mask-token-4)" cx="4.5" cy="4.5" r="2.5"></circle>
+                                <circle cx="4.5" cy="4.5" r="2.5"></circle>
                             </g>
                         </g>
                         <g id="Oval" transform="translate(5.000000, 3.000000)">
@@ -26,10 +23,7 @@
                             </mask>
                             <circle stroke="#29292B" cx="4.5" cy="4.5" r="5"></circle>
                             <g stroke-linejoin="round" stroke-dasharray="1" mask="url(#mask-token-6)" stroke="#000000">
-                                <mask id="mask-token-8" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="-0.5" y="-0.5" width="6" height="6">
-                                    <rect x="1.5" y="1.5" width="6" height="6"></rect>
-                                </mask>
-                                <circle mask="url(#mask-token-8)" cx="4.5" cy="4.5" r="2.5"></circle>
+                                <circle cx="4.5" cy="4.5" r="2.5"></circle>
                             </g>
                         </g>
                     </g>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { UserToken } from '../../models/usertoken';
 
 @Component({
@@ -11,6 +11,7 @@ export class TokenComponent implements OnInit {
     @Input() openChannels: number;
     @Input() position: number;
     @Input() allNetworksView = false;
+    @Output() select: EventEmitter<boolean> = new EventEmitter();
 
     constructor() {}
 
