@@ -42,8 +42,8 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
-        <mat-toolbar>
-            <mat-toolbar-row class="header header--info">
+        <div class="toolbar">
+            <div class="header header--info">
                 <div
                     *ngIf="showNetworkInfo"
                     class="network-info"
@@ -60,13 +60,14 @@
                         class="network-info__close"
                         (click)="hideNetworkInfo()"
                     >
-                        <mat-icon aria-label="Close notification panel icon"
+                        <mat-icon aria-label="Close network info"
                             >close</mat-icon
                         >
                     </button>
                 </div>
-            </mat-toolbar-row>
-            <mat-toolbar-row
+            </div>
+
+            <div
                 class="header"
                 fxLayout="row"
                 fxLayoutGap="35px"
@@ -161,9 +162,9 @@
                     >
                     </mat-icon>
                 </button>
-            </mat-toolbar-row>
+            </div>
 
-            <mat-toolbar-row
+            <div
                 class="header header--secondary"
                 fxLayout="column"
                 fxLayoutAlign="end"
@@ -220,8 +221,8 @@
                         </mat-icon>
                     </a>
                 </span>
-            </mat-toolbar-row>
-        </mat-toolbar>
+            </div>
+        </div>
         <div class="content">
             <router-outlet *ngIf="!hasError(); else api_error"></router-outlet>
             <ng-template #api_error>

@@ -20,7 +20,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSortModule } from '@angular/material/sort';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
@@ -39,7 +38,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatDialogModule,
         MatProgressSpinnerModule,
         MatProgressBarModule,
-        MatToolbarModule,
         MatAutocompleteModule,
         MatRippleModule,
         MatSortModule,

@@ -24,8 +24,7 @@ mat-sidenav-content {
     }
 }
 
-.mat-toolbar {
-    background-color: #191919;
+.toolbar {
     max-width: 60%;
     margin: auto;
 }
@@ -34,6 +33,7 @@ mat-sidenav-content {
     height: 53px;
     color: #b8b8b8;
     font-size: 41px;
+    line-height: 32px;
     font-weight: 300;
     padding: 0;
     margin-bottom: 16px;
