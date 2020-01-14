@@ -1,40 +1,42 @@
-<button
-    class="match-parent-width"
-    id="pay-button"
-    mat-raised-button
-    color="accent"
-    [disabled]="channel.state !== 'opened' || channel.balance.isZero()"
-    (click)="onPay()"
->
-    Pay
-</button>
-<button
-    class="match-parent-width"
-    id="deposit-button"
-    mat-button
-    color="accent"
-    [disabled]="channel.state !== 'opened'"
-    (click)="deposit()"
->
-    Deposit
-</button>
-<button
-    class="match-parent-width"
-    id="withdraw-button"
-    mat-button
-    color="accent"
-    [disabled]="channel.state !== 'opened'"
-    (click)="withdraw()"
->
-    Withdraw
-</button>
-<button
-    class="match-parent-width"
-    id="close-button"
-    mat-button
-    color="accent"
-    [disabled]="channel.state !== 'opened'"
-    (click)="onClose()"
->
-    Close
-</button>
+<div class="actions" fxLayout="row" fxLayoutGap="20px" stopClickPropagation>
+    <button
+        class="actions__button"
+        id="pay-button"
+        mat-flat-button
+        color="accent"
+        [disabled]="channel.state !== 'opened' || channel.balance.isZero()"
+        (click)="pay()"
+    >
+        Direct Transfer
+    </button>
+    <button
+        class="actions__button"
+        id="deposit-button"
+        mat-flat-button
+        color="accent"
+        [disabled]="channel.state !== 'opened'"
+        (click)="deposit()"
+    >
+        Deposit
+    </button>
+    <button
+        class="actions__button"
+        id="withdraw-button"
+        mat-flat-button
+        color="accent"
+        [disabled]="channel.state !== 'opened'"
+        (click)="withdraw()"
+    >
+        Withdraw
+    </button>
+    <button
+        class="actions__button"
+        id="close-button"
+        mat-flat-button
+        color="accent"
+        [disabled]="channel.state !== 'opened'"
+        (click)="close()"
+    >
+        Close
+    </button>
+</div>

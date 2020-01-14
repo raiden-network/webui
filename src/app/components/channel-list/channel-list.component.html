@@ -26,8 +26,15 @@
         <span> Open new {{ token ? token.symbol : '' }} Channel </span>
     </button>
     <app-channel
-        *ngFor="let channel of visibleChannels; trackBy: trackByFn"
+        *ngFor="
+            let channel of visibleChannels;
+            let i = index;
+            trackBy: trackByFn
+        "
         [channel]="channel"
+        [selected]="selectedIndex === i"
+        (select)="setSelectedIndex(i)"
+        [@flyInOut]="'in'"
     >
     </app-channel>
     <button

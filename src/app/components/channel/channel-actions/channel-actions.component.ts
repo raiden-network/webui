@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Channel } from '../../../models/channel';
 import { DepositMode } from '../../../utils/helpers';
 import {
@@ -40,14 +40,14 @@ export class ChannelActionsComponent implements OnInit {
     ngOnInit() {}
 
     deposit() {
-        this.onDepositDialog(DepositMode.DEPOSIT);
+        this.openDeposit(DepositMode.DEPOSIT);
     }
 
     withdraw() {
-        this.onDepositDialog(DepositMode.WITHDRAW);
+        this.openDeposit(DepositMode.WITHDRAW);
     }
 
-    onPay() {
+    pay() {
         const payload: PaymentDialogPayload = {
             tokenAddress: this.channel.token_address,
             targetAddress: this.channel.partner_address,
@@ -81,7 +81,7 @@ export class ChannelActionsComponent implements OnInit {
             });
     }
 
-    onClose() {
+    close() {
         const payload: ConfirmationDialogPayload = {
             title: 'Close Channel',
             message: `Are you sure you want to close channel ${
@@ -114,7 +114,7 @@ export class ChannelActionsComponent implements OnInit {
             .subscribe(() => this.channelPollingService.refresh());
     }
 
-    private onDepositDialog(depositMode: DepositMode) {
+    private openDeposit(depositMode: DepositMode) {
         const payload: DepositWithdrawDialogPayload = {
             decimals: this.channel.userToken.decimals,
             depositMode: depositMode

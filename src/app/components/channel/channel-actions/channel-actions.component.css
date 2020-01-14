@@ -1,7 +1,9 @@
-:host {
-    width: 100%;
+.actions__button {
+    height: 38px;
+    padding: 0 14px !important;
 }
 
-button {
-    text-transform: uppercase;
+.actions__button:disabled {
+    background-color: #979797 !important;
+    opacity: 0.5;
 }

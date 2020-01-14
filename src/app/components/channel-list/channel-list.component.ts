@@ -20,11 +20,13 @@ import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
 import { flatMap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
+import { Animations } from '../../animations/animations';
 
 @Component({
     selector: 'app-channel-list',
     templateUrl: './channel-list.component.html',
-    styleUrls: ['./channel-list.component.css']
+    styleUrls: ['./channel-list.component.css'],
+    animations: Animations.flyInOut
 })
 export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
     @Input() token: UserToken;
@@ -32,6 +34,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
     visibleChannels: Channel[] = [];
     totalChannels = 0;
     showAll = false;
+    selectedIndex = -1;
 
     private channels: Channel[] = [];
     private subscription: Subscription;
@@ -69,6 +72,10 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
     toggleShowAll() {
         this.showAll = !this.showAll;
         this.applySelection();
+    }
+
+    setSelectedIndex(index: number) {
+        this.selectedIndex = this.selectedIndex === index ? -1 : index;
     }
 
     openChannel() {

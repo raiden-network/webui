@@ -69,6 +69,7 @@ body {
     font-weight: 400 !important;
     padding: 0 !important;
     min-width: 0px !important;
+    box-shadow: none !important;
 }
 
 .mat-flat-button:disabled {
