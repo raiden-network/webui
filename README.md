@@ -92,7 +92,7 @@ Raiden WebUI is built using the following technologies:
 If you haven't used Raiden before, you can:
 
 -   Checkout the [developer portal](http://developer.raiden.network)
--   Look at the [documentation](https://raiden-network.readthedocs.io/en/stable/index.html)
+-   Look at the [documentation](https://docs.raiden.network)
 -   Learn more by watching explanatory [videos](https://www.youtube.com/channel/UCoUP_hnjUddEvbxmtNCcApg)
 -   Read the blog posts on [Medium](https://medium.com/@raiden_network)
 
