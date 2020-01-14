@@ -5,6 +5,27 @@
     fxFlex.lg="70"
     fxFlex.xl="60"
     fxLayout="column"
+    fxLayoutGap="21px"
 >
-    <app-token-carousel></app-token-carousel>
+    <app-token-carousel (selectedToken)="token = $event"></app-token-carousel>
+    <div class="transfer" fxLayout="row" fxLayoutAlign="center">
+        <button
+            mat-flat-button
+            color="accent"
+            (click)="pay()"
+            fxFlex="0 0 148px"
+        >
+            <mat-icon
+                class="transfer__icon"
+                svgIcon="transfer"
+                aria-label="Transfer tokens"
+            >
+            </mat-icon>
+            <span>
+                Transfer
+            </span>
+        </button>
+        <span fxFlex="0 1 792px"></span>
+    </div>
+    <app-channel-list [token]="token"></app-channel-list>
 </div>

@@ -65,6 +65,7 @@ body {
     height: 52px;
     border-radius: 25px !important;
     font-size: 13px !important;
+    line-height: 15px;
     font-weight: 400 !important;
     padding: 0 !important;
     min-width: 0px !important;

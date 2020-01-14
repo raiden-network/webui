@@ -13,7 +13,7 @@ import { TokenInputComponent } from '../token-input/token-input.component';
 import BigNumber from 'bignumber.js';
 
 export interface OpenDialogPayload {
-    readonly ownAddress: string;
+    readonly tokenAddress: string;
     readonly defaultSettleTimeout: number;
     readonly revealTimeout: number;
 }
@@ -33,7 +33,7 @@ export interface OpenDialogResult {
 export class OpenDialogComponent {
     public form: FormGroup = this.fb.group({
         address: '',
-        token: '',
+        token: this.data.tokenAddress,
         amount: new BigNumber(0),
         settle_timeout: [
             this.data.defaultSettleTimeout,

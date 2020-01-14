@@ -30,7 +30,10 @@ const icon_names = [
     'go',
     'left',
     'right',
-    'faucet'
+    'faucet',
+    'transfer',
+    'add',
+    'eye'
 ];
 
 @Component({

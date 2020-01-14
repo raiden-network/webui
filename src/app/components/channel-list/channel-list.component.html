@@ -1,0 +1,50 @@
+<div
+    class="list"
+    fxLayout="column"
+    fxLayoutGap="22px"
+    fxLayoutAlign="space-between start"
+>
+    <div class="list__labels" fxLayout="row" fxLayoutAlign="space-between">
+        <span>Open Channels</span>
+        <div fxFlex="1 1 auto"></div>
+        <span
+            >{{ showAll ? totalChannels : visibleChannels.length }} of
+            {{ totalChannels }}</span
+        >
+    </div>
+    <button
+        mat-flat-button
+        color="primary"
+        class="button"
+        (click)="openChannel()"
+        fxFlexOffset="10px"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+    >
+        <mat-icon class="button__icon" svgIcon="add" aria-hidden="true">
+        </mat-icon>
+        <span> Open new {{ token ? token.symbol : '' }} Channel </span>
+    </button>
+    <app-channel
+        *ngFor="let channel of visibleChannels; trackBy: trackByFn"
+        [channel]="channel"
+    >
+    </app-channel>
+    <button
+        *ngIf="totalChannels > 3"
+        mat-flat-button
+        color="primary"
+        class="button"
+        (click)="toggleShowAll()"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+    >
+        <mat-icon
+            class="button__icon button__icon--big"
+            svgIcon="eye"
+            aria-hidden="true"
+        >
+        </mat-icon>
+        <span> {{ showAll ? 'Hide' : 'Show all' }} </span>
+    </button>
+</div>

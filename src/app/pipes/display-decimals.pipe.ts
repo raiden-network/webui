@@ -16,8 +16,9 @@ export class DisplayDecimalsPipe implements PipeTransform {
 
         const bn = new BigNumber(value);
 
-        if (bn.isLessThan(0.00001) && !bn.isZero()) {
-            return '<0.00001';
+        const smallestDisplayable = new BigNumber(1).shiftedBy(-maxDecimals);
+        if (bn.isLessThan(smallestDisplayable) && !bn.isZero()) {
+            return `<${smallestDisplayable.toFixed()}`;
         } else {
             const splitted = value.split('.');
             if (splitted[1] && splitted[1].length > maxDecimals) {

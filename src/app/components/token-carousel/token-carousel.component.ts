@@ -3,7 +3,9 @@ import {
     OnInit,
     OnDestroy,
     ViewChild,
-    ElementRef
+    ElementRef,
+    Output,
+    EventEmitter
 } from '@angular/core';
 import { UserToken } from '../../models/usertoken';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -23,12 +25,13 @@ interface AllNetworksView {
     animations: Animations.easeInOut
 })
 export class TokenCarouselComponent implements OnInit, OnDestroy {
+    @Output() selectedToken: EventEmitter<UserToken> = new EventEmitter();
+
     visibleItems: Array<UserToken | AllNetworksView> = [];
     currentSelection = 0;
     selectables = 0;
     totalChannels = 0;
 
-    @ViewChild('tokens', { static: true }) private carousel: ElementRef;
     private tokens: UserToken[] = [];
     private subscription: Subscription;
 
@@ -99,10 +102,17 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
 
     private applySelection() {
         this.tokens.sort((a, b) => TokenUtils.compareTokens(a, b));
+        const displaybleItems = [{ allNetworksView: true }, ...this.tokens];
 
         this.visibleItems = [{ allNetworksView: true }, ...this.tokens].slice(
             this.currentSelection,
             this.currentSelection + 3
         );
+
+        const selection = displaybleItems[this.currentSelection];
+        const selectedToken = this.isAllNetworksView(selection)
+            ? undefined
+            : selection;
+        this.selectedToken.emit(selectedToken);
     }
 }

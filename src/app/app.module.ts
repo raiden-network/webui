@@ -71,6 +71,7 @@ import { RaidenToastComponent } from './components/notification/raiden-toast/rai
 import { ChannelComponent } from './components/channel/channel.component';
 import { TokenComponent } from './components/token/token.component';
 import { TokenCarouselComponent } from './components/token-carousel/token-carousel.component';
+import { ChannelListComponent } from './components/channel-list/channel-list.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -134,7 +135,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         RaidenToastComponent,
         ChannelComponent,
         TokenComponent,
-        TokenCarouselComponent
+        TokenCarouselComponent,
+        ChannelListComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
