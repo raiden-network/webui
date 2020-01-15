@@ -4,7 +4,7 @@
     fxLayoutGap="22px"
     fxLayoutAlign="space-between start"
 >
-    <div class="list__labels" fxLayout="row" fxLayoutAlign="space-between">
+    <div class="list__labels" fxLayout="row">
         <span>Open Channels</span>
         <div fxFlex="1 1 auto"></div>
         <span
@@ -23,7 +23,7 @@
     >
         <mat-icon class="button__icon" svgIcon="add" aria-hidden="true">
         </mat-icon>
-        <span> Open new {{ token ? token.symbol : '' }} Channel </span>
+        <span> Open new {{ !!token ? token.symbol : '' }} Channel </span>
     </button>
     <app-channel
         *ngFor="

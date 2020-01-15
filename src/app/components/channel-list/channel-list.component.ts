@@ -51,7 +51,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
             .channels()
             .subscribe((channels: Channel[]) => {
                 this.channels = channels;
-                this.applySelection();
+                this.updateVisibleChannels();
             });
     }
 
@@ -61,7 +61,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         if ('token' in changes) {
-            this.applySelection();
+            this.updateVisibleChannels();
         }
     }
 
@@ -71,7 +71,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
 
     toggleShowAll() {
         this.showAll = !this.showAll;
-        this.applySelection();
+        this.updateVisibleChannels();
     }
 
     setSelectedIndex(index: number) {
@@ -111,20 +111,18 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private getFilteredChannels(): Channel[] {
-        let filteredChannels;
-        if (this.token) {
-            filteredChannels = this.channels.filter(
-                channel =>
+        return this.channels.filter(channel => {
+            let matchesToken = true;
+            if (!!this.token) {
+                matchesToken =
                     channel.userToken &&
-                    channel.userToken.address === this.token.address
-            );
-        } else {
-            filteredChannels = this.channels;
-        }
-        return filteredChannels;
+                    channel.userToken.address === this.token.address;
+            }
+            return channel.state === 'opened' && matchesToken;
+        });
     }
 
-    private applySelection() {
+    private updateVisibleChannels() {
         const filteredChannels = this.getFilteredChannels();
         this.totalChannels = filteredChannels.length;
 
