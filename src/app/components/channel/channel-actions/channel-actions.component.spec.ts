@@ -68,7 +68,7 @@ describe('ChannelActionsComponent', () => {
                 tokenAddress: token.address,
                 targetAddress: channel.partner_address,
                 amount: new BigNumber(100),
-                paymentIdentifier: undefined
+                paymentIdentifier: null
             };
         };
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();

@@ -73,6 +73,9 @@ import { TokenComponent } from './components/token/token.component';
 import { TokenCarouselComponent } from './components/token-carousel/token-carousel.component';
 import { ChannelListComponent } from './components/channel-list/channel-list.component';
 import { StopClickPropagationDirective } from './directives/stop-click-propagation.directive';
+import { ContactListComponent } from './components/contact-list/contact-list.component';
+import { ContactComponent } from './components/contact/contact.component';
+import { ContactActionsComponent } from './components/contact/contact-actions/contact-actions.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -138,7 +141,10 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         TokenComponent,
         TokenCarouselComponent,
         ChannelListComponent,
-        StopClickPropagationDirective
+        StopClickPropagationDirective,
+        ContactListComponent,
+        ContactComponent,
+        ContactActionsComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

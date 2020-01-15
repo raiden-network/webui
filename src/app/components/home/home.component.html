@@ -5,27 +5,34 @@
     fxFlex.lg="70"
     fxFlex.xl="60"
     fxLayout="column"
-    fxLayoutGap="21px"
+    fxLayoutGap="37px"
 >
-    <app-token-carousel (selectedToken)="token = $event"></app-token-carousel>
-    <div class="transfer" fxLayout="row" fxLayoutAlign="center">
-        <button
-            mat-flat-button
-            color="accent"
-            (click)="pay()"
-            fxFlex="0 0 148px"
-        >
-            <mat-icon
-                class="transfer__icon"
-                svgIcon="transfer"
-                aria-label="Transfer tokens"
+    <div fxLayout="column" fxLayoutGap="21px" fxFlexOffset="39px">
+        <app-token-carousel
+            (selectedToken)="token = $event"
+        ></app-token-carousel>
+        <div class="transfer" fxLayout="row" fxLayoutAlign="center">
+            <button
+                mat-flat-button
+                color="accent"
+                (click)="pay()"
+                fxFlex="0 0 148px"
             >
-            </mat-icon>
-            <span>
-                Transfer
-            </span>
-        </button>
-        <span fxFlex="0 1 792px"></span>
+                <mat-icon
+                    class="transfer__icon"
+                    svgIcon="transfer"
+                    aria-label="Transfer tokens"
+                >
+                </mat-icon>
+                <span>
+                    Transfer
+                </span>
+            </button>
+            <span fxFlex="0 1 792px"></span>
+        </div>
     </div>
     <app-channel-list [token]="token"></app-channel-list>
+    <div fxLayout="row" fxFlexOffset="54px">
+        <app-contact-list fxFlex="0 0 341px"></app-contact-list>
+    </div>
 </div>

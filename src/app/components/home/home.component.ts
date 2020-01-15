@@ -9,6 +9,8 @@ import { flatMap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { RaidenService } from '../../services/raiden.service';
 import { UserToken } from '../../models/usertoken';
+import { ChannelPollingService } from '../../services/channel-polling.service';
+import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 
 @Component({
     selector: 'app-home',
@@ -20,7 +22,9 @@ export class HomeComponent implements OnInit {
 
     constructor(
         private dialog: MatDialog,
-        private raidenService: RaidenService
+        private raidenService: RaidenService,
+        private channelPollingService: ChannelPollingService,
+        private pendingTransferPollingService: PendingTransferPollingService
     ) {}
 
     ngOnInit() {}
@@ -53,6 +57,9 @@ export class HomeComponent implements OnInit {
                     );
                 })
             )
-            .subscribe();
+            .subscribe(() => {
+                this.channelPollingService.refresh();
+                this.pendingTransferPollingService.refresh();
+            });
     }
 }

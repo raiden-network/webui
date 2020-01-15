@@ -21,6 +21,7 @@ import { RaidenService } from '../../services/raiden.service';
 import { flatMap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Animations } from '../../animations/animations';
+import { TokenPollingService } from '../../services/token-polling.service';
 
 @Component({
     selector: 'app-channel-list',
@@ -43,7 +44,8 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
         private channelPollingService: ChannelPollingService,
         private raidenConfig: RaidenConfig,
         private raidenService: RaidenService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private tokenPollingService: TokenPollingService
     ) {}
 
     ngOnInit() {
@@ -107,7 +109,10 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
                     );
                 })
             )
-            .subscribe();
+            .subscribe(() => {
+                this.channelPollingService.refresh();
+                this.tokenPollingService.refresh();
+            });
     }
 
     private getFilteredChannels(): Channel[] {

@@ -1,11 +1,9 @@
 @import '../../../sass/mixins';
 
-:host {
-    height: 100%;
-}
-
 .page {
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 95px;
 }
 
 .transfer__icon {

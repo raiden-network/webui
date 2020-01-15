@@ -21,6 +21,7 @@ import {
     DepositWithdrawDialogComponent,
     DepositWithdrawDialogPayload
 } from '../../deposit-withdraw-dialog/deposit-withdraw-dialog.component';
+import { TokenPollingService } from '../../../services/token-polling.service';
 
 @Component({
     selector: 'app-channel-actions',
@@ -34,7 +35,8 @@ export class ChannelActionsComponent implements OnInit {
         private raidenService: RaidenService,
         private dialog: MatDialog,
         private channelPollingService: ChannelPollingService,
-        private pendingTransferPollingService: PendingTransferPollingService
+        private pendingTransferPollingService: PendingTransferPollingService,
+        private tokenPollingService: TokenPollingService
     ) {}
 
     ngOnInit() {}
@@ -111,7 +113,10 @@ export class ChannelActionsComponent implements OnInit {
                     );
                 })
             )
-            .subscribe(() => this.channelPollingService.refresh());
+            .subscribe(() => {
+                this.channelPollingService.refresh();
+                this.tokenPollingService.refresh();
+            });
     }
 
     private openDeposit(depositMode: DepositMode) {

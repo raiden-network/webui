@@ -1,0 +1,62 @@
+<div fxLayout="column" fxLayoutGap="20px"></div>
+<div
+    class="list"
+    fxLayout="column"
+    fxLayoutGap="20px"
+    fxLayoutAlign="space-between start"
+>
+    <div class="list__labels" fxLayout="row">
+        <span>Contacts</span>
+        <div fxFlex="1 1 auto"></div>
+        <span
+            >{{ showAll ? totalContacts : visibleContacts.length }} of
+            {{ totalContacts }}</span
+        >
+    </div>
+    <app-contact
+        *ngFor="
+            let contact of visibleContacts;
+            let i = index;
+            trackBy: trackByFn
+        "
+        [contact]="contact"
+        [selected]="selectedIndex === i"
+        (select)="setSelectedIndex(i)"
+        (update)="updateContacts()"
+        [@flyInOutLeft]="'in'"
+    ></app-contact>
+    <div class="button-section" fxLayout="row">
+        <button
+            mat-flat-button
+            color="primary"
+            class="button"
+            (click)="addContact()"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxFlex="0 1 198px"
+        >
+            <mat-icon class="button__icon" svgIcon="add" aria-hidden="true">
+            </mat-icon>
+            <span> Add new contact</span>
+        </button>
+        <div fxFlex="1 1 auto"></div>
+        <button
+            *ngIf="totalContacts > 2"
+            mat-flat-button
+            color="primary"
+            class="button"
+            (click)="toggleShowAll()"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxFlex="0 1 130px"
+        >
+            <mat-icon
+                class="button__icon button__icon--big"
+                svgIcon="eye"
+                aria-hidden="true"
+            >
+            </mat-icon>
+            <span> {{ showAll ? 'Hide' : 'All' }} </span>
+        </button>
+    </div>
+</div>

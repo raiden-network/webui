@@ -1,0 +1,51 @@
+<div
+    class="card"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="25px"
+    (click)="select.emit(true)"
+>
+    <div class="icon-box" fxLayout="column">
+        <img
+            class="icon-box__identicon"
+            [src]="identicon(contact.address)"
+            alt="Address identicon"
+        />
+    </div>
+    <div class="contact" fxLayout="row" fxLayoutAlign="start center" fxFlex>
+        <div
+            *ngIf="!selected; else actions"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            [@flyInOutLeft]="'in'"
+            fxFlex
+        >
+            <div
+                class="info"
+                fxLayout="column"
+                fxLayoutAlign="space-between start"
+            >
+                <span class="info__text">
+                    {{ contact.label }}
+                </span>
+                <span class="info__text">
+                    {{ contact.address }}
+                </span>
+            </div>
+            <div fxFlex="1 1 auto"></div>
+            <mat-icon
+                class="card__go-icon"
+                svgIcon="go"
+                aria-hidden="true"
+            ></mat-icon>
+        </div>
+    </div>
+    <ng-template #actions>
+        <app-contact-actions
+            [contact]="contact"
+            (update)="this.update.emit($event)"
+            [@flyInOut]="'in'"
+        >
+        </app-contact-actions>
+    </ng-template>
+</div>
