@@ -125,7 +125,7 @@
 
         <app-file-upload
             #uploader="file-upload"
-            (addresses)="importAddresses($event)"
+            (contacts)="importAddresses($event)"
         ></app-file-upload>
     </mat-card>
 
@@ -136,7 +136,7 @@
         pageItem
     >
         <app-address-book-item
-            [address]="address"
+            [contact]="address"
             [editMode]="editedAddress === address.address"
             (edit)="setEdited(address.address)"
             (cancelled)="cancelled()"

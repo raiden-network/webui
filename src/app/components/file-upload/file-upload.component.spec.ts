@@ -9,7 +9,7 @@ import {
 
 import { FileUploadComponent } from './file-upload.component';
 import { stub } from '../../../testing/stub';
-import { createTestAddresses } from '../../../testing/test-data';
+import { createTestContacts } from '../../../testing/test-data';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { DragStatus } from '../../directives/drag-upload.directive';
 
@@ -69,12 +69,12 @@ describe('FileUploadComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should hide the drop area and import the addresses', fakeAsync(function() {
+    it('should hide the drop area and import the contacts', fakeAsync(function() {
         fixture.detectChanges();
 
         const reader = window['FileReader'];
         const result = {};
-        const data = createTestAddresses(2);
+        const data = createTestContacts(2);
 
         for (let i = 0; i < data.length; i++) {
             result[data[i].address] = data[i].label;
@@ -89,7 +89,7 @@ describe('FileUploadComponent', () => {
 
         const fileList = createMockFileList();
 
-        component.addresses.subscribe(value => {
+        component.contacts.subscribe(value => {
             expect(value).toEqual(result);
         });
         component.filesSelected(fileList);
@@ -110,7 +110,7 @@ describe('FileUploadComponent', () => {
 
         const reader = window['FileReader'];
         const result = {};
-        const data = createTestAddresses(2);
+        const data = createTestContacts(2);
 
         for (let i = 0; i < data.length; i++) {
             result[data[i].address] = data[i].label;
@@ -125,8 +125,8 @@ describe('FileUploadComponent', () => {
 
         const fileList = createMockFileList('image.png');
 
-        component.addresses.subscribe(() => {
-            fail('should have no addresses on error');
+        component.contacts.subscribe(() => {
+            fail('should have no contacts on error');
         });
 
         component.filesSelected(fileList);
@@ -156,8 +156,8 @@ describe('FileUploadComponent', () => {
 
         const fileList = createMockFileList('address.json');
 
-        component.addresses.subscribe(() => {
-            fail('should have no addresses on error');
+        component.contacts.subscribe(() => {
+            fail('should have no contacts on error');
         });
 
         component.filesSelected(fileList);

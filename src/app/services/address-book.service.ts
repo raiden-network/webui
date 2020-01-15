@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Address, Addresses } from '../models/address';
+import { Contact, Contacts } from '../models/contact';
 import { LocalStorageAdapter } from '../adapters/local-storage-adapter';
 import * as Utils from 'web3-utils';
-import { addressSchema } from '../models/address-schema';
+import { contactsSchema } from '../models/contacts-schema';
 import * as Ajv from 'ajv';
 import { ValidateFunction } from 'ajv';
 
@@ -19,40 +19,40 @@ export class AddressBookService {
         this.storage = localStorageAdapter.localStorage;
 
         const validator = new Ajv({ allErrors: true });
-        this.schema = validator.compile(addressSchema);
+        this.schema = validator.compile(contactsSchema);
     }
 
-    public save(address: Address) {
-        if (!Utils.isAddress(address.address)) {
-            throw Error(`${address.address} is not an ethereum address`);
+    save(contact: Contact) {
+        if (!Utils.isAddress(contact.address)) {
+            throw Error(`${contact.address} is not an ethereum address`);
         }
 
-        if (!Utils.checkAddressChecksum(address.address)) {
-            throw Error(`${address.address} is not in checksum format`);
+        if (!Utils.checkAddressChecksum(contact.address)) {
+            throw Error(`${contact.address} is not in checksum format`);
         }
 
-        const addresses = this.get();
-        addresses[address.address] = address.label;
-        this.store(addresses);
+        const contacts = this.get();
+        contacts[contact.address] = contact.label;
+        this.store(contacts);
     }
 
-    public get(): Addresses {
-        const addresses: string = this.storage.getItem(
+    get(): Contacts {
+        const unparsedContacts: string = this.storage.getItem(
             AddressBookService.ADDRESS_BOOK_KEY
         );
-        let addressBook: Addresses;
+        let contacts: Contacts;
 
-        if (!addresses) {
-            addressBook = {};
+        if (!unparsedContacts) {
+            contacts = {};
         } else {
-            addressBook = JSON.parse(addresses);
+            contacts = JSON.parse(unparsedContacts);
         }
 
-        return addressBook;
+        return contacts;
     }
 
-    store(addresses: Addresses, merge: boolean = false) {
-        const isValid = this.schema(addresses);
+    store(contacts: Contacts, merge: boolean = false) {
+        const isValid = this.schema(contacts);
 
         if (!isValid) {
             throw Error(
@@ -60,27 +60,27 @@ export class AddressBookService {
             );
         }
 
-        let data: Addresses;
+        let data: Contacts;
         if (merge) {
-            data = Object.assign(this.get(), addresses);
+            data = Object.assign(this.get(), contacts);
         } else {
-            data = addresses;
+            data = contacts;
         }
 
-        const addressesValue = JSON.stringify(data);
+        const stringifiedContacts = JSON.stringify(data);
         this.storage.setItem(
             AddressBookService.ADDRESS_BOOK_KEY,
-            addressesValue
+            stringifiedContacts
         );
     }
 
-    public delete(address: Address) {
-        const addresses = this.get();
-        const numberOfKeys = Object.keys(addresses).length;
-        delete addresses[address.address];
+    delete(contact: Contact) {
+        const contacts = this.get();
+        const numberOfKeys = Object.keys(contacts).length;
+        delete contacts[contact.address];
 
-        if (numberOfKeys > Object.keys(addresses).length) {
-            this.store(addresses);
+        if (numberOfKeys > Object.keys(contacts).length) {
+            this.store(contacts);
         }
     }
 
@@ -95,12 +95,12 @@ export class AddressBookService {
         return URL.createObjectURL(blob);
     }
 
-    getArray(): Array<Address> {
-        const addresses = this.get();
-        return Object.keys(addresses).map(value => {
+    getArray(): Array<Contact> {
+        const contacts = this.get();
+        return Object.keys(contacts).map(value => {
             return {
                 address: value,
-                label: addresses[value]
+                label: contacts[value]
             };
         });
     }

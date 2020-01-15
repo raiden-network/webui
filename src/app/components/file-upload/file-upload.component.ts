@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UploadError } from '../../models/upload-error';
 import { UploadChecks } from '../../shared/upload-checks';
-import { Addresses } from '../../models/address';
+import { Contacts } from '../../models/contact';
 import { DragStatus } from '../../directives/drag-upload.directive';
-import { addressSchema } from '../../models/address-schema';
+import { contactsSchema } from '../../models/contacts-schema';
 import { ValidateFunction } from 'ajv';
 import * as Ajv from 'ajv';
 
@@ -15,7 +15,7 @@ import * as Ajv from 'ajv';
 })
 export class FileUploadComponent {
     @Input() showDropArea = false;
-    @Output() addresses: EventEmitter<Addresses> = new EventEmitter();
+    @Output() contacts: EventEmitter<Contacts> = new EventEmitter();
 
     private _error: UploadError = null;
     private _isOver = false;
@@ -39,7 +39,7 @@ export class FileUploadComponent {
     constructor() {
         this.uploadChecks = new UploadChecks();
         const validator = new Ajv({ allErrors: true });
-        this.schema = validator.compile(addressSchema);
+        this.schema = validator.compile(contactsSchema);
     }
 
     filesSelected(files: FileList) {
@@ -59,7 +59,7 @@ export class FileUploadComponent {
             const json = JSON.parse(reader.result as string);
 
             if (this.schema(json)) {
-                this.addresses.emit(json);
+                this.contacts.emit(json);
 
                 setTimeout(() => {
                     this.showDropArea = false;

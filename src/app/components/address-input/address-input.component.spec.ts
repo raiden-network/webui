@@ -30,7 +30,7 @@ import { MockConfig } from '../../../testing/mock-config';
 
 import { AddressInputComponent } from './address-input.component';
 import { AddressBookService } from '../../services/address-book.service';
-import { Address } from '../../models/address';
+import { Contact } from '../../models/contact';
 import {
     errorMessage,
     mockFormInput,
@@ -301,7 +301,7 @@ describe('AddressInputComponent', () => {
     });
 
     describe('as an autocomplete', () => {
-        const addresses: Address[] = [
+        const addresses: Contact[] = [
             {
                 address: '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6',
                 label: 'Testing Account 1'

@@ -11,7 +11,7 @@ import {
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenService } from '../../services/raiden.service';
 import { AddressBookService } from '../../services/address-book.service';
-import { Address } from '../../models/address';
+import { Contact } from '../../models/contact';
 import {
     debounceTime,
     flatMap,
@@ -64,7 +64,7 @@ export class AddressInputComponent
     readonly inputFieldFc = new FormControl('');
     readonly network$: Observable<Network>;
 
-    filteredOptions$: Observable<Address[]>;
+    filteredOptions$: Observable<Contact[]>;
     // noinspection JSUnusedLocalSymbols
     private onChange = (address: string) => {};
     private onTouch: any = () => {};
@@ -73,7 +73,7 @@ export class AddressInputComponent
         return this._value;
     }
 
-    trackByFn(address: Address) {
+    trackByFn(address: Contact) {
         return address.address;
     }
 
@@ -231,22 +231,22 @@ export class AddressInputComponent
         return this._errors;
     }
 
-    private _filter(value: string | Address): Observable<Address[]> {
-        const addresses$ = of(this.addressBookService.getArray());
+    private _filter(value: string | Contact): Observable<Contact[]> {
+        const contacts$ = of(this.addressBookService.getArray());
         if (!value || typeof value !== 'string') {
-            return addresses$;
+            return contacts$;
         }
 
         const keyword = value.toLowerCase();
 
-        function matches(addressObj: Address) {
-            const label = addressObj.label.toLocaleLowerCase();
-            const address = addressObj.address.toLocaleLowerCase();
+        function matches(contact: Contact) {
+            const label = contact.label.toLocaleLowerCase();
+            const address = contact.address.toLocaleLowerCase();
             return label.indexOf(keyword) >= 0 || address.indexOf(keyword) >= 0;
         }
 
-        return addresses$.pipe(
-            map((addresses: Address[]) => addresses.filter(matches))
+        return contacts$.pipe(
+            map((contacts: Contact[]) => contacts.filter(matches))
         );
     }
 }

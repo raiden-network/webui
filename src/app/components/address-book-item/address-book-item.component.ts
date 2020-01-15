@@ -8,7 +8,7 @@ import {
     SimpleChanges
 } from '@angular/core';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
-import { Address } from '../../models/address';
+import { Contact } from '../../models/contact';
 import {
     ConfirmationDialogComponent,
     ConfirmationDialogPayload
@@ -29,12 +29,12 @@ import {
     styleUrls: ['./address-book-item.component.css']
 })
 export class AddressBookItemComponent implements OnChanges {
-    @Input() address: Address;
+    @Input() contact: Contact;
     @Input() editMode = false;
     @Output() edit: EventEmitter<boolean> = new EventEmitter();
     @Output() cancelled: EventEmitter<boolean> = new EventEmitter();
-    @Output() update: EventEmitter<Address> = new EventEmitter();
-    @Output() delete: EventEmitter<Address> = new EventEmitter();
+    @Output() update: EventEmitter<Contact> = new EventEmitter();
+    @Output() delete: EventEmitter<Contact> = new EventEmitter();
 
     readonly form: FormGroup = this.fb.group({
         label: new FormControl(
@@ -68,12 +68,12 @@ export class AddressBookItemComponent implements OnChanges {
     }
 
     showConfirmation() {
-        const address = this.address;
+        const contact = this.contact;
         const payload: ConfirmationDialogPayload = {
             title: 'Delete Address',
             message: `Are you sure you want to delete the entry <strong>${
-                address.label
-            }</strong> for address <strong>${address.address}</strong>?`
+                contact.label
+            }</strong> for address <strong>${contact.address}</strong>?`
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
@@ -91,20 +91,20 @@ export class AddressBookItemComponent implements OnChanges {
         dialog
             .afterClosed()
             .pipe(completeIfCancel)
-            .subscribe(() => this.delete.emit(this.address));
+            .subscribe(() => this.delete.emit(this.contact));
     }
 
     updated() {
         const control = this.form.get('label');
         this.update.emit({
-            address: this.address.address,
+            address: this.contact.address,
             label: control.value as string
         });
         this.toggleEdit();
     }
 
     cancel() {
-        this.form.get('label').setValue(this.address.label);
+        this.form.get('label').setValue(this.contact.label);
         this.toggleEdit();
         this.cancelled.emit(true);
     }

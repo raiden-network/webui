@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
-import { Address } from '../../models/address';
+import { Contact } from '../../models/contact';
 
 @Component({
     selector: 'app-add-address-dialog',
@@ -22,7 +22,7 @@ export class AddAddressDialogComponent implements OnInit {
     ngOnInit() {}
 
     confirm() {
-        const result: Address = {
+        const result: Contact = {
             address: this.form.get('address').value,
             label: this.form.get('label').value
         };

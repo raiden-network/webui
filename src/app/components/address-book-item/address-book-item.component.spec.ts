@@ -4,7 +4,7 @@ import { AddressBookItemComponent } from './address-book-item.component';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
-import { Address } from '../../models/address';
+import { Contact } from '../../models/contact';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import {
     ErrorStateMatcher,
@@ -24,7 +24,7 @@ import { SimpleChange } from '@angular/core';
 describe('AddressBookItemComponent', () => {
     let component: AddressBookItemComponent;
     let fixture: ComponentFixture<AddressBookItemComponent>;
-    let testAddress: Address;
+    let testContact: Contact;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -50,11 +50,11 @@ describe('AddressBookItemComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(AddressBookItemComponent);
         component = fixture.componentInstance;
-        testAddress = {
+        testContact = {
             address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             label: 'Test Node 1'
         };
-        component.address = testAddress;
+        component.contact = testContact;
 
         fixture.detectChanges();
     });
@@ -101,7 +101,7 @@ describe('AddressBookItemComponent', () => {
         expect(element.query(By.css('#delete-address'))).toBeFalsy();
     }));
 
-    it('should emit a the address when the user confirms the delete', async(() => {
+    it('should emit a the contact when the user confirms the delete', async(() => {
         component.update.subscribe(address => {
             fail(`there should be no address emitted but got ${address}`);
         });
@@ -121,7 +121,7 @@ describe('AddressBookItemComponent', () => {
         fixture.detectChanges();
     }));
 
-    it('should emit the updated address when user saves an edit', async(() => {
+    it('should emit the updated contact when user saves an edit', async(() => {
         const element = fixture.debugElement;
 
         component.delete.subscribe(address => {
@@ -129,7 +129,7 @@ describe('AddressBookItemComponent', () => {
         });
 
         component.update.subscribe(address => {
-            expect(address.address).toBe(testAddress.address);
+            expect(address.address).toBe(testContact.address);
             expect(address.label).toBe('TestNode 2');
         });
 
@@ -179,7 +179,7 @@ describe('AddressBookItemComponent', () => {
         sub.unsubscribe();
     }));
 
-    it('should not emit a delete address when the dialog cancel is pressed', async(() => {
+    it('should not emit a delete contact when the dialog cancel is pressed', async(() => {
         const element = fixture.debugElement;
         const dialog = TestBed.get(MatDialog) as MockMatDialog;
         dialog.cancelled = true;
@@ -217,13 +217,13 @@ describe('AddressBookItemComponent', () => {
     }));
 
     it('should update the label if the underlying address is modified', function() {
-        const newAddress = {
-            address: component.address.address,
+        const newContact: Contact = {
+            address: component.contact.address,
             label: 'New Label'
         };
 
         component.ngOnChanges({
-            address: new SimpleChange(component.address, newAddress, false)
+            address: new SimpleChange(component.contact, newContact, false)
         });
 
         fixture.detectChanges();

@@ -14,7 +14,7 @@
         <img
             class="identicon"
             ngClass.xs="mobile"
-            [src]="identicon(address.address)"
+            [src]="identicon(contact.address)"
             alt="Address identicon"
         />
     </div>
@@ -30,7 +30,7 @@
                 <input
                     matInput
                     placeholder="Address"
-                    [value]="address.address"
+                    [value]="contact.address"
                     disabled
                 />
             </mat-form-field>
@@ -43,7 +43,7 @@
                     placeholder="Label"
                     formControlName="label"
                     (keyup.enter)="updated()"
-                    [value]="address.label"
+                    [value]="contact.label"
                 />
                 <mat-error *ngIf="form.invalid && (form.touched || form.dirty)">
                     Label cannot be empty!

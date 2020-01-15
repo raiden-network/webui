@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { addressValidator } from '../../shared/address.validator';
-import { Address, Addresses } from '../../models/address';
+import { Contact, Contacts } from '../../models/contact';
 import { AddressBookService } from '../../services/address-book.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
@@ -10,8 +10,8 @@ import {
     ConfirmationDialogComponent,
     ConfirmationDialogPayload
 } from '../confirmation-dialog/confirmation-dialog.component';
-import { flatMap, map } from 'rxjs/operators';
-import { EMPTY, Observable, of } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+import { EMPTY, of } from 'rxjs';
 import { MediaObserver } from '@angular/flex-layout';
 import { AddAddressDialogComponent } from '../add-address-dialog/add-address-dialog.component';
 
@@ -36,7 +36,7 @@ export class AddressBookComponent implements OnInit {
         label: ['']
     });
 
-    visibleAddresses: Array<Address>;
+    visibleAddresses: Array<Contact>;
     totalAddresses: number;
     pageSize = 10;
     currentPage = 0;
@@ -50,7 +50,7 @@ export class AddressBookComponent implements OnInit {
     }
 
     // noinspection JSMethodCanBeStatic
-    trackByFn(index, item: Address) {
+    trackByFn(index, item: Contact) {
         return item.address;
     }
 
@@ -75,7 +75,7 @@ export class AddressBookComponent implements OnInit {
         }
         const addressControl = this.form.get('address');
         const labelControl = this.form.get('label');
-        const address: Address = {
+        const address: Contact = {
             address: addressControl.value,
             label: labelControl.value
         };
@@ -91,12 +91,12 @@ export class AddressBookComponent implements OnInit {
         this.updateVisibleAddresses();
     }
 
-    deleteAddress(address: Address) {
+    deleteAddress(address: Contact) {
         this.addressBookService.delete(address);
         this.updateVisibleAddresses();
     }
 
-    updateAddress(address: Address) {
+    updateAddress(address: Contact) {
         this.addressBookService.save(address);
     }
 
@@ -160,7 +160,7 @@ export class AddressBookComponent implements OnInit {
         this._editedAddress = undefined;
     }
 
-    importAddresses(address: Addresses) {
+    importAddresses(address: Contacts) {
         this.addressBookService.store(address, true);
         this.updateVisibleAddresses();
     }

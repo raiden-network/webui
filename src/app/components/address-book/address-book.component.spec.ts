@@ -7,7 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AddressBookItemComponent } from '../address-book-item/address-book-item.component';
 import { DragUploadDirective } from '../../directives/drag-upload.directive';
 import { AddressBookService } from '../../services/address-book.service';
-import { Address, Addresses } from '../../models/address';
+import { Contact, Contacts } from '../../models/contact';
 import {
     ErrorStateMatcher,
     ShowOnDirtyErrorStateMatcher
@@ -22,7 +22,7 @@ import {
 } from '../../../testing/interaction-helper';
 import { DebugElement } from '@angular/core';
 import { TestProviders } from '../../../testing/test-providers';
-import { createTestAddresses } from '../../../testing/test-data';
+import { createTestContacts } from '../../../testing/test-data';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { PageBaseComponent } from '../page/page-base/page-base.component';
 import { AddressInputComponent } from '../address-input/address-input.component';
@@ -92,13 +92,13 @@ describe('AddressBookComponent', () => {
     });
 
     it('should create', () => {
-        serviceStub.getArray = () => createTestAddresses();
+        serviceStub.getArray = () => createTestContacts();
         fixture.detectChanges();
         expect(component).toBeTruthy();
     });
 
     it('should display 10 of 15 items by default', function() {
-        serviceStub.getArray = () => createTestAddresses();
+        serviceStub.getArray = () => createTestContacts();
         fixture.detectChanges();
 
         const paginatorLabel = fixture.debugElement.query(
@@ -116,7 +116,7 @@ describe('AddressBookComponent', () => {
     });
 
     it('should display 5 items after changing page', async(function() {
-        serviceStub.getArray = () => createTestAddresses();
+        serviceStub.getArray = () => createTestContacts();
         fixture.detectChanges();
 
         clickElement(fixture.debugElement, '.mat-paginator-navigation-next');
@@ -136,7 +136,7 @@ describe('AddressBookComponent', () => {
     }));
 
     it('should add an address when pressing add', function() {
-        const addresses: Address[] = [];
+        const addresses: Contact[] = [];
         serviceStub.getArray = () => addresses;
         serviceStub.save = address => addresses.push(address);
 
@@ -165,7 +165,7 @@ describe('AddressBookComponent', () => {
     });
 
     it('should delete all nodes when user confirms delete all', function() {
-        let addresses: Address[] = createTestAddresses();
+        let addresses: Contact[] = createTestContacts();
         serviceStub.getArray = () => {
             return addresses;
         };
@@ -189,7 +189,7 @@ describe('AddressBookComponent', () => {
         dialog.cancelled = true;
 
         // noinspection JSMismatchedCollectionQueryUpdate
-        let addresses: Address[] = createTestAddresses();
+        let addresses: Contact[] = createTestContacts();
         serviceStub.getArray = () => addresses;
         serviceStub.deleteAll = () => (addresses = []);
 
@@ -209,7 +209,7 @@ describe('AddressBookComponent', () => {
     });
 
     it('should only be able to edit one element at a time', function() {
-        serviceStub.getArray = () => createTestAddresses();
+        serviceStub.getArray = () => createTestContacts();
         fixture.detectChanges();
 
         const debugElements = fixture.debugElement.query(By.css('.page-list'))
@@ -298,9 +298,9 @@ describe('AddressBookComponent', () => {
     });
 
     it('should update stored data when the user updates a label', function() {
-        const testAddresses = createTestAddresses(5);
+        const testAddresses = createTestContacts(5);
         serviceStub.getArray = () => testAddresses;
-        serviceStub.save = function(address: Address) {
+        serviceStub.save = function(address: Contact) {
             const index = testAddresses.findIndex(
                 value => value.address === address.address
             );
@@ -354,7 +354,7 @@ describe('AddressBookComponent', () => {
 
         const testAddresses = [];
         serviceStub.getArray = () => testAddresses;
-        serviceStub.save = function(address: Address) {
+        serviceStub.save = function(address: Contact) {
             const index = testAddresses.findIndex(
                 value => value.address === address.address
             );
@@ -387,9 +387,9 @@ describe('AddressBookComponent', () => {
     });
 
     it('should delete an address from the list when delete is called', async function() {
-        const testAddresses = createTestAddresses(2);
+        const testAddresses = createTestContacts(2);
         serviceStub.getArray = () => testAddresses;
-        serviceStub.save = function(address: Address) {
+        serviceStub.save = function(address: Contact) {
             const index = testAddresses.findIndex(
                 value => value.address === address.address
             );
@@ -400,7 +400,7 @@ describe('AddressBookComponent', () => {
                 testAddresses[index] = address;
             }
         };
-        serviceStub.delete = function(address: Address) {
+        serviceStub.delete = function(address: Contact) {
             const index = testAddresses.findIndex(
                 value => value.address === address.address
             );
@@ -432,9 +432,9 @@ describe('AddressBookComponent', () => {
     });
 
     it('should display the addresses when the user imports them', async function() {
-        const testAddresses: Address[] = [];
+        const testAddresses: Contact[] = [];
         serviceStub.getArray = () => testAddresses;
-        serviceStub.store = function(addresses: Addresses) {
+        serviceStub.store = function(addresses: Contacts) {
             for (const address in addresses) {
                 if (!addresses.hasOwnProperty(address)) {
                     continue;
@@ -453,8 +453,8 @@ describe('AddressBookComponent', () => {
 
         expect(fixture.debugElement.query(By.css('.page-list'))).toBe(null);
 
-        const testData = createTestAddresses(5);
-        const addressDict: Addresses = {};
+        const testData = createTestContacts(5);
+        const addressDict: Contacts = {};
         testData.forEach(value => {
             addressDict[value.address] = value.label;
         });
@@ -471,13 +471,13 @@ describe('AddressBookComponent', () => {
     });
 
     it('should not show an error without a user input', () => {
-        serviceStub.getArray = () => createTestAddresses();
+        serviceStub.getArray = () => createTestContacts();
         fixture.detectChanges();
         expect(errorMessage(fixture.debugElement)).toBeFalsy();
     });
 
     it('should show errors for the label of a new entry while the user types', () => {
-        serviceStub.getArray = () => createTestAddresses();
+        serviceStub.getArray = () => createTestContacts();
         fixture.detectChanges();
 
         mockInput(fixture.debugElement, '#addresses-label', '');
@@ -488,7 +488,7 @@ describe('AddressBookComponent', () => {
     });
 
     it('should not add an address by enter if the form is invalid', function() {
-        const addresses: Address[] = [];
+        const addresses: Contact[] = [];
         serviceStub.getArray = () => addresses;
         serviceStub.save = address => addresses.push(address);
 

@@ -1,21 +1,21 @@
-import { Address } from '../app/models/address';
+import { Contact } from '../app/models/contact';
 import Web3 from 'web3';
 import { Channel } from '../app/models/channel';
 import BigNumber from 'bignumber.js';
 
-export function createTestAddresses(count: number = 15): Address[] {
+export function createTestContacts(count: number = 15): Contact[] {
     const web3 = new Web3('http://localhost:8545');
-    const addresses: Address[] = [];
+    const contacts: Contact[] = [];
 
     for (let i = 0; i < count; i++) {
         const account = web3.eth.accounts.create(web3.utils.randomHex(32));
-        addresses.push({
+        contacts.push({
             address: account.address,
             label: `Random Account ${i + 1}`
         });
     }
 
-    return addresses;
+    return contacts;
 }
 
 export const createChannel: (payload: {
