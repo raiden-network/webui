@@ -33,7 +33,8 @@ const icon_names = [
     'faucet',
     'transfer',
     'add',
-    'eye'
+    'eye',
+    'thunderbolt'
 ];
 
 @Component({

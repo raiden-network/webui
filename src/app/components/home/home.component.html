@@ -11,15 +11,15 @@
         <app-token-carousel
             (selectedToken)="token = $event"
         ></app-token-carousel>
-        <div class="transfer" fxLayout="row" fxLayoutAlign="center">
+        <div fxLayout="row" fxLayoutAlign="center">
             <button
+                class="button"
                 mat-flat-button
                 color="accent"
                 (click)="pay()"
-                fxFlex="0 0 148px"
             >
                 <mat-icon
-                    class="transfer__icon"
+                    class="button__icon"
                     svgIcon="transfer"
                     aria-label="Transfer tokens"
                 >
@@ -28,7 +28,25 @@
                     Transfer
                 </span>
             </button>
-            <span fxFlex="0 1 792px"></span>
+            <div fxFlex="0 0 613px"></div>
+            <div *ngIf="!token" fxFlex="0 0 181px"></div>
+            <button
+                *ngIf="!!token"
+                class="button"
+                mat-flat-button
+                color="accent"
+                (click)="openConnectionManager()"
+            >
+                <mat-icon
+                    class="button__icon button__icon--small"
+                    svgIcon="thunderbolt"
+                    aria-label="Open quick connect dialog"
+                >
+                </mat-icon>
+                <span>
+                    Quick connect
+                </span>
+            </button>
         </div>
     </div>
     <app-channel-list [token]="token"></app-channel-list>

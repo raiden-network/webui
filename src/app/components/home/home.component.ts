@@ -11,6 +11,11 @@ import { RaidenService } from '../../services/raiden.service';
 import { UserToken } from '../../models/usertoken';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
+import {
+    ConnectionManagerDialogPayload,
+    ConnectionManagerDialogComponent
+} from '../connection-manager-dialog/connection-manager-dialog.component';
+import { TokenPollingService } from '../../services/token-polling.service';
 
 @Component({
     selector: 'app-home',
@@ -24,7 +29,8 @@ export class HomeComponent implements OnInit {
         private dialog: MatDialog,
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService,
-        private pendingTransferPollingService: PendingTransferPollingService
+        private pendingTransferPollingService: PendingTransferPollingService,
+        private tokenPollingService: TokenPollingService
     ) {}
 
     ngOnInit() {}
@@ -60,6 +66,41 @@ export class HomeComponent implements OnInit {
             .subscribe(() => {
                 this.channelPollingService.refresh();
                 this.pendingTransferPollingService.refresh();
+            });
+    }
+
+    openConnectionManager(join: boolean = true) {
+        const payload: ConnectionManagerDialogPayload = {
+            tokenAddress: this.token.address,
+            funds: new BigNumber(0),
+            decimals: this.token.decimals,
+            join: join
+        };
+
+        const joinDialogRef = this.dialog.open(
+            ConnectionManagerDialogComponent,
+            {
+                data: payload
+            }
+        );
+
+        joinDialogRef
+            .afterClosed()
+            .pipe(
+                flatMap((result: ConnectionManagerDialogPayload) => {
+                    if (!result) {
+                        return EMPTY;
+                    }
+                    return this.raidenService.connectTokenNetwork(
+                        result.funds,
+                        result.tokenAddress,
+                        result.join
+                    );
+                })
+            )
+            .subscribe(() => {
+                this.tokenPollingService.refresh();
+                this.channelPollingService.refresh();
             });
     }
 }

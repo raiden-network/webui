@@ -6,7 +6,15 @@
     margin-bottom: 95px;
 }
 
-.transfer__icon {
+.button {
+    padding: 0 25px !important;
+}
+
+.button__icon {
     width: 32px;
     margin-right: 15px;
+}
+
+.button__icon--small {
+    width: 24px !important;
 }
