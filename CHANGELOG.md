@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - [#227] Removes non-decimal input for token amounts.
+- [#189] Only shows one notification for a channel deposit.
 
 ## [0.11.0] - 2019-12-20
 ### Changed
@@ -145,6 +146,7 @@ token network.
 [#196]: https://github.com/raiden-network/webui/issues/196
 [#194]: https://github.com/raiden-network/webui/issues/194
 [#190]: https://github.com/raiden-network/webui/issues/190
+[#189]: https://github.com/raiden-network/webui/issues/189
 [#184]: https://github.com/raiden-network/webui/issues/184
 [#181]: https://github.com/raiden-network/webui/issues/181
 [#179]: https://github.com/raiden-network/webui/issues/179
