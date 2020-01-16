@@ -385,26 +385,18 @@ export class RaidenService {
     }
 
     public getPaymentHistory(
-        tokenAddress: string,
-        targetAddress?: string
+        tokenAddress?: string,
+        partnerAddress?: string
     ): Observable<PaymentEvent[]> {
-        return this.http
-            .get<PaymentEvent[]>(
-                `${this.raidenConfig.api}/payments/${tokenAddress}`
-            )
-            .pipe(
-                map(events => {
-                    if (targetAddress) {
-                        return events.filter(
-                            event =>
-                                event.initiator === targetAddress ||
-                                event.target === targetAddress
-                        );
-                    } else {
-                        return events;
-                    }
-                })
-            );
+        let paymentsResource = `${this.raidenConfig.api}/payments`;
+        if (tokenAddress) {
+            paymentsResource += `/${tokenAddress}`;
+            if (partnerAddress) {
+                paymentsResource += `/${partnerAddress}`;
+            }
+        }
+
+        return this.http.get<PaymentEvent[]>(paymentsResource);
     }
 
     public modifyDeposit(

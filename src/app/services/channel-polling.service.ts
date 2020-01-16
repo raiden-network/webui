@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { scan, switchMap, tap, map, shareReplay } from 'rxjs/operators';
 import { Channel } from '../models/channel';
-import { amountToDecimal } from '../utils/amount.converter';
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { backoff } from '../shared/backoff.operator';
-import BigNumber from 'bignumber.js';
 import { NotificationService } from './notification.service';
 import { UiMessage } from '../models/notification';
 
@@ -41,7 +39,6 @@ export class ChannelPollingService {
                 this.refreshingSubject.next(false);
             }),
             scan((oldChannels: Channel[], newChannels: Channel[]) => {
-                this.checkForBalanceChanges(oldChannels, newChannels);
                 this.checkForNewChannels(oldChannels, newChannels);
                 return newChannels;
             }, []),
@@ -108,24 +105,6 @@ export class ChannelPollingService {
         this.loaded = true;
     }
 
-    private checkForBalanceChanges(
-        oldChannels: Channel[],
-        newChannels: Channel[]
-    ) {
-        for (const oldChannel of oldChannels) {
-            const newChannel = newChannels.find(channel =>
-                this.isTheSameChannel(oldChannel, channel)
-            );
-            if (
-                !newChannel ||
-                newChannel.balance.isLessThanOrEqualTo(oldChannel.balance)
-            ) {
-                continue;
-            }
-            this.informAboutBalanceUpdate(newChannel, oldChannel.balance);
-        }
-    }
-
     // noinspection JSMethodCanBeStatic
     private isTheSameChannel(channel1: Channel, channel2: Channel): boolean {
         return (
@@ -142,24 +121,6 @@ export class ChannelPollingService {
         const message: UiMessage = {
             title: 'New channel',
             description: `A new channel (${channelId}) was opened with ${partnerAddress} in ${network} network`
-        };
-
-        this.notificationService.addInfoNotification(message);
-    }
-
-    private informAboutBalanceUpdate(
-        channel: Channel,
-        previousBalance: BigNumber
-    ) {
-        const amount = channel.balance.minus(previousBalance);
-        const symbol = channel.userToken.symbol;
-        const channelId = channel.channel_identifier;
-        const partnerAddress = channel.partner_address;
-        const balance = amountToDecimal(amount, channel.userToken.decimals);
-        const formattedBalance = balance.toFixed();
-        const message: UiMessage = {
-            title: 'Balance Update',
-            description: `The balance of channel ${channelId} with ${partnerAddress} was updated by ${formattedBalance} ${symbol}`
         };
 
         this.notificationService.addInfoNotification(message);

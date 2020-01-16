@@ -47,90 +47,105 @@ describe('PaymentHistoryComponent', () => {
         }
     };
 
+    const tokenNetwork = '0x0f114A1E9Db192502E7856309cc899952b3db1ED';
+    const partnerAddress = '0xc52952Ebad56f2c5E5b42bb881481Ae27D036475';
+
     const mockData: PaymentEvent[] = [
         {
             event: 'EventPaymentSendFailed',
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             reason: 'insufficient funds',
             identifier: new BigNumber(1536847754083),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         },
         {
             event: 'EventPaymentReceivedSuccess',
             amount: new BigNumber(5),
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             identifier: new BigNumber(1536847755083),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: new BigNumber(35),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             identifier: new BigNumber(1536847756083),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: new BigNumber(20),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             identifier: new BigNumber(1536847757083),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         },
         {
             event: 'EventPaymentReceivedSuccess',
             amount: new BigNumber(5),
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             identifier: new BigNumber(1536847758103),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: new BigNumber(11),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             identifier: new BigNumber(1536847759000),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: new BigNumber(1),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             identifier: new BigNumber(1536847760030),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: new BigNumber(4),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             identifier: new BigNumber(1536847760130),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         },
         {
             event: 'EventPaymentReceivedSuccess',
             amount: new BigNumber(8),
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             identifier: new BigNumber(1536847760230),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         },
         {
             event: 'EventPaymentSentSuccess',
             amount: new BigNumber(2),
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             identifier: new BigNumber(1536847760330),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         },
         {
             event: 'EventPaymentReceivedSuccess',
             amount: new BigNumber(5),
             initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             identifier: new BigNumber(1536847760430),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         },
         {
             event: 'EventPaymentSendFailed',
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             reason: 'insufficient funds',
             identifier: new BigNumber(1536847760442),
-            log_time: '2019-03-07T18:19:13.976'
+            log_time: '2019-03-07T18:19:13.976',
+            token_address: tokenNetwork
         }
     ];
 
@@ -138,9 +153,6 @@ describe('PaymentHistoryComponent', () => {
         const historyList = fixture.debugElement.query(By.css('.page-list'));
         return historyList.queryAll(By.directive(PageItemComponent));
     }
-
-    const tokenNetwork = '0x0f114A1E9Db192502E7856309cc899952b3db1ED';
-    const partnerAddress = '0xc52952Ebad56f2c5E5b42bb881481Ae27D036475';
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({

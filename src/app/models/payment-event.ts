@@ -8,4 +8,5 @@ export interface PaymentEvent {
     readonly amount?: BigNumber;
     readonly identifier: BigNumber;
     readonly log_time: string;
+    readonly token_address: string;
 }
