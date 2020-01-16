@@ -86,19 +86,6 @@ describe('ChannelPollingService', () => {
         userToken: token
     };
 
-    const channel1UpdatedNegative: Channel = {
-        state: 'opened',
-        channel_identifier: new BigNumber(1),
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-        reveal_timeout: 600,
-        balance: new BigNumber(5),
-        total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10),
-        settle_timeout: 500,
-        userToken: token
-    };
-
     const channel2: Channel = {
         state: 'opened',
         channel_identifier: new BigNumber(2),
@@ -137,43 +124,6 @@ describe('ChannelPollingService', () => {
             expect(service).toBeTruthy();
         }
     ));
-
-    it('should show a notification on balance increases', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(
-            from([[channel1], [channel1Updated]])
-        );
-        const subscription = pollingService.channels().subscribe();
-
-        const notificationMessage: UiMessage = {
-            title: 'Balance Update',
-            description: `The balance of channel ${
-                channel1.channel_identifier
-            } with ${channel1.partner_address} was updated by 0.0000001 ${
-                channel1.userToken.symbol
-            }`
-        };
-        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
-            1
-        );
-        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
-
-        subscription.unsubscribe();
-        flush();
-    }));
-
-    it('should not show a notification on when balance is reduced', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(
-            from([[channel1], [channel1UpdatedNegative]])
-        );
-        const subscription = pollingService.channels().subscribe();
-        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
-            0
-        );
-        subscription.unsubscribe();
-        flush();
-    }));
 
     it('should not send notification about channel the first time loading the channels', fakeAsync(() => {
         raidenServiceSpy.and.returnValues(from([[channel1], [channel1]]));

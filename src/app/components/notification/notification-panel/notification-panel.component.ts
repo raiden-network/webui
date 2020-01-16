@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { NotificationMessage } from '../../../models/notification';
 import { PendingTransferPollingService } from '../../../services/pending-transfer-polling.service';
 import { Animations } from '../../../animations/animations';
+import { PaymentHistoryPollingService } from '../../../services/payment-history-polling.service';
 
 @Component({
     selector: 'app-notification-panel',
@@ -26,7 +27,8 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
 
     constructor(
         private notificationService: NotificationService,
-        private pendingTransferPollingService: PendingTransferPollingService
+        private pendingTransferPollingService: PendingTransferPollingService,
+        private paymentHistoryPollingService: PaymentHistoryPollingService
     ) {}
 
     ngOnInit() {
@@ -35,15 +37,19 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
                 this.notifications = notifications;
             }
         );
+
         const pendingActionsSubscription = this.notificationService.pendingActions$.subscribe(
             (pendingActions: NotificationMessage[]) => {
                 this.pendingActions = pendingActions;
             }
         );
-        const pendingTransfersSubscription = this.pendingTransferPollingService.pendingTransfers$.subscribe();
-
         this.subscription.add(pendingActionsSubscription);
+
+        const pendingTransfersSubscription = this.pendingTransferPollingService.pendingTransfers$.subscribe();
         this.subscription.add(pendingTransfersSubscription);
+
+        const paymentHistorySubscription = this.paymentHistoryPollingService.paymentHistory$.subscribe();
+        this.subscription.add(paymentHistorySubscription);
     }
 
     ngOnDestroy() {

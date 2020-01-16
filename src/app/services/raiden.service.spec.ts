@@ -30,6 +30,7 @@ import { NotificationService } from './notification.service';
 import { PendingTransfer } from '../models/pending-transfer';
 import { UiMessage } from '../models/notification';
 import { ErrorHandlingInterceptor } from '../interceptors/error-handling.interceptor';
+import { PaymentEvent } from '../models/payment-event';
 
 describe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
@@ -63,6 +64,15 @@ describe('RaidenService', () => {
         totalDeposit: new BigNumber(10),
         totalWithdraw: new BigNumber(10)
     });
+
+    const paymentEvent: PaymentEvent = {
+        log_time: '2019-12-23T10:26:18.188000',
+        initiator: '0xc52952ebad56f2c5e5b42bb881481ae27d036475',
+        identifier: new BigNumber(1577096774214),
+        event: 'EventPaymentReceivedSuccess',
+        amount: new BigNumber(100000000000000),
+        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
+    };
 
     beforeEach(() => {
         notificationService = jasmine.createSpyObj('NotificationService', [
@@ -1370,4 +1380,26 @@ describe('RaidenService', () => {
         });
         flush();
     }));
+
+    it('should query the payment history', () => {
+        const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
+        service.getPaymentHistory(tokenAddress, partnerAddress).subscribe(
+            (history: PaymentEvent[]) => {
+                expect(history).toEqual([paymentEvent]);
+            },
+            error => {
+                fail(error);
+            }
+        );
+
+        const getPendingTransfersRequest = mockHttp.expectOne({
+            url: `${endpoint}/payments/${tokenAddress}/${partnerAddress}`,
+            method: 'GET'
+        });
+
+        getPendingTransfersRequest.flush(losslessStringify([paymentEvent]), {
+            status: 200,
+            statusText: ''
+        });
+    });
 });
