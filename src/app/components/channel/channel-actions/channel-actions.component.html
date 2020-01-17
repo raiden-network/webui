@@ -1,4 +1,4 @@
-<div class="actions" fxLayout="row" fxLayoutGap="20px" stopClickPropagation>
+<div class="actions" fxLayout="row" fxLayoutGap="20px">
     <button
         class="actions__button"
         id="pay-button"
@@ -6,6 +6,7 @@
         color="accent"
         [disabled]="channel.state !== 'opened' || channel.balance.isZero()"
         (click)="pay()"
+        stopClickPropagation
     >
         Direct Transfer
     </button>
@@ -16,6 +17,7 @@
         color="accent"
         [disabled]="channel.state !== 'opened'"
         (click)="deposit()"
+        stopClickPropagation
     >
         Deposit
     </button>
@@ -26,6 +28,7 @@
         color="accent"
         [disabled]="channel.state !== 'opened'"
         (click)="withdraw()"
+        stopClickPropagation
     >
         Withdraw
     </button>
@@ -36,6 +39,7 @@
         color="accent"
         [disabled]="channel.state !== 'opened'"
         (click)="close()"
+        stopClickPropagation
     >
         Close
     </button>

@@ -1,14 +1,10 @@
-<div
-    class="actions"
-    fxLayout="row"
-    fxLayoutAlign="space-between"
-    stopClickPropagation
->
+<div class="actions" fxLayout="row" fxLayoutAlign="space-between">
     <button
         class="actions__button"
         mat-flat-button
         color="accent"
         (click)="pay()"
+        stopClickPropagation
     >
         Transfer
     </button>
@@ -16,7 +12,7 @@
         class="actions__button"
         mat-flat-button
         color="accent"
-        (click)="deposit()"
+        stopClickPropagation
     >
         Edit
     </button>
@@ -25,6 +21,7 @@
         mat-flat-button
         color="accent"
         (click)="delete()"
+        stopClickPropagation
     >
         Delete
     </button>
