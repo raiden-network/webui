@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -21,6 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CdkTableModule } from '@angular/cdk/table';
 
 @NgModule({
     exports: [
@@ -43,7 +43,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatSortModule,
         MatSidenavModule,
         MatCheckboxModule,
-        MatExpansionModule
+        MatExpansionModule,
+        CdkTableModule
     ],
     imports: [CommonModule],
     declarations: []

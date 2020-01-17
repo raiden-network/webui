@@ -84,6 +84,13 @@ body {
     line-height: 32px !important;
 }
 
+.mat-tooltip {
+    font-size: 13px !important;
+    line-height: 15px !important;
+    font-weight: 400 !important;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
 .full-width-form-field {
     width: 100%;
 }

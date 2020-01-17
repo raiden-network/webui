@@ -50,7 +50,11 @@
         </div>
     </div>
     <app-channel-list [token]="token"></app-channel-list>
-    <div fxLayout="row" fxFlexOffset="54px">
-        <app-contact-list fxFlex="0 0 341px"></app-contact-list>
+    <div fxLayout="row" fxLayoutGap="61px">
+        <app-contact-list fxFlex="1 1 341px"></app-contact-list>
+        <app-history-table
+            [token]="token"
+            fxFlex="1 1 auto"
+        ></app-history-table>
     </div>
 </div>

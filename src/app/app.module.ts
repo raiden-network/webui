@@ -76,6 +76,7 @@ import { StopClickPropagationDirective } from './directives/stop-click-propagati
 import { ContactListComponent } from './components/contact-list/contact-list.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { ContactActionsComponent } from './components/contact/contact-actions/contact-actions.component';
+import { HistoryTableComponent } from './components/history-table/history-table.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -144,7 +145,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         StopClickPropagationDirective,
         ContactListComponent,
         ContactComponent,
-        ContactActionsComponent
+        ContactActionsComponent,
+        HistoryTableComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

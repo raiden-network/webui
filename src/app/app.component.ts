@@ -34,7 +34,9 @@ const icon_names = [
     'transfer',
     'add',
     'eye',
-    'thunderbolt'
+    'thunderbolt',
+    'received',
+    'sent'
 ];
 
 @Component({
