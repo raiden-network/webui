@@ -1,17 +1,13 @@
-import {
-    Component,
-    OnInit,
-    OnDestroy,
-    Output,
-    EventEmitter
-} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserToken } from '../../models/usertoken';
 import { TokenPollingService } from '../../services/token-polling.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { TokenUtils } from '../../utils/token.utils';
 import { Animations } from '../../animations/animations';
 import { SelectedTokenService } from '../../services/selected-token.service';
+import { Network } from '../../utils/network-info';
+import { RaidenService } from '../../services/raiden.service';
 
 interface AllNetworksView {
     allNetworksView: boolean;
@@ -28,6 +24,7 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     currentSelection = 0;
     selectables = 0;
     totalChannels = 0;
+    readonly network$: Observable<Network>;
 
     private tokens: UserToken[] = [];
     private subscription: Subscription;
@@ -35,8 +32,11 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     constructor(
         private tokenPollingService: TokenPollingService,
         private channelPollingService: ChannelPollingService,
-        private selectedTokenService: SelectedTokenService
-    ) {}
+        private selectedTokenService: SelectedTokenService,
+        private raidenService: RaidenService
+    ) {
+        this.network$ = raidenService.network$;
+    }
 
     ngOnInit() {
         this.subscription = this.tokenPollingService.tokens$.subscribe(

@@ -26,6 +26,7 @@
             [openChannels]="getNumberOfChannels(item)"
             [position]="i"
             [allNetworksView]="isAllNetworksView(item)"
+            [onMainnet]="(network$ | async).chainId === 1"
             (select)="select(currentSelection + i)"
             [@easeInOut]="'in'"
         >

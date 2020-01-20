@@ -4,22 +4,51 @@
     [class.card--middle]="position === 1"
     [class.card--last]="position > 1"
     fxLayout="column"
-    fxLayoutAlign="space-between start"
+    fxLayoutAlign="center start"
     (click)="select.emit(true)"
 >
-    <div class="card__state">
+    <div class="top" fxLayout="row" fxLayoutAlign="start center">
         <span *ngIf="position === 0; else inactive">
             Viewing
         </span>
         <ng-template #inactive>
             View network
         </ng-template>
+        <div fxFlex="1 1 auto"></div>
+        <ng-container
+            *ngIf="!allNetworksView && (!onMainnet || openChannels > 0)"
+        >
+            <button
+                mat-icon-button
+                [matMenuTriggerFor]="options"
+                stopClickPropagation
+            >
+                <mat-icon svgIcon="more" aria-label="Options"></mat-icon>
+            </button>
+            <mat-menu
+                class="options"
+                #options="matMenu"
+                [overlapTrigger]="true"
+                xPosition="before"
+            >
+                <button *ngIf="!onMainnet" mat-menu-item (click)="mint()">
+                    Mint
+                </button>
+                <div
+                    *ngIf="!onMainnet && openChannels > 0"
+                    class="options__divider"
+                ></div>
+                <button
+                    *ngIf="openChannels > 0"
+                    mat-menu-item
+                    (click)="leaveNetwork()"
+                >
+                    Leave network
+                </button>
+            </mat-menu>
+        </ng-container>
     </div>
-    <div
-        class="card__network"
-        fxLayout="row"
-        fxLayoutAlign="space-between center"
-    >
+    <div class="card__network">
         <span
             *ngIf="!allNetworksView; else all_networks"
             [matTooltip]="token.name"
@@ -29,12 +58,6 @@
         <ng-template #all_networks>
             All Networks
         </ng-template>
-        <mat-icon
-            *ngIf="position > 0"
-            class="card__go-icon"
-            svgIcon="go"
-            aria-hidden="true"
-        ></mat-icon>
     </div>
     <div class="card__values" fxLayout="row" fxLayoutAlign="space-between">
         <div
