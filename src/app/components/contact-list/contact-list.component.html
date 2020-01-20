@@ -4,13 +4,37 @@
     fxLayoutGap="20px"
     fxLayoutAlign="space-between start"
 >
-    <div class="list__labels" fxLayout="row">
-        <span>Contacts</span>
-        <div fxFlex="1 1 auto"></div>
+    <div class="list__labels" fxLayout="row" fxLayoutAlign="start center">
         <span
-            >{{ showAll ? totalContacts : visibleContacts.length }} of
+            >Contacts -
+            {{ showAll ? totalContacts : visibleContacts.length }} of
             {{ totalContacts }}</span
         >
+        <div fxFlex="1 1 auto"></div>
+        <button mat-icon-button [matMenuTriggerFor]="options">
+            <mat-icon svgIcon="more" aria-label="Options"></mat-icon>
+        </button>
+        <mat-menu
+            class="options"
+            #options="matMenu"
+            [overlapTrigger]="true"
+            xPosition="before"
+        >
+            <input
+                #upload_select
+                class="options__file-input"
+                type="file"
+                accept="application/json, .json"
+                (change)="filesSelected($event.target.files)"
+            />
+            <button mat-menu-item (click)="upload_select.click()">
+                Import contacts
+            </button>
+            <div class="options__divider"></div>
+            <button mat-menu-item (click)="downloadContacts()">
+                Export contacts
+            </button>
+        </mat-menu>
     </div>
     <app-contact
         *ngFor="

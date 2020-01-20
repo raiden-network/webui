@@ -84,11 +84,34 @@ body {
     line-height: 32px !important;
 }
 
+.mat-icon-button .mat-icon {
+    height: 20px !important;
+    width: 20px !important;
+}
+
 .mat-tooltip {
     font-size: 13px !important;
     line-height: 15px !important;
     font-weight: 400 !important;
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    border-radius: 20px !important;
+}
+
+.mat-menu-panel {
+    box-shadow: none !important;
+    border-radius: 20px !important;
+    background-color: #000000 !important;
+    min-height: 38px !important;
+}
+
+.mat-menu-content {
+    padding: 0 !important;
+}
+
+.mat-menu-item {
+    font-size: 13px !important;
+    line-height: 15px !important;
+    height: 38px !important;
+    padding: 0 20px !important;
 }
 
 .full-width-form-field {

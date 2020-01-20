@@ -4,13 +4,10 @@
     fxLayoutGap="22px"
     fxLayoutAlign="space-between start"
 >
-    <div class="list__labels" fxLayout="row">
-        <span>Open Channels</span>
-        <div fxFlex="1 1 auto"></div>
-        <span
-            >{{ showAll ? totalChannels : visibleChannels.length }} of
-            {{ totalChannels }}</span
-        >
+    <div class="list__labels">
+        Open Channels -
+        {{ showAll ? totalChannels : visibleChannels.length }} of
+        {{ totalChannels }}
     </div>
     <button
         mat-flat-button

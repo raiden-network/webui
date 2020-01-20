@@ -36,7 +36,8 @@ const icon_names = [
     'eye',
     'thunderbolt',
     'received',
-    'sent'
+    'sent',
+    'more'
 ];
 
 @Component({

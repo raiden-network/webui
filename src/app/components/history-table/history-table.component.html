@@ -5,8 +5,16 @@
     fxLayoutAlign="space-between stretch"
     *ngIf="history.length > 0"
 >
-    <div class="history__label">History</div>
-    <cdk-table class="table" [dataSource]="history" [trackBy]="trackByFn">
+    <div class="history__label" fxLayout="row" fxLayoutAlign="start center">
+        History
+    </div>
+    <cdk-table
+        class="table"
+        [dataSource]="history"
+        [trackBy]="trackByFn"
+        fxLayout="column"
+        fxLayoutGap="13px"
+    >
         <ng-container cdkColumnDef="event">
             <cdk-cell *cdkCellDef="let event">
                 <div

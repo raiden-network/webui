@@ -27,3 +27,15 @@
 .button__icon--big {
     height: 24px !important;
 }
+
+.options__file-input {
+    display: none;
+}
+
+.options__divider {
+    height: 1px;
+    width: 84%;
+    margin: 0 auto;
+    background-color: #ffffff;
+    opacity: 0.17;
+}

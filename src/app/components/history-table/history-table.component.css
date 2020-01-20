@@ -9,10 +9,11 @@
     letter-spacing: 0.91px;
     line-height: 13px !important;
     text-transform: uppercase;
+    height: 32px;
 }
 
 .table__row {
-    height: 80px;
+    padding-bottom: 13px;
     border-bottom: 1px solid rgba(151, 151, 151, 0.21);
 }
 
