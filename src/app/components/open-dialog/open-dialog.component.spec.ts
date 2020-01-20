@@ -43,7 +43,7 @@ describe('OpenDialogComponent', () => {
 
     beforeEach(async(() => {
         const payload: OpenDialogPayload = {
-            ownAddress: '0x00AF5cBfc8dC76cd599aF623E60F763228906F3E',
+            tokenAddress: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             defaultSettleTimeout: 500,
             revealTimeout: 10
         };

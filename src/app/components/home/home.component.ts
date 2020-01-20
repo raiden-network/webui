@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
     PaymentDialogPayload,
     PaymentDialogComponent
@@ -6,7 +6,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { MatDialog } from '@angular/material/dialog';
 import { flatMap } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { EMPTY, Subscription } from 'rxjs';
 import { RaidenService } from '../../services/raiden.service';
 import { UserToken } from '../../models/usertoken';
 import { ChannelPollingService } from '../../services/channel-polling.service';
@@ -16,28 +16,44 @@ import {
     ConnectionManagerDialogComponent
 } from '../connection-manager-dialog/connection-manager-dialog.component';
 import { TokenPollingService } from '../../services/token-polling.service';
+import { SelectedTokenService } from '../../services/selected-token.service';
 
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
-    token: UserToken;
+export class HomeComponent implements OnInit, OnDestroy {
+    selectedToken: UserToken;
+
+    private subscription: Subscription;
 
     constructor(
         private dialog: MatDialog,
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService,
         private pendingTransferPollingService: PendingTransferPollingService,
-        private tokenPollingService: TokenPollingService
+        private tokenPollingService: TokenPollingService,
+        private selectedTokenService: SelectedTokenService
     ) {}
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.subscription = this.selectedTokenService.selectedToken$.subscribe(
+            (token: UserToken) => {
+                this.selectedToken = token;
+            }
+        );
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
 
     pay() {
         const payload: PaymentDialogPayload = {
-            tokenAddress: this.token ? this.token.address : '',
+            tokenAddress: !!this.selectedToken
+                ? this.selectedToken.address
+                : '',
             targetAddress: '',
             amount: new BigNumber(0),
             paymentIdentifier: null
@@ -71,9 +87,9 @@ export class HomeComponent implements OnInit {
 
     openConnectionManager(join: boolean = true) {
         const payload: ConnectionManagerDialogPayload = {
-            tokenAddress: this.token.address,
+            tokenAddress: this.selectedToken.address,
             funds: new BigNumber(0),
-            decimals: this.token.decimals,
+            decimals: this.selectedToken.decimals,
             join: join
         };
 

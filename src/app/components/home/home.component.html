@@ -8,9 +8,7 @@
     fxLayoutGap="37px"
 >
     <div fxLayout="column" fxLayoutGap="21px" fxFlexOffset="39px">
-        <app-token-carousel
-            (selectedToken)="token = $event"
-        ></app-token-carousel>
+        <app-token-carousel></app-token-carousel>
         <div fxLayout="row" fxLayoutAlign="center">
             <button
                 class="button"
@@ -29,9 +27,9 @@
                 </span>
             </button>
             <div fxFlex="0 0 613px"></div>
-            <div *ngIf="!token" fxFlex="0 0 181px"></div>
+            <div *ngIf="!selectedToken" fxFlex="0 0 181px"></div>
             <button
-                *ngIf="!!token"
+                *ngIf="!!selectedToken"
                 class="button"
                 mat-flat-button
                 color="accent"
@@ -49,12 +47,9 @@
             </button>
         </div>
     </div>
-    <app-channel-list [token]="token"></app-channel-list>
+    <app-channel-list></app-channel-list>
     <div fxLayout="row" fxLayoutGap="61px">
         <app-contact-list fxFlex="1 1 341px"></app-contact-list>
-        <app-history-table
-            [token]="token"
-            fxFlex="1 1 auto"
-        ></app-history-table>
+        <app-history-table fxFlex="1 1 auto"></app-history-table>
     </div>
 </div>

@@ -23,7 +23,9 @@
     >
         <mat-icon class="button__icon" svgIcon="add" aria-hidden="true">
         </mat-icon>
-        <span> Open new {{ !!token ? token.symbol : '' }} Channel </span>
+        <span>
+            Open new {{ !!selectedToken ? selectedToken.symbol : '' }} Channel
+        </span>
     </button>
     <app-channel
         *ngFor="

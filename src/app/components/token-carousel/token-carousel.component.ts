@@ -2,8 +2,6 @@ import {
     Component,
     OnInit,
     OnDestroy,
-    ViewChild,
-    ElementRef,
     Output,
     EventEmitter
 } from '@angular/core';
@@ -13,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { TokenUtils } from '../../utils/token.utils';
 import { Animations } from '../../animations/animations';
+import { SelectedTokenService } from '../../services/selected-token.service';
 
 interface AllNetworksView {
     allNetworksView: boolean;
@@ -25,8 +24,6 @@ interface AllNetworksView {
     animations: Animations.easeInOut
 })
 export class TokenCarouselComponent implements OnInit, OnDestroy {
-    @Output() selectedToken: EventEmitter<UserToken> = new EventEmitter();
-
     visibleItems: Array<UserToken | AllNetworksView> = [];
     currentSelection = 0;
     selectables = 0;
@@ -37,7 +34,8 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
 
     constructor(
         private tokenPollingService: TokenPollingService,
-        private channelPollingService: ChannelPollingService
+        private channelPollingService: ChannelPollingService,
+        private selectedTokenService: SelectedTokenService
     ) {}
 
     ngOnInit() {
@@ -113,6 +111,6 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         const selectedToken = this.isAllNetworksView(selection)
             ? undefined
             : selection;
-        this.selectedToken.emit(selectedToken);
+        this.selectedTokenService.setToken(selectedToken);
     }
 }

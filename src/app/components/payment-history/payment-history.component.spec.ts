@@ -52,7 +52,7 @@ describe('PaymentHistoryComponent', () => {
 
     const mockData: PaymentEvent[] = [
         {
-            event: 'EventPaymentSendFailed',
+            event: 'EventPaymentSentFailed',
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             reason: 'insufficient funds',
             identifier: new BigNumber(1536847754083),
@@ -140,7 +140,7 @@ describe('PaymentHistoryComponent', () => {
             token_address: tokenNetwork
         },
         {
-            event: 'EventPaymentSendFailed',
+            event: 'EventPaymentSentFailed',
             target: '0x82641569b2062B545431cF6D7F0A418582865ba7',
             reason: 'insufficient funds',
             identifier: new BigNumber(1536847760442),

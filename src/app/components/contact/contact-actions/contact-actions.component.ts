@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Contact } from '../../../models/contact';
-import { flatMap } from 'rxjs/operators';
+import { flatMap, first } from 'rxjs/operators';
 import { ChannelPollingService } from '../../../services/channel-polling.service';
 import { PendingTransferPollingService } from '../../../services/pending-transfer-polling.service';
 import {
@@ -16,6 +16,7 @@ import {
     ConfirmationDialogPayload,
     ConfirmationDialogComponent
 } from '../../confirmation-dialog/confirmation-dialog.component';
+import { SelectedTokenService } from '../../../services/selected-token.service';
 
 @Component({
     selector: 'app-contact-actions',
@@ -31,26 +32,30 @@ export class ContactActionsComponent implements OnInit {
         private pendingTransferPollingService: PendingTransferPollingService,
         private dialog: MatDialog,
         private raidenService: RaidenService,
-        private addressBookService: AddressBookService
+        private addressBookService: AddressBookService,
+        private selectedTokenService: SelectedTokenService
     ) {}
 
     ngOnInit() {}
 
     pay() {
-        const payload: PaymentDialogPayload = {
-            tokenAddress: '',
-            targetAddress: this.contact.address,
-            amount: new BigNumber(0),
-            paymentIdentifier: null
-        };
-
-        const dialog = this.dialog.open(PaymentDialogComponent, {
-            data: payload
-        });
-
-        dialog
-            .afterClosed()
+        this.selectedTokenService.selectedToken$
             .pipe(
+                first(),
+                flatMap(token => {
+                    const payload: PaymentDialogPayload = {
+                        tokenAddress: !!token ? token.address : '',
+                        targetAddress: this.contact.address,
+                        amount: new BigNumber(0),
+                        paymentIdentifier: null
+                    };
+
+                    const dialog = this.dialog.open(PaymentDialogComponent, {
+                        data: payload
+                    });
+
+                    return dialog.afterClosed();
+                }),
                 flatMap((result?: PaymentDialogPayload) => {
                     if (!result) {
                         return EMPTY;

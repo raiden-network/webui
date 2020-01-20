@@ -1,19 +1,12 @@
-import {
-    Component,
-    OnInit,
-    Input,
-    SimpleChanges,
-    OnChanges,
-    OnDestroy
-} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
-import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { PaymentEvent } from '../../models/payment-event';
 import { map } from 'rxjs/operators';
 import { AddressBookService } from '../../services/address-book.service';
 import { RaidenService } from '../../services/raiden.service';
-import { UserToken } from '../../models/usertoken';
 import { Animations } from '../../animations/animations';
+import { SelectedTokenService } from '../../services/selected-token.service';
 
 @Component({
     selector: 'app-history-table',
@@ -21,29 +14,25 @@ import { Animations } from '../../animations/animations';
     styleUrls: ['./history-table.component.css'],
     animations: Animations.flyInOut
 })
-export class HistoryTableComponent implements OnInit, OnDestroy, OnChanges {
-    @Input() token: UserToken;
-
+export class HistoryTableComponent implements OnInit, OnDestroy {
     history: PaymentEvent[] = [];
 
-    private refreshingSubject: BehaviorSubject<void> = new BehaviorSubject(
-        null
-    );
     private subscription: Subscription;
 
     constructor(
         private paymentHistoryPollingService: PaymentHistoryPollingService,
         private addressBookService: AddressBookService,
-        private raidenService: RaidenService
+        private raidenService: RaidenService,
+        private selectedTokenService: SelectedTokenService
     ) {}
 
     ngOnInit() {
         this.subscription = combineLatest([
             this.paymentHistoryPollingService.paymentHistory$,
-            this.refreshingSubject
+            this.selectedTokenService.selectedToken$
         ])
             .pipe(
-                map(([events, refresh]) => {
+                map(([events, token]) => {
                     const visibleEvents: PaymentEvent[] = [];
                     for (let i = events.length - 1; i >= 0; i--) {
                         if (visibleEvents.length > 3) {
@@ -53,8 +42,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy, OnChanges {
                         const event = events[i];
                         if (
                             event.event === 'EventPaymentSentFailed' ||
-                            (!!this.token &&
-                                event.token_address !== this.token.address)
+                            (!!token && event.token_address !== token.address)
                         ) {
                             continue;
                         }
@@ -74,12 +62,6 @@ export class HistoryTableComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        if ('token' in changes) {
-            this.refreshTable();
-        }
     }
 
     trackByFn(index, item: PaymentEvent) {
@@ -104,9 +86,5 @@ export class HistoryTableComponent implements OnInit, OnDestroy, OnChanges {
     tokenSymbol(event: PaymentEvent): string {
         const token = this.raidenService.getUserToken(event.token_address);
         return token.symbol;
-    }
-
-    private refreshTable() {
-        this.refreshingSubject.next(null);
     }
 }

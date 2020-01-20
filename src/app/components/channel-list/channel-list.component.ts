@@ -1,11 +1,4 @@
-import {
-    Component,
-    OnInit,
-    OnDestroy,
-    Input,
-    OnChanges,
-    SimpleChanges
-} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Channel } from '../../models/channel';
 import { Subscription, EMPTY } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
@@ -22,6 +15,7 @@ import { flatMap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Animations } from '../../animations/animations';
 import { TokenPollingService } from '../../services/token-polling.service';
+import { SelectedTokenService } from '../../services/selected-token.service';
 
 @Component({
     selector: 'app-channel-list',
@@ -29,13 +23,12 @@ import { TokenPollingService } from '../../services/token-polling.service';
     styleUrls: ['./channel-list.component.css'],
     animations: Animations.flyInOut
 })
-export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
-    @Input() token: UserToken;
-
+export class ChannelListComponent implements OnInit, OnDestroy {
     visibleChannels: Channel[] = [];
     totalChannels = 0;
     showAll = false;
     selectedIndex = -1;
+    selectedToken: UserToken;
 
     private channels: Channel[] = [];
     private subscription: Subscription;
@@ -45,7 +38,8 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
         private raidenConfig: RaidenConfig,
         private raidenService: RaidenService,
         private dialog: MatDialog,
-        private tokenPollingService: TokenPollingService
+        private tokenPollingService: TokenPollingService,
+        private selectedTokenService: SelectedTokenService
     ) {}
 
     ngOnInit() {
@@ -55,16 +49,18 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
                 this.channels = channels;
                 this.updateVisibleChannels();
             });
+
+        const selectedTokenSubscription = this.selectedTokenService.selectedToken$.subscribe(
+            (token: UserToken) => {
+                this.selectedToken = token;
+                this.updateVisibleChannels();
+            }
+        );
+        this.subscription.add(selectedTokenSubscription);
     }
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        if ('token' in changes) {
-            this.updateVisibleChannels();
-        }
     }
 
     trackByFn(index, item: Channel) {
@@ -84,7 +80,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
         const rdnConfig = this.raidenConfig.config;
 
         const payload: OpenDialogPayload = {
-            tokenAddress: this.token ? this.token.address : '',
+            tokenAddress: this.selectedToken ? this.selectedToken.address : '',
             revealTimeout: rdnConfig.reveal_timeout,
             defaultSettleTimeout: rdnConfig.settle_timeout
         };
@@ -118,10 +114,10 @@ export class ChannelListComponent implements OnInit, OnDestroy, OnChanges {
     private getFilteredChannels(): Channel[] {
         return this.channels.filter(channel => {
             let matchesToken = true;
-            if (!!this.token) {
+            if (!!this.selectedToken) {
                 matchesToken =
                     channel.userToken &&
-                    channel.userToken.address === this.token.address;
+                    channel.userToken.address === this.selectedToken.address;
             }
             return channel.state === 'opened' && matchesToken;
         });
