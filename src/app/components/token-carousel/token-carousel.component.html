@@ -3,7 +3,7 @@
         class="navigation"
         mat-flat-button
         color="primary"
-        [disabled]="currentSelection === 0"
+        [disabled]="firstItem === 0"
         (click)="previousToken()"
     >
         <mat-icon
@@ -24,10 +24,10 @@
             *ngFor="let item of visibleItems; let i = index; trackBy: trackByFn"
             [token]="isAllNetworksView(item) ? undefined : item"
             [openChannels]="getNumberOfChannels(item)"
-            [position]="i"
+            [selected]="isSelected(item)"
             [allNetworksView]="isAllNetworksView(item)"
             [onMainnet]="(network$ | async).chainId === 1"
-            (select)="select(currentSelection + i)"
+            (select)="select(i)"
             [@easeInOut]="'in'"
         >
         </app-token>
@@ -36,7 +36,7 @@
         class="navigation"
         mat-flat-button
         color="primary"
-        [disabled]="currentSelection === selectables - 1"
+        [disabled]="firstItem + 2 === numberOfItems - 1"
         (click)="nextToken()"
     >
         <mat-icon

@@ -1,14 +1,13 @@
 <div
     class="card"
-    [class.card--focus]="position === 0"
-    [class.card--middle]="position === 1"
-    [class.card--last]="position > 1"
+    [class.card--focus]="selected"
+    [class.card--normal]="!selected"
     fxLayout="column"
     fxLayoutAlign="center start"
     (click)="select.emit(true)"
 >
     <div class="top" fxLayout="row" fxLayoutAlign="start center">
-        <span *ngIf="position === 0; else inactive">
+        <span *ngIf="selected; else inactive">
             Viewing
         </span>
         <ng-template #inactive>

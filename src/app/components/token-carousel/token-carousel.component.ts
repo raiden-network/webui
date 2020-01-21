@@ -8,6 +8,7 @@ import { Animations } from '../../animations/animations';
 import { SelectedTokenService } from '../../services/selected-token.service';
 import { Network } from '../../utils/network-info';
 import { RaidenService } from '../../services/raiden.service';
+import { map } from 'rxjs/operators';
 
 interface AllNetworksView {
     allNetworksView: boolean;
@@ -21,8 +22,9 @@ interface AllNetworksView {
 })
 export class TokenCarouselComponent implements OnInit, OnDestroy {
     visibleItems: Array<UserToken | AllNetworksView> = [];
-    currentSelection = 0;
-    selectables = 0;
+    numberOfItems = 0;
+    firstItem = 0;
+    currentSelection: UserToken | AllNetworksView = { allNetworksView: true };
     totalChannels = 0;
     readonly network$: Observable<Network>;
 
@@ -39,13 +41,17 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.subscription = this.tokenPollingService.tokens$.subscribe(
-            (tokens: UserToken[]) => {
+        this.subscription = this.tokenPollingService.tokens$
+            .pipe(
+                map(tokens =>
+                    tokens.sort((a, b) => TokenUtils.compareTokens(a, b))
+                )
+            )
+            .subscribe((tokens: UserToken[]) => {
                 this.tokens = tokens;
-                this.selectables = tokens.length + 1;
-                this.applySelection();
-            }
-        );
+                this.numberOfItems = this.tokens.length + 1;
+                this.updateVisibleItems();
+            });
 
         const channelsSubscription = this.channelPollingService
             .channels()
@@ -64,19 +70,19 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     }
 
     nextToken() {
-        if (this.currentSelection === this.selectables - 1) {
+        if (this.firstItem + 2 === this.numberOfItems - 1) {
             return;
         }
-        this.currentSelection++;
-        this.applySelection();
+        this.firstItem++;
+        this.updateVisibleItems();
     }
 
     previousToken() {
-        if (this.currentSelection === 0) {
+        if (this.firstItem === 0) {
             return;
         }
-        this.currentSelection--;
-        this.applySelection();
+        this.firstItem--;
+        this.updateVisibleItems();
     }
 
     isAllNetworksView(object: any): object is AllNetworksView {
@@ -93,24 +99,31 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         }
     }
 
-    select(index: number) {
-        this.currentSelection = index;
-        this.applySelection();
+    isSelected(item: UserToken | AllNetworksView) {
+        if (!this.isAllNetworksView(this.currentSelection)) {
+            return (
+                !this.isAllNetworksView(item) &&
+                this.currentSelection.address === item.address
+            );
+        } else {
+            return this.isAllNetworksView(item);
+        }
     }
 
-    private applySelection() {
-        this.tokens.sort((a, b) => TokenUtils.compareTokens(a, b));
-        const displaybleItems = [{ allNetworksView: true }, ...this.tokens];
-
-        this.visibleItems = [{ allNetworksView: true }, ...this.tokens].slice(
-            this.currentSelection,
-            this.currentSelection + 3
-        );
-
-        const selection = displaybleItems[this.currentSelection];
+    select(index: number) {
+        const selection = this.visibleItems[index];
+        this.currentSelection = selection;
         const selectedToken = this.isAllNetworksView(selection)
             ? undefined
             : selection;
         this.selectedTokenService.setToken(selectedToken);
+    }
+
+    private updateVisibleItems() {
+        const displaybleItems = [{ allNetworksView: true }, ...this.tokens];
+        this.visibleItems = displaybleItems.slice(
+            this.firstItem,
+            this.firstItem + 3
+        );
     }
 }

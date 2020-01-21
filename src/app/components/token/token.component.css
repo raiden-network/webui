@@ -14,18 +14,8 @@
     color: #000000 !important;
 }
 
-.card--middle {
+.card--normal {
     background-color: rgba(148, 148, 148, 0.18);
-    cursor: pointer;
-}
-
-.card--last {
-    background: linear-gradient(
-        90deg,
-        rgba(198, 198, 198, 0.18) 0%,
-        rgba(148, 148, 148, 0.08) 100%,
-        rgba(148, 148, 148, 0) 100%
-    );
     cursor: pointer;
 }
 
@@ -54,6 +44,7 @@
 }
 
 .top {
+    height: 32px;
     width: 100%;
     opacity: 0.53;
 }
