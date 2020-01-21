@@ -1,5 +1,3 @@
-@import '../../../sass/mixins';
-
 .page {
     margin-left: auto;
     margin-right: auto;
@@ -17,4 +15,8 @@
 
 .button__icon--small {
     width: 24px !important;
+}
+
+.button--about {
+    width: 130px;
 }

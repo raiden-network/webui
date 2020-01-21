@@ -42,6 +42,30 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
+        <div class="info-container" fxLayout="row" fxLayoutAlign="center">
+            <div
+                *ngIf="showNetworkInfo"
+                class="network-info"
+                fxLayout="row"
+                fxLayoutAlign="center center"
+                [@easeInOut]="'in'"
+            >
+                <span>
+                    You are running Raiden on
+                    {{ (network$ | async)?.name }} testnet
+                </span>
+                <button
+                    mat-icon-button
+                    class="network-info__close"
+                    (click)="hideNetworkInfo()"
+                >
+                    <mat-icon
+                        aria-label="Close network info"
+                        svgIcon="close"
+                    ></mat-icon>
+                </button>
+            </div>
+        </div>
         <div class="content">
             <router-outlet *ngIf="!hasError(); else api_error"></router-outlet>
             <ng-template #api_error>

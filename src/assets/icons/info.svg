@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="23px" height="23px" viewBox="0 0 23 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <desc>Created with Sketch.</desc>
+    <g id="Skeleton" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="WebUI-Skeleton-Dashboard" transform="translate(-123.000000, -1514.000000)">
+            <g id="button-about" transform="translate(98.000000, 1500.000000)">
+                <g id="icon-i" transform="translate(25.400879, 14.500000)">
+                    <path d="M11.1635742,7.0390625 C11.8081055,7.0390625 12.3061523,6.54833984 12.3061523,5.93310547 C12.3061523,5.31054688 11.8081055,4.82714844 11.1635742,4.82714844 C10.519043,4.82714844 10.0209961,5.31054688 10.0209961,5.93310547 C10.0209961,6.54833984 10.519043,7.0390625 11.1635742,7.0390625 Z M11.1635742,17.0185547 C11.8227539,17.0185547 12.2329102,16.6010742 12.2329102,15.9052734 L12.2329102,9.97265625 C12.2329102,9.27685547 11.8227539,8.85205078 11.1635742,8.85205078 C10.4970703,8.85205078 10.0942383,9.27685547 10.0942383,9.97265625 L10.0942383,15.9052734 C10.0942383,16.6010742 10.4970703,17.0185547 11.1635742,17.0185547 Z" id="i" fill="#C2C2C2" fill-rule="nonzero"></path>
+                    <circle id="Oval" stroke="#C2C2C2" stroke-width="2" cx="11.1635742" cy="11.1635742" r="10.1635742"></circle>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

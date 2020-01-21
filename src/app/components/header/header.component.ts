@@ -21,10 +21,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     totalChannels = 0;
     joinedNetworks = 0;
     readonly balance$: Observable<string>;
-    readonly network$: Observable<Network>;
     readonly faucetLink$: Observable<string>;
     showAddress = false;
-    showNetworkInfo = false;
 
     private subscription: Subscription;
 
@@ -35,7 +33,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private notificationService: NotificationService
     ) {
         this.balance$ = raidenService.balance$;
-        this.network$ = raidenService.network$;
         this.faucetLink$ = zip(
             raidenService.network$,
             raidenService.raidenAddress$
@@ -67,24 +64,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
             }
         );
         this.subscription.add(tokensSubscription);
-
-        const networkSubscription = this.network$.subscribe(network => {
-            if (network.chainId !== 1) {
-                this.showNetworkInfo = true;
-                setTimeout(() => {
-                    this.hideNetworkInfo();
-                }, 5000);
-            }
-        });
-        this.subscription.add(networkSubscription);
     }
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
-    }
-
-    hideNetworkInfo() {
-        this.showNetworkInfo = false;
     }
 
     toggleNotificationSidenav() {

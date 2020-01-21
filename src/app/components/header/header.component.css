@@ -13,10 +13,6 @@
     border-top: 1px solid rgba(151, 151, 151, 0.11);
 }
 
-.header--info {
-    margin-bottom: 30px !important;
-}
-
 .header__logo {
     height: 44px;
 }
@@ -84,20 +80,4 @@
     font-size: 13px;
     line-height: 15px;
     color: rgba(255, 255, 255, 0.5);
-}
-
-.network-info {
-    width: 100%;
-    height: 100%;
-    border-radius: 25px;
-    background-color: #ffffff;
-    color: #000000;
-    font-size: 16px;
-    position: relative;
-}
-
-.network-info__close {
-    position: absolute;
-    right: 0;
-    margin-right: 20px;
 }

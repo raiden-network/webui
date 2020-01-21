@@ -56,6 +56,27 @@
             url('assets/fonts/roboto-v20-latin-500.svg#Roboto') format('svg'); /* Legacy iOS */
 }
 
+/* roboto-mono-regular - latin */
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: normal;
+    font-weight: 400;
+    src: url('assets/fonts/roboto-mono-v7-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local('Roboto Mono'), local('RobotoMono-Regular'),
+        url('assets/fonts/roboto-mono-v7-latin-regular.eot?#iefix')
+            format('embedded-opentype'),
+        /* IE6-IE8 */ url('assets/fonts/roboto-mono-v7-latin-regular.woff2')
+            format('woff2'),
+        /* Super Modern Browsers */
+            url('assets/fonts/roboto-mono-v7-latin-regular.woff') format('woff'),
+        /* Modern Browsers */
+            url('assets/fonts/roboto-mono-v7-latin-regular.ttf')
+            format('truetype'),
+        /* Safari, Android, iOS */
+            url('assets/fonts/roboto-mono-v7-latin-regular.svg#RobotoMono')
+            format('svg'); /* Legacy iOS */
+}
+
 body {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
     font-weight: 400;
@@ -132,6 +153,26 @@ body {
 
 .dialog-expansion-panel .mat-expansion-panel-body {
     padding-left: 0;
+}
+
+.identicon {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 16px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 6.25%;
+    box-shadow: inset rgba(255, 255, 255, 0.6) 0 2px 2px,
+        inset rgba(0, 0, 0, 0.3) 0 -2px 6px;
+    transition: border-radius 2.5s;
+    transition-delay: 3s;
+}
+
+.identicon.mobile {
+    height: 50px !important;
+    width: 50px !important;
+    margin: 2px !important;
 }
 
 .round.identicon {

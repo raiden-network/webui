@@ -1,25 +1,3 @@
-<div class="header header--info">
-    <div
-        *ngIf="showNetworkInfo"
-        class="network-info"
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        [@easeInOut]="'in'"
-    >
-        <span>
-            You are running Raiden on
-            {{ (network$ | async)?.name }} testnet
-        </span>
-        <button
-            mat-icon-button
-            class="network-info__close"
-            (click)="hideNetworkInfo()"
-        >
-            <mat-icon aria-label="Close network info">close</mat-icon>
-        </button>
-    </div>
-</div>
-
 <div
     class="header"
     fxLayout="row"

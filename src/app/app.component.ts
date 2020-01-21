@@ -5,7 +5,7 @@ import {
     OnInit,
     ViewChild
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
@@ -16,6 +16,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Animations } from './animations/animations';
 import { PendingTransferPollingService } from './services/pending-transfer-polling.service';
 import { PaymentHistoryPollingService } from './services/payment-history-polling.service';
+import { Network } from './utils/network-info';
 
 const icon_names = [
     'copy',
@@ -34,7 +35,9 @@ const icon_names = [
     'thunderbolt',
     'received',
     'sent',
-    'more'
+    'more',
+    'info',
+    'close'
 ];
 
 @Component({
@@ -51,6 +54,9 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild('notification_sidenav', { static: true })
     public notificationSidenav: MatSidenav;
 
+    readonly network$: Observable<Network>;
+    showNetworkInfo = false;
+
     private subscription: Subscription;
 
     constructor(
@@ -63,6 +69,8 @@ export class AppComponent implements OnInit, OnDestroy {
         private matIconRegistry: MatIconRegistry,
         private domSanitizer: DomSanitizer
     ) {
+        this.network$ = raidenService.network$;
+
         this.registerIcons();
     }
 
@@ -75,7 +83,19 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.subscription = this.channelPollingService.channels().subscribe();
+        this.subscription = this.network$.subscribe(network => {
+            if (network.chainId !== 1) {
+                this.showNetworkInfo = true;
+                setTimeout(() => {
+                    this.hideNetworkInfo();
+                }, 5000);
+            }
+        });
+
+        const channelSubscription = this.channelPollingService
+            .channels()
+            .subscribe();
+        this.subscription.add(channelSubscription);
 
         const pendingTransfersSubscription = this.pendingTransferPollingService.pendingTransfers$.subscribe();
         this.subscription.add(pendingTransfersSubscription);
@@ -134,6 +154,10 @@ export class AppComponent implements OnInit, OnDestroy {
         if (this.isMobile()) {
             this.menuSidenav.close();
         }
+    }
+
+    hideNetworkInfo() {
+        this.showNetworkInfo = false;
     }
 
     private disableAnimationsOnAndroid() {

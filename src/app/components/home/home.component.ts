@@ -21,7 +21,7 @@ import { SelectedTokenService } from '../../services/selected-token.service';
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss']
+    styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
     selectedToken: UserToken;
