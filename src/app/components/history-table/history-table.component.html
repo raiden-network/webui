@@ -3,10 +3,12 @@
     fxLayout="column"
     fxLayoutGap="20px"
     fxLayoutAlign="space-between stretch"
-    *ngIf="history.length > 0"
 >
     <div class="history__label" fxLayout="row" fxLayoutAlign="start center">
         History
+    </div>
+    <div *ngIf="history.length === 0">
+        No {{ !!selectedToken ? selectedToken.symbol : '' }} transfers yet
     </div>
     <cdk-table
         class="table"

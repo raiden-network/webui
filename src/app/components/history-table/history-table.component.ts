@@ -2,11 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
 import { combineLatest, Subscription } from 'rxjs';
 import { PaymentEvent } from '../../models/payment-event';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { AddressBookService } from '../../services/address-book.service';
 import { RaidenService } from '../../services/raiden.service';
 import { Animations } from '../../animations/animations';
 import { SelectedTokenService } from '../../services/selected-token.service';
+import { UserToken } from '../../models/usertoken';
 
 @Component({
     selector: 'app-history-table',
@@ -16,6 +17,7 @@ import { SelectedTokenService } from '../../services/selected-token.service';
 })
 export class HistoryTableComponent implements OnInit, OnDestroy {
     history: PaymentEvent[] = [];
+    selectedToken: UserToken;
 
     private subscription: Subscription;
 
@@ -27,9 +29,15 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
+        const selectedToken$ = this.selectedTokenService.selectedToken$.pipe(
+            tap(token => {
+                this.selectedToken = token;
+            })
+        );
+
         this.subscription = combineLatest([
             this.paymentHistoryPollingService.paymentHistory$,
-            this.selectedTokenService.selectedToken$
+            selectedToken$
         ])
             .pipe(
                 map(([events, token]) => {
