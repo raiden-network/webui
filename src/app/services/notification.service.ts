@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { scan } from 'rxjs/operators';
 import { UiMessage, NotificationMessage } from '../models/notification';
+import { MatSidenav } from '@angular/material/sidenav';
 
 export interface ApiErrorResponse extends HttpErrorResponse {
     retrying?: boolean;
@@ -32,6 +33,7 @@ export class NotificationService {
     private notifications: NotificationMessage[] = [];
     private pendingActions: NotificationMessage[] = [];
     private notificationCounter = 0;
+    private sidenav: MatSidenav;
 
     constructor(@Inject(Injector) private injector: Injector) {}
 
@@ -85,6 +87,14 @@ export class NotificationService {
             pendingAction => pendingAction.identifier !== identifier
         );
         this.pendingActionsSubject.next(this.pendingActions);
+    }
+
+    public setNotificationSidenav(sidenav: MatSidenav) {
+        this.sidenav = sidenav;
+    }
+
+    public toggleSidenav() {
+        this.sidenav.toggle();
     }
 
     private get toastrService(): ToastrService {

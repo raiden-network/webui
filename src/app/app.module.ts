@@ -77,6 +77,7 @@ import { ContactListComponent } from './components/contact-list/contact-list.com
 import { ContactComponent } from './components/contact/contact.component';
 import { ContactActionsComponent } from './components/contact/contact-actions/contact-actions.component';
 import { HistoryTableComponent } from './components/history-table/history-table.component';
+import { HeaderComponent } from './components/header/header.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -146,7 +147,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ContactListComponent,
         ContactComponent,
         ContactActionsComponent,
-        HistoryTableComponent
+        HistoryTableComponent,
+        HeaderComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
