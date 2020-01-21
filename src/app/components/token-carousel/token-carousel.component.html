@@ -1,49 +1,96 @@
-<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between center">
-    <button
-        class="navigation"
-        mat-flat-button
-        color="primary"
-        [disabled]="firstItem === 0"
-        (click)="previousToken()"
-    >
-        <mat-icon
-            class="navigation__icon"
-            svgIcon="left"
-            aria-label="Previous token network"
+<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between start">
+    <div class="navigation-block" fxLayout="column" fxLayoutAlign="center">
+        <button
+            class="navigation"
+            mat-flat-button
+            color="primary"
+            [disabled]="firstItem === 0"
+            (click)="previousToken()"
         >
-        </mat-icon>
-    </button>
-    <div
-        class="tokens"
-        fxLayout="row"
-        fxLayoutGap="20px"
-        fxLayoutAlign="center"
-        fxFlex
-    >
-        <app-token
-            *ngFor="let item of visibleItems; let i = index; trackBy: trackByFn"
-            [token]="isAllNetworksView(item) ? undefined : item"
-            [openChannels]="getNumberOfChannels(item)"
-            [selected]="isSelected(item)"
-            [allNetworksView]="isAllNetworksView(item)"
-            [onMainnet]="(network$ | async).chainId === 1"
-            (select)="select(i)"
-            [@easeInOut]="'in'"
-        >
-        </app-token>
+            <mat-icon
+                class="navigation__icon"
+                svgIcon="left"
+                aria-label="Previous token network"
+            >
+            </mat-icon>
+        </button>
     </div>
-    <button
-        class="navigation"
-        mat-flat-button
-        color="primary"
-        [disabled]="firstItem + 2 === numberOfItems - 1"
-        (click)="nextToken()"
-    >
-        <mat-icon
-            class="navigation__icon"
-            svgIcon="right"
-            aria-label="Next token network"
+    <div fxLayout="column" fxLayoutGap="21px">
+        <div fxLayout="row">
+            <div
+                class="tokens"
+                fxLayout="row"
+                fxLayoutGap="20px"
+                fxLayoutAlign="center"
+                fxFlex
+            >
+                <app-token
+                    *ngFor="
+                        let item of visibleItems;
+                        let i = index;
+                        trackBy: trackByFn
+                    "
+                    [token]="isAllNetworksView(item) ? undefined : item"
+                    [openChannels]="getNumberOfChannels(item)"
+                    [selected]="isSelected(item)"
+                    [allNetworksView]="isAllNetworksView(item)"
+                    [onMainnet]="(network$ | async).chainId === 1"
+                    (select)="select(i)"
+                >
+                </app-token>
+            </div>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-between">
+            <button
+                class="action"
+                mat-flat-button
+                color="accent"
+                (click)="pay()"
+            >
+                <mat-icon
+                    class="action__icon"
+                    svgIcon="transfer"
+                    aria-label="Transfer tokens"
+                >
+                </mat-icon>
+                <span>
+                    Transfer
+                </span>
+            </button>
+            <button
+                *ngIf="!isAllNetworksView(currentSelection)"
+                class="action"
+                mat-flat-button
+                color="accent"
+                (click)="openConnectionManager()"
+            >
+                <mat-icon
+                    class="action__icon action__icon--small"
+                    svgIcon="thunderbolt"
+                    aria-label="Open quick connect dialog"
+                >
+                </mat-icon>
+                <span>
+                    Quick connect
+                </span>
+            </button>
+        </div>
+    </div>
+    <div class="navigation-block" fxLayout="column" fxLayoutAlign="center">
+        <button
+            class="navigation"
+            mat-flat-button
+            color="primary"
+            [disabled]="firstItem + 2 === numberOfItems - 1"
+            (click)="nextToken()"
         >
-        </mat-icon>
-    </button>
+            <mat-icon
+                class="navigation__icon"
+                svgIcon="right"
+                aria-label="Next token network"
+            >
+            </mat-icon>
+        </button>
+    </div>
 </div>

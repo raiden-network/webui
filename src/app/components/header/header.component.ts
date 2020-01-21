@@ -3,7 +3,6 @@ import { Animations } from '../../animations/animations';
 import { RaidenService } from '../../services/raiden.service';
 import { map } from 'rxjs/operators';
 import { Observable, Subscription, zip } from 'rxjs';
-import { Network } from '../../utils/network-info';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { Channel } from '../../models/channel';

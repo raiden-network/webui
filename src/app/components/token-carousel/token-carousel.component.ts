@@ -1,14 +1,25 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserToken } from '../../models/usertoken';
 import { TokenPollingService } from '../../services/token-polling.service';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, EMPTY } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { TokenUtils } from '../../utils/token.utils';
 import { Animations } from '../../animations/animations';
 import { SelectedTokenService } from '../../services/selected-token.service';
 import { Network } from '../../utils/network-info';
 import { RaidenService } from '../../services/raiden.service';
-import { map } from 'rxjs/operators';
+import { map, flatMap } from 'rxjs/operators';
+import {
+    PaymentDialogPayload,
+    PaymentDialogComponent
+} from '../payment-dialog/payment-dialog.component';
+import BigNumber from 'bignumber.js';
+import {
+    ConnectionManagerDialogPayload,
+    ConnectionManagerDialogComponent
+} from '../connection-manager-dialog/connection-manager-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 
 interface AllNetworksView {
     allNetworksView: boolean;
@@ -35,7 +46,9 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         private tokenPollingService: TokenPollingService,
         private channelPollingService: ChannelPollingService,
         private selectedTokenService: SelectedTokenService,
-        private raidenService: RaidenService
+        private raidenService: RaidenService,
+        private dialog: MatDialog,
+        private pendingTransferPollingService: PendingTransferPollingService
     ) {
         this.network$ = raidenService.network$;
     }
@@ -117,6 +130,81 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
             ? undefined
             : selection;
         this.selectedTokenService.setToken(selectedToken);
+    }
+
+    pay() {
+        const payload: PaymentDialogPayload = {
+            tokenAddress: this.isAllNetworksView(this.currentSelection)
+                ? ''
+                : this.currentSelection.address,
+            targetAddress: '',
+            amount: new BigNumber(0),
+            paymentIdentifier: null
+        };
+
+        const dialog = this.dialog.open(PaymentDialogComponent, {
+            data: payload
+        });
+
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap((result?: PaymentDialogPayload) => {
+                    if (!result) {
+                        return EMPTY;
+                    }
+
+                    return this.raidenService.initiatePayment(
+                        result.tokenAddress,
+                        result.targetAddress,
+                        result.amount,
+                        result.paymentIdentifier
+                    );
+                })
+            )
+            .subscribe(() => {
+                this.channelPollingService.refresh();
+                this.pendingTransferPollingService.refresh();
+            });
+    }
+
+    openConnectionManager(join: boolean = true) {
+        if (this.isAllNetworksView(this.currentSelection)) {
+            return;
+        }
+
+        const payload: ConnectionManagerDialogPayload = {
+            tokenAddress: this.currentSelection.address,
+            funds: new BigNumber(0),
+            decimals: this.currentSelection.decimals,
+            join: join
+        };
+
+        const joinDialogRef = this.dialog.open(
+            ConnectionManagerDialogComponent,
+            {
+                data: payload
+            }
+        );
+
+        joinDialogRef
+            .afterClosed()
+            .pipe(
+                flatMap((result: ConnectionManagerDialogPayload) => {
+                    if (!result) {
+                        return EMPTY;
+                    }
+                    return this.raidenService.connectTokenNetwork(
+                        result.funds,
+                        result.tokenAddress,
+                        result.join
+                    );
+                })
+            )
+            .subscribe(() => {
+                this.tokenPollingService.refresh();
+                this.channelPollingService.refresh();
+            });
     }
 
     private updateVisibleItems() {

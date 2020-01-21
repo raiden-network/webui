@@ -8,46 +8,7 @@
     fxLayoutGap="37px"
 >
     <app-header></app-header>
-    <div fxLayout="column" fxLayoutGap="21px" fxFlexOffset="16px">
-        <app-token-carousel></app-token-carousel>
-        <div fxLayout="row" fxLayoutAlign="center">
-            <button
-                class="button"
-                mat-flat-button
-                color="accent"
-                (click)="pay()"
-            >
-                <mat-icon
-                    class="button__icon"
-                    svgIcon="transfer"
-                    aria-label="Transfer tokens"
-                >
-                </mat-icon>
-                <span>
-                    Transfer
-                </span>
-            </button>
-            <div fxFlex="0 0 613px"></div>
-            <div *ngIf="!selectedToken" fxFlex="0 0 181px"></div>
-            <button
-                *ngIf="!!selectedToken"
-                class="button"
-                mat-flat-button
-                color="accent"
-                (click)="openConnectionManager()"
-            >
-                <mat-icon
-                    class="button__icon button__icon--small"
-                    svgIcon="thunderbolt"
-                    aria-label="Open quick connect dialog"
-                >
-                </mat-icon>
-                <span>
-                    Quick connect
-                </span>
-            </button>
-        </div>
-    </div>
+    <app-token-carousel></app-token-carousel>
     <app-channel-list></app-channel-list>
     <div fxLayout="row" fxLayoutGap="61px">
         <app-contact-list fxFlex="1 1 341px"></app-contact-list>
@@ -56,16 +17,12 @@
     <a
         mat-flat-button
         color="primary"
-        class="button button--about"
+        class="button"
         fxLayout="row"
         fxLayoutAlign="start center"
         routerLink="/about"
     >
-        <mat-icon
-            class="button__icon button__icon--small"
-            svgIcon="info"
-            aria-hidden="true"
-        >
+        <mat-icon class="button__icon" svgIcon="info" aria-hidden="true">
         </mat-icon>
         <span> About </span>
     </a>
