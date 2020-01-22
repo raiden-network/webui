@@ -20,6 +20,7 @@ import {
 } from '../connection-manager-dialog/connection-manager-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
+import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 
 interface AllNetworksView {
     allNetworksView: boolean;
@@ -51,6 +52,10 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         private pendingTransferPollingService: PendingTransferPollingService
     ) {
         this.network$ = raidenService.network$;
+    }
+
+    get production(): boolean {
+        return this.raidenService.production;
     }
 
     ngOnInit() {
@@ -130,6 +135,25 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
             ? undefined
             : selection;
         this.selectedTokenService.setToken(selectedToken);
+    }
+
+    register() {
+        const dialog = this.dialog.open(RegisterDialogComponent);
+
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap((tokenAddress: string) => {
+                    if (!tokenAddress) {
+                        return EMPTY;
+                    }
+
+                    return this.raidenService.registerToken(tokenAddress);
+                })
+            )
+            .subscribe(() => {
+                this.tokenPollingService.refresh();
+            });
     }
 
     pay() {

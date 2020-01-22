@@ -16,14 +16,24 @@
         </button>
     </div>
     <div fxLayout="column" fxLayoutGap="21px">
-        <div fxLayout="row">
-            <div
-                class="tokens"
-                fxLayout="row"
-                fxLayoutGap="20px"
+        <div class="carousel" fxLayout="row" fxLayoutGap="20px">
+            <button
+                *ngIf="!production"
+                mat-flat-button
+                color="primary"
+                class="register-button"
+                fxLayout="column"
                 fxLayoutAlign="center"
-                fxFlex
+                (click)="register()"
             >
+                <mat-icon
+                    class="button__icon"
+                    svgIcon="add"
+                    aria-label="Add token"
+                >
+                </mat-icon>
+            </button>
+            <div class="tokens" fxLayout="row" fxLayoutGap="20px" fxFlex>
                 <app-token
                     *ngFor="
                         let item of visibleItems;
