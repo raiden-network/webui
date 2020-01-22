@@ -85,7 +85,7 @@ with open('README.md', encoding='utf-8') as readme_file:
 
 history = ''
 
-version = '0.11.0'  # Do not edit: this is maintained by bumpversion (see .bumpversion.cfg)
+version = '0.20.0-alpha1'  # Do not edit: this is maintained by bumpversion (see .bumpversion.cfg)
 
 setup(
     name='raiden-webui',
