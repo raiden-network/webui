@@ -1,16 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Channel } from '../../../models/channel';
 import { DepositMode } from '../../../utils/helpers';
-import {
-    PaymentDialogPayload,
-    PaymentDialogComponent
-} from '../../payment-dialog/payment-dialog.component';
-import BigNumber from 'bignumber.js';
 import { MatDialog } from '@angular/material/dialog';
 import { flatMap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { RaidenService } from '../../../services/raiden.service';
-import { PendingTransferPollingService } from '../../../services/pending-transfer-polling.service';
 import {
     ConfirmationDialogPayload,
     ConfirmationDialogComponent
@@ -35,7 +29,6 @@ export class ChannelActionsComponent implements OnInit {
         private raidenService: RaidenService,
         private dialog: MatDialog,
         private channelPollingService: ChannelPollingService,
-        private pendingTransferPollingService: PendingTransferPollingService,
         private tokenPollingService: TokenPollingService
     ) {}
 
@@ -47,40 +40,6 @@ export class ChannelActionsComponent implements OnInit {
 
     withdraw() {
         this.openDeposit(DepositMode.WITHDRAW);
-    }
-
-    pay() {
-        const payload: PaymentDialogPayload = {
-            tokenAddress: this.channel.token_address,
-            targetAddress: this.channel.partner_address,
-            amount: new BigNumber(0),
-            paymentIdentifier: null
-        };
-
-        const dialog = this.dialog.open(PaymentDialogComponent, {
-            data: payload
-        });
-
-        dialog
-            .afterClosed()
-            .pipe(
-                flatMap((result?: PaymentDialogPayload) => {
-                    if (!result) {
-                        return EMPTY;
-                    }
-
-                    return this.raidenService.initiatePayment(
-                        result.tokenAddress,
-                        result.targetAddress,
-                        result.amount,
-                        result.paymentIdentifier
-                    );
-                })
-            )
-            .subscribe(() => {
-                this.channelPollingService.refresh();
-                this.pendingTransferPollingService.refresh();
-            });
     }
 
     close() {

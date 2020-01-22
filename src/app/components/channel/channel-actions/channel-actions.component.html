@@ -1,17 +1,6 @@
 <div class="actions" fxLayout="row" fxLayoutGap="20px">
     <button
         class="actions__button"
-        id="pay-button"
-        mat-flat-button
-        color="accent"
-        [disabled]="channel.state !== 'opened' || channel.balance.isZero()"
-        (click)="pay()"
-        stopClickPropagation
-    >
-        Direct Transfer
-    </button>
-    <button
-        class="actions__button"
         id="deposit-button"
         mat-flat-button
         color="accent"
