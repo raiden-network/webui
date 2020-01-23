@@ -110,7 +110,9 @@ export class AddressBookComponent implements OnInit {
     }
 
     openAddDialog() {
-        const dialog = this.dialog.open(AddAddressDialogComponent);
+        const dialog = this.dialog.open(AddAddressDialogComponent, {
+            width: '360px'
+        });
 
         dialog.afterClosed().subscribe(value => {
             if (!value) {
@@ -132,7 +134,8 @@ export class AddressBookComponent implements OnInit {
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
-            data: payload
+            data: payload,
+            width: '360px'
         });
 
         dialog

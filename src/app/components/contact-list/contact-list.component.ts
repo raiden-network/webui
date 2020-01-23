@@ -55,7 +55,9 @@ export class ContactListComponent implements OnInit {
     }
 
     addContact() {
-        const dialog = this.dialog.open(AddAddressDialogComponent);
+        const dialog = this.dialog.open(AddAddressDialogComponent, {
+            width: '360px'
+        });
 
         dialog.afterClosed().subscribe(value => {
             if (!value) {

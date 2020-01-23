@@ -70,14 +70,15 @@ export class AddressBookItemComponent implements OnChanges {
     showConfirmation() {
         const contact = this.contact;
         const payload: ConfirmationDialogPayload = {
-            title: 'Delete Address',
+            title: 'Delete contact',
             message: `Are you sure you want to delete the entry <strong>${
                 contact.label
             }</strong> for address <strong>${contact.address}</strong>?`
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
-            data: payload
+            data: payload,
+            width: '360px'
         });
 
         const completeIfCancel = flatMap(result => {

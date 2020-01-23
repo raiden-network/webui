@@ -86,7 +86,7 @@ body {
     height: 52px;
     border-radius: 25px !important;
     font-size: 13px !important;
-    line-height: 15px;
+    line-height: 15px !important;
     font-weight: 400 !important;
     padding: 0 !important;
     min-width: 0px !important;
@@ -133,6 +133,19 @@ body {
     line-height: 15px !important;
     height: 38px !important;
     padding: 0 20px !important;
+}
+
+.mat-dialog-container {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-radius: 25px !important;
+    padding: 32px 27px 27px 27px !important;
+    box-shadow: none !important;
+}
+
+.toast-container {
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    min-width: 300px;
 }
 
 .full-width-form-field {
@@ -216,17 +229,8 @@ body {
     min-width: 20px !important;
 }
 
-.toast-container {
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
-    min-width: 300px;
-}
-
 app-page-base {
     height: 100%;
-}
-
-.expanded-tooltip {
-    min-width: 260px;
 }
 
 /* temporary fix for https://github.com/angular/components/issues/11765 */

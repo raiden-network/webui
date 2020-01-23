@@ -138,7 +138,9 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     }
 
     register() {
-        const dialog = this.dialog.open(RegisterDialogComponent);
+        const dialog = this.dialog.open(RegisterDialogComponent, {
+            width: '360px'
+        });
 
         dialog
             .afterClosed()
@@ -167,7 +169,8 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
-            data: payload
+            data: payload,
+            width: '360px'
         });
 
         dialog
@@ -207,7 +210,8 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         const joinDialogRef = this.dialog.open(
             ConnectionManagerDialogComponent,
             {
-                data: payload
+                data: payload,
+                width: '360px'
             }
         );
 

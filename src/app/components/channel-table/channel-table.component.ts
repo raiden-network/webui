@@ -132,7 +132,8 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
-            data: payload
+            data: payload,
+            width: '360px'
         });
 
         dialog
@@ -167,7 +168,8 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         };
 
         const dialog = this.dialog.open(OpenDialogComponent, {
-            data: payload
+            data: payload,
+            width: '360px'
         });
 
         dialog

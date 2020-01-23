@@ -57,7 +57,8 @@ export class TokenComponent implements OnInit {
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
-            data: payload
+            data: payload,
+            width: '360px'
         });
 
         dialog

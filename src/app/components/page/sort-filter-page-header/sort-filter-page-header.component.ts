@@ -57,7 +57,8 @@ export class SortFilterPageHeaderComponent implements OnInit {
         };
 
         const dialogRef = this.dialog.open(FilterDialogComponent, {
-            data: payload
+            data: payload,
+            width: '360px'
         });
 
         dialogRef.afterClosed().subscribe(value => {
@@ -87,7 +88,8 @@ export class SortFilterPageHeaderComponent implements OnInit {
         };
 
         const dialogRef = this.dialog.open(SortDialogComponent, {
-            data: payload
+            data: payload,
+            width: '360px'
         });
 
         dialogRef.afterClosed().subscribe(value => {

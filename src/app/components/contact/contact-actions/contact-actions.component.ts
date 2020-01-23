@@ -51,7 +51,8 @@ export class ContactActionsComponent implements OnInit {
                     };
 
                     const dialog = this.dialog.open(PaymentDialogComponent, {
-                        data: payload
+                        data: payload,
+                        width: '360px'
                     });
 
                     return dialog.afterClosed();
@@ -78,14 +79,15 @@ export class ContactActionsComponent implements OnInit {
     delete() {
         const contact = this.contact;
         const payload: ConfirmationDialogPayload = {
-            title: 'Delete Address',
+            title: 'Delete contact',
             message: `Are you sure you want to delete the entry <strong>${
                 contact.label
             }</strong> for address <strong>${contact.address}</strong>?`
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
-            data: payload
+            data: payload,
+            width: '360px'
         });
 
         dialog

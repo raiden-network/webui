@@ -95,7 +95,9 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     }
 
     showRegisterDialog() {
-        const registerDialogRef = this.dialog.open(RegisterDialogComponent);
+        const registerDialogRef = this.dialog.open(RegisterDialogComponent, {
+            width: '360px'
+        });
 
         registerDialogRef
             .afterClosed()
@@ -146,7 +148,8 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         const joinDialogRef = this.dialog.open(
             ConnectionManagerDialogComponent,
             {
-                data: payload
+                data: payload,
+                width: '360px'
             }
         );
 
@@ -179,7 +182,8 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         };
 
         const paymentDialogRef = this.dialog.open(PaymentDialogComponent, {
-            data: payload
+            data: payload,
+            width: '360px'
         });
 
         paymentDialogRef
@@ -212,7 +216,8 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
-            data: payload
+            data: payload,
+            width: '360px'
         });
 
         dialog
