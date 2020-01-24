@@ -8,6 +8,7 @@ import { TokenPollingService } from '../../services/token-polling.service';
 import { Channel } from '../../models/channel';
 import { UserToken } from '../../models/usertoken';
 import { NotificationService } from '../../services/notification.service';
+import { Network } from '../../utils/network-info';
 
 @Component({
     selector: 'app-header',
@@ -19,6 +20,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     raidenAddress: string;
     totalChannels = 0;
     joinedNetworks = 0;
+    readonly network$: Observable<Network>;
     readonly balance$: Observable<string>;
     readonly faucetLink$: Observable<string>;
     showAddress = false;
@@ -31,6 +33,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private channelPollingService: ChannelPollingService,
         private notificationService: NotificationService
     ) {
+        this.network$ = raidenService.network$;
         this.balance$ = raidenService.balance$;
         this.faucetLink$ = zip(
             raidenService.network$,
