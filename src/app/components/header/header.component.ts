@@ -18,7 +18,7 @@ import { Network } from '../../utils/network-info';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
     raidenAddress: string;
-    totalChannels = 0;
+    openChannels = 0;
     joinedNetworks = 0;
     readonly network$: Observable<Network>;
     readonly balance$: Observable<string>;
@@ -53,7 +53,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
         const channelsSubscription = this.channelPollingService
             .channels()
             .subscribe((channels: Channel[]) => {
-                this.totalChannels = channels.length;
+                const openChannels = channels.filter(channel => {
+                    return channel.state === 'opened';
+                });
+                this.openChannels = openChannels.length;
             });
         this.subscription.add(channelsSubscription);
 
