@@ -3,8 +3,6 @@
 </h1>
 <div mat-dialog-content [formGroup]="form" (keyup.enter)="allocateFunds()">
     <app-token-input
-        [placeholder]="'Enter Funds to be allocated'"
-        [errorPlaceholder]="'funds'"
         matTooltip="The allocated funds will be used by the connection manager, to automatically open channels for you."
         formControlName="amount"
     >

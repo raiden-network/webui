@@ -24,15 +24,12 @@ export function isAddressValid(
     }
     if (address === ownAddress) {
         return { ownAddress: true };
-    } else if (!address || !AddressUtils.isAddress(address)) {
-        return { invalidFormat: true };
-    } else if (
-        address &&
-        address.length === 42 &&
-        !AddressUtils.isChecksum(address)
-    ) {
-        return { notChecksumAddress: true };
-    } else {
-        return undefined;
     }
+    if (!address || !AddressUtils.isAddress(address)) {
+        return { invalidFormat: true };
+    }
+    if (address && address.length === 42 && !AddressUtils.isChecksum(address)) {
+        return { notChecksumAddress: true };
+    }
+    return undefined;
 }

@@ -62,8 +62,6 @@ import {
 } from '@angular/material/dialog';
 import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
 import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
-import { PaymentIdentifierInputComponent } from './components/payment-identifier-input/payment-identifier-input.component';
-import { BigNumberConversionDirective } from './directives/big-number-conversion.directive';
 import { NotificationPanelComponent } from './components/notification/notification-panel/notification-panel.component';
 import { NotificationItemComponent } from './components/notification/notification-item/notification-item.component';
 import { NotificationService } from './services/notification.service';
@@ -135,8 +133,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         AddAddressDialogComponent,
         ShortenAddressPipe,
         DisplayDecimalsPipe,
-        PaymentIdentifierInputComponent,
-        BigNumberConversionDirective,
         NotificationPanelComponent,
         NotificationItemComponent,
         RaidenToastComponent,

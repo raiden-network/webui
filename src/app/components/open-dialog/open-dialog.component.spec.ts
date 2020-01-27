@@ -24,7 +24,6 @@ import {
 } from '../../../testing/interaction-helper';
 import { MatDialogContent } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
-import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
 import BigNumber from 'bignumber.js';
 import { RaidenService } from '../../services/raiden.service';
 import { UserToken } from '../../models/usertoken';
@@ -54,8 +53,7 @@ describe('OpenDialogComponent', () => {
                 TokenInputComponent,
                 AddressInputComponent,
                 TokenPipe,
-                TokenNetworkSelectorComponent,
-                BigNumberConversionDirective
+                TokenNetworkSelectorComponent
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),

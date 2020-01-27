@@ -43,7 +43,8 @@ export class DepositWithdrawDialogComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.tokenInput.decimals = this.data.decimals;
+        // todo
+        // this.tokenInput.decimals = this.data.decimals;
         this.withdraw = this.data.depositMode === DepositMode.WITHDRAW;
         this.cdRef.detectChanges();
     }

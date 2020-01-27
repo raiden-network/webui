@@ -7,7 +7,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -43,7 +42,6 @@ import { CdkTableModule } from '@angular/cdk/table';
         MatSortModule,
         MatSidenavModule,
         MatCheckboxModule,
-        MatExpansionModule,
         CdkTableModule
     ],
     imports: [CommonModule],

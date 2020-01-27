@@ -13,7 +13,6 @@ import { TestProviders } from '../../../testing/test-providers';
 import BigNumber from 'bignumber.js';
 import { MatDialogContent } from '@angular/material/dialog';
 import { mockFormInput } from '../../../testing/interaction-helper';
-import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
 
 describe('ConnectionManagerDialogComponent', () => {
     let component: ConnectionManagerDialogComponent;
@@ -30,8 +29,7 @@ describe('ConnectionManagerDialogComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 ConnectionManagerDialogComponent,
-                TokenInputComponent,
-                BigNumberConversionDirective
+                TokenInputComponent
             ],
             providers: [
                 TestProviders.HammerJSProvider(),

@@ -1,8 +1,15 @@
-import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+    Component,
+    forwardRef,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    ElementRef
+} from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
-    FormControl,
     NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
     ValidationErrors,
@@ -14,11 +21,11 @@ import { AddressBookService } from '../../services/address-book.service';
 import { Contact } from '../../models/contact';
 import {
     debounceTime,
-    flatMap,
     map,
-    startWith,
     tap,
-    switchMap
+    switchMap,
+    startWith,
+    flatMap
 } from 'rxjs/operators';
 import {
     merge,
@@ -26,16 +33,19 @@ import {
     of,
     Subscription,
     partition,
-    combineLatest
+    combineLatest,
+    BehaviorSubject
 } from 'rxjs';
 import AddressUtils from '../../utils/address-utils';
 import { isAddressValid } from '../../shared/address.validator';
 import { Network } from '../../utils/network-info';
+import { Animations } from '../../animations/animations';
 
 @Component({
     selector: 'app-address-input',
     templateUrl: './address-input.component.html',
     styleUrls: ['./address-input.component.css'],
+    animations: Animations.fallDown,
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -55,27 +65,19 @@ export class AddressInputComponent
     @Input() errorPlaceholder: string;
     @Input() displayIdenticon = false;
     @Input() userAccount = false;
+    @ViewChild('input', { static: true }) private inputElement: ElementRef;
 
+    address = '';
+    errors: ValidationErrors | null = { empty: true };
+    touched = false;
     searching = false;
-
-    private subscription: Subscription;
-    private _value = '';
-    private _errors: ValidationErrors | null = { emptyAddress: true };
-    readonly inputFieldFc = new FormControl('');
+    filteredOptions$: Observable<Contact[]>;
     readonly network$: Observable<Network>;
 
-    filteredOptions$: Observable<Contact[]>;
-    // noinspection JSUnusedLocalSymbols
-    private onChange = (address: string) => {};
-    private onTouch: any = () => {};
-
-    get address(): string {
-        return this._value;
-    }
-
-    trackByFn(address: Contact) {
-        return address.address;
-    }
+    private subscription: Subscription;
+    private inputSubject: BehaviorSubject<string> = new BehaviorSubject('');
+    private propagateTouched = () => {};
+    private propagateChange = (address: string) => {};
 
     constructor(
         private identiconCacheService: IdenticonCacheService,
@@ -93,89 +95,6 @@ export class AddressInputComponent
         }
     }
 
-    private setupFiltering() {
-        this.filteredOptions$ = this.inputFieldFc.valueChanges.pipe(
-            startWith(''),
-            flatMap(value => this._filter(value))
-        );
-    }
-
-    private setupValidation() {
-        const [ens, address] = partition(
-            this.inputFieldFc.valueChanges,
-            (value: string | null | undefined) => AddressUtils.isDomain(value)
-        );
-
-        const resolveOnEns = () =>
-            combineLatest([ens.pipe(debounceTime(800)), this.network$]).pipe(
-                switchMap(([value, network]) =>
-                    network.ensSupported
-                        ? of(value).pipe(
-                              tap(() => (this.searching = true)),
-                              switchMap(name =>
-                                  this.raidenService.resolveEnsName(name)
-                              ),
-                              tap(() => (this.searching = false)),
-                              map(resolvedAddress => {
-                                  if (resolvedAddress) {
-                                      return { value: resolvedAddress };
-                                  } else {
-                                      return {
-                                          value: '',
-                                          errors: {
-                                              unableToResolveEns: true
-                                          }
-                                      };
-                                  }
-                              })
-                          )
-                        : of({ value: '', errors: { ensUnsupported: true } })
-                )
-            );
-
-        const handleAddress = () =>
-            address.pipe(
-                map((value: string) => {
-                    const errors = isAddressValid(
-                        value,
-                        this.raidenService.raidenAddress
-                    );
-                    if (errors) {
-                        value = '';
-                    }
-                    return {
-                        value: value,
-                        errors: errors
-                    };
-                })
-            );
-
-        this.subscription = merge(resolveOnEns(), handleAddress()).subscribe(
-            (result: InputResult) => {
-                this._value = result.value;
-                this._errors = result.errors;
-
-                this.onChange(result.value);
-
-                if (result.errors) {
-                    this.inputFieldFc.setErrors(result.errors);
-                } else {
-                    this.inputFieldFc.setErrors({
-                        unableToResolveEns: null,
-                        ensUnsupported: null,
-                        ownAddress: null,
-                        emptyAddress: null,
-                        invalidFormat: null,
-                        notChecksumAddress: null
-                    });
-                    this.inputFieldFc.updateValueAndValidity({
-                        emitEvent: false
-                    });
-                }
-            }
-        );
-    }
-
     ngOnDestroy(): void {
         const subscription = this.subscription;
         if (subscription) {
@@ -183,55 +102,133 @@ export class AddressInputComponent
         }
     }
 
+    registerOnChange(fn: any) {
+        this.propagateChange = fn;
+    }
+
+    registerOnTouched(fn: any) {
+        this.propagateTouched = fn;
+    }
+
+    writeValue(obj: any) {
+        if (!obj || typeof obj !== 'string') {
+            return;
+        }
+        this.inputElement.nativeElement.value = obj;
+        this.onChange(obj);
+    }
+
+    validate(c: AbstractControl): ValidationErrors | null {
+        return this.errors;
+    }
+
+    onChange(value: any) {
+        this.inputSubject.next(value);
+    }
+
+    onTouched() {
+        this.touched = true;
+        this.propagateTouched();
+    }
+
+    trackByFn(contact: Contact) {
+        return contact.address;
+    }
+
+    checksum(): string {
+        return AddressUtils.toChecksumAddress(
+            this.inputElement.nativeElement.value
+        );
+    }
+
+    identicon(address: string): string {
+        return this.identiconCacheService.getIdenticon(address);
+    }
+
     hint(): string | null {
+        const label = this.addressBookService.get()[this.address];
         if (
-            AddressUtils.isChecksum(this._value) &&
-            AddressUtils.isDomain(this.inputFieldFc.value)
+            AddressUtils.isChecksum(this.address) &&
+            AddressUtils.isDomain(this.inputElement.nativeElement.value)
         ) {
-            return this._value;
+            return `Resolved address: ${this.address}`;
+        } else if (label) {
+            return label;
         } else {
             return null;
         }
     }
 
-    // noinspection JSMethodCanBeStatic
-    identicon(address: string): string {
-        return this.identiconCacheService.getIdenticon(address);
+    private setupValidation() {
+        const [ens, address] = partition(
+            this.inputSubject,
+            (value: string | null | undefined) => AddressUtils.isDomain(value)
+        );
+
+        const resolveOnEns = combineLatest([
+            ens.pipe(debounceTime(800)),
+            this.network$
+        ]).pipe(
+            switchMap(([value, network]) => {
+                if (!network.ensSupported) {
+                    return of({
+                        value: '',
+                        errors: { ensUnsupported: true }
+                    });
+                }
+                return of(value).pipe(
+                    tap(() => (this.searching = true)),
+                    switchMap(name => this.raidenService.resolveEnsName(name)),
+                    tap(() => (this.searching = false)),
+                    map(resolvedAddress => {
+                        if (resolvedAddress) {
+                            return { value: resolvedAddress };
+                        } else {
+                            return {
+                                value: '',
+                                errors: {
+                                    unableToResolveEns: true
+                                }
+                            };
+                        }
+                    })
+                );
+            })
+        );
+
+        const handleAddress = address.pipe(
+            map((value: string) => {
+                const errors = isAddressValid(
+                    value,
+                    this.raidenService.raidenAddress
+                );
+                if (errors) {
+                    value = '';
+                }
+                return {
+                    value: value,
+                    errors: errors
+                };
+            })
+        );
+
+        this.subscription = merge(resolveOnEns, handleAddress).subscribe(
+            (result: InputResult) => {
+                this.address = result.value;
+                this.errors = result.errors;
+                this.propagateChange(this.address);
+            }
+        );
     }
 
-    registerOnChange(fn: any): void {
-        this.onChange = fn;
+    private setupFiltering() {
+        this.filteredOptions$ = this.inputSubject.pipe(
+            startWith(''),
+            flatMap(value => this.filter(value))
+        );
     }
 
-    registerOnTouched(fn: any): void {
-        this.onTouch = fn;
-    }
-
-    setDisabledState(isDisabled: boolean): void {
-        isDisabled ? this.inputFieldFc.disable() : this.inputFieldFc.enable();
-    }
-
-    writeValue(obj: any): void {
-        if (!obj) {
-            this.inputFieldFc.reset('', { emitEvent: true });
-        } else {
-            this._errors = null;
-            this.inputFieldFc.setValue(obj, { emitEvent: true });
-        }
-        this.onChange(obj);
-    }
-
-    checksum(): string {
-        return AddressUtils.toChecksumAddress(this.inputFieldFc.value);
-    }
-
-    registerOnValidatorChange(fn: () => void): void {}
-
-    validate(c: AbstractControl): ValidationErrors | null {
-        return this._errors;
-    }
-
-    private _filter(value: string | Contact): Observable<Contact[]> {
+    private filter(value: string): Observable<Contact[]> {
         const contacts$ = of(this.addressBookService.getArray());
         if (!value || typeof value !== 'string') {
             return contacts$;
@@ -253,5 +250,5 @@ export class AddressInputComponent
 
 interface InputResult {
     value: string;
-    errors: any;
+    errors: ValidationErrors;
 }

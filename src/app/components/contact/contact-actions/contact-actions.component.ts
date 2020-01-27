@@ -46,8 +46,7 @@ export class ContactActionsComponent implements OnInit {
                     const payload: PaymentDialogPayload = {
                         tokenAddress: !!token ? token.address : '',
                         targetAddress: this.contact.address,
-                        amount: new BigNumber(0),
-                        paymentIdentifier: null
+                        amount: new BigNumber(0)
                     };
 
                     const dialog = this.dialog.open(PaymentDialogComponent, {
@@ -65,8 +64,7 @@ export class ContactActionsComponent implements OnInit {
                     return this.raidenService.initiatePayment(
                         result.tokenAddress,
                         result.targetAddress,
-                        result.amount,
-                        result.paymentIdentifier
+                        result.amount
                     );
                 })
             )

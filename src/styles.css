@@ -143,6 +143,57 @@ body {
     box-shadow: none !important;
 }
 
+.mat-select {
+    border-radius: 25px;
+    background-color: #e7e7e7;
+    height: 32px;
+    padding: 0 18px;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.35px;
+}
+
+.mat-select-trigger {
+    height: 100% !important;
+    width: 100%;
+}
+
+.mat-select-value {
+    vertical-align: middle;
+    color: #000000 !important;
+}
+
+.mat-select-arrow {
+    color: currentColor !important;
+}
+
+.mat-select-placeholder {
+    color: rgb(184, 184, 184) !important;
+}
+
+::placeholder,
+::-webkit-input-placeholder {
+    color: rgb(184, 184, 184);
+    opacity: 1;
+}
+
+.mat-select-panel,
+.mat-autocomplete-panel {
+    box-shadow: none !important;
+    border-radius: 25px !important;
+    background-color: #e7e7e7 !important;
+    width: 306px;
+}
+
+.mat-option {
+    color: #000000 !important;
+    background-color: #e7e7e7 !important;
+    font-size: 13px !important;
+    line-height: 15px !important;
+    letter-spacing: 0.35px;
+    height: 32px !important;
+}
+
 .toast-container {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
     min-width: 300px;
@@ -158,14 +209,6 @@ body {
 
 .full-width-form-field .mat-form-field-infix {
     width: 100%;
-}
-
-.full-width-expansion-panel {
-    width: 100%;
-}
-
-.dialog-expansion-panel .mat-expansion-panel-body {
-    padding-left: 0;
 }
 
 .identicon {
@@ -231,13 +274,4 @@ body {
 
 app-page-base {
     height: 100%;
-}
-
-/* temporary fix for https://github.com/angular/components/issues/11765 */
-.ng-animating .dialog-expansion-panel .mat-expansion-panel-header {
-    height: 48px;
-}
-.ng-animating .dialog-expansion-panel .mat-expansion-panel-content {
-    height: 0px;
-    visibility: hidden;
 }

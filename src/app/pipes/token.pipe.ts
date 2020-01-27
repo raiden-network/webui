@@ -10,10 +10,10 @@ export class TokenPipe implements PipeTransform {
     }
 
     private tokenToString(token?: UserToken): string {
-        let text = '';
         if (!token) {
             return '';
         }
+        let text = '';
         if (token.symbol) {
             text += `[${token.symbol}] `;
         }

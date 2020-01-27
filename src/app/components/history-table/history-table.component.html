@@ -8,7 +8,7 @@
         History
     </div>
     <div *ngIf="history.length === 0">
-        No {{ !!selectedToken ? selectedToken.symbol : '' }} transfers yet
+        No {{ selectedToken?.symbol }} transfers yet
     </div>
     <cdk-table
         class="table"

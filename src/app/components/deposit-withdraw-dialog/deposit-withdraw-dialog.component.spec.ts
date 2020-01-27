@@ -14,7 +14,6 @@ import { MatDialogContent } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { mockFormInput } from '../../../testing/interaction-helper';
 import BigNumber from 'bignumber.js';
-import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
 
 describe('DepositDialogComponent', () => {
     let component: DepositWithdrawDialogComponent;
@@ -26,11 +25,7 @@ describe('DepositDialogComponent', () => {
             depositMode: DepositMode.DEPOSIT
         };
         TestBed.configureTestingModule({
-            declarations: [
-                DepositWithdrawDialogComponent,
-                TokenInputComponent,
-                BigNumberConversionDirective
-            ],
+            declarations: [DepositWithdrawDialogComponent, TokenInputComponent],
             providers: [
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialogData(payload),

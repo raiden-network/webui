@@ -81,3 +81,8 @@
     line-height: 15px;
     color: rgba(255, 255, 255, 0.5);
 }
+
+.search__input::placeholder,
+.search__input::-webkit-input-placeholder {
+    opacity: 0.5;
+}

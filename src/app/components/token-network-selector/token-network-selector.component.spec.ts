@@ -221,7 +221,7 @@ describe('TokenNetworkSelectorComponent', () => {
 
     it('should emit the selected token when the user selects a token', fakeAsync(() => {
         let valueChange = 0;
-        component.valueChanged.subscribe(value => {
+        component.tokenChanged.subscribe(value => {
             valueChange++;
             expect(value).toBe(connectedToken);
         });

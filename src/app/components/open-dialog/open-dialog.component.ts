@@ -78,7 +78,7 @@ export class OpenDialogComponent {
         this.dialogRef.close(result);
     }
 
-    tokenNetworkSelected(value: UserToken) {
-        this.tokenInput.decimals = value.decimals;
+    tokenNetworkSelected(token: UserToken) {
+        this.tokenInput.token = token;
     }
 }

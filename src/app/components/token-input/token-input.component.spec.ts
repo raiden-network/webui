@@ -11,7 +11,6 @@ import {
 import { TokenInputComponent } from './token-input.component';
 import { TestProviders } from '../../../testing/test-providers';
 import { mockInput, errorMessage } from '../../../testing/interaction-helper';
-import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
 
 describe('TokenInputComponent', () => {
     let component: TokenInputComponent;
@@ -32,7 +31,7 @@ describe('TokenInputComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [TokenInputComponent, BigNumberConversionDirective],
+            declarations: [TokenInputComponent],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,

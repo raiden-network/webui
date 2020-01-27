@@ -38,7 +38,8 @@ export class ConnectionManagerDialogComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.tokenInput.decimals = this.data.decimals;
+        // todo
+        // this.tokenInput.decimals = this.data.decimals;
         this.cdRef.detectChanges();
     }
 

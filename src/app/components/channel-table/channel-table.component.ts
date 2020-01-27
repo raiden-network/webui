@@ -127,8 +127,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
         const payload: PaymentDialogPayload = {
             tokenAddress: '',
             targetAddress: '',
-            amount: new BigNumber(0),
-            paymentIdentifier: null
+            amount: new BigNumber(0)
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
@@ -147,8 +146,7 @@ export class ChannelTableComponent implements OnInit, OnDestroy {
                     return this.raidenService.initiatePayment(
                         result.tokenAddress,
                         result.targetAddress,
-                        result.amount,
-                        result.paymentIdentifier
+                        result.amount
                     );
                 })
             )

@@ -164,8 +164,7 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
                 ? ''
                 : this.currentSelection.address,
             targetAddress: '',
-            amount: new BigNumber(0),
-            paymentIdentifier: null
+            amount: new BigNumber(0)
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
@@ -184,8 +183,7 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
                     return this.raidenService.initiatePayment(
                         result.tokenAddress,
                         result.targetAddress,
-                        result.amount,
-                        result.paymentIdentifier
+                        result.amount
                     );
                 })
             )

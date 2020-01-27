@@ -15,8 +15,6 @@ import {
 } from './payment-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
 import { mockFormInput } from '../../../testing/interaction-helper';
-import { PaymentIdentifierInputComponent } from '../payment-identifier-input/payment-identifier-input.component';
-import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { of } from 'rxjs';
 import { PendingTransfer } from '../../models/pending-transfer';
@@ -69,21 +67,13 @@ describe('PaymentDialogComponent', () => {
             'inputControl',
             '10'
         );
-        mockFormInput(
-            fixture.debugElement.query(
-                By.directive(PaymentIdentifierInputComponent)
-            ),
-            'identifierFc',
-            '999'
-        );
     }
 
     beforeEach(async(() => {
         const payload: PaymentDialogPayload = {
             tokenAddress: '',
             amount: new BigNumber(0),
-            targetAddress: '',
-            paymentIdentifier: null
+            targetAddress: ''
         };
         TestBed.configureTestingModule({
             declarations: [
@@ -91,9 +81,7 @@ describe('PaymentDialogComponent', () => {
                 TokenPipe,
                 TokenInputComponent,
                 AddressInputComponent,
-                TokenNetworkSelectorComponent,
-                PaymentIdentifierInputComponent,
-                BigNumberConversionDirective
+                TokenNetworkSelectorComponent
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
