@@ -32,18 +32,26 @@
                     channel with {{ addressLabel(channel.partner_address) }}
                     {{ channel.partner_address }}
                 </span>
-                <span
-                    *ngIf="
-                        (channel.balance
-                            | decimal: channel.userToken.decimals) as balance
-                    "
-                    [matTooltip]="
-                        (balance | displayDecimals: 3) === balance
-                            ? ''
-                            : balance
-                    "
-                    >Balance: {{ balance | displayDecimals: 3 }}
-                    {{ channel.userToken.symbol }}
+                <span>
+                    Balance: 
+                    <ng-container *ngIf="!channel.depositPending; else deposit_pending">
+                        <span
+                            *ngIf="
+                                (channel.balance
+                                    | decimal: channel.userToken.decimals) as balance
+                            "
+                            [matTooltip]="
+                                (balance | displayDecimals: 3) === balance
+                                    ? ''
+                                    : balance
+                            "
+                            >{{ balance | displayDecimals: 3 }}
+                            {{ channel.userToken.symbol }}
+                        </span>
+                    </ng-container>
+                    <ng-template #deposit_pending>
+                        awaiting
+                    </ng-template>
                 </span>
             </div>
             <div fxFlex="1 1 auto"></div>
