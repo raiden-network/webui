@@ -3,14 +3,15 @@ import {
     AbstractControl,
     FormBuilder,
     FormGroup,
-    Validators
+    Validators,
+    ValidatorFn,
+    ValidationErrors
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserToken } from '../../models/usertoken';
-import { RaidenService } from '../../services/raiden.service';
-import { AddressInputComponent } from '../address-input/address-input.component';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import BigNumber from 'bignumber.js';
+import { Animations } from '../../animations/animations';
 
 export interface OpenDialogPayload {
     readonly tokenAddress: string;
@@ -28,40 +29,36 @@ export interface OpenDialogResult {
 @Component({
     selector: 'app-open-dialog',
     templateUrl: './open-dialog.component.html',
-    styleUrls: ['./open-dialog.component.css']
+    styleUrls: ['./open-dialog.component.css'],
+    animations: Animations.fallDown
 })
 export class OpenDialogComponent {
-    public form: FormGroup = this.fb.group({
-        address: '',
-        token: this.data.tokenAddress,
-        amount: new BigNumber(0),
-        settle_timeout: [
-            this.data.defaultSettleTimeout,
-            [
-                (control: AbstractControl) => {
-                    const value = parseInt(control.value, 10);
-                    if (isNaN(value) || value <= 0) {
-                        return { invalidAmount: true };
-                    } else {
-                        return undefined;
-                    }
-                },
-                Validators.min(this.data.revealTimeout * 2)
-            ]
-        ]
-    });
-
     @ViewChild(TokenInputComponent, { static: true })
     tokenInput: TokenInputComponent;
-    @ViewChild(AddressInputComponent, { static: true })
-    addressInput: AddressInputComponent;
+
+    form: FormGroup;
+    revealTimeout: number;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: OpenDialogPayload,
-        public dialogRef: MatDialogRef<OpenDialogComponent>,
-        public raidenService: RaidenService,
+        @Inject(MAT_DIALOG_DATA) data: OpenDialogPayload,
+        private dialogRef: MatDialogRef<OpenDialogComponent>,
         private fb: FormBuilder
-    ) {}
+    ) {
+        this.revealTimeout = data.revealTimeout;
+        this.form = this.fb.group({
+            address: ['', Validators.required],
+            token: [data.tokenAddress, Validators.required],
+            amount: ['', Validators.required],
+            settle_timeout: [
+                data.defaultSettleTimeout,
+                [
+                    this.settleTimeoutValidator(),
+                    Validators.min(data.revealTimeout * 2),
+                    Validators.required
+                ]
+            ]
+        });
+    }
 
     accept() {
         if (this.form.invalid) {
@@ -78,7 +75,21 @@ export class OpenDialogComponent {
         this.dialogRef.close(result);
     }
 
+    cancel() {
+        this.dialogRef.close();
+    }
+
     tokenNetworkSelected(token: UserToken) {
-        this.tokenInput.token = token;
+        this.tokenInput.selectedToken = token;
+    }
+
+    private settleTimeoutValidator(): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors => {
+            const value = parseInt(control.value, 10);
+            if (isNaN(value) || value <= 0) {
+                return { invalidAmount: true };
+            }
+            return undefined;
+        };
     }
 }

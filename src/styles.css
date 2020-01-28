@@ -194,6 +194,10 @@ body {
     height: 32px !important;
 }
 
+input:focus {
+    outline: none;
+}
+
 .toast-container {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
     min-width: 300px;
