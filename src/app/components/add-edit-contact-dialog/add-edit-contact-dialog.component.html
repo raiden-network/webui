@@ -1,0 +1,30 @@
+<app-raiden-dialog
+    [titleText]="editing ? 'Edit Contact' : 'New Contact'"
+    [acceptText]="editing ? 'Save' : 'Add'"
+    [acceptDisabled]="form.invalid"
+    [formGroup]="form"
+    (accept)="accept()"
+    (cancel)="cancel()"
+>
+    <app-address-input
+        formControlName="address"
+        placeholder="Address"
+        [displayIdenticon]="true"
+    >
+    </app-address-input>
+    <div>
+        <div class="label-input" fxLayout="row">
+            <input
+                placeholder="Name"
+                aria-label="Contact name input"
+                formControlName="label"
+                class="label-input__field"
+            />
+        </div>
+        <div class="error" fxLayout="column" fxLayoutAlign="center">
+            <span *ngIf="labelInvalid()" [@fallDown]="'in'">
+                The name cannot be empty
+            </span>
+        </div>
+    </div>
+</app-raiden-dialog>

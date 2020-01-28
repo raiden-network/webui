@@ -77,6 +77,7 @@ import { ContactActionsComponent } from './components/contact/contact-actions/co
 import { HistoryTableComponent } from './components/history-table/history-table.component';
 import { HeaderComponent } from './components/header/header.component';
 import { RaidenDialogComponent } from './components/raiden-dialog/raiden-dialog.component';
+import { AddEditContactDialogComponent } from './components/add-edit-contact-dialog/add-edit-contact-dialog.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -146,7 +147,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ContactActionsComponent,
         HistoryTableComponent,
         HeaderComponent,
-        RaidenDialogComponent
+        RaidenDialogComponent,
+        AddEditContactDialogComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
@@ -216,7 +218,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         FilterDialogComponent,
         SortDialogComponent,
         AddAddressDialogComponent,
-        RaidenToastComponent
+        RaidenToastComponent,
+        AddEditContactDialogComponent
     ],
     bootstrap: [AppComponent]
 })

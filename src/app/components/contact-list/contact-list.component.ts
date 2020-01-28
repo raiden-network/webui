@@ -10,7 +10,6 @@ import { AddressBookService } from '../../services/address-book.service';
 import { StringUtils } from '../../utils/string.utils';
 import { Animations } from '../../animations/animations';
 import { MatDialog } from '@angular/material/dialog';
-import { AddAddressDialogComponent } from '../add-address-dialog/add-address-dialog.component';
 import { UploadChecks } from '../../shared/upload-checks';
 import { ValidateFunction } from 'ajv';
 import * as Ajv from 'ajv';
@@ -19,6 +18,7 @@ import { NotificationService } from '../../services/notification.service';
 import { UploadError } from '../../models/upload-error';
 import { Subscription } from 'rxjs';
 import { UtilityService } from '../../services/utility.service';
+import { AddEditContactDialogComponent } from '../add-edit-contact-dialog/add-edit-contact-dialog.component';
 
 @Component({
     selector: 'app-contact-list',
@@ -52,7 +52,10 @@ export class ContactListComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.subscription = this.utilityService.globalClickTarget$.subscribe(
             target => {
-                if (!this.contactsElement.nativeElement.contains(target)) {
+                if (
+                    !this.contactsElement.nativeElement.contains(target) &&
+                    this.dialog.openDialogs.length === 0
+                ) {
                     this.selectedContactAddress = '';
                 }
             }
@@ -85,16 +88,17 @@ export class ContactListComponent implements OnInit, OnDestroy {
     }
 
     addContact() {
-        const dialog = this.dialog.open(AddAddressDialogComponent, {
+        const dialog = this.dialog.open(AddEditContactDialogComponent, {
+            data: { address: '', label: '', edit: false },
             width: '360px'
         });
 
-        dialog.afterClosed().subscribe(value => {
-            if (!value) {
+        dialog.afterClosed().subscribe((result?: Contact) => {
+            if (!result) {
                 return;
             }
 
-            this.addressBookService.save(value);
+            this.addressBookService.save(result);
             this.updateContacts();
         });
     }

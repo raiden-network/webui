@@ -70,7 +70,10 @@ export class ChannelListComponent implements OnInit, OnDestroy {
 
         const globalClickSubscription = this.utilityService.globalClickTarget$.subscribe(
             target => {
-                if (!this.channelsElement.nativeElement.contains(target)) {
+                if (
+                    !this.channelsElement.nativeElement.contains(target) &&
+                    this.dialog.openDialogs.length === 0
+                ) {
                     this.selectedChannel = undefined;
                 }
             }

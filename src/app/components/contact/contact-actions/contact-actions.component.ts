@@ -17,6 +17,10 @@ import {
     ConfirmationDialogComponent
 } from '../../confirmation-dialog/confirmation-dialog.component';
 import { SelectedTokenService } from '../../../services/selected-token.service';
+import {
+    AddEditContactDialogComponent,
+    AddEditContactDialogPayload
+} from '../../add-edit-contact-dialog/add-edit-contact-dialog.component';
 
 @Component({
     selector: 'app-contact-actions',
@@ -72,6 +76,28 @@ export class ContactActionsComponent implements OnInit {
                 this.channelPollingService.refresh();
                 this.pendingTransferPollingService.refresh();
             });
+    }
+
+    edit() {
+        const payload: AddEditContactDialogPayload = {
+            address: this.contact.address,
+            label: this.contact.label,
+            edit: true
+        };
+
+        const dialog = this.dialog.open(AddEditContactDialogComponent, {
+            data: payload,
+            width: '360px'
+        });
+
+        dialog.afterClosed().subscribe((result?: Contact) => {
+            if (!result) {
+                return;
+            }
+
+            this.addressBookService.save(result);
+            this.update.emit(true);
+        });
     }
 
     delete() {

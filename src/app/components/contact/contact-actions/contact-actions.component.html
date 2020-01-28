@@ -4,10 +4,17 @@
         mat-flat-button
         color="accent"
         (click)="pay()"
+        stopClickPropagation
     >
         Transfer
     </button>
-    <button class="actions__button" mat-flat-button color="accent">
+    <button
+        class="actions__button"
+        mat-flat-button
+        color="accent"
+        (click)="edit()"
+        stopClickPropagation
+    >
         Edit
     </button>
     <button
@@ -15,6 +22,7 @@
         mat-flat-button
         color="accent"
         (click)="delete()"
+        stopClickPropagation
     >
         Delete
     </button>

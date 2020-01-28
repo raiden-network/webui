@@ -6,6 +6,7 @@
         color="accent"
         [disabled]="channel.state !== 'opened'"
         (click)="deposit()"
+        stopClickPropagation
     >
         Deposit
     </button>
@@ -16,6 +17,7 @@
         color="accent"
         [disabled]="channel.state !== 'opened'"
         (click)="withdraw()"
+        stopClickPropagation
     >
         Withdraw
     </button>
@@ -26,6 +28,7 @@
         color="accent"
         [disabled]="channel.state !== 'opened'"
         (click)="close()"
+        stopClickPropagation
     >
         Close
     </button>

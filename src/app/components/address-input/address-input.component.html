@@ -77,7 +77,7 @@
         </span>
     </span>
     <ng-template #hint_text>
-        <span *ngIf="hint()" class="info-box__hint">
+        <span *ngIf="userAccount && hint()" class="info-box__hint">
             {{ hint() }}
         </span>
     </ng-template>
