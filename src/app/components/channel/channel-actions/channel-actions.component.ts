@@ -81,7 +81,7 @@ export class ChannelActionsComponent implements OnInit {
 
     private openDeposit(depositMode: DepositMode) {
         const payload: DepositWithdrawDialogPayload = {
-            decimals: this.channel.userToken.decimals,
+            token: this.channel.userToken,
             depositMode: depositMode
         };
 

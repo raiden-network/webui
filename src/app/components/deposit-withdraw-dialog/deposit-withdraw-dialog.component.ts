@@ -1,18 +1,13 @@
-import {
-    ChangeDetectorRef,
-    Component,
-    Inject,
-    OnInit,
-    ViewChild
-} from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { DepositMode } from '../../utils/helpers';
 import BigNumber from 'bignumber.js';
+import { UserToken } from '../../models/usertoken';
 
 export interface DepositWithdrawDialogPayload {
-    readonly decimals: number;
+    readonly token: UserToken;
     readonly depositMode: DepositMode;
 }
 
@@ -29,24 +24,23 @@ export class DepositWithdrawDialogComponent implements OnInit {
     @ViewChild(TokenInputComponent, { static: true })
     tokenInput: TokenInputComponent;
 
+    form = this.fb.group({
+        amount: ['', Validators.required]
+    });
+    token: UserToken;
     withdraw = false;
 
-    form = this.fb.group({
-        amount: new BigNumber(0)
-    });
-
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: DepositWithdrawDialogPayload,
-        public dialogRef: MatDialogRef<DepositWithdrawDialogComponent>,
-        private fb: FormBuilder,
-        private cdRef: ChangeDetectorRef
-    ) {}
+        @Inject(MAT_DIALOG_DATA) data: DepositWithdrawDialogPayload,
+        private dialogRef: MatDialogRef<DepositWithdrawDialogComponent>,
+        private fb: FormBuilder
+    ) {
+        this.token = data.token;
+        this.withdraw = data.depositMode === DepositMode.WITHDRAW;
+    }
 
-    ngOnInit() {
-        // todo
-        // this.tokenInput.decimals = this.data.decimals;
-        this.withdraw = this.data.depositMode === DepositMode.WITHDRAW;
-        this.cdRef.detectChanges();
+    ngOnInit(): void {
+        this.tokenInput.selectedToken = this.token;
     }
 
     accept() {
@@ -55,5 +49,9 @@ export class DepositWithdrawDialogComponent implements OnInit {
         }
         const tokenAmount = this.form.value.amount;
         this.dialogRef.close({ tokenAmount });
+    }
+
+    cancel() {
+        this.dialogRef.close();
     }
 }
