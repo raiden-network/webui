@@ -193,16 +193,15 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
             });
     }
 
-    openConnectionManager(join: boolean = true) {
+    openConnectionManager() {
         if (this.isAllNetworksView(this.currentSelection)) {
             return;
         }
+        const join = !this.currentSelection.connected;
 
         const payload: ConnectionManagerDialogPayload = {
-            tokenAddress: this.currentSelection.address,
-            funds: new BigNumber(0),
-            decimals: this.currentSelection.decimals,
-            join: join
+            token: this.currentSelection,
+            funds: new BigNumber(0)
         };
 
         const joinDialogRef = this.dialog.open(
@@ -222,8 +221,8 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
                     }
                     return this.raidenService.connectTokenNetwork(
                         result.funds,
-                        result.tokenAddress,
-                        result.join
+                        result.token.address,
+                        join
                     );
                 })
             )

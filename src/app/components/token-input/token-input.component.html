@@ -1,6 +1,6 @@
 <div class="input" fxLayout="row" fxLayoutAlign="start center">
     <input
-        placeholder="Amount"
+        [placeholder]="placeholder"
         aria-label="Amount input"
         class="input__field"
         type="text"
@@ -13,6 +13,15 @@
     <div class="input__symbol">
         {{ token?.symbol }}
     </div>
+
+    <mat-icon
+        *ngIf="infoText"
+        class="input__info"
+        svgIcon="info"
+        aria-label="Info text"
+        [matTooltip]="infoText"
+    >
+    </mat-icon>
 </div>
 
 <div class="error" fxLayout="column" fxLayoutAlign="center">
@@ -23,7 +32,7 @@
         <span *ngIf="errors['zeroAmount']">
             The amount should be greater than 0
         </span>
-        <span *ngIf="errors['tooManyDecimals'] && !!token">
+        <span *ngIf="errors['tooManyDecimals'] && token">
             The selected token network only supports up to
             {{ decimals }} decimals
         </span>

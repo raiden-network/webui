@@ -661,7 +661,7 @@ describe('RaidenService', () => {
         );
     });
 
-    it('should inform the user when joining a token network was successful', fakeAsync(() => {
+    it('should inform the user when quick connect was successful', fakeAsync(() => {
         service
             .connectTokenNetwork(new BigNumber(1000), tokenAddress, true)
             .subscribe(value => expect(value).toBeFalsy())
@@ -692,9 +692,9 @@ describe('RaidenService', () => {
 
         const notificationMessage: UiMessage = {
             title: 'Joined token network',
-            description: `${
+            description: `Quick connect successfully opened channels in ${
                 token.name
-            } network was joined successfully with 0.00001 ${token.symbol}`
+            } network`
         };
         expect(
             notificationService.addSuccessNotification
@@ -735,7 +735,7 @@ describe('RaidenService', () => {
 
         const notificationMessage: UiMessage = {
             title: 'Funds added',
-            description: `Funds for ${
+            description: `Funds for quick connect in ${
                 token.name
             } network were successfully changed to 0.00001 ${token.symbol}`
         };
@@ -918,7 +918,7 @@ describe('RaidenService', () => {
 
         const notificationMessage: UiMessage = {
             title: 'Transfer successful',
-            description: `A payment of 0.0000001 ${
+            description: `A transfer of 0.0000001 ${
                 token.symbol
             } was successfully sent to ${targetAddress}`
         };

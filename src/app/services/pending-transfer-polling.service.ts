@@ -88,15 +88,15 @@ export class PendingTransferPollingService {
             ).toFixed();
             if (pendingTransfer.role === 'initiator') {
                 message = {
-                    title: 'Payment in flight',
-                    description: `A payment of ${formattedAmount} ${
+                    title: 'Transfer in flight',
+                    description: `A transfer of ${formattedAmount} ${
                         token.symbol
                     } is being sent to ${pendingTransfer.target}`
                 };
             } else {
                 message = {
-                    title: 'Payment incoming',
-                    description: `A payment of ${formattedAmount} ${
+                    title: 'Transfer incoming',
+                    description: `A transfer of ${formattedAmount} ${
                         token.symbol
                     } is incoming from ${pendingTransfer.initiator}`
                 };

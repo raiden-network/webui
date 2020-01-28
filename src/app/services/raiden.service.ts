@@ -374,7 +374,7 @@ export class RaidenService {
                 ).toFixed();
                 const message: UiMessage = {
                     title: 'Transfer successful',
-                    description: `A payment of ${formattedAmount} ${
+                    description: `A transfer of ${formattedAmount} ${
                         token.symbol
                     } was successfully sent to ${targetAddress}`
                 };
@@ -600,14 +600,14 @@ export class RaidenService {
         return of(null).pipe(
             tap(() => {
                 const message: UiMessage = {
-                    title: join ? 'Joining token network' : 'Adding funds',
+                    title: 'Quick connect',
                     description: join
-                        ? `${
+                        ? `Trying to open 3 channels in ${
                               token.name
-                          } network will be joined with ${formattedAmount} ${
+                          } network with funds of ${formattedAmount} ${
                               token.symbol
                           }`
-                        : `Funds for ${
+                        : `Funds for quick connect in ${
                               token.name
                           } network will be changed to ${formattedAmount} ${
                               token.symbol
@@ -628,14 +628,12 @@ export class RaidenService {
             map(() => null),
             tap(() => {
                 const message: UiMessage = {
-                    title: join ? 'Joined token network' : 'Funds added',
+                    title: 'Quick connect successful',
                     description: join
-                        ? `${
+                        ? `Quick connect successfully opened channels in ${
                               token.name
-                          } network was joined successfully with ${formattedAmount} ${
-                              token.symbol
-                          }`
-                        : `Funds for ${
+                          } network`
+                        : `Funds for quick connect in ${
                               token.name
                           } network were successfully changed to ${formattedAmount} ${
                               token.symbol

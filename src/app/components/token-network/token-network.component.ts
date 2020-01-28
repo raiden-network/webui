@@ -139,10 +139,8 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
         join: boolean = true
     ) {
         const payload: ConnectionManagerDialogPayload = {
-            tokenAddress: userToken.address,
+            token: userToken,
             funds: new BigNumber(0),
-            decimals: userToken.decimals,
-            join: join
         };
 
         const joinDialogRef = this.dialog.open(
@@ -160,8 +158,8 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
                     if (result) {
                         return this.raidenService.connectTokenNetwork(
                             result.funds,
-                            result.tokenAddress,
-                            result.join
+                            result.token.address,
+                            true
                         );
                     } else {
                         return EMPTY;

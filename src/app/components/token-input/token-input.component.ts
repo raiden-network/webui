@@ -38,6 +38,8 @@ import { Animations } from '../../animations/animations';
 })
 export class TokenInputComponent implements ControlValueAccessor, Validator {
     @Input() allowZero: boolean;
+    @Input() infoText = '';
+    @Input() placeholder = 'Amount';
     @ViewChild('input', { static: true }) private inputElement: ElementRef;
 
     token: UserToken;

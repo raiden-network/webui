@@ -6,7 +6,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
     styleUrls: ['./raiden-dialog.component.css']
 })
 export class RaidenDialogComponent implements OnInit {
-    @Input() title: string;
+    @Input() titleText: string;
     @Input() acceptText: string;
     @Input() acceptDisabled: boolean;
     @Output() accept: EventEmitter<boolean> = new EventEmitter();

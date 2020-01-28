@@ -24,6 +24,10 @@
     letter-spacing: 0.35px;
 }
 
+.input__info {
+    color: #000000;
+}
+
 .error {
     height: 32px;
     color: #f54b47;

@@ -1,16 +1,28 @@
-<h1 mat-dialog-title>
-    {{ data.join ? 'Join Token Network' : 'Add Funds' }}
-</h1>
-<div mat-dialog-content [formGroup]="form" (keyup.enter)="allocateFunds()">
+<app-raiden-dialog
+    titleText="Quick Connect"
+    acceptText="Connect"
+    [acceptDisabled]="form.invalid"
+    [formGroup]="form"
+    (accept)="accept()"
+    (cancel)="cancel()"
+>
+    <div *ngIf="!funds.isZero()" class="allocated-funds">
+        Allocated funds:
+        <span
+            *ngIf="(funds | decimal: token.decimals) as allocatedFunds"
+            [matTooltip]="
+                (allocatedFunds | displayDecimals: 3) === allocatedFunds
+                    ? ''
+                    : allocatedFunds
+            "
+        >
+            {{ allocatedFunds | displayDecimals: 3 }} {{ token.symbol }}
+        </span>
+    </div>
     <app-token-input
-        matTooltip="The allocated funds will be used by the connection manager, to automatically open channels for you."
+        [placeholder]="funds.isZero() ? 'Funds' : 'New funds'"
+        infoText="Quick connect automatically opens channels with 3 random online nodes and splits the allocated funds among them. You can set a new value for the funds here later."
         formControlName="amount"
     >
     </app-token-input>
-</div>
-<div mat-dialog-actions>
-    <button mat-button mat-dialog-close>Close</button>
-    <button mat-button (click)="allocateFunds()" [disabled]="form.invalid">
-        {{ data.join ? 'Join' : 'Add' }}
-    </button>
-</div>
+</app-raiden-dialog>
