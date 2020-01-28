@@ -62,7 +62,6 @@ import { Animations } from '../../animations/animations';
 export class AddressInputComponent
     implements ControlValueAccessor, Validator, OnInit, OnDestroy {
     @Input() placeholder: string;
-    @Input() errorPlaceholder: string;
     @Input() displayIdenticon = false;
     @Input() userAccount = false;
     @ViewChild('input', { static: true }) private inputElement: ElementRef;

@@ -64,11 +64,11 @@
         </span>
 
         <span *ngIf="errors['notChecksumAddress']">
-            Address is not in checksum format: {{ checksum() }}
+            The address is not in checksum format: {{ checksum() }}
         </span>
 
         <span *ngIf="errors['invalidFormat']">
-            The {{ errorPlaceholder }} address is not in a valid format
+            The address is not in a valid format
         </span>
 
         <span *ngIf="errors['ensUnsupported']">
