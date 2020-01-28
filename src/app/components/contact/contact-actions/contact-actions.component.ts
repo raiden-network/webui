@@ -77,10 +77,10 @@ export class ContactActionsComponent implements OnInit {
     delete() {
         const contact = this.contact;
         const payload: ConfirmationDialogPayload = {
-            title: 'Delete contact',
-            message: `Are you sure you want to delete the entry <strong>${
+            title: 'Delete Contact',
+            message: `Are you sure you want to delete the contact ${
                 contact.label
-            }</strong> for address <strong>${contact.address}</strong>?`
+            } for address ${contact.address}?`
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {

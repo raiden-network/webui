@@ -120,14 +120,12 @@ export class PaymentDialogComponent implements OnInit {
         const partner = this.addressBookService.get()[payload.targetAddress];
 
         const confirmationPayload: ConfirmationDialogPayload = {
-            title: 'Retrying transfer',
-            message:
-                `There is already a transfer of <strong>${formattedAmount} ${
-                    token.symbol
-                }</strong> being sent to <strong>${
-                    partner ? partner + ' ' : ''
-                }${payload.targetAddress}</strong>. <br/>` +
-                'Are you sure you want to send the same transfer again?'
+            title: 'Retrying Transfer',
+            message: `There is already a transfer of ${formattedAmount} ${
+                token.symbol
+            } being sent to ${partner ? partner + ' ' : ''}${
+                payload.targetAddress
+            }. Are you sure you want to send the same transfer again?`
         };
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: confirmationPayload,

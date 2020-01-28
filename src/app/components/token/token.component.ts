@@ -52,10 +52,10 @@ export class TokenComponent implements OnInit {
     leaveNetwork() {
         const payload: ConfirmationDialogPayload = {
             title: 'Leave Token Network',
-            message: `Are you sure that you want to close and settle all channels for token
-            <p><strong>${this.token.name} (${this.token.address})</strong>?</p>`
+            message: `Are you sure you want to close and settle all ${
+                this.token.symbol
+            } channels in ${this.token.name} network?`
         };
-
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: payload,
             width: '360px'

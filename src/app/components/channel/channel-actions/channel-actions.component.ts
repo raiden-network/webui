@@ -16,6 +16,7 @@ import {
     DepositWithdrawDialogPayload
 } from '../../deposit-withdraw-dialog/deposit-withdraw-dialog.component';
 import { TokenPollingService } from '../../../services/token-polling.service';
+import { AddressBookService } from '../../../services/address-book.service';
 
 @Component({
     selector: 'app-channel-actions',
@@ -29,7 +30,8 @@ export class ChannelActionsComponent implements OnInit {
         private raidenService: RaidenService,
         private dialog: MatDialog,
         private channelPollingService: ChannelPollingService,
-        private tokenPollingService: TokenPollingService
+        private tokenPollingService: TokenPollingService,
+        private addressBookService: AddressBookService
     ) {}
 
     ngOnInit() {}
@@ -43,15 +45,17 @@ export class ChannelActionsComponent implements OnInit {
     }
 
     close() {
+        const partner = this.addressBookService.get()[
+            this.channel.partner_address
+        ];
+
         const payload: ConfirmationDialogPayload = {
             title: 'Close Channel',
-            message: `Are you sure you want to close channel ${
-                this.channel.channel_identifier
-            } with <strong>${
+            message: `Are you sure you want to close the ${
+                this.channel.userToken.symbol
+            } channel with ${partner ? partner + ' ' : ''}${
                 this.channel.partner_address
-            }</strong> on <strong>${this.channel.userToken.name}<strong/> (${
-                this.channel.userToken.address
-            })?`
+            } in ${this.channel.userToken.name} network?`
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
