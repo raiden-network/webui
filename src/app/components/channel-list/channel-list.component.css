@@ -24,3 +24,7 @@
 .button__icon--big {
     height: 24px !important;
 }
+
+.list__channels {
+    width: 100%;
+}

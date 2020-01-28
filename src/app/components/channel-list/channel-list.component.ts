@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+    ElementRef
+} from '@angular/core';
 import { Channel } from '../../models/channel';
 import { Subscription, EMPTY } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
@@ -16,6 +22,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Animations } from '../../animations/animations';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { SelectedTokenService } from '../../services/selected-token.service';
+import { UtilityService } from '../../services/utility.service';
 
 @Component({
     selector: 'app-channel-list',
@@ -24,10 +31,12 @@ import { SelectedTokenService } from '../../services/selected-token.service';
     animations: Animations.flyInOut
 })
 export class ChannelListComponent implements OnInit, OnDestroy {
+    @ViewChild('channel_list', { static: true }) channelsElement: ElementRef;
+
     visibleChannels: Channel[] = [];
     totalChannels = 0;
     showAll = false;
-    selectedIndex = -1;
+    selectedChannel: Channel;
     selectedToken: UserToken;
 
     private channels: Channel[] = [];
@@ -39,7 +48,8 @@ export class ChannelListComponent implements OnInit, OnDestroy {
         private raidenService: RaidenService,
         private dialog: MatDialog,
         private tokenPollingService: TokenPollingService,
-        private selectedTokenService: SelectedTokenService
+        private selectedTokenService: SelectedTokenService,
+        private utilityService: UtilityService
     ) {}
 
     ngOnInit() {
@@ -57,6 +67,15 @@ export class ChannelListComponent implements OnInit, OnDestroy {
             }
         );
         this.subscription.add(selectedTokenSubscription);
+
+        const globalClickSubscription = this.utilityService.globalClickTarget$.subscribe(
+            target => {
+                if (!this.channelsElement.nativeElement.contains(target)) {
+                    this.selectedChannel = undefined;
+                }
+            }
+        );
+        this.subscription.add(globalClickSubscription);
     }
 
     ngOnDestroy() {
@@ -72,8 +91,18 @@ export class ChannelListComponent implements OnInit, OnDestroy {
         this.updateVisibleChannels();
     }
 
-    setSelectedIndex(index: number) {
-        this.selectedIndex = this.selectedIndex === index ? -1 : index;
+    setSelection(channel: Channel) {
+        this.selectedChannel = this.isSelected(channel) ? undefined : channel;
+    }
+
+    isSelected(channel: Channel): boolean {
+        if (!this.selectedChannel) {
+            return false;
+        }
+        return (
+            channel.partner_address === this.selectedChannel.partner_address &&
+            channel.token_address === this.selectedChannel.token_address
+        );
     }
 
     openChannel() {
@@ -115,7 +144,7 @@ export class ChannelListComponent implements OnInit, OnDestroy {
     private getFilteredChannels(): Channel[] {
         return this.channels.filter(channel => {
             let matchesToken = true;
-            if (!!this.selectedToken) {
+            if (this.selectedToken) {
                 matchesToken =
                     channel.userToken &&
                     channel.userToken.address === this.selectedToken.address;

@@ -140,7 +140,7 @@ export class TokenNetworkComponent implements OnInit, OnDestroy {
     ) {
         const payload: ConnectionManagerDialogPayload = {
             token: userToken,
-            funds: new BigNumber(0),
+            funds: new BigNumber(0)
         };
 
         const joinDialogRef = this.dialog.open(

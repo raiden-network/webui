@@ -110,7 +110,7 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     getNumberOfChannels(item: UserToken | AllNetworksView) {
         if (this.isAllNetworksView(item)) {
             return this.totalChannels;
-        } else if (!!item.connected) {
+        } else if (item.connected) {
             return item.connected.channels;
         } else {
             return 0;

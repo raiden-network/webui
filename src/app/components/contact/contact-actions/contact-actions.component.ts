@@ -44,7 +44,7 @@ export class ContactActionsComponent implements OnInit {
                 first(),
                 flatMap(token => {
                     const payload: PaymentDialogPayload = {
-                        tokenAddress: !!token ? token.address : '',
+                        tokenAddress: token ? token.address : '',
                         targetAddress: this.contact.address,
                         amount: new BigNumber(0)
                     };

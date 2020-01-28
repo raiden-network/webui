@@ -33,12 +33,15 @@
                     {{ channel.partner_address }}
                 </span>
                 <span>
-                    Balance: 
-                    <ng-container *ngIf="!channel.depositPending; else deposit_pending">
+                    Balance:
+                    <ng-container
+                        *ngIf="!channel.depositPending; else deposit_pending"
+                    >
                         <span
                             *ngIf="
                                 (channel.balance
-                                    | decimal: channel.userToken.decimals) as balance
+                                    | decimal
+                                        : channel.userToken.decimals) as balance
                             "
                             [matTooltip]="
                                 (balance | displayDecimals: 3) === balance

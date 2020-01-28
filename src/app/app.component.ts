@@ -3,7 +3,8 @@ import {
     HostBinding,
     OnDestroy,
     OnInit,
-    ViewChild
+    ViewChild,
+    HostListener
 } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { MatSidenav } from '@angular/material/sidenav';
@@ -17,6 +18,7 @@ import { Animations } from './animations/animations';
 import { PendingTransferPollingService } from './services/pending-transfer-polling.service';
 import { PaymentHistoryPollingService } from './services/payment-history-polling.service';
 import { Network } from './utils/network-info';
+import { UtilityService } from './services/utility.service';
 
 const icon_names = [
     'copy',
@@ -67,11 +69,17 @@ export class AppComponent implements OnInit, OnDestroy {
         private mediaObserver: MediaObserver,
         private notificationService: NotificationService,
         private matIconRegistry: MatIconRegistry,
-        private domSanitizer: DomSanitizer
+        private domSanitizer: DomSanitizer,
+        private utilityService: UtilityService
     ) {
         this.network$ = raidenService.network$;
 
         this.registerIcons();
+    }
+
+    @HostListener('document:click', ['$event'])
+    documentClick(event: any) {
+        this.utilityService.newGlobalClick(event.target);
     }
 
     isMobile(): boolean {

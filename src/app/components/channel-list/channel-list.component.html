@@ -1,9 +1,4 @@
-<div
-    class="list"
-    fxLayout="column"
-    fxLayoutGap="22px"
-    fxLayoutAlign="space-between start"
->
+<div class="list" fxLayout="column" fxLayoutGap="22px">
     <div class="list__labels">
         Open Channels -
         {{ showAll ? totalChannels : visibleChannels.length }} of
@@ -22,18 +17,25 @@
         </mat-icon>
         <span> Open new {{ selectedToken?.symbol }} Channel </span>
     </button>
-    <app-channel
-        *ngFor="
-            let channel of visibleChannels;
-            let i = index;
-            trackBy: trackByFn
-        "
-        [channel]="channel"
-        [selected]="selectedIndex === i"
-        (select)="setSelectedIndex(i)"
-        [@flyInOut]="'in'"
+    <div
+        class="list__channels"
+        fxLayout="column"
+        fxLayoutGap="22px"
+        #channel_list
     >
-    </app-channel>
+        <app-channel
+            *ngFor="
+                let channel of visibleChannels;
+                let i = index;
+                trackBy: trackByFn
+            "
+            [channel]="channel"
+            [selected]="isSelected(channel)"
+            (select)="setSelection(channel)"
+            [@flyInOut]="'in'"
+        >
+        </app-channel>
+    </div>
     <button
         *ngIf="totalChannels > 3"
         mat-flat-button

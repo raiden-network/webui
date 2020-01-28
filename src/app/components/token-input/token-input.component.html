@@ -26,7 +26,7 @@
 
 <div class="error" fxLayout="column" fxLayoutAlign="center">
     <span
-        *ngIf="!!errors && touched && input.value.length > 0"
+        *ngIf="errors && touched && input.value.length > 0"
         [@fallDown]="'in'"
     >
         <span *ngIf="errors['zeroAmount']">

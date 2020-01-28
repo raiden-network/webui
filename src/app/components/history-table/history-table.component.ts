@@ -50,7 +50,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
                         const event = events[i];
                         if (
                             event.event === 'EventPaymentSentFailed' ||
-                            (!!token && event.token_address !== token.address)
+                            (token && event.token_address !== token.address)
                         ) {
                             continue;
                         }

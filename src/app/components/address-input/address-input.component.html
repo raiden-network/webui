@@ -51,7 +51,7 @@
 
 <div class="info-box" fxLayout="column" fxLayoutAlign="center">
     <span
-        *ngIf="!!errors && touched && input.value.length > 0; else hint_text"
+        *ngIf="errors && touched && input.value.length > 0; else hint_text"
         [@fallDown]="'in'"
         class="info-box__error"
     >
