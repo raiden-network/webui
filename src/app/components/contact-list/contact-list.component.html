@@ -1,9 +1,4 @@
-<div
-    class="list"
-    fxLayout="column"
-    fxLayoutGap="20px"
-    fxLayoutAlign="space-between start"
->
+<div class="list" fxLayout="column" fxLayoutGap="20px">
     <div class="list__labels" fxLayout="row" fxLayoutAlign="start center">
         <span
             >Contacts -
@@ -36,18 +31,25 @@
             </button>
         </mat-menu>
     </div>
-    <app-contact
-        *ngFor="
-            let contact of visibleContacts;
-            let i = index;
-            trackBy: trackByFn
-        "
-        [contact]="contact"
-        [selected]="selectedIndex === i"
-        (select)="setSelectedIndex(i)"
-        (update)="updateContacts()"
-        [@flyInOutLeft]="'in'"
-    ></app-contact>
+    <div
+        class="list__contacts"
+        fxLayout="column"
+        fxLayoutGap="20px"
+        #contact_list
+    >
+        <app-contact
+            *ngFor="
+                let contact of visibleContacts;
+                let i = index;
+                trackBy: trackByFn
+            "
+            [contact]="contact"
+            [selected]="isSelected(contact)"
+            (select)="setSelection(contact)"
+            (update)="updateContacts()"
+            [@flyInOutLeft]="'in'"
+        ></app-contact>
+    </div>
     <div class="button-section" fxLayout="row">
         <button
             mat-flat-button

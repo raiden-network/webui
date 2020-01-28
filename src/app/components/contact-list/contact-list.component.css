@@ -10,6 +10,10 @@
     text-transform: uppercase;
 }
 
+.list__contacts {
+    width: 100%;
+}
+
 .button-section {
     width: 100%;
 }

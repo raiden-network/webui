@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+    ElementRef
+} from '@angular/core';
 import { Contact } from '../../models/contact';
 import { AddressBookService } from '../../services/address-book.service';
 import { StringUtils } from '../../utils/string.utils';
@@ -11,6 +17,8 @@ import * as Ajv from 'ajv';
 import { contactsSchema } from '../../models/contacts-schema';
 import { NotificationService } from '../../services/notification.service';
 import { UploadError } from '../../models/upload-error';
+import { Subscription } from 'rxjs';
+import { UtilityService } from '../../services/utility.service';
 
 @Component({
     selector: 'app-contact-list',
@@ -18,27 +26,43 @@ import { UploadError } from '../../models/upload-error';
     styleUrls: ['./contact-list.component.css'],
     animations: Animations.flyInOut
 })
-export class ContactListComponent implements OnInit {
+export class ContactListComponent implements OnInit, OnDestroy {
+    @ViewChild('contact_list', { static: true }) contactsElement: ElementRef;
+
     visibleContacts: Contact[] = [];
     totalContacts = 0;
     showAll = false;
-    selectedIndex = -1;
+    selectedContactAddress = '';
 
     private contacts: Contact[] = [];
     private readonly uploadChecks: UploadChecks = new UploadChecks();
     private readonly schema: ValidateFunction;
+    private subscription: Subscription;
 
     constructor(
         private addressBookService: AddressBookService,
         private dialog: MatDialog,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private utilityService: UtilityService
     ) {
         const validator = new Ajv({ allErrors: true });
         this.schema = validator.compile(contactsSchema);
     }
 
     ngOnInit() {
+        this.subscription = this.utilityService.globalClickTarget$.subscribe(
+            target => {
+                if (!this.contactsElement.nativeElement.contains(target)) {
+                    this.selectedContactAddress = '';
+                }
+            }
+        );
+
         this.updateContacts();
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     trackByFn(index, item: Contact) {
@@ -50,8 +74,14 @@ export class ContactListComponent implements OnInit {
         this.updateVisibleContacts();
     }
 
-    setSelectedIndex(index: number) {
-        this.selectedIndex = this.selectedIndex === index ? -1 : index;
+    setSelection(contact: Contact) {
+        this.selectedContactAddress = this.isSelected(contact)
+            ? undefined
+            : contact.address;
+    }
+
+    isSelected(contact: Contact): boolean {
+        return contact.address === this.selectedContactAddress;
     }
 
     addContact() {
@@ -70,7 +100,6 @@ export class ContactListComponent implements OnInit {
     }
 
     updateContacts() {
-        this.selectedIndex = -1;
         this.contacts = this.addressBookService.getArray();
         this.totalContacts = this.contacts.length;
         this.contacts.sort((a, b) =>
