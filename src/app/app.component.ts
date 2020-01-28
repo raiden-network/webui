@@ -45,14 +45,12 @@ const icon_names = [
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
+    styleUrls: ['./app.component.css'],
     animations: Animations.easeInOut
 })
 export class AppComponent implements OnInit, OnDestroy {
     @HostBinding('@.disabled')
     public animationsDisabled = false;
-    @ViewChild('menu_sidenav', { static: true })
-    public menuSidenav: MatSidenav;
     @ViewChild('notification_sidenav', { static: true })
     public notificationSidenav: MatSidenav;
 
@@ -152,16 +150,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     attemptApiConnection() {
         this.raidenService.attemptApiConnection();
-    }
-
-    toggleMenu() {
-        this.menuSidenav.toggle();
-    }
-
-    closeMenu() {
-        if (this.isMobile()) {
-            this.menuSidenav.close();
-        }
     }
 
     hideNetworkInfo() {

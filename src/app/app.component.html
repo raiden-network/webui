@@ -1,46 +1,4 @@
 <mat-sidenav-container>
-    <mat-sidenav
-        [mode]="isMobile() ? 'over' : 'side'"
-        [disableClose]="isMobile() ? false : true"
-        [opened]="isMobile() ? false : true"
-        class="menu"
-        role="navigation"
-        #menu_sidenav
-    >
-        <mat-nav-list>
-            <app-navigation-entry
-                (clicked)="closeMenu()"
-                icon="home"
-                text="Home"
-                route="/home"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (clicked)="closeMenu()"
-                icon="toll"
-                text="Tokens"
-                route="/tokens"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (clicked)="closeMenu()"
-                icon="compare_arrows"
-                text="Channels"
-                route="/channels"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (clicked)="closeMenu()"
-                icon="contacts"
-                text="Address Book"
-                route="/address-book"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (clicked)="closeMenu()"
-                icon="info"
-                text="About"
-                route="/about"
-            ></app-navigation-entry>
-        </mat-nav-list>
-    </mat-sidenav>
-
     <mat-sidenav-content>
         <div class="info-container" fxLayout="row" fxLayoutAlign="center">
             <div

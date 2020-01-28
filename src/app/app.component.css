@@ -1,15 +1,9 @@
-@import '../sass/mixins';
-
 .mat-sidenav-container {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-}
-
-.menu {
-    background-color: #191919;
 }
 
 .content {
@@ -19,9 +13,6 @@
 mat-sidenav-content {
     height: 100%;
     padding-top: 16px;
-    @include respond-to(handhelds) {
-        padding-top: 6px;
-    }
 }
 
 .notification-sidenav {
