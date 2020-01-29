@@ -152,7 +152,11 @@ export class ChannelListComponent implements OnInit, OnDestroy {
                     channel.userToken &&
                     channel.userToken.address === this.selectedToken.address;
             }
-            return channel.state === 'opened' && matchesToken;
+            return (
+                matchesToken &&
+                (channel.state === 'opened' ||
+                    channel.state === 'waiting_for_open')
+            );
         });
     }
 

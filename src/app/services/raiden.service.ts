@@ -298,7 +298,7 @@ export class RaidenService {
                 }
                 this.pendingChannels[tokenAddress][partnerAddress] = {
                     channel_identifier: new BigNumber(0),
-                    state: 'Waiting for open',
+                    state: 'waiting_for_open',
                     total_deposit: new BigNumber(0),
                     total_withdraw: new BigNumber(0),
                     balance: new BigNumber(0),
