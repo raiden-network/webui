@@ -78,6 +78,7 @@ import { HistoryTableComponent } from './components/history-table/history-table.
 import { HeaderComponent } from './components/header/header.component';
 import { RaidenDialogComponent } from './components/raiden-dialog/raiden-dialog.component';
 import { AddEditContactDialogComponent } from './components/add-edit-contact-dialog/add-edit-contact-dialog.component';
+import { RaidenIconsModule } from './modules/raiden-icons/raiden-icons.module';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -164,7 +165,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
             preventDuplicates: false,
             toastComponent: RaidenToastComponent
         }),
-        ClipboardModule
+        ClipboardModule,
+        RaidenIconsModule
     ],
     providers: [
         {

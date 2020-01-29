@@ -12,35 +12,11 @@ import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
 import { MediaObserver } from '@angular/flex-layout';
 import { NotificationService } from './services/notification.service';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Animations } from './animations/animations';
 import { PendingTransferPollingService } from './services/pending-transfer-polling.service';
 import { PaymentHistoryPollingService } from './services/payment-history-polling.service';
 import { Network } from './utils/network-info';
 import { UtilityService } from './services/utility.service';
-
-const icon_names = [
-    'copy',
-    'qr',
-    'notification',
-    'search',
-    'token',
-    'channel',
-    'go',
-    'left',
-    'right',
-    'faucet',
-    'transfer',
-    'add',
-    'eye',
-    'thunderbolt',
-    'received',
-    'sent',
-    'more',
-    'info',
-    'close'
-];
 
 @Component({
     selector: 'app-root',
@@ -66,13 +42,9 @@ export class AppComponent implements OnInit, OnDestroy {
         private paymentHistoryPollingService: PaymentHistoryPollingService,
         private mediaObserver: MediaObserver,
         private notificationService: NotificationService,
-        private matIconRegistry: MatIconRegistry,
-        private domSanitizer: DomSanitizer,
         private utilityService: UtilityService
     ) {
         this.network$ = raidenService.network$;
-
-        this.registerIcons();
     }
 
     @HostListener('document:click', ['$event'])
@@ -162,16 +134,5 @@ export class AppComponent implements OnInit, OnDestroy {
         if (isAndroid) {
             this.animationsDisabled = true;
         }
-    }
-
-    private registerIcons() {
-        icon_names.forEach(icon => {
-            this.matIconRegistry.addSvgIcon(
-                icon,
-                this.domSanitizer.bypassSecurityTrustResourceUrl(
-                    `assets/icons/${icon}.svg`
-                )
-            );
-        });
     }
 }
