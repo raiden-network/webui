@@ -143,6 +143,10 @@ body {
     box-shadow: none !important;
 }
 
+.grey-dialog .mat-dialog-container {
+    background-color: #d8d8d8 !important;
+}
+
 .mat-select {
     border-radius: 25px;
     background-color: #e7e7e7;

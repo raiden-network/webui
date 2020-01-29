@@ -10,13 +10,21 @@ import { Subscription, Observable } from 'rxjs';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
-import { MediaObserver } from '@angular/flex-layout';
 import { NotificationService } from './services/notification.service';
 import { Animations } from './animations/animations';
 import { PendingTransferPollingService } from './services/pending-transfer-polling.service';
 import { PaymentHistoryPollingService } from './services/payment-history-polling.service';
 import { Network } from './utils/network-info';
 import { UtilityService } from './services/utility.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+    ConnectionErrors,
+    ConnectionErrorType
+} from './models/connection-errors';
+import {
+    ErrorComponent,
+    ErrorPayload
+} from './components/error/error.component';
 
 @Component({
     selector: 'app-root',
@@ -34,15 +42,16 @@ export class AppComponent implements OnInit, OnDestroy {
     showNetworkInfo = false;
 
     private subscription: Subscription;
+    private errorDialog: MatDialogRef<ErrorComponent>;
 
     constructor(
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService,
         private pendingTransferPollingService: PendingTransferPollingService,
         private paymentHistoryPollingService: PaymentHistoryPollingService,
-        private mediaObserver: MediaObserver,
         private notificationService: NotificationService,
-        private utilityService: UtilityService
+        private utilityService: UtilityService,
+        private dialog: MatDialog
     ) {
         this.network$ = raidenService.network$;
     }
@@ -50,14 +59,6 @@ export class AppComponent implements OnInit, OnDestroy {
     @HostListener('document:click', ['$event'])
     documentClick(event: any) {
         this.utilityService.newGlobalClick(event.target);
-    }
-
-    isMobile(): boolean {
-        return this.mediaObserver.isActive('xs');
-    }
-
-    isSmallScreen(): boolean {
-        return this.mediaObserver.isActive('lt-md');
     }
 
     ngOnInit() {
@@ -81,6 +82,13 @@ export class AppComponent implements OnInit, OnDestroy {
         const paymentHistorySubscription = this.paymentHistoryPollingService.paymentHistory$.subscribe();
         this.subscription.add(paymentHistorySubscription);
 
+        const connectionErrorsSubsctiption = this.notificationService.connectionErrors$.subscribe(
+            errors => {
+                this.handleConnectionErrors(errors);
+            }
+        );
+        this.subscription.add(connectionErrorsSubsctiption);
+
         this.disableAnimationsOnAndroid();
         this.notificationService.setNotificationSidenav(
             this.notificationSidenav
@@ -91,41 +99,45 @@ export class AppComponent implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    hasError(): boolean {
-        return (
-            this.notificationService.rpcError !== null ||
-            this.notificationService.apiError !== null
-        );
-    }
-
-    hasApiError(): boolean {
-        return this.notificationService.apiError !== null;
-    }
-
-    getRpcErrorTrace(): string {
-        if (this.notificationService.rpcError === null) {
-            return null;
-        }
-        return this.notificationService.rpcError.stack;
-    }
-
-    getApiErrorMessage(): string {
-        if (this.notificationService.apiError === null) {
-            return null;
-        }
-        return this.notificationService.apiError.message;
-    }
-
-    attemptRpcConnection() {
-        this.raidenService.attemptRpcConnection();
-    }
-
-    attemptApiConnection() {
-        this.raidenService.attemptApiConnection();
-    }
-
     hideNetworkInfo() {
         this.showNetworkInfo = false;
+    }
+
+    private handleConnectionErrors(errors: ConnectionErrors) {
+        let errorPayload: ErrorPayload;
+        if (errors.apiError) {
+            errorPayload = {
+                type: ConnectionErrorType.ApiError,
+                errorContent: errors.apiError.message
+            };
+        } else if (errors.rpcError) {
+            errorPayload = {
+                type: ConnectionErrorType.RpcError,
+                errorContent: errors.rpcError.stack
+            };
+        }
+        this.updateErrorDialog(errorPayload);
+    }
+
+    private updateErrorDialog(payload: ErrorPayload) {
+        if (!payload) {
+            if (this.errorDialog) {
+                this.errorDialog.close();
+                this.errorDialog = undefined;
+            }
+            return;
+        }
+
+        if (this.errorDialog) {
+            this.errorDialog.componentInstance.data = payload;
+        } else {
+            this.errorDialog = this.dialog.open(ErrorComponent, {
+                data: payload,
+                width: '500px',
+                disableClose: true,
+                panelClass: 'grey-dialog'
+            });
+        }
     }
 
     private disableAnimationsOnAndroid() {

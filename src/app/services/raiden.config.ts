@@ -76,7 +76,7 @@ export class RaidenConfig {
         await this.loadConfiguration(url);
         try {
             await this.setupWeb3();
-            this.notificationService.rpcError = null;
+            this.notificationService.rpcError = undefined;
             return true;
         } catch (e) {
             console.error(e.message);

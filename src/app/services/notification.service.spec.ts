@@ -213,8 +213,8 @@ describe('NotificationService', () => {
     it('should have null status for the errors by default', inject(
         [NotificationService],
         (service: NotificationService) => {
-            expect(service.apiError).toBe(null);
-            expect(service.rpcError).toBe(null);
+            expect(service.apiError).toBe(undefined);
+            expect(service.rpcError).toBe(undefined);
         }
     ));
 });

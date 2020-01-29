@@ -1,14 +1,12 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { scan } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { UiMessage, NotificationMessage } from '../models/notification';
 import { MatSidenav } from '@angular/material/sidenav';
-
-export interface ApiErrorResponse extends HttpErrorResponse {
-    retrying?: boolean;
-}
+import {
+    ConnectionErrors,
+    ApiErrorResponse
+} from '../models/connection-errors';
 
 @Injectable({
     providedIn: 'root'
@@ -20,6 +18,7 @@ export class NotificationService {
     private pendingActionsSubject = new BehaviorSubject<NotificationMessage[]>(
         []
     );
+    private connectionErrorsSubject = new BehaviorSubject<ConnectionErrors>({});
 
     public readonly notifications$: Observable<
         NotificationMessage[]
@@ -27,15 +26,35 @@ export class NotificationService {
     public readonly pendingActions$: Observable<
         NotificationMessage[]
     > = this.pendingActionsSubject.asObservable();
-    public rpcError: Error = null;
-    public apiError: ApiErrorResponse = null;
+    public readonly connectionErrors$: Observable<
+        ConnectionErrors
+    > = this.connectionErrorsSubject.asObservable();
 
     private notifications: NotificationMessage[] = [];
     private pendingActions: NotificationMessage[] = [];
     private notificationCounter = 0;
+    private connectionErrors: ConnectionErrors = {};
     private sidenav: MatSidenav;
 
     constructor(@Inject(Injector) private injector: Injector) {}
+
+    public get rpcError(): Error {
+        return this.connectionErrors.rpcError;
+    }
+
+    public get apiError(): ApiErrorResponse {
+        return this.connectionErrors.apiError;
+    }
+
+    public set rpcError(error: Error) {
+        this.connectionErrors.rpcError = error;
+        this.connectionErrorsSubject.next(this.connectionErrors);
+    }
+
+    public set apiError(error: ApiErrorResponse) {
+        this.connectionErrors.apiError = error;
+        this.connectionErrorsSubject.next(this.connectionErrors);
+    }
 
     public addSuccessNotification(message: UiMessage): number {
         this.success(message);

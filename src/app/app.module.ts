@@ -221,7 +221,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         SortDialogComponent,
         AddAddressDialogComponent,
         RaidenToastComponent,
-        AddEditContactDialogComponent
+        AddEditContactDialogComponent,
+        ErrorComponent
     ],
     bootstrap: [AppComponent]
 })

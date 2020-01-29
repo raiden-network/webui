@@ -25,28 +25,7 @@
             </div>
         </div>
         <div class="content">
-            <router-outlet *ngIf="!hasError(); else api_error"></router-outlet>
-            <ng-template #api_error>
-                <app-error
-                    *ngIf="hasApiError(); else rpc_error"
-                    errorTitle="Raiden API connection error!"
-                    errorDescription="A connection with the Raiden API could not be established. \n
-                        Please try again."
-                    buttonText="Retry"
-                    [errorContent]="getApiErrorMessage()"
-                    (buttonClicked)="attemptApiConnection()"
-                ></app-error>
-            </ng-template>
-            <ng-template #rpc_error>
-                <app-error
-                    errorTitle="JSON RPC connection error!"
-                    errorDescription="A connection with the Web3 provider could not be established. \n
-                        Please try again."
-                    buttonText="Retry"
-                    [errorContent]="getRpcErrorTrace()"
-                    (buttonClicked)="attemptRpcConnection()"
-                ></app-error>
-            </ng-template>
+            <router-outlet></router-outlet>
         </div>
     </mat-sidenav-content>
 

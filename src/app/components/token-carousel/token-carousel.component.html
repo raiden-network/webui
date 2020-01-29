@@ -44,7 +44,7 @@
                     [openChannels]="getNumberOfChannels(item)"
                     [selected]="isSelected(item)"
                     [allNetworksView]="isAllNetworksView(item)"
-                    [onMainnet]="(network$ | async).chainId === 1"
+                    [onMainnet]="(network$ | async)?.chainId === 1"
                     (select)="select(i)"
                 >
                 </app-token>
