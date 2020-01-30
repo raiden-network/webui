@@ -15,79 +15,35 @@
             </mat-icon>
         </button>
     </div>
-    <div class="wrapper" fxLayout="column" fxLayoutGap="21px" fxFlex>
-        <div class="carousel" fxLayout="row" fxLayoutGap="20px">
-            <button
-                *ngIf="!production"
-                mat-flat-button
-                color="primary"
-                class="register-button"
-                fxLayout="column"
-                fxLayoutAlign="center"
-                (click)="register()"
-                fxFlex="0 0 82px"
-            >
-                <mat-icon
-                    class="button__icon"
-                    svgIcon="add"
-                    aria-label="Add token"
+    <div class="carousel" fxLayout="row" fxLayoutGap="20px" fxFlex>
+        <button
+            *ngIf="!production"
+            mat-flat-button
+            class="register-button"
+            fxLayout="column"
+            fxLayoutAlign="center"
+            (click)="register()"
+            fxFlex="0 0 64px"
+        >
+            <mat-icon svgIcon="add" aria-label="Add token"> </mat-icon>
+        </button>
+        <div class="tokens" fxFlex>
+            <div fxLayout="row" fxLayoutGap="20px" fxFlex #carousel>
+                <app-token
+                    *ngFor="
+                        let item of visibleItems;
+                        let i = index;
+                        trackBy: trackByFn
+                    "
+                    [token]="isAllNetworksView(item) ? undefined : item"
+                    [openChannels]="getNumberOfChannels(item)"
+                    [selected]="isSelected(item)"
+                    [allNetworksView]="isAllNetworksView(item)"
+                    [onMainnet]="(network$ | async)?.chainId === 1"
+                    (select)="select(i)"
                 >
-                </mat-icon>
-            </button>
-            <div class="tokens" fxFlex>
-                <div fxLayout="row" fxLayoutGap="20px" fxFlex #carousel>
-                    <app-token
-                        *ngFor="
-                            let item of visibleItems;
-                            let i = index;
-                            trackBy: trackByFn
-                        "
-                        [token]="isAllNetworksView(item) ? undefined : item"
-                        [openChannels]="getNumberOfChannels(item)"
-                        [selected]="isSelected(item)"
-                        [allNetworksView]="isAllNetworksView(item)"
-                        [onMainnet]="(network$ | async)?.chainId === 1"
-                        (select)="select(i)"
-                    >
-                    </app-token>
-                </div>
+                </app-token>
             </div>
-        </div>
-
-        <div fxLayout="row" fxLayoutAlign="space-between">
-            <button
-                class="action"
-                mat-flat-button
-                color="accent"
-                (click)="pay()"
-            >
-                <mat-icon
-                    class="action__icon"
-                    svgIcon="transfer"
-                    aria-label="Transfer tokens"
-                >
-                </mat-icon>
-                <span>
-                    Transfer
-                </span>
-            </button>
-            <button
-                *ngIf="!isAllNetworksView(currentSelection)"
-                class="action"
-                mat-flat-button
-                color="accent"
-                (click)="openConnectionManager()"
-            >
-                <mat-icon
-                    class="action__icon action__icon--small"
-                    svgIcon="thunderbolt"
-                    aria-label="Open quick connect dialog"
-                >
-                </mat-icon>
-                <span>
-                    Quick connect
-                </span>
-            </button>
         </div>
     </div>
     <div class="navigation-block" fxLayout="column" fxLayoutAlign="center">

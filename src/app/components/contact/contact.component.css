@@ -5,7 +5,7 @@
 .card {
     height: 113px;
     border-radius: 25px;
-    background-color: rgba(216, 216, 216, 0.14);
+    background-color: #3a3a3a;
     padding: 0 25px;
     font-size: 13px;
     line-height: 15px;
@@ -30,7 +30,7 @@
 .info {
     height: 44px;
     width: 180px;
-    color: #b8b8b8;
+    color: #ffffff;
 }
 
 .info__text {
@@ -42,5 +42,5 @@
 
 .card__go-icon {
     height: 20px;
-    color: #b8b8b8;
+    color: rgba(255, 255, 255, 0.65);
 }

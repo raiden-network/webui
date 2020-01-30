@@ -1,3 +1,36 @@
+<div class="actions-section">
+    <span *ngIf="selected" fxLayout="row" fxLayoutAlign="space-between">
+        <button class="action" mat-flat-button color="accent" (click)="pay()">
+            <mat-icon
+                class="action__icon"
+                svgIcon="transfer"
+                aria-label="Transfer tokens"
+            >
+            </mat-icon>
+            <span>
+                Transfer
+            </span>
+        </button>
+        <button
+            *ngIf="!allNetworksView"
+            class="action action--black"
+            mat-flat-button
+            color="primary"
+            (click)="openConnectionManager()"
+        >
+            <mat-icon
+                class="action__icon action__icon--small"
+                svgIcon="thunderbolt"
+                aria-label="Open quick connect dialog"
+            >
+            </mat-icon>
+            <span>
+                Quick connect
+            </span>
+        </button>
+    </span>
+</div>
+
 <div
     class="card"
     [class.card--focus]="selected"
@@ -64,9 +97,7 @@
                 !allNetworksView &&
                 (token.balance | decimal: token.decimals) as balance
             "
-            [matTooltip]="
-                (balance | displayDecimals: 3) === balance ? '' : balance
-            "
+            [matTooltip]="balance"
             fxLayout="row"
             fxLayoutAlign="center center"
             fxLayoutGap="4px"

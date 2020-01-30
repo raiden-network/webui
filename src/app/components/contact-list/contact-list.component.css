@@ -1,13 +1,10 @@
-.list {
-    color: #b8b8b8;
-}
-
 .list__labels {
     width: 100%;
     font-size: 11px;
     letter-spacing: 0.91px;
     line-height: 13px;
     text-transform: uppercase;
+    opacity: 0.47;
 }
 
 .list__contacts {
@@ -20,6 +17,11 @@
 
 .button {
     padding: 0 25px !important;
+    color: #ffffff;
+}
+
+.button--grey {
+    background-color: #3a3a3a;
 }
 
 .button__icon {
@@ -40,6 +42,6 @@
     height: 1px;
     width: 84%;
     margin: 0 auto;
-    background-color: #ffffff;
+    background-color: #000000;
     opacity: 0.17;
 }

@@ -87,7 +87,7 @@ body {
     border-radius: 25px !important;
     font-size: 13px !important;
     line-height: 15px !important;
-    font-weight: 400 !important;
+    font-weight: 500 !important;
     padding: 0 !important;
     min-width: 0px !important;
     box-shadow: none !important;
@@ -121,7 +121,7 @@ body {
 .mat-menu-panel {
     box-shadow: none !important;
     border-radius: 20px !important;
-    background-color: #000000 !important;
+    background-color: #ffffff !important;
     min-height: 38px !important;
 }
 
@@ -134,6 +134,7 @@ body {
     line-height: 15px !important;
     height: 38px !important;
     padding: 0 20px !important;
+    color: #000000 !important;
 }
 
 .mat-dialog-container {
@@ -206,81 +207,4 @@ input:focus {
 .toast-container {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
     min-width: 300px;
-}
-
-.full-width-form-field {
-    width: 100%;
-}
-
-.full-width-form-field .mat-form-field-wrapper {
-    width: 100%;
-}
-
-.full-width-form-field .mat-form-field-infix {
-    width: 100%;
-}
-
-.identicon {
-    display: block;
-    width: 100%;
-    height: auto;
-    margin: 16px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    border-radius: 6.25%;
-    box-shadow: inset rgba(255, 255, 255, 0.6) 0 2px 2px,
-        inset rgba(0, 0, 0, 0.3) 0 -2px 6px;
-    transition: border-radius 2.5s;
-    transition-delay: 3s;
-}
-
-.identicon.mobile {
-    height: 50px !important;
-    width: 50px !important;
-    margin: 2px !important;
-}
-
-.round.identicon {
-    border-radius: 50%;
-}
-
-.token-symbol {
-    font-weight: 500;
-    font-size: small;
-}
-
-.justify {
-    text-align: justify;
-}
-
-.match-parent-height {
-    height: 100%;
-}
-
-.match-parent-width {
-    width: 100%;
-}
-
-.events {
-    padding-top: 30px;
-    margin-left: 30px;
-    margin-right: 30px;
-}
-
-.card-mobile {
-    min-height: 14rem;
-}
-
-.truncate {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.can-shrink {
-    min-width: 20px !important;
-}
-
-app-page-base {
-    height: 100%;
 }

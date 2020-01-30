@@ -1,9 +1,0 @@
-.actions__button {
-    height: 38px;
-    padding: 0 14px !important;
-}
-
-.actions__button:disabled {
-    background-color: #979797 !important;
-    opacity: 0.5;
-}

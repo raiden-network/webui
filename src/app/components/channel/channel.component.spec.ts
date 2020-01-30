@@ -10,7 +10,6 @@ import { StatusPipe } from '../../pipes/status.pipe';
 import { createChannel } from '../../../testing/test-data';
 import { UserToken } from '../../models/usertoken';
 import BigNumber from 'bignumber.js';
-import { ChannelActionsComponent } from './channel-actions/channel-actions.component';
 import { PageItemComponent } from '../page/page-item/page-item.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TestProviders } from '../../../testing/test-providers';
@@ -45,7 +44,6 @@ describe('ChannelComponent', () => {
                 DisplayDecimalsPipe,
                 TokenPipe,
                 StatusPipe,
-                ChannelActionsComponent,
                 PageItemComponent
             ],
             providers: [

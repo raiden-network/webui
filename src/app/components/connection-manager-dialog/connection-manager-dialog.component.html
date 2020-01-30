@@ -10,14 +10,11 @@
         Allocated funds:
         <span
             *ngIf="(funds | decimal: token.decimals) as allocatedFunds"
-            [matTooltip]="
-                (allocatedFunds | displayDecimals: 3) === allocatedFunds
-                    ? ''
-                    : allocatedFunds
-            "
+            [matTooltip]="allocatedFunds"
         >
-            {{ allocatedFunds | displayDecimals: 3 }} {{ token.symbol }}
+            {{ allocatedFunds | displayDecimals: 3 }}
         </span>
+        {{ token.symbol }}
     </div>
     <app-token-input
         [placeholder]="funds.isZero() ? 'Funds' : 'Add funds'"

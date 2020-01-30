@@ -14,17 +14,7 @@ import { SelectedTokenService } from '../../services/selected-token.service';
 import { Network } from '../../utils/network-info';
 import { RaidenService } from '../../services/raiden.service';
 import { map, flatMap } from 'rxjs/operators';
-import {
-    PaymentDialogPayload,
-    PaymentDialogComponent
-} from '../payment-dialog/payment-dialog.component';
-import BigNumber from 'bignumber.js';
-import {
-    ConnectionManagerDialogPayload,
-    ConnectionManagerDialogComponent
-} from '../connection-manager-dialog/connection-manager-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { AnimationBuilder, animate, style } from '@angular/animations';
 
@@ -54,7 +44,6 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         private selectedTokenService: SelectedTokenService,
         private raidenService: RaidenService,
         private dialog: MatDialog,
-        private pendingTransferPollingService: PendingTransferPollingService,
         private animationBuilder: AnimationBuilder
     ) {
         this.network$ = raidenService.network$;
@@ -108,6 +97,9 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     }
 
     isAllNetworksView(object: any): object is AllNetworksView {
+        if (!object) {
+            return false;
+        }
         return 'allNetworksView' in object;
     }
 
@@ -162,88 +154,8 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
             });
     }
 
-    pay() {
-        const payload: PaymentDialogPayload = {
-            tokenAddress: this.isAllNetworksView(this.currentSelection)
-                ? ''
-                : this.currentSelection.address,
-            targetAddress: '',
-            amount: new BigNumber(0)
-        };
-
-        const dialog = this.dialog.open(PaymentDialogComponent, {
-            data: payload,
-            width: '360px'
-        });
-
-        dialog
-            .afterClosed()
-            .pipe(
-                flatMap((result?: PaymentDialogPayload) => {
-                    if (!result) {
-                        return EMPTY;
-                    }
-
-                    return this.raidenService.initiatePayment(
-                        result.tokenAddress,
-                        result.targetAddress,
-                        result.amount
-                    );
-                })
-            )
-            .subscribe(() => {
-                this.channelPollingService.refresh();
-                this.pendingTransferPollingService.refresh();
-            });
-    }
-
-    openConnectionManager() {
-        if (this.isAllNetworksView(this.currentSelection)) {
-            return;
-        }
-        const token = this.currentSelection;
-        const join = !token.connected;
-
-        const payload: ConnectionManagerDialogPayload = {
-            token: this.currentSelection,
-            funds: new BigNumber(0)
-        };
-
-        const joinDialogRef = this.dialog.open(
-            ConnectionManagerDialogComponent,
-            {
-                data: payload,
-                width: '360px'
-            }
-        );
-
-        joinDialogRef
-            .afterClosed()
-            .pipe(
-                flatMap((result: ConnectionManagerDialogPayload) => {
-                    if (!result) {
-                        return EMPTY;
-                    }
-                    let funds = result.funds;
-                    if (!join) {
-                        funds = funds.plus(token.connected.funds);
-                    }
-
-                    return this.raidenService.connectTokenNetwork(
-                        funds,
-                        result.token.address,
-                        join
-                    );
-                })
-            )
-            .subscribe(() => {
-                this.tokenPollingService.refresh();
-                this.channelPollingService.refresh();
-            });
-    }
-
     private playAnimation() {
-        const offset = this.currentItem * 320;
+        const offset = this.currentItem * 298;
         const animation = this.animationBuilder.build([
             animate(
                 '250ms ease-in',

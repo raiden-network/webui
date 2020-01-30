@@ -1,28 +1,31 @@
-<div class="list" fxLayout="column" fxLayoutGap="22px">
-    <div class="list__labels">
+<div fxLayout="column">
+    <div class="labels">
         Open Channels -
         {{ showAll ? totalChannels : visibleChannels.length }} of
         {{ totalChannels }}
     </div>
-    <button
-        mat-flat-button
-        color="primary"
-        class="button"
-        (click)="openChannel()"
-        fxFlexOffset="10px"
-        fxLayout="row"
-        fxLayoutAlign="start center"
-    >
-        <mat-icon class="button__icon" svgIcon="add" aria-hidden="true">
-        </mat-icon>
-        <span> Open new {{ selectedToken?.symbol }} Channel </span>
-    </button>
     <div
-        class="list__channels"
-        fxLayout="column"
-        fxLayoutGap="22px"
+        class="list"
+        fxLayout="row wrap"
+        fxLayoutAlign="start"
+        fxLayoutGap="19px"
         #channel_list
     >
+        <button
+            mat-flat-button
+            class="button"
+            fxLayout="column"
+            fxLayoutAlign="center"
+            (click)="openChannel()"
+            fxFlex="0 0 64px"
+        >
+            <mat-icon
+                class="button__icon"
+                svgIcon="add"
+                aria-label="Open channel"
+            >
+            </mat-icon>
+        </button>
         <app-channel
             *ngFor="
                 let channel of visibleChannels;
@@ -30,27 +33,22 @@
                 trackBy: trackByFn
             "
             [channel]="channel"
-            [selected]="isSelected(channel)"
-            (select)="setSelection(channel)"
-            [@flyInOut]="'in'"
+            class="list__channel"
+            [@stretchInOut]="'in'"
         >
         </app-channel>
-    </div>
-    <button
-        *ngIf="totalChannels > 3"
-        mat-flat-button
-        color="primary"
-        class="button"
-        (click)="toggleShowAll()"
-        fxLayout="row"
-        fxLayoutAlign="start center"
-    >
-        <mat-icon
-            class="button__icon button__icon--big"
-            svgIcon="eye"
-            aria-hidden="true"
+        <button
+            *ngIf="totalChannels > itemsPerRow"
+            mat-flat-button
+            class="button button--big"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+            (click)="toggleShowAll()"
+            fxFlex="0 0 130px"
         >
-        </mat-icon>
-        <span> {{ showAll ? 'Hide' : 'Show all' }} </span>
-    </button>
+            <mat-icon class="button__icon" svgIcon="eye" aria-hidden="true">
+            </mat-icon>
+            <span> {{ showAll ? 'Hide' : 'All' }} </span>
+        </button>
+    </div>
 </div>

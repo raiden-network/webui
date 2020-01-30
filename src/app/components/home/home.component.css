@@ -4,12 +4,9 @@
     margin-bottom: 95px;
 }
 
-.button {
-    width: 130px;
-    padding: 0 25px !important;
-}
-
 .button__icon {
-    width: 24px;
-    margin-right: 15px;
+    width: 24px !important;
+    height: 24px !important;
+    opacity: 0.26;
+    filter: invert(100%);
 }

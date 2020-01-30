@@ -1,5 +1,4 @@
 .history {
-    color: #b8b8b8;
     font-size: 13px;
     line-height: 15px;
 }
@@ -10,11 +9,23 @@
     letter-spacing: 0.91px;
     text-transform: uppercase;
     height: 32px;
+    opacity: 0.47;
+}
+
+.table {
+    background-color: #2b2b2b;
+    border-radius: 25px;
+    padding: 30px;
 }
 
 .table__row {
     padding-bottom: 13px;
     border-bottom: 1px solid rgba(151, 151, 151, 0.21);
+}
+
+.table__row:last-child {
+    padding: 0;
+    border: none;
 }
 
 .table__element {

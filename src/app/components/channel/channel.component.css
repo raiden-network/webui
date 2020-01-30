@@ -1,39 +1,46 @@
-:host {
-    width: 100%;
-}
-
 .card {
-    height: 113px;
+    height: 130px;
+    width: 210px;
     border-radius: 25px;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: #2b2b2b;
     padding: 0 25px;
-    font-size: 13px;
-    line-height: 15px;
-    cursor: pointer;
+    color: #b8b8b8;
 }
 
-.channel {
-    overflow: hidden;
+.options__divider {
+    height: 1px;
+    width: 84%;
+    margin: 0 auto;
+    background-color: #000000;
+    opacity: 0.17;
 }
 
 .icon-box {
-    width: 46px;
-    height: 44px;
-    border-radius: 15px;
-    background-color: #000000;
+    width: 26px;
+    height: 26px;
 }
 
-.icon-box__icon {
-    height: 24px;
-    width: 24px;
+.icon-box__identicon {
+    border-radius: 50%;
+    height: 100%;
+    width: auto;
 }
 
-.info {
-    height: 44px;
-    color: #000000;
+.info__balance {
+    font-weight: 300;
+    font-size: 28px;
+    line-height: 33px;
+    letter-spacing: 0.4px;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.card__go-icon {
-    height: 32px;
-    color: #000000;
+.info__label {
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.91px;
+    line-height: 13px;
+    opacity: 0.43;
 }

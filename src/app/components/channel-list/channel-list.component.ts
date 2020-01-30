@@ -3,7 +3,9 @@ import {
     OnInit,
     OnDestroy,
     ViewChild,
-    ElementRef
+    ElementRef,
+    AfterViewInit,
+    HostListener
 } from '@angular/core';
 import { Channel } from '../../models/channel';
 import { Subscription, EMPTY } from 'rxjs';
@@ -22,22 +24,21 @@ import { MatDialog } from '@angular/material/dialog';
 import { Animations } from '../../animations/animations';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { SelectedTokenService } from '../../services/selected-token.service';
-import { UtilityService } from '../../services/utility.service';
 
 @Component({
     selector: 'app-channel-list',
     templateUrl: './channel-list.component.html',
     styleUrls: ['./channel-list.component.css'],
-    animations: Animations.flyInOut
+    animations: Animations.stretchInOut
 })
-export class ChannelListComponent implements OnInit, OnDestroy {
-    @ViewChild('channel_list', { static: true }) channelsElement: ElementRef;
+export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
+    @ViewChild('channel_list', { static: true }) listElement: ElementRef;
 
     visibleChannels: Channel[] = [];
     totalChannels = 0;
     showAll = false;
-    selectedChannel: Channel;
     selectedToken: UserToken;
+    itemsPerRow = 0;
 
     private channels: Channel[] = [];
     private subscription: Subscription;
@@ -48,8 +49,7 @@ export class ChannelListComponent implements OnInit, OnDestroy {
         private raidenService: RaidenService,
         private dialog: MatDialog,
         private tokenPollingService: TokenPollingService,
-        private selectedTokenService: SelectedTokenService,
-        private utilityService: UtilityService
+        private selectedTokenService: SelectedTokenService
     ) {}
 
     ngOnInit() {
@@ -63,26 +63,24 @@ export class ChannelListComponent implements OnInit, OnDestroy {
         const selectedTokenSubscription = this.selectedTokenService.selectedToken$.subscribe(
             (token: UserToken) => {
                 this.selectedToken = token;
+                this.showAll = false;
                 this.updateVisibleChannels();
             }
         );
         this.subscription.add(selectedTokenSubscription);
-
-        const globalClickSubscription = this.utilityService.globalClickTarget$.subscribe(
-            target => {
-                if (
-                    !this.channelsElement.nativeElement.contains(target) &&
-                    this.dialog.openDialogs.length === 0
-                ) {
-                    this.selectedChannel = undefined;
-                }
-            }
-        );
-        this.subscription.add(globalClickSubscription);
     }
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
+    }
+
+    ngAfterViewInit() {
+        this.calculateItemsPerRow();
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize() {
+        this.calculateItemsPerRow();
     }
 
     trackByFn(index, item: Channel) {
@@ -92,20 +90,6 @@ export class ChannelListComponent implements OnInit, OnDestroy {
     toggleShowAll() {
         this.showAll = !this.showAll;
         this.updateVisibleChannels();
-    }
-
-    setSelection(channel: Channel) {
-        this.selectedChannel = this.isSelected(channel) ? undefined : channel;
-    }
-
-    isSelected(channel: Channel): boolean {
-        if (!this.selectedChannel) {
-            return false;
-        }
-        return (
-            channel.partner_address === this.selectedChannel.partner_address &&
-            channel.token_address === this.selectedChannel.token_address
-        );
     }
 
     openChannel() {
@@ -174,7 +158,13 @@ export class ChannelListComponent implements OnInit, OnDestroy {
         if (this.showAll) {
             this.visibleChannels = filteredChannels;
         } else {
-            this.visibleChannels = filteredChannels.slice(0, 3);
+            this.visibleChannels = filteredChannels.slice(0, this.itemsPerRow);
         }
+    }
+
+    private calculateItemsPerRow() {
+        const listWidth = this.listElement.nativeElement.getBoundingClientRect()
+            .width;
+        this.itemsPerRow = Math.floor((listWidth - 213) / 229);
     }
 }

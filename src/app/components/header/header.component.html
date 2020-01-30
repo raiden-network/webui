@@ -13,11 +13,7 @@
         />
     </a>
     <div fxLayout="column" *ngIf="(balance$ | async) as balance">
-        <span
-            class="header__number"
-            [matTooltip]="
-                (balance | displayDecimals: 3) === balance ? '' : balance
-            "
+        <span class="header__number" [matTooltip]="balance"
             >{{ balance | displayDecimals: 3 }}
             {{ (network$ | async)?.shortName }}
         </span>

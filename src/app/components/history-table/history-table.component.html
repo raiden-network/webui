@@ -7,15 +7,14 @@
     <div class="history__label" fxLayout="row" fxLayoutAlign="start center">
         History
     </div>
-    <div *ngIf="history.length === 0">
-        No {{ selectedToken?.symbol }} transfers yet
-    </div>
     <cdk-table
+        *ngIf="history.length !== 0; else no_transfers"
         class="table"
         [dataSource]="history"
         [trackBy]="trackByFn"
         fxLayout="column"
         fxLayoutGap="13px"
+        [@flyInOut]="'in'"
     >
         <ng-container cdkColumnDef="event">
             <cdk-cell *cdkCellDef="let event">
@@ -85,17 +84,13 @@
                     <span
                         *ngIf="
                             (event.amount
-                                | decimal: event.userToken.decimals) as balance
+                                | decimal: event.userToken.decimals) as amount
                         "
-                        [matTooltip]="
-                            (balance | displayDecimals: 3) === balance
-                                ? ''
-                                : balance
-                        "
+                        [matTooltip]="amount"
                     >
-                        {{ balance | displayDecimals: 3 }}
-                        {{ event.userToken.symbol }}
+                        {{ amount | displayDecimals: 3 }}
                     </span>
+                    {{ event.userToken.symbol }}
                 </span>
             </cdk-cell>
         </ng-container>
@@ -109,7 +104,9 @@
             fxLayout="row"
             fxLayoutAlign="space-between center"
             fxLayoutGap="20px"
-            [@flyInOut]="'in'"
         ></cdk-row>
     </cdk-table>
+    <ng-template #no_transfers>
+        <div>No {{ selectedToken?.symbol }} transfers yet</div>
+    </ng-template>
 </div>

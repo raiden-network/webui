@@ -80,4 +80,28 @@ export class Animations {
             ])
         ])
     ];
+
+    static stretchInOut = [
+        trigger('stretchInOut', [
+            state('in', style({ opacity: 1 })),
+            transition('void => *', [
+                style({
+                    width: 0,
+                    height: 0,
+                    opacity: 0
+                }),
+                animate('0.3s ease-in')
+            ]),
+            transition('* => void', [
+                animate(
+                    '0.3s ease-out',
+                    style({
+                        width: 0,
+                        height: 0,
+                        opacity: 0
+                    })
+                )
+            ])
+        ])
+    ];
 }

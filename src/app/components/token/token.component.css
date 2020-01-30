@@ -1,22 +1,22 @@
 .card {
-    height: 100%;
-    width: 300px;
+    height: 132px;
+    width: 278px;
     border-radius: 25px;
     padding: 0 25px;
-    color: #b8b8b8;
     font-size: 13px;
     line-height: 15px;
 }
 
 .card--focus {
-    background-color: #ffffff;
-    box-shadow: 0 17px 63px 0 rgba(0, 0, 0, 0.3);
-    color: #000000 !important;
+    background-color: #000000;
+    box-shadow: 0 17px 63px -11px #000000;
+    color: #ffffff;
 }
 
 .card--normal {
-    background-color: rgba(148, 148, 148, 0.18);
+    background-color: #2b2b2d;
     cursor: pointer;
+    color: #b8b8b8;
 }
 
 .card__network {
@@ -36,7 +36,6 @@
     width: 18px;
     line-height: 18px;
     font-size: 18px;
-    opacity: 0.25;
 }
 
 .card--focus .card__icon {
@@ -46,13 +45,45 @@
 .top {
     height: 32px;
     width: 100%;
-    opacity: 0.53;
+}
+
+.card--normal .top {
+    opacity: 0.23;
+}
+
+.card--normal .card__network {
+    opacity: 0.23;
+}
+
+.card--normal .card__values {
+    opacity: 0.23;
 }
 
 .options__divider {
     height: 1px;
     width: 84%;
     margin: 0 auto;
-    background-color: #ffffff;
+    background-color: #000000;
     opacity: 0.17;
+}
+
+.actions-section {
+    height: 70px;
+}
+
+.action {
+    padding: 0 15px !important;
+}
+
+.action--black {
+    color: #ffffff;
+}
+
+.action__icon {
+    width: 24px;
+    margin-right: 5px;
+}
+
+.action__icon--small {
+    width: 22px !important;
 }

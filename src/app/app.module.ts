@@ -40,7 +40,6 @@ import { StatusPipe } from './pipes/status.pipe';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { ErrorComponent } from './components/error/error.component';
 import { TokenNetworkActionsComponent } from './components/token-network-actions/token-network-actions.component';
-import { ChannelActionsComponent } from './components/channel/channel-actions/channel-actions.component';
 import { FilterDialogComponent } from './components/page/dialogs/filter-dialog/filter-dialog.component';
 import { SortDialogComponent } from './components/page/dialogs/sort-dialog/sort-dialog.component';
 import {
@@ -123,7 +122,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         FileUploadComponent,
         ErrorComponent,
         TokenNetworkActionsComponent,
-        ChannelActionsComponent,
         SortFilterPageHeaderComponent,
         FilterDialogComponent,
         SortDialogComponent,

@@ -11,6 +11,16 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { flatMap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
+import {
+    PaymentDialogPayload,
+    PaymentDialogComponent
+} from '../payment-dialog/payment-dialog.component';
+import {
+    ConnectionManagerDialogPayload,
+    ConnectionManagerDialogComponent
+} from '../connection-manager-dialog/connection-manager-dialog.component';
+import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
+import { ChannelPollingService } from '../../services/channel-polling.service';
 
 @Component({
     selector: 'app-token',
@@ -28,10 +38,87 @@ export class TokenComponent implements OnInit {
     constructor(
         private raidenService: RaidenService,
         private tokenPollingService: TokenPollingService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private pendingTransferPollingService: PendingTransferPollingService,
+        private channelPollingService: ChannelPollingService
     ) {}
 
     ngOnInit() {}
+
+    pay() {
+        const payload: PaymentDialogPayload = {
+            tokenAddress: this.allNetworksView ? '' : this.token.address,
+            targetAddress: '',
+            amount: new BigNumber(0)
+        };
+
+        const dialog = this.dialog.open(PaymentDialogComponent, {
+            data: payload,
+            width: '360px'
+        });
+
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap((result?: PaymentDialogPayload) => {
+                    if (!result) {
+                        return EMPTY;
+                    }
+
+                    return this.raidenService.initiatePayment(
+                        result.tokenAddress,
+                        result.targetAddress,
+                        result.amount
+                    );
+                })
+            )
+            .subscribe(() => {
+                this.channelPollingService.refresh();
+                this.pendingTransferPollingService.refresh();
+            });
+    }
+
+    openConnectionManager() {
+        const token = this.token;
+        const join = !token.connected;
+
+        const payload: ConnectionManagerDialogPayload = {
+            token: token,
+            funds: new BigNumber(0)
+        };
+
+        const joinDialogRef = this.dialog.open(
+            ConnectionManagerDialogComponent,
+            {
+                data: payload,
+                width: '360px'
+            }
+        );
+
+        joinDialogRef
+            .afterClosed()
+            .pipe(
+                flatMap((result: ConnectionManagerDialogPayload) => {
+                    if (!result) {
+                        return EMPTY;
+                    }
+                    let funds = result.funds;
+                    if (!join) {
+                        funds = funds.plus(token.connected.funds);
+                    }
+
+                    return this.raidenService.connectTokenNetwork(
+                        funds,
+                        result.token.address,
+                        join
+                    );
+                })
+            )
+            .subscribe(() => {
+                this.tokenPollingService.refresh();
+                this.channelPollingService.refresh();
+            });
+    }
 
     mint() {
         const decimals = this.token.decimals;
