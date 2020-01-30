@@ -14,6 +14,10 @@
     line-height: 10px;
 }
 
+.wrapper {
+    overflow-x: hidden;
+}
+
 .carousel {
     height: 132px;
 }
@@ -21,7 +25,6 @@
 .register-button {
     color: #ffffff;
     height: 100%;
-    width: 82px;
 }
 
 .tokens {

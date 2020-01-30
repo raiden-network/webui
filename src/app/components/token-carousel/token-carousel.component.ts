@@ -1,10 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+    ElementRef
+} from '@angular/core';
 import { UserToken } from '../../models/usertoken';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { Subscription, Observable, EMPTY } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { TokenUtils } from '../../utils/token.utils';
-import { Animations } from '../../animations/animations';
 import { SelectedTokenService } from '../../services/selected-token.service';
 import { Network } from '../../utils/network-info';
 import { RaidenService } from '../../services/raiden.service';
@@ -21,6 +26,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
+import { AnimationBuilder, animate, style } from '@angular/animations';
 
 interface AllNetworksView {
     allNetworksView: boolean;
@@ -29,18 +35,17 @@ interface AllNetworksView {
 @Component({
     selector: 'app-token-carousel',
     templateUrl: './token-carousel.component.html',
-    styleUrls: ['./token-carousel.component.css'],
-    animations: Animations.easeInOut
+    styleUrls: ['./token-carousel.component.css']
 })
 export class TokenCarouselComponent implements OnInit, OnDestroy {
+    @ViewChild('carousel', { static: true }) private carousel: ElementRef;
+
     visibleItems: Array<UserToken | AllNetworksView> = [];
-    numberOfItems = 0;
-    firstItem = 0;
+    currentItem = 0;
     currentSelection: UserToken | AllNetworksView = { allNetworksView: true };
     totalChannels = 0;
     readonly network$: Observable<Network>;
 
-    private tokens: UserToken[] = [];
     private subscription: Subscription;
 
     constructor(
@@ -49,7 +54,8 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         private selectedTokenService: SelectedTokenService,
         private raidenService: RaidenService,
         private dialog: MatDialog,
-        private pendingTransferPollingService: PendingTransferPollingService
+        private pendingTransferPollingService: PendingTransferPollingService,
+        private animationBuilder: AnimationBuilder
     ) {
         this.network$ = raidenService.network$;
     }
@@ -66,9 +72,7 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
                 )
             )
             .subscribe((tokens: UserToken[]) => {
-                this.tokens = tokens;
-                this.numberOfItems = this.tokens.length + 1;
-                this.updateVisibleItems();
+                this.visibleItems = [{ allNetworksView: true }, ...tokens];
             });
 
         const channelsSubscription = this.channelPollingService
@@ -87,20 +91,20 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         return 'address' in item ? item.address : '0';
     }
 
-    nextToken() {
-        if (this.firstItem + 2 === this.numberOfItems - 1) {
+    next() {
+        if (this.currentItem + 1 === this.visibleItems.length) {
             return;
         }
-        this.firstItem++;
-        this.updateVisibleItems();
+        this.currentItem++;
+        this.playAnimation();
     }
 
-    previousToken() {
-        if (this.firstItem === 0) {
+    previous() {
+        if (this.currentItem === 0) {
             return;
         }
-        this.firstItem--;
-        this.updateVisibleItems();
+        this.currentItem--;
+        this.playAnimation();
     }
 
     isAllNetworksView(object: any): object is AllNetworksView {
@@ -232,11 +236,14 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
             });
     }
 
-    private updateVisibleItems() {
-        const displaybleItems = [{ allNetworksView: true }, ...this.tokens];
-        this.visibleItems = displaybleItems.slice(
-            this.firstItem,
-            this.firstItem + 3
-        );
+    private playAnimation() {
+        const offset = this.currentItem * 320;
+        const animation = this.animationBuilder.build([
+            animate(
+                '250ms ease-in',
+                style({ transform: `translateX(-${offset}px)` })
+            )
+        ]);
+        animation.create(this.carousel.nativeElement).play();
     }
 }
