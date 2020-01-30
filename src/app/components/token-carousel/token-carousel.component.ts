@@ -201,7 +201,8 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         if (this.isAllNetworksView(this.currentSelection)) {
             return;
         }
-        const join = !this.currentSelection.connected;
+        const token = this.currentSelection;
+        const join = !token.connected;
 
         const payload: ConnectionManagerDialogPayload = {
             token: this.currentSelection,
@@ -223,8 +224,13 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
                     if (!result) {
                         return EMPTY;
                     }
+                    let funds = result.funds;
+                    if (!join) {
+                        funds = funds.plus(token.connected.funds);
+                    }
+
                     return this.raidenService.connectTokenNetwork(
-                        result.funds,
+                        funds,
                         result.token.address,
                         join
                     );

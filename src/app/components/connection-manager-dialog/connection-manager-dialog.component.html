@@ -1,6 +1,6 @@
 <app-raiden-dialog
     titleText="Quick Connect"
-    acceptText="Connect"
+    [acceptText]="funds.isZero() ? 'Connect' : 'Add'"
     [acceptDisabled]="form.invalid"
     [formGroup]="form"
     (accept)="accept()"
@@ -20,8 +20,8 @@
         </span>
     </div>
     <app-token-input
-        [placeholder]="funds.isZero() ? 'Funds' : 'New funds'"
-        infoText="Quick connect automatically opens channels with 3 random online nodes and splits the allocated funds among them. You can set a new value for the funds here later."
+        [placeholder]="funds.isZero() ? 'Funds' : 'Add funds'"
+        infoText="Quick connect automatically opens channels with 3 random online nodes and splits the allocated funds among them. You can add more funds later."
         formControlName="amount"
     >
     </app-token-input>
