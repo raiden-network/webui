@@ -115,6 +115,7 @@ body {
     line-height: 15px !important;
     font-weight: 400 !important;
     border-radius: 20px !important;
+    padding: 10px 15px !important;
 }
 
 .mat-menu-panel {
