@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    OnDestroy
+} from '@angular/core';
 import { Contact } from '../../../models/contact';
 import { flatMap, first } from 'rxjs/operators';
 import { ChannelPollingService } from '../../../services/channel-polling.service';
@@ -8,7 +15,7 @@ import {
     PaymentDialogComponent
 } from '../../payment-dialog/payment-dialog.component';
 import BigNumber from 'bignumber.js';
-import { EMPTY, of } from 'rxjs';
+import { EMPTY, of, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { RaidenService } from '../../../services/raiden.service';
 import { AddressBookService } from '../../../services/address-book.service';
@@ -21,15 +28,21 @@ import {
     AddEditContactDialogComponent,
     AddEditContactDialogPayload
 } from '../../add-edit-contact-dialog/add-edit-contact-dialog.component';
+import { UserToken } from '../../../models/usertoken';
 
 @Component({
     selector: 'app-contact-actions',
     templateUrl: './contact-actions.component.html',
     styleUrls: ['./contact-actions.component.css']
 })
-export class ContactActionsComponent implements OnInit {
+export class ContactActionsComponent implements OnInit, OnDestroy {
     @Input() contact: Contact;
     @Output() update: EventEmitter<boolean> = new EventEmitter();
+
+    selectedToken: UserToken;
+    hasAnyConnection = false;
+
+    private subscription: Subscription;
 
     constructor(
         private channelPollingService: ChannelPollingService,
@@ -40,26 +53,54 @@ export class ContactActionsComponent implements OnInit {
         private selectedTokenService: SelectedTokenService
     ) {}
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.subscription = this.selectedTokenService.selectedToken$.subscribe(
+            (token: UserToken) => {
+                this.selectedToken = token;
+            }
+        );
+
+        const channelsSubscription = this.channelPollingService
+            .channels()
+            .subscribe(channels => {
+                const openChannels = channels.filter(
+                    channel => channel.state === 'opened'
+                );
+                this.hasAnyConnection = openChannels.length > 0;
+            });
+        this.subscription.add(channelsSubscription);
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    isConnected() {
+        if (!this.selectedToken) {
+            return this.hasAnyConnection;
+        }
+        return !!this.selectedToken.connected;
+    }
+
+    getTokenSymbol(): string {
+        return this.selectedToken ? this.selectedToken.symbol : '';
+    }
 
     pay() {
-        this.selectedTokenService.selectedToken$
+        const payload: PaymentDialogPayload = {
+            tokenAddress: this.selectedToken ? this.selectedToken.address : '',
+            targetAddress: this.contact.address,
+            amount: new BigNumber(0)
+        };
+
+        const dialog = this.dialog.open(PaymentDialogComponent, {
+            data: payload,
+            width: '360px'
+        });
+
+        dialog
+            .afterClosed()
             .pipe(
-                first(),
-                flatMap(token => {
-                    const payload: PaymentDialogPayload = {
-                        tokenAddress: token ? token.address : '',
-                        targetAddress: this.contact.address,
-                        amount: new BigNumber(0)
-                    };
-
-                    const dialog = this.dialog.open(PaymentDialogComponent, {
-                        data: payload,
-                        width: '360px'
-                    });
-
-                    return dialog.afterClosed();
-                }),
                 flatMap((result?: PaymentDialogPayload) => {
                     if (!result) {
                         return EMPTY;

@@ -1,6 +1,19 @@
 <div class="actions-section">
-    <span *ngIf="selected" fxLayout="row" fxLayoutAlign="space-between">
-        <button class="action" mat-flat-button color="accent" (click)="pay()">
+    <span *ngIf="selected" fxLayout="row">
+        <button
+            class="action"
+            mat-flat-button
+            color="accent"
+            (click)="pay()"
+            [disabled]="openChannels === 0"
+            [matTooltip]="
+                openChannels === 0
+                    ? 'You need open ' +
+                      getTokenSymbol() +
+                      ' channels to send a transfer'
+                    : ''
+            "
+        >
             <mat-icon
                 class="action__icon"
                 svgIcon="transfer"
@@ -11,6 +24,7 @@
                 Transfer
             </span>
         </button>
+        <div fxFlex="1 1 auto"></div>
         <button
             *ngIf="!allNetworksView"
             class="action action--black"

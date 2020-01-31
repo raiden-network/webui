@@ -5,6 +5,14 @@
         color="accent"
         (click)="pay()"
         stopClickPropagation
+        [disabled]="!isConnected()"
+        [matTooltip]="
+            !isConnected()
+                ? 'You need open ' +
+                  getTokenSymbol() +
+                  ' channels to send a transfer'
+                : ''
+        "
     >
         Transfer
     </button>

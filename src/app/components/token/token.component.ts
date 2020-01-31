@@ -45,6 +45,10 @@ export class TokenComponent implements OnInit {
 
     ngOnInit() {}
 
+    getTokenSymbol(): string {
+        return this.allNetworksView ? '' : this.token.symbol;
+    }
+
     pay() {
         const payload: PaymentDialogPayload = {
             tokenAddress: this.allNetworksView ? '' : this.token.address,
