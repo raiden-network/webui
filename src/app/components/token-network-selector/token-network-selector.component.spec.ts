@@ -9,7 +9,6 @@ import {
     tick
 } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { RegisteredNetworkValidatorDirective } from '../../directives/registered-network-validator.directive';
@@ -27,7 +26,6 @@ import {
 import { TokenNetworkSelectorComponent } from './token-network-selector.component';
 import {
     errorMessage,
-    mockInput,
     mockFormInput
 } from '../../../testing/interaction-helper';
 import { TestProviders } from '../../../testing/test-providers';
@@ -115,7 +113,7 @@ describe('TokenNetworkSelectorComponent', () => {
 
     it('should order filtered tokens first by connection, then owned and last not owned', fakeAsync(() => {
         let done = false;
-        component.filteredOptions$.subscribe(
+        component.tokens$.subscribe(
             value => {
                 expect(value[0].address).toBe(
                     connectedToken.address,
@@ -140,16 +138,6 @@ describe('TokenNetworkSelectorComponent', () => {
 
     it('should not show an error without a user input', () => {
         expect(errorMessage(fixture.debugElement)).toBeFalsy();
-    });
-
-    it('should show errors while the user types', () => {
-        mockInput(fixture.debugElement, 'input', '0x34234');
-        component.tokenFc.setValue('0x34234');
-        component.tokenFc.markAsDirty();
-        fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe(
-            `Invalid token network address length`
-        );
     });
 
     it('should show an error if the input is empty', () => {
@@ -202,56 +190,6 @@ describe('TokenNetworkSelectorComponent', () => {
         fixture.detectChanges();
         expect(errorMessage(fixture.debugElement)).toBe(
             'Address is not in checksum format: 0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195'
-        );
-    });
-
-    it('should update form control value properly if a truthy value is passed', () => {
-        const address = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
-        component.writeValue(address);
-        expect(component.tokenFc.value).toBe(address);
-    });
-
-    it('should reset form control when a falsy value is passed', () => {
-        const address = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
-        component.writeValue(address);
-        component.writeValue(null);
-        expect(component.tokenFc.value).toBe('');
-        expect(component.validate(component.tokenFc).empty).toBeTruthy();
-    });
-
-    it('should emit the selected token when the user selects a token', fakeAsync(() => {
-        let valueChange = 0;
-        component.tokenChanged.subscribe(value => {
-            valueChange++;
-            expect(value).toBe(connectedToken);
-        });
-
-        mockFormInput(fixture.debugElement, 'tokenFc', 'TS');
-        fixture.detectChanges();
-
-        tick();
-        const options = fixture.debugElement.queryAll(By.css('.mat-option'));
-        expect(options.length).toBe(1, 'only one option should be shown');
-        expect(component.tokenFc.value).toBe('TS');
-
-        const option = options[0].nativeElement as HTMLElement;
-        option.click();
-        component.validate(component.tokenFc);
-        tick();
-        fixture.detectChanges();
-        expect(component.tokenFc.value).toBe(connectedToken.address);
-        expect(valueChange).toBe(1, 'A value change event should be emitted');
-        flush();
-    }));
-
-    it('should only show connected tokens when only connected is true', () => {
-        component.onlyConnectedTokens = true;
-        component.filteredOptions$.subscribe(
-            value => {
-                expect(value.length).toBe(1);
-                expect(value[0]).toEqual(connectedToken);
-            },
-            error => fail(error)
         );
     });
 });

@@ -124,34 +124,6 @@ describe('AppComponent', () => {
         fixture.destroy();
     }));
 
-    it('should have the menu always open if it is not mobile', function() {
-        isActive.and.returnValue(false);
-        fixture.detectChanges();
-        expect(app.isMobile()).toBe(false);
-        expect(app.menuSidenav.opened).toBe(true);
-        app.closeMenu();
-        expect(app.menuSidenav.opened).toBe(true);
-    });
-
-    it('should allow the menu to be toggled on mobile devices', function() {
-        isActive.and.returnValue(true);
-        fixture.detectChanges();
-        expect(app.isMobile()).toBe(true);
-        expect(app.menuSidenav.opened).toBe(false);
-        app.toggleMenu();
-        expect(app.menuSidenav.opened).toBe(true);
-    });
-
-    it('should allow the menu to be closed on mobile devices', function() {
-        isActive.and.returnValue(true);
-        fixture.detectChanges();
-        expect(app.isMobile()).toBe(true);
-        app.toggleMenu();
-        expect(app.menuSidenav.opened).toBe(true);
-        app.closeMenu();
-        expect(app.menuSidenav.opened).toBe(false);
-    });
-
     it('should have a faucet button when network has a faucet', function() {
         clickElement(fixture.debugElement, '.header__account-button');
         fixture.detectChanges();
@@ -187,10 +159,6 @@ describe('AppComponent', () => {
     });
 
     it('should show the API error screen and call raiden service on retry', function() {
-        const attemptConnectionSpy = spyOn(
-            fixture.componentInstance,
-            'attemptApiConnection'
-        );
         const error = new HttpErrorResponse({});
         // @ts-ignore
         error.message = 'API error occurred.';
@@ -205,15 +173,9 @@ describe('AppComponent', () => {
         expect(title.nativeElement.innerText).toBe(
             'Raiden API connection error!'
         );
-        clickElement(errorComponent, '#retry');
-        expect(attemptConnectionSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should show the RPC error screen and call raiden service on retry', function() {
-        const attemptConnectionSpy = spyOn(
-            fixture.componentInstance,
-            'attemptRpcConnection'
-        );
         notificationService.rpcError = new Error('RPC error occurred.');
         fixture.detectChanges();
 
@@ -225,8 +187,6 @@ describe('AppComponent', () => {
         expect(title.nativeElement.innerText).toBe(
             'JSON RPC connection error!'
         );
-        clickElement(errorComponent, '#retry');
-        expect(attemptConnectionSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should show the API error screen when there is an API and a RPC error', function() {
@@ -245,11 +205,5 @@ describe('AppComponent', () => {
         expect(title.nativeElement.innerText).toBe(
             'Raiden API connection error!'
         );
-    });
-
-    it('should return null for api error message and rpc stacktrace by default', function() {
-        const component = fixture.componentInstance;
-        expect(component.getApiErrorMessage()).toBeNull();
-        expect(component.getRpcErrorTrace()).toBeNull();
     });
 });

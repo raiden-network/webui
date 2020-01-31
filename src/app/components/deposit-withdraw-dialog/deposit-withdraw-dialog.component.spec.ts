@@ -10,10 +10,6 @@ import {
 } from './deposit-withdraw-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
 import { DepositMode } from '../../utils/helpers';
-import { MatDialogContent } from '@angular/material/dialog';
-import { By } from '@angular/platform-browser';
-import { mockFormInput } from '../../../testing/interaction-helper';
-import BigNumber from 'bignumber.js';
 
 describe('DepositDialogComponent', () => {
     let component: DepositWithdrawDialogComponent;
@@ -21,7 +17,7 @@ describe('DepositDialogComponent', () => {
 
     beforeEach(async(() => {
         const payload: DepositWithdrawDialogPayload = {
-            decimals: 8,
+            token: undefined,
             depositMode: DepositMode.DEPOSIT
         };
         TestBed.configureTestingModule({
@@ -48,31 +44,5 @@ describe('DepositDialogComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
-    });
-
-    it('should submit the dialog by enter', () => {
-        mockFormInput(
-            fixture.debugElement.query(By.directive(TokenInputComponent)),
-            'inputControl',
-            '10'
-        );
-        const close = spyOn(component.dialogRef, 'close');
-        const dialog = fixture.debugElement.query(
-            By.directive(MatDialogContent)
-        );
-        dialog.triggerEventHandler('keyup.enter', {});
-        expect(close).toHaveBeenCalledTimes(1);
-        expect(close).toHaveBeenCalledWith({
-            tokenAmount: new BigNumber(1000000000)
-        });
-    });
-
-    it('should not submit the dialog by enter if the form is invalid', () => {
-        const close = spyOn(component.dialogRef, 'close');
-        const dialog = fixture.debugElement.query(
-            By.directive(MatDialogContent)
-        );
-        dialog.triggerEventHandler('keyup.enter', {});
-        expect(close).toHaveBeenCalledTimes(0);
     });
 });

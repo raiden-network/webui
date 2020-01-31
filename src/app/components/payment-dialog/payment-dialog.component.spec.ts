@@ -137,6 +137,7 @@ describe('PaymentDialogComponent', () => {
         pendingTransferPollingService.pendingTransfers$ = of([pendingTransfer]);
 
         mockAllInputs();
+        // @ts-ignore
         const close = spyOn(component.dialogRef, 'close');
         const element = fixture.debugElement.query(By.css('#send'));
         element.triggerEventHandler('click', {});
@@ -169,6 +170,7 @@ describe('PaymentDialogComponent', () => {
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         mockAllInputs();
+        // @ts-ignore
         const close = spyOn(component.dialogRef, 'close');
         const element = fixture.debugElement.query(By.css('#send'));
         element.triggerEventHandler('click', {});
@@ -214,6 +216,7 @@ describe('PaymentDialogComponent', () => {
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         mockAllInputs();
+        // @ts-ignore
         const close = spyOn(component.dialogRef, 'close');
         const element = fixture.debugElement.query(By.css('#send'));
         element.triggerEventHandler('click', {});
@@ -249,6 +252,7 @@ describe('PaymentDialogComponent', () => {
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         mockAllInputs();
+        // @ts-ignore
         const close = spyOn(component.dialogRef, 'close');
         const element = fixture.debugElement.query(By.css('#send'));
         element.triggerEventHandler('click', {});
@@ -261,6 +265,7 @@ describe('PaymentDialogComponent', () => {
         // @ts-ignore
         pendingTransferPollingService.pendingTransfers$ = of([pendingTransfer]);
 
+        // @ts-ignore
         const close = spyOn(component.dialogRef, 'close');
         const dialog = fixture.debugElement.query(
             By.directive(MatDialogContent)

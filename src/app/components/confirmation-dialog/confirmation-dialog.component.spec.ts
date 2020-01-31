@@ -35,7 +35,7 @@ describe('ConfirmationDialogComponent', () => {
 
     it('should call return true when confirmed', function() {
         const matDialogRef = TestBed.get(MatDialogRef);
-        component.confirm();
+        component.accept();
         expect(matDialogRef.close).toHaveBeenCalledTimes(1);
         expect(matDialogRef.close).toHaveBeenCalledWith(true);
     });

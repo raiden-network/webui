@@ -124,6 +124,7 @@ describe('OpenDialogComponent', () => {
             'inputControl',
             '1'
         );
+        // @ts-ignore
         const close = spyOn(component.dialogRef, 'close');
         const dialog = fixture.debugElement.query(
             By.directive(MatDialogContent)
@@ -139,6 +140,7 @@ describe('OpenDialogComponent', () => {
     });
 
     it('should not submit the dialog by enter if the form is invalid', () => {
+        // @ts-ignore
         const close = spyOn(component.dialogRef, 'close');
         const dialog = fixture.debugElement.query(
             By.directive(MatDialogContent)
