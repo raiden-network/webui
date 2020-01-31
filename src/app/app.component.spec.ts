@@ -4,7 +4,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ClipboardModule } from 'ngx-clipboard';
 import { ToastrModule } from 'ngx-toastr';
-
 import { AppComponent } from './app.component';
 import { MockConfig } from '../testing/mock-config';
 import { MaterialComponentsModule } from './modules/material-components/material-components.module';
@@ -25,7 +24,6 @@ import { NotificationService } from './services/notification.service';
 import { NotificationPanelComponent } from './components/notification/notification-panel/notification-panel.component';
 import { NotificationItemComponent } from './components/notification/notification-item/notification-item.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { clickElement } from '../testing/interaction-helper';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -123,40 +121,6 @@ describe('AppComponent', () => {
         expect(app).toBeTruthy();
         fixture.destroy();
     }));
-
-    it('should have a faucet button when network has a faucet', function() {
-        clickElement(fixture.debugElement, '.header__account-button');
-        fixture.detectChanges();
-        expect(
-            fixture.debugElement.query(By.css('.header__faucet'))
-        ).toBeTruthy();
-    });
-
-    it('should not have a faucet button when network does not have a faucet', function() {
-        clickElement(fixture.debugElement, '.header__account-button');
-        fixture.detectChanges();
-        raidenService.network$.next({
-            name: 'Test',
-            shortName: 'tst',
-            ensSupported: false,
-            chainId: 9001
-        });
-        fixture.detectChanges();
-        expect(
-            fixture.debugElement.query(By.css('.header__faucet'))
-        ).toBeFalsy();
-    });
-
-    it('should insert the address correctly into the href attribute of the faucet button', function() {
-        clickElement(fixture.debugElement, '.header__account-button');
-        fixture.detectChanges();
-        const href = fixture.debugElement
-            .query(By.css('.header__faucet'))
-            .nativeElement.getAttribute('href');
-        expect(href).toBe(
-            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
-        );
-    });
 
     it('should show the API error screen and call raiden service on retry', function() {
         const error = new HttpErrorResponse({});

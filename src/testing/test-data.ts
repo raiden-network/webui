@@ -2,15 +2,22 @@ import { Contact } from '../app/models/contact';
 import Web3 from 'web3';
 import { Channel } from '../app/models/channel';
 import BigNumber from 'bignumber.js';
+import { Network } from '../app/utils/network-info';
+import { UserToken } from '../app/models/usertoken';
+
+const web3 = new Web3('http://localhost:8545');
+
+function createAddress(): string {
+    return web3.eth.accounts.create(web3.utils.randomHex(32)).address;
+}
 
 export function createTestContacts(count: number = 15): Contact[] {
-    const web3 = new Web3('http://localhost:8545');
     const contacts: Contact[] = [];
 
     for (let i = 0; i < count; i++) {
-        const account = web3.eth.accounts.create(web3.utils.randomHex(32));
+        const address = createAddress();
         contacts.push({
-            address: account.address,
+            address: address,
             label: `Random Account ${i + 1}`
         });
     }
@@ -18,25 +25,74 @@ export function createTestContacts(count: number = 15): Contact[] {
     return contacts;
 }
 
-export const createChannel: (payload: {
-    id: BigNumber;
-    balance: BigNumber;
-    totalDeposit: BigNumber;
-    totalWithdraw: BigNumber;
-}) => Channel = (payload: {
-    id: BigNumber;
-    balance: BigNumber;
-    totalDeposit: BigNumber;
-    totalWithdraw: BigNumber;
-}) => ({
-    state: 'opened',
-    channel_identifier: payload.id,
-    token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-    partner_address: '0xFC57d325f23b9121a8488fFdE2E6b3ef1208a20b',
-    reveal_timeout: 600,
-    balance: payload.balance,
-    total_deposit: payload.totalDeposit,
-    total_withdraw: payload.totalWithdraw,
-    settle_timeout: 500,
-    userToken: null
-});
+export function createToken(obj: any = {}): UserToken {
+    const token: UserToken = {
+        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+        symbol: 'TST',
+        name: 'Test Suite Token',
+        decimals: 18,
+        balance: new BigNumber(100)
+    };
+    return Object.assign(token, obj);
+}
+
+export function createRandomTokens(count: number = 3): UserToken[] {
+    const tokens: UserToken[] = [];
+    for (let i = 0; i < count; i++) {
+        let connected;
+        if (i % 2 === 0) {
+            connected = {
+                channels: 1,
+                funds: new BigNumber(0),
+                sum_deposits: new BigNumber(0)
+            };
+        }
+        tokens.push(
+            createToken({
+                address: createAddress(),
+                symbol: `TST ${i + 1}`,
+                name: `Test Suite Token ${i + 1}`,
+                connected: connected
+            })
+        );
+    }
+    return tokens;
+}
+
+export function createChannel(obj: any = {}): Channel {
+    const channel: Channel = {
+        state: 'opened',
+        channel_identifier: BigNumber.random(2).times(100),
+        token_address: obj.userToken
+            ? obj.userToken
+            : '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+        partner_address: createAddress(),
+        reveal_timeout: 50,
+        balance: new BigNumber(0),
+        total_deposit: new BigNumber(0),
+        total_withdraw: new BigNumber(0),
+        settle_timeout: 500,
+        userToken: undefined
+    };
+    return Object.assign(channel, obj);
+}
+
+export function createRandomChannels(count: number = 3): Channel[] {
+    const channels: Channel[] = [];
+    const token = createToken();
+    for (let i = 0; i < count; i++) {
+        channels.push(createChannel({ userToken: token }));
+    }
+    return channels;
+}
+
+export function createNetworkMock(obj: any = {}): Network {
+    const network: Network = {
+        name: 'Test',
+        shortName: 'tst',
+        chainId: 9001,
+        ensSupported: false,
+        faucet: 'http://faucet.test/?${ADDRESS}'
+    };
+    return Object.assign(network, obj);
+}
