@@ -53,7 +53,7 @@ export class TokenComponent implements OnInit {
         const payload: PaymentDialogPayload = {
             tokenAddress: this.allNetworksView ? '' : this.token.address,
             targetAddress: '',
-            amount: new BigNumber(0)
+            amount: undefined
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
@@ -88,7 +88,7 @@ export class TokenComponent implements OnInit {
 
         const payload: ConnectionManagerDialogPayload = {
             token: token,
-            funds: new BigNumber(0)
+            funds: undefined
         };
 
         const joinDialogRef = this.dialog.open(

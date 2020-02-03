@@ -7,7 +7,7 @@ import { UserToken } from '../app/models/usertoken';
 
 const web3 = new Web3('http://localhost:8545');
 
-function createAddress(): string {
+export function createAddress(): string {
     return web3.eth.accounts.create(web3.utils.randomHex(32)).address;
 }
 

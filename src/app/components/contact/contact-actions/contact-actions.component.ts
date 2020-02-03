@@ -14,7 +14,6 @@ import {
     PaymentDialogPayload,
     PaymentDialogComponent
 } from '../../payment-dialog/payment-dialog.component';
-import BigNumber from 'bignumber.js';
 import { EMPTY, of, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { RaidenService } from '../../../services/raiden.service';
@@ -90,7 +89,7 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
         const payload: PaymentDialogPayload = {
             tokenAddress: this.selectedToken ? this.selectedToken.address : '',
             targetAddress: this.contact.address,
-            amount: new BigNumber(0)
+            amount: undefined
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {

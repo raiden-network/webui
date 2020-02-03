@@ -106,7 +106,7 @@ describe('ErrorComponent', () => {
     });
 
     it('should show the error content when show error button clicked', () => {
-        clickElement(fixture.debugElement, '#show_error');
+        clickElement(fixture.debugElement, '#show-error');
         fixture.detectChanges();
         const content = fixture.debugElement.query(By.css('.content'));
         expect(content.nativeElement.innerText.trim()).toBe('API error!');
