@@ -22,6 +22,7 @@
     <div class="actions" fxLayout="row" fxLayoutAlign="space-between">
         <button
             class="actions__button actions__button--white"
+            id="show_error"
             mat-flat-button
             color="accent"
             (click)="showError = !showError"
@@ -30,6 +31,7 @@
         </button>
         <button
             class="actions__button actions__button--black"
+            id="retry"
             mat-flat-button
             color="primary"
             (click)="retry()"
