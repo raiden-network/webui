@@ -4,7 +4,7 @@ import { RaidenService } from '../../services/raiden.service';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { ClipboardModule } from 'ngx-clipboard';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of, BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs';
 import { Network } from '../../utils/network-info';
 import { TestProviders } from '../../../testing/test-providers';
 import { version } from '../../../version';
@@ -22,9 +22,8 @@ describe('AboutComponent', () => {
 
     beforeEach(async(() => {
         const raidenServiceMock = stub<RaidenService>();
-        const networkSubject = new BehaviorSubject(network);
         // @ts-ignore
-        raidenServiceMock.network$ = networkSubject.asObservable();
+        raidenServiceMock.network$ = of(network);
         raidenServiceMock.getVersion = () => of('0.100.5a1.dev157+geb2af878d');
         // @ts-ignore
         raidenServiceMock.production = true;

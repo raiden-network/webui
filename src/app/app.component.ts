@@ -82,12 +82,12 @@ export class AppComponent implements OnInit, OnDestroy {
         const paymentHistorySubscription = this.paymentHistoryPollingService.paymentHistory$.subscribe();
         this.subscription.add(paymentHistorySubscription);
 
-        const connectionErrorsSubsctiption = this.notificationService.connectionErrors$.subscribe(
+        const connectionErrorsSubscription = this.notificationService.connectionErrors$.subscribe(
             errors => {
                 this.handleConnectionErrors(errors);
             }
         );
-        this.subscription.add(connectionErrorsSubsctiption);
+        this.subscription.add(connectionErrorsSubscription);
 
         this.disableAnimationsOnAndroid();
         this.notificationService.setNotificationSidenav(

@@ -24,8 +24,8 @@ import { Network } from '../../utils/network-info';
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
     let fixture: ComponentFixture<HeaderComponent>;
-    let notificationService: NotificationService;
 
+    let notificationService: NotificationService;
     let networkSubject: BehaviorSubject<Network>;
     const raidenAddress = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
     const balance = '10.123456789';

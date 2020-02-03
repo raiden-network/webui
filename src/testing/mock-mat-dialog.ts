@@ -8,9 +8,11 @@ export class MockMatDialog {
 
     open() {
         return {
+            componentInstance: {},
             afterClosed: () => {
                 return of(this.cancelled ? null : this.returns());
-            }
+            },
+            close() {}
         };
     }
 }
