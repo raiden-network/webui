@@ -33,10 +33,9 @@ import {
     animations: Animations.easeInOut
 })
 export class AppComponent implements OnInit, OnDestroy {
-    @HostBinding('@.disabled')
-    public animationsDisabled = false;
+    @HostBinding('@.disabled') animationsDisabled = false;
     @ViewChild('notification_sidenav', { static: true })
-    public notificationSidenav: MatSidenav;
+    private notificationSidenav: MatSidenav;
 
     readonly network$: Observable<Network>;
     showNetworkInfo = false;

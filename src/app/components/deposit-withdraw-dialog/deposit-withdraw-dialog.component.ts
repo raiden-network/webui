@@ -22,7 +22,7 @@ export interface DepositWithdrawDialogResult {
 })
 export class DepositWithdrawDialogComponent implements OnInit {
     @ViewChild(TokenInputComponent, { static: true })
-    tokenInput: TokenInputComponent;
+    private tokenInput: TokenInputComponent;
 
     form = this.fb.group({
         amount: ['', Validators.required]

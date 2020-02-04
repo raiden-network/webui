@@ -34,7 +34,7 @@ export interface OpenDialogResult {
 })
 export class OpenDialogComponent {
     @ViewChild(TokenInputComponent, { static: true })
-    tokenInput: TokenInputComponent;
+    private tokenInput: TokenInputComponent;
 
     form: FormGroup;
     revealTimeout: number;

@@ -27,7 +27,7 @@ export function createTestContacts(count: number = 15): Contact[] {
 
 export function createToken(obj: any = {}): UserToken {
     const token: UserToken = {
-        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+        address: createAddress(),
         symbol: 'TST',
         name: 'Test Suite Token',
         decimals: 18,
@@ -77,11 +77,19 @@ export function createChannel(obj: any = {}): Channel {
     return Object.assign(channel, obj);
 }
 
-export function createRandomChannels(count: number = 3): Channel[] {
+export function createRandomChannels(
+    count: number = 3,
+    token?: UserToken
+): Channel[] {
     const channels: Channel[] = [];
-    const token = createToken();
+    const userToken = token ? token : createToken();
     for (let i = 0; i < count; i++) {
-        channels.push(createChannel({ userToken: token }));
+        channels.push(
+            createChannel({
+                userToken: userToken,
+                balance: BigNumber.random(3).times(1000)
+            })
+        );
     }
     return channels;
 }

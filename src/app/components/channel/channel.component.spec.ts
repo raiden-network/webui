@@ -51,7 +51,6 @@ describe('ChannelComponent', () => {
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.HammerJSProvider(),
-                TestProviders.AddressBookStubProvider(),
                 RaidenService,
                 TokenPollingService,
                 TestProviders.MockMatDialog(),
@@ -219,6 +218,7 @@ describe('ChannelComponent', () => {
         fixture.detectChanges();
 
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+        dialog.returns = () => null;
         clickElement(fixture.debugElement, '#close');
 
         const payload: ConfirmationDialogPayload = {

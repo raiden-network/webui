@@ -32,7 +32,8 @@ import { SelectedTokenService } from '../../services/selected-token.service';
     animations: Animations.stretchInOut
 })
 export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
-    @ViewChild('channel_list', { static: true }) listElement: ElementRef;
+    @ViewChild('channel_list', { static: true })
+    private listElement: ElementRef;
 
     visibleChannels: Channel[] = [];
     totalChannels = 0;
@@ -133,8 +134,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
             let matchesToken = true;
             if (this.selectedToken) {
                 matchesToken =
-                    channel.userToken &&
-                    channel.userToken.address === this.selectedToken.address;
+                    channel.token_address === this.selectedToken.address;
             }
             return (
                 matchesToken &&

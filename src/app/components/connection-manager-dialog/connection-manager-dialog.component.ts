@@ -17,7 +17,7 @@ export interface ConnectionManagerDialogPayload {
 })
 export class ConnectionManagerDialogComponent implements OnInit {
     @ViewChild(TokenInputComponent, { static: true })
-    tokenInput: TokenInputComponent;
+    private tokenInput: TokenInputComponent;
 
     form = this.fb.group({
         amount: ['', Validators.required]

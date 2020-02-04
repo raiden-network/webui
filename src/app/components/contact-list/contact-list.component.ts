@@ -27,7 +27,8 @@ import { AddEditContactDialogComponent } from '../add-edit-contact-dialog/add-ed
     animations: Animations.flyInOut
 })
 export class ContactListComponent implements OnInit, OnDestroy {
-    @ViewChild('contact_list', { static: true }) contactsElement: ElementRef;
+    @ViewChild('contact_list', { static: true })
+    private contactsElement: ElementRef;
 
     visibleContacts: Contact[] = [];
     totalContacts = 0;

@@ -31,7 +31,7 @@ export interface PaymentDialogPayload {
 })
 export class PaymentDialogComponent implements OnInit {
     @ViewChild(TokenInputComponent, { static: true })
-    tokenInput: TokenInputComponent;
+    private tokenInput: TokenInputComponent;
 
     form: FormGroup;
     selectedToken: UserToken;
