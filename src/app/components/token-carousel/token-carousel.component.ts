@@ -32,7 +32,7 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
 
     visibleItems: Array<UserToken | AllNetworksView> = [];
     currentItem = 0;
-    currentSelection: UserToken | AllNetworksView = { allNetworksView: true };
+    currentSelection: UserToken | AllNetworksView;
     totalChannels = 0;
     readonly network$: Observable<Network>;
 
@@ -70,6 +70,15 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
                 this.totalChannels = channels.length;
             });
         this.subscription.add(channelsSubscription);
+
+        const selectedTokenSubscription = this.selectedTokenService.selectedToken$.subscribe(
+            token => {
+                this.currentSelection = token
+                    ? token
+                    : { allNetworksView: true };
+            }
+        );
+        this.subscription.add(selectedTokenSubscription);
     }
 
     ngOnDestroy() {
@@ -124,12 +133,8 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         }
     }
 
-    select(index: number) {
-        const selection = this.visibleItems[index];
-        this.currentSelection = selection;
-        const selectedToken = this.isAllNetworksView(selection)
-            ? undefined
-            : selection;
+    select(item: UserToken | AllNetworksView) {
+        const selectedToken = this.isAllNetworksView(item) ? undefined : item;
         this.selectedTokenService.setToken(selectedToken);
     }
 

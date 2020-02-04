@@ -3,7 +3,8 @@ import {
     ComponentFixture,
     TestBed,
     fakeAsync,
-    tick
+    tick,
+    async
 } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -42,7 +43,7 @@ describe('AppComponent', () => {
     let notificationService: NotificationService;
     let dialog: MockMatDialog;
 
-    beforeEach(() => {
+    beforeEach(async(() => {
         const raidenServiceMock = stub<RaidenService>();
         networkSubject = new BehaviorSubject(createNetworkMock());
         // @ts-ignore
@@ -97,7 +98,7 @@ describe('AppComponent', () => {
                 RaidenIconsModule
             ]
         }).compileComponents();
-    });
+    }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AppComponent);

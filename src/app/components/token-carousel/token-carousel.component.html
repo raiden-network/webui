@@ -6,6 +6,7 @@
             color="primary"
             [disabled]="currentItem === 0"
             (click)="previous()"
+            id="previous"
         >
             <mat-icon
                 class="navigation__icon"
@@ -30,17 +31,13 @@
         <div class="tokens" fxFlex>
             <div fxLayout="row" fxLayoutGap="20px" fxFlex #carousel>
                 <app-token
-                    *ngFor="
-                        let item of visibleItems;
-                        let i = index;
-                        trackBy: trackByFn
-                    "
+                    *ngFor="let item of visibleItems; trackBy: trackByFn"
                     [token]="isAllNetworksView(item) ? undefined : item"
                     [openChannels]="getNumberOfChannels(item)"
                     [selected]="isSelected(item)"
                     [allNetworksView]="isAllNetworksView(item)"
                     [onMainnet]="(network$ | async)?.chainId === 1"
-                    (select)="select(i)"
+                    (select)="select(item)"
                 >
                 </app-token>
             </div>
@@ -53,6 +50,7 @@
             color="primary"
             [disabled]="currentItem === visibleItems.length - 1"
             (click)="next()"
+            id="next"
         >
             <mat-icon
                 class="navigation__icon"
