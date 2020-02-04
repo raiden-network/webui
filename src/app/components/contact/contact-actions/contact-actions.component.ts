@@ -7,7 +7,7 @@ import {
     OnDestroy
 } from '@angular/core';
 import { Contact } from '../../../models/contact';
-import { flatMap, first } from 'rxjs/operators';
+import { flatMap } from 'rxjs/operators';
 import { ChannelPollingService } from '../../../services/channel-polling.service';
 import { PendingTransferPollingService } from '../../../services/pending-transfer-polling.service';
 import {
@@ -74,7 +74,7 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    isConnected() {
+    isConnected(): boolean {
         if (!this.selectedToken) {
             return this.hasAnyConnection;
         }
@@ -131,12 +131,10 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
         });
 
         dialog.afterClosed().subscribe((result?: Contact) => {
-            if (!result) {
-                return;
+            if (result) {
+                this.addressBookService.save(result);
+                this.update.emit(true);
             }
-
-            this.addressBookService.save(result);
-            this.update.emit(true);
         });
     }
 
@@ -154,21 +152,11 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
             width: '360px'
         });
 
-        dialog
-            .afterClosed()
-            .pipe(
-                flatMap(result => {
-                    if (!result) {
-                        return EMPTY;
-                    }
-                    return of(result);
-                })
-            )
-            .subscribe(result => {
-                if (result) {
-                    this.addressBookService.delete(contact);
-                    this.update.emit(true);
-                }
-            });
+        dialog.afterClosed().subscribe(result => {
+            if (result) {
+                this.addressBookService.delete(contact);
+                this.update.emit(true);
+            }
+        });
     }
 }

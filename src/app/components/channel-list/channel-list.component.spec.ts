@@ -74,13 +74,13 @@ describe('ChannelListComponent', () => {
         component = fixture.componentInstance;
 
         const channelPollingService = TestBed.get(ChannelPollingService);
-        const channelSubject = new BehaviorSubject<Channel[]>([]);
+        const channelsSubject = new BehaviorSubject<Channel[]>([]);
         spyOn(channelPollingService, 'channels').and.returnValue(
-            channelSubject.asObservable()
+            channelsSubject.asObservable()
         );
 
         fixture.detectChanges();
-        channelSubject.next(channels);
+        channelsSubject.next(channels);
         fixture.detectChanges();
     });
 
