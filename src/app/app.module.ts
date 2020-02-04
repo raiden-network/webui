@@ -36,7 +36,6 @@ import { AddressBookComponent } from './components/address-book/address-book.com
 import { LocalStorageAdapter } from './adapters/local-storage-adapter';
 import { AddressBookItemComponent } from './components/address-book-item/address-book-item.component';
 import { DragUploadDirective } from './directives/drag-upload.directive';
-import { StatusPipe } from './pipes/status.pipe';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { ErrorComponent } from './components/error/error.component';
 import { TokenNetworkActionsComponent } from './components/token-network-actions/token-network-actions.component';
@@ -118,7 +117,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         AddressBookComponent,
         AddressBookItemComponent,
         DragUploadDirective,
-        StatusPipe,
         FileUploadComponent,
         ErrorComponent,
         TokenNetworkActionsComponent,

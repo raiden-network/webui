@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Channel } from '../../models/channel';
 import { AddressBookService } from '../../services/address-book.service';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';

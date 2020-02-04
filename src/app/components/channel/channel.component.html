@@ -17,6 +17,7 @@
             *ngIf="channel.state === 'opened'"
             mat-icon-button
             [matMenuTriggerFor]="options"
+            id="options"
         >
             <mat-icon svgIcon="more" aria-label="Options"></mat-icon>
         </button>
@@ -27,15 +28,15 @@
             [overlapTrigger]="true"
             xPosition="before"
         >
-            <button mat-menu-item (click)="deposit()">
+            <button mat-menu-item (click)="deposit()" id="deposit">
                 Deposit
             </button>
             <div class="options__divider"></div>
-            <button mat-menu-item (click)="withdraw()">
+            <button mat-menu-item (click)="withdraw()" id="withdraw">
                 Withdraw
             </button>
             <div class="options__divider"></div>
-            <button mat-menu-item (click)="close()">
+            <button mat-menu-item (click)="close()" id="close">
                 Close Channel
             </button>
         </mat-menu>

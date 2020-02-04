@@ -64,7 +64,7 @@ export function createChannel(obj: any = {}): Channel {
         state: 'opened',
         channel_identifier: BigNumber.random(2).times(100),
         token_address: obj.userToken
-            ? obj.userToken
+            ? obj.userToken.address
             : '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
         partner_address: createAddress(),
         reveal_timeout: 50,

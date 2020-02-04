@@ -29,7 +29,6 @@ import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 
 import { ChannelTableComponent } from './channel-table.component';
-import { StatusPipe } from '../../pipes/status.pipe';
 import Spy = jasmine.Spy;
 import { TestProviders } from '../../../testing/test-providers';
 import { SortFilterPageHeaderComponent } from '../page/sort-filter-page-header/sort-filter-page-header.component';
@@ -125,7 +124,6 @@ describe('ChannelTableComponent', () => {
                 EllipsisPipe,
                 DecimalPipe,
                 DisplayDecimalsPipe,
-                StatusPipe,
                 TokenNetworkSelectorComponent
             ],
             providers: [
