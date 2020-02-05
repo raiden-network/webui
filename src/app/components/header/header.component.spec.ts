@@ -15,8 +15,8 @@ import { By } from '@angular/platform-browser';
 import { of, BehaviorSubject } from 'rxjs';
 import {
     createNetworkMock,
-    createRandomChannels,
-    createRandomTokens
+    createTestChannels,
+    createTestTokens
 } from '../../../testing/test-data';
 import { stub } from '../../../testing/stub';
 import { Network } from '../../utils/network-info';
@@ -29,8 +29,8 @@ describe('HeaderComponent', () => {
     let networkSubject: BehaviorSubject<Network>;
     const raidenAddress = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
     const balance = '10.123456789';
-    const channels = createRandomChannels();
-    const tokens = createRandomTokens();
+    const channels = createTestChannels();
+    const tokens = createTestTokens();
 
     beforeEach(async(() => {
         const raidenService = stub<RaidenService>();

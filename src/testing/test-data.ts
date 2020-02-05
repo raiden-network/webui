@@ -36,7 +36,7 @@ export function createToken(obj: any = {}): UserToken {
     return Object.assign(token, obj);
 }
 
-export function createRandomTokens(count: number = 3): UserToken[] {
+export function createTestTokens(count: number = 3): UserToken[] {
     const tokens: UserToken[] = [];
     for (let i = 0; i < count; i++) {
         let connected;
@@ -77,7 +77,7 @@ export function createChannel(obj: any = {}): Channel {
     return Object.assign(channel, obj);
 }
 
-export function createRandomChannels(
+export function createTestChannels(
     count: number = 3,
     token?: UserToken
 ): Channel[] {

@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChannelListComponent } from './channel-list.component';
 import {
     createToken,
-    createRandomChannels,
+    createTestChannels,
     createAddress
 } from '../../../testing/test-data';
 import { ChannelComponent } from '../channel/channel.component';
@@ -37,8 +37,8 @@ describe('ChannelListComponent', () => {
 
     const token1 = createToken();
     const token2 = createToken({ symbol: 'TST2', name: 'Test Suite Token 2' });
-    const channels = createRandomChannels(10, token1).concat(
-        createRandomChannels(10, token2)
+    const channels = createTestChannels(10, token1).concat(
+        createTestChannels(10, token2)
     );
 
     beforeEach(async(() => {
@@ -94,7 +94,7 @@ describe('ChannelListComponent', () => {
         expect(component.visibleChannels.length).toBeLessThan(channels.length);
     });
 
-    it('should be possible to display all channels', () => {
+    it('should be able to display all channels', () => {
         clickElement(fixture.debugElement, '#show-all');
         fixture.detectChanges();
         expect(component.visibleChannels.length).toBe(channels.length);

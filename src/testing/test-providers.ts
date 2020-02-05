@@ -28,6 +28,7 @@ export class TestProviders {
                 addressBookStub.get = () => ({});
                 addressBookStub.save = () => {};
                 addressBookStub.delete = () => {};
+                addressBookStub.store = () => {};
                 return addressBookStub;
             }
         };

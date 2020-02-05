@@ -6,7 +6,7 @@
             {{ totalContacts }}</span
         >
         <div fxFlex="1 1 auto"></div>
-        <button mat-icon-button [matMenuTriggerFor]="options">
+        <button mat-icon-button [matMenuTriggerFor]="options" id="options">
             <mat-icon svgIcon="more" aria-label="Options"></mat-icon>
         </button>
         <mat-menu
@@ -26,7 +26,7 @@
                 Import contacts
             </button>
             <div class="options__divider"></div>
-            <button mat-menu-item (click)="downloadContacts()">
+            <button mat-menu-item (click)="downloadContacts()" id="export">
                 Export contacts
             </button>
         </mat-menu>
@@ -59,6 +59,7 @@
             fxLayout="row"
             fxLayoutAlign="start center"
             fxFlex="0 1 198px"
+            id="add"
         >
             <mat-icon class="button__icon" svgIcon="add" aria-hidden="true">
             </mat-icon>
@@ -74,6 +75,7 @@
             fxLayout="row"
             fxLayoutAlign="start center"
             fxFlex="0 1 130px"
+            id="show-all"
         >
             <mat-icon
                 class="button__icon button__icon--big"

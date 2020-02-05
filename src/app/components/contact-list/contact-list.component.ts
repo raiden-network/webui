@@ -80,7 +80,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
     setSelection(contact: Contact) {
         this.selectedContactAddress = this.isSelected(contact)
-            ? undefined
+            ? ''
             : contact.address;
     }
 
@@ -95,12 +95,10 @@ export class ContactListComponent implements OnInit, OnDestroy {
         });
 
         dialog.afterClosed().subscribe((result?: Contact) => {
-            if (!result) {
-                return;
+            if (result) {
+                this.addressBookService.save(result);
+                this.updateContacts();
             }
-
-            this.addressBookService.save(result);
-            this.updateContacts();
         });
     }
 
@@ -127,7 +125,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
             const file = UploadChecks.check(files, 'json');
             this.uploadContacts(file);
         } catch (e) {
-            this.showImportError(e);
+            this.showImportError(e.error);
         }
     }
 
@@ -142,10 +140,10 @@ export class ContactListComponent implements OnInit, OnDestroy {
     private uploadContacts(file: File) {
         const reader = new FileReader();
         reader.onload = () => {
-            const json = JSON.parse(reader.result as string);
+            const result = JSON.parse(reader.result as string);
 
-            if (this.schema(json)) {
-                this.addressBookService.store(json, true);
+            if (this.schema(result)) {
+                this.addressBookService.store(result, true);
                 this.updateContacts();
                 this.notificationService.addSuccessNotification({
                     title: 'Contact import',
@@ -160,23 +158,23 @@ export class ContactListComponent implements OnInit, OnDestroy {
     }
 
     private showImportError(error: UploadError) {
-        let errorMessage: string;
+        let message: string;
         if (error.invalidExtension) {
-            errorMessage = 'Only json files are allowed';
+            message = 'Only json files are allowed';
         } else if (error.multiple) {
-            errorMessage = 'Only a single file is supported';
-        } else if (error.invalidFormat) {
-            errorMessage = 'The uploaded file is not in a valid format';
-        } else {
-            errorMessage = `The file exceeds the max allowed size of ${
+            message = 'Only a single file is supported';
+        } else if (error.exceedsUploadLimit) {
+            message = `The file exceeds the max allowed size of ${
                 error.exceedsUploadLimit
             } bytes`;
+        } else {
+            message = 'The uploaded file is not in a valid format';
         }
         const title = 'Contact import failed';
-        console.error(`${title}: ${errorMessage}`);
+        console.error(`${title}: ${message}`);
         this.notificationService.addErrorNotification({
             title: title,
-            description: errorMessage
+            description: message
         });
     }
 }

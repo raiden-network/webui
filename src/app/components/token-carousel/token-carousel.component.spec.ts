@@ -5,7 +5,7 @@ import { stub } from '../../../testing/stub';
 import { RaidenService } from '../../services/raiden.service';
 import {
     createNetworkMock,
-    createRandomTokens,
+    createTestTokens,
     createAddress
 } from '../../../testing/test-data';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
@@ -28,7 +28,7 @@ describe('TokenCarouselComponent', () => {
     let component: TokenCarouselComponent;
     let fixture: ComponentFixture<TokenCarouselComponent>;
 
-    const tokens = createRandomTokens(6);
+    const tokens = createTestTokens(6);
 
     beforeEach(async(() => {
         const raidenServiceMock = stub<RaidenService>();

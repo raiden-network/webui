@@ -12,7 +12,7 @@ import { ChannelPollingService } from '../../../services/channel-polling.service
 import { Contact } from '../../../models/contact';
 import {
     createAddress,
-    createRandomChannels,
+    createTestChannels,
     createToken
 } from '../../../../testing/test-data';
 import { BehaviorSubject, of } from 'rxjs';
@@ -79,7 +79,7 @@ describe('ContactActionsComponent', () => {
         const channelPollingService: ChannelPollingService = TestBed.get(
             ChannelPollingService
         );
-        channelsSubject = new BehaviorSubject(createRandomChannels());
+        channelsSubject = new BehaviorSubject(createTestChannels());
         spyOn(channelPollingService, 'channels').and.returnValue(
             channelsSubject.asObservable()
         );
