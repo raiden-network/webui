@@ -4,6 +4,7 @@ import { Channel } from '../app/models/channel';
 import BigNumber from 'bignumber.js';
 import { Network } from '../app/utils/network-info';
 import { UserToken } from '../app/models/usertoken';
+import { PaymentEvent } from '../app/models/payment-event';
 
 const web3 = new Web3('http://localhost:8545');
 
@@ -102,4 +103,58 @@ export function createNetworkMock(obj: any = {}): Network {
         faucet: 'http://faucet.test/?${ADDRESS}'
     };
     return Object.assign(network, obj);
+}
+
+export function createPaymentEvent(
+    eventType:
+        | 'EventPaymentSentSuccess'
+        | 'EventPaymentSentFailed'
+        | 'EventPaymentReceivedSuccess',
+    obj: any = {}
+): PaymentEvent {
+    const event: PaymentEvent = {
+        event: eventType,
+        log_time: new Date().toISOString().slice(0, -1),
+        token_address: obj.userToken ? obj.userToken.address : createAddress()
+    };
+    if (eventType === 'EventPaymentSentSuccess') {
+        Object.assign(event, {
+            amount: BigNumber.random(3).times(1000),
+            identifier: BigNumber.random(3).times(1000),
+            target: createAddress()
+        });
+    } else if (eventType === 'EventPaymentReceivedSuccess') {
+        Object.assign(event, {
+            amount: BigNumber.random(3).times(1000),
+            identifier: BigNumber.random(3).times(1000),
+            initiator: createAddress()
+        });
+    } else {
+        Object.assign(event, {
+            reason: 'there is no route available',
+            target: createAddress()
+        });
+    }
+
+    return Object.assign(event, obj);
+}
+
+export function createTestPaymentEvents(
+    count: number = 6,
+    token?: UserToken
+): PaymentEvent[] {
+    const events: PaymentEvent[] = [];
+    const userToken = token ? token : createToken();
+    for (let i = 0; i < count; i++) {
+        const type =
+            i % 2 === 0
+                ? 'EventPaymentSentSuccess'
+                : 'EventPaymentReceivedSuccess';
+        events.push(
+            createPaymentEvent(type, {
+                userToken: userToken
+            })
+        );
+    }
+    return events;
 }

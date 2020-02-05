@@ -102,6 +102,7 @@ describe('ContactListComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+        fixture.destroy();
     });
 
     it('should display 2 contacts by default', () => {

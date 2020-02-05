@@ -10,7 +10,7 @@ export interface PaymentEvent {
         | 'EventPaymentSentFailed'
         | 'EventPaymentReceivedSuccess';
     readonly amount?: BigNumber;
-    readonly identifier: BigNumber;
+    readonly identifier?: BigNumber;
     readonly log_time: string;
     readonly token_address: string;
     userToken?: UserToken;
