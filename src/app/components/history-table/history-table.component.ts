@@ -4,7 +4,6 @@ import { combineLatest, Subscription } from 'rxjs';
 import { PaymentEvent } from '../../models/payment-event';
 import { map, tap } from 'rxjs/operators';
 import { AddressBookService } from '../../services/address-book.service';
-import { RaidenService } from '../../services/raiden.service';
 import { Animations } from '../../animations/animations';
 import { SelectedTokenService } from '../../services/selected-token.service';
 import { UserToken } from '../../models/usertoken';
@@ -24,7 +23,6 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
     constructor(
         private paymentHistoryPollingService: PaymentHistoryPollingService,
         private addressBookService: AddressBookService,
-        private raidenService: RaidenService,
         private selectedTokenService: SelectedTokenService
     ) {}
 
@@ -40,24 +38,22 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
             selectedToken$
         ])
             .pipe(
-                map(([events, token]) => {
+                map(([events, selectedToken]) => {
                     const visibleEvents: PaymentEvent[] = [];
                     for (let i = events.length - 1; i >= 0; i--) {
-                        if (visibleEvents.length > 3) {
+                        if (visibleEvents.length >= 4) {
                             break;
                         }
 
                         const event = events[i];
                         if (
                             event.event === 'EventPaymentSentFailed' ||
-                            (token && event.token_address !== token.address)
+                            (selectedToken &&
+                                event.token_address !== selectedToken.address)
                         ) {
                             continue;
                         }
 
-                        event.userToken = this.raidenService.getUserToken(
-                            event.token_address
-                        );
                         visibleEvents.push(event);
                     }
                     return visibleEvents;
@@ -89,10 +85,5 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
 
     getUTCTimeString(event: PaymentEvent): string {
         return event.log_time + 'Z';
-    }
-
-    tokenSymbol(event: PaymentEvent): string {
-        const token = this.raidenService.getUserToken(event.token_address);
-        return token.symbol;
     }
 }

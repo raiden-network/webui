@@ -396,7 +396,14 @@ export class RaidenService {
             }
         }
 
-        return this.http.get<PaymentEvent[]>(paymentsResource);
+        return this.http.get<PaymentEvent[]>(paymentsResource).pipe(
+            flatMap((events: PaymentEvent[]) => from(events)),
+            map((event: PaymentEvent) => {
+                event.userToken = this.getUserToken(event.token_address);
+                return event;
+            }),
+            toArray()
+        );
     }
 
     public modifyDeposit(

@@ -32,7 +32,7 @@ import { UiMessage } from '../models/notification';
 import { ErrorHandlingInterceptor } from '../interceptors/error-handling.interceptor';
 import { PaymentEvent } from '../models/payment-event';
 
-fdescribe('RaidenService', () => {
+describe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
     const token: UserToken = {
         address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
@@ -1383,11 +1383,14 @@ fdescribe('RaidenService', () => {
         flush();
     }));
 
-    it('should query the payment history', () => {
+    it('should query the payment history with UserTokens added', () => {
         const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
+        const eventWithToken = Object.assign({}, paymentEvent, {
+            userToken: token
+        });
         service.getPaymentHistory(tokenAddress, partnerAddress).subscribe(
             (history: PaymentEvent[]) => {
-                expect(history).toEqual([paymentEvent]);
+                expect(history).toEqual([eventWithToken]);
             },
             error => {
                 fail(error);
