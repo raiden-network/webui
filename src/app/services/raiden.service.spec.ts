@@ -32,7 +32,7 @@ import { UiMessage } from '../models/notification';
 import { ErrorHandlingInterceptor } from '../interceptors/error-handling.interceptor';
 import { PaymentEvent } from '../models/payment-event';
 
-describe('RaidenService', () => {
+fdescribe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
     const token: UserToken = {
         address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
@@ -52,17 +52,17 @@ describe('RaidenService', () => {
     let retrieverSpy: Spy;
 
     const channel1: Channel = createChannel({
-        id: new BigNumber(1),
+        channel_identifier: new BigNumber(1),
         balance: new BigNumber(0),
-        totalDeposit: new BigNumber(10),
-        totalWithdraw: new BigNumber(10)
+        total_deposit: new BigNumber(10),
+        total_withdraw: new BigNumber(10)
     });
 
     const channel2: Channel = createChannel({
-        id: new BigNumber(2),
+        channel_identifier: new BigNumber(2),
         balance: new BigNumber(0),
-        totalDeposit: new BigNumber(10),
-        totalWithdraw: new BigNumber(10)
+        total_deposit: new BigNumber(10),
+        total_withdraw: new BigNumber(10)
     });
 
     const paymentEvent: PaymentEvent = {
@@ -435,10 +435,10 @@ describe('RaidenService', () => {
 
     it('should notify the user when a deposit was complete successfully', fakeAsync(() => {
         const channel = createChannel({
-            id: new BigNumber(1),
-            totalDeposit: new BigNumber(1000000),
+            channel_identifier: new BigNumber(1),
+            total_deposit: new BigNumber(1000000),
             balance: new BigNumber(10),
-            totalWithdraw: new BigNumber(0)
+            total_withdraw: new BigNumber(0)
         });
         spyOn(service, 'getChannel').and.returnValue(of(channel));
 
@@ -452,10 +452,11 @@ describe('RaidenService', () => {
             .subscribe(value => {
                 expect(value).toEqual(
                     createChannel({
-                        id: new BigNumber(1),
-                        totalWithdraw: new BigNumber(0),
-                        totalDeposit: new BigNumber(100001000000),
-                        balance: new BigNumber(100000000010)
+                        channel_identifier: new BigNumber(1),
+                        total_withdraw: new BigNumber(0),
+                        total_deposit: new BigNumber(100001000000),
+                        balance: new BigNumber(100000000010),
+                        partner_address: channel.partner_address
                     })
                 );
             })
@@ -504,10 +505,10 @@ describe('RaidenService', () => {
 
     it('should inform the user when a withdraw was completed successfully', fakeAsync(() => {
         const channel = createChannel({
-            id: new BigNumber(1),
-            totalDeposit: new BigNumber(10),
+            channel_identifier: new BigNumber(1),
+            total_deposit: new BigNumber(10),
             balance: new BigNumber(1000000000000),
-            totalWithdraw: new BigNumber(1000000)
+            total_withdraw: new BigNumber(1000000)
         });
         spyOn(service, 'getChannel').and.returnValue(of(channel));
 
@@ -521,10 +522,11 @@ describe('RaidenService', () => {
             .subscribe(value => {
                 expect(value).toEqual(
                     createChannel({
-                        id: new BigNumber(1),
-                        totalWithdraw: new BigNumber(1000001000000),
-                        totalDeposit: new BigNumber(10),
-                        balance: new BigNumber(0)
+                        channel_identifier: new BigNumber(1),
+                        total_withdraw: new BigNumber(1000001000000),
+                        total_deposit: new BigNumber(10),
+                        balance: new BigNumber(0),
+                        partner_address: channel.partner_address
                     })
                 );
             })
@@ -691,7 +693,7 @@ describe('RaidenService', () => {
         flush();
 
         const notificationMessage: UiMessage = {
-            title: 'Joined token network',
+            title: 'Quick connect successful',
             description: `Quick connect successfully opened channels in ${
                 token.name
             } network`
@@ -734,7 +736,7 @@ describe('RaidenService', () => {
         flush();
 
         const notificationMessage: UiMessage = {
-            title: 'Funds added',
+            title: 'Quick connect successful',
             description: `Funds for quick connect in ${
                 token.name
             } network were successfully changed to 0.00001 ${token.symbol}`
@@ -1126,10 +1128,10 @@ describe('RaidenService', () => {
 
     it('should inform the user when a channel has been closed successfully', () => {
         const channel3: Channel = createChannel({
-            id: new BigNumber(2),
+            channel_identifier: new BigNumber(2),
             balance: new BigNumber(0),
-            totalDeposit: new BigNumber(10),
-            totalWithdraw: new BigNumber(10)
+            total_deposit: new BigNumber(10),
+            total_withdraw: new BigNumber(10)
         });
         spyOn(service, 'getChannel').and.returnValue(
             of(Object.assign({}, channel3))
@@ -1222,12 +1224,12 @@ describe('RaidenService', () => {
     it('should mark channels deposit as pending while they are opened', fakeAsync(() => {
         spyOn(service, 'getTokens').and.returnValue(of([token]));
         const channel3: Channel = createChannel({
-            id: new BigNumber(2),
+            channel_identifier: new BigNumber(2),
             balance: new BigNumber(0),
-            totalDeposit: new BigNumber(10),
-            totalWithdraw: new BigNumber(10)
+            total_deposit: new BigNumber(10),
+            total_withdraw: new BigNumber(10),
+            partner_address: '0xc52952ebad56f2c5e5b42bb881481ae27d036475'
         });
-        channel3.partner_address = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
 
         service
             .openChannel(

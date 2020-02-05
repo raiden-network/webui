@@ -71,8 +71,7 @@ export function createChannel(obj: any = {}): Channel {
         balance: new BigNumber(0),
         total_deposit: new BigNumber(0),
         total_withdraw: new BigNumber(0),
-        settle_timeout: 500,
-        userToken: undefined
+        settle_timeout: 500
     };
     return Object.assign(channel, obj);
 }
