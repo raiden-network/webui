@@ -18,7 +18,8 @@
         placeholder="Partner address"
     >
     </app-address-input>
-    <app-token-input formControlName="amount"> </app-token-input>
+    <app-token-input formControlName="amount" [allowZero]="true">
+    </app-token-input>
     <div>
         <div class="timeout-input" fxLayout="row">
             <input

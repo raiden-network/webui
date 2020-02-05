@@ -37,7 +37,7 @@ import { Animations } from '../../animations/animations';
     ]
 })
 export class TokenInputComponent implements ControlValueAccessor, Validator {
-    @Input() allowZero: boolean;
+    @Input() allowZero = false;
     @Input() infoText = '';
     @Input() placeholder = 'Amount';
     @ViewChild('input', { static: true }) private inputElement: ElementRef;
@@ -70,18 +70,18 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     }
 
     writeValue(obj: any) {
-        if (!obj) {
+        if (!obj || typeof obj !== 'string') {
             return;
         }
         this.inputElement.nativeElement.value = obj;
-        this.onChange(obj);
+        this.onChange();
     }
 
     validate(c: AbstractControl): ValidationErrors | null {
         return this.errors;
     }
 
-    onChange(value: any) {
+    onChange() {
         this.setAmount();
     }
 

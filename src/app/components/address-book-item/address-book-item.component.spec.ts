@@ -146,39 +146,6 @@ describe('AddressBookItemComponent', () => {
         expect(element.query(By.css('#delete-address'))).toBeTruthy();
     }));
 
-    it('should reset the edited value on cancel', async(() => {
-        const element = fixture.debugElement;
-
-        component.delete.subscribe(address => {
-            fail(`There should be no address emitted but got ${address}`);
-        });
-
-        let sub = component.edit.subscribe(editMode => {
-            expect(editMode).toBe(true);
-        });
-
-        component.cancelled.subscribe(cancelled => {
-            expect(cancelled).toBe(true);
-        });
-
-        clickElement(element, '#edit-address');
-
-        fixture.detectChanges();
-
-        const input = mockInput(element, '#address-label', 'TestNode 2');
-
-        sub.unsubscribe();
-        sub = component.edit.subscribe(editMode => {
-            expect(editMode).toBe(false);
-        });
-
-        clickElement(element, '#cancel-edit');
-        fixture.detectChanges();
-
-        expect(input.value).toBe('Test Node 1');
-        sub.unsubscribe();
-    }));
-
     it('should not emit a delete contact when the dialog cancel is pressed', async(() => {
         const element = fixture.debugElement;
         const dialog = TestBed.get(MatDialog) as MockMatDialog;

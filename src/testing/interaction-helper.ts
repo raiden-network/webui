@@ -27,27 +27,25 @@ export function mockInput(
     element: DebugElement,
     cssSelector: string,
     value: string
-): HTMLInputElement {
+) {
     const inputElement = element.query(By.css(cssSelector));
     const input = inputElement.nativeElement as HTMLInputElement;
     input.focus();
     input.value = value;
     input.dispatchEvent(mockEvent('focusin'));
     input.dispatchEvent(mockEvent('input'));
-    return input;
 }
 
 export function mockFormInput(
     element: DebugElement,
     formControlProperty: string,
     value: string
-): HTMLInputElement {
+) {
     const formControl = element.componentInstance[formControlProperty];
     formControl.setValue(value);
     formControl.markAsDirty();
     formControl.markAsTouched();
-    const input = mockInput(element, 'input', value);
-    return input;
+    mockInput(element, 'input', value);
 }
 
 export function errorMessage(element: DebugElement): string {

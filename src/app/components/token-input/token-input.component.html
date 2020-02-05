@@ -4,7 +4,7 @@
         aria-label="Amount input"
         class="input__field"
         type="text"
-        (input)="onChange($event.target.value)"
+        (input)="onChange()"
         (focus)="onTouched()"
         fxFlex="0 1 226px"
         #input
@@ -28,6 +28,7 @@
     <span
         *ngIf="errors && touched && input.value.length > 0"
         [@fallDown]="'in'"
+        id="errors"
     >
         <span *ngIf="errors['zeroAmount']">
             The amount should be greater than 0
