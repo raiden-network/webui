@@ -33,26 +33,26 @@ describe('HeaderComponent', () => {
     const tokens = createTestTokens();
 
     beforeEach(async(() => {
-        const raidenService = stub<RaidenService>();
+        const raidenServiceMock = stub<RaidenService>();
         networkSubject = new BehaviorSubject(createNetworkMock());
         // @ts-ignore
-        raidenService.network$ = networkSubject.asObservable();
+        raidenServiceMock.network$ = networkSubject.asObservable();
         // @ts-ignore
-        raidenService.raidenAddress$ = of(raidenAddress);
+        raidenServiceMock.raidenAddress$ = of(raidenAddress);
         // @ts-ignore
-        raidenService.balance$ = of(balance);
+        raidenServiceMock.balance$ = of(balance);
 
-        const tokenPollingService = stub<TokenPollingService>();
+        const tokenPollingMock = stub<TokenPollingService>();
         // @ts-ignore
-        tokenPollingService.tokens$ = of(tokens);
+        tokenPollingMock.tokens$ = of(tokens);
 
         TestBed.configureTestingModule({
             declarations: [HeaderComponent, DisplayDecimalsPipe],
             providers: [
                 NotificationService,
                 ChannelPollingService,
-                { provide: RaidenService, useValue: raidenService },
-                { provide: TokenPollingService, useValue: tokenPollingService },
+                { provide: RaidenService, useValue: raidenServiceMock },
+                { provide: TokenPollingService, useValue: tokenPollingMock },
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.HammerJSProvider()
             ],

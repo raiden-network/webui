@@ -30,7 +30,6 @@ import { DecimalPipe } from './pipes/decimal.pipe';
 import { TokenInputComponent } from './components/token-input/token-input.component';
 import { AddressInputComponent } from './components/address-input/address-input.component';
 import { TokenNetworkSelectorComponent } from './components/token-network-selector/token-network-selector.component';
-import { RegisteredNetworkValidatorDirective } from './directives/registered-network-validator.directive';
 import { PaymentHistoryComponent } from './components/payment-history/payment-history.component';
 import { AddressBookComponent } from './components/address-book/address-book.component';
 import { LocalStorageAdapter } from './adapters/local-storage-adapter';
@@ -112,7 +111,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         TokenInputComponent,
         AddressInputComponent,
         TokenNetworkSelectorComponent,
-        RegisteredNetworkValidatorDirective,
         PaymentHistoryComponent,
         AddressBookComponent,
         AddressBookItemComponent,

@@ -121,7 +121,7 @@ describe('TokenInputComponent', () => {
         expect(input.value).toBe('0.00003');
         expect(component.amount.isEqualTo(30000000000000)).toBe(true);
         expect(component.errors).toBeFalsy();
-    })
+    });
 
     it('should not to set a wrongly typed value programmatically', () => {
         component.writeValue(100);

@@ -1,91 +1,56 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import {
-    async,
-    ComponentFixture,
-    fakeAsync,
-    flush,
-    TestBed,
-    tick
-} from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { RegisteredNetworkValidatorDirective } from '../../directives/registered-network-validator.directive';
-import { UserToken } from '../../models/usertoken';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { TokenPipe } from '../../pipes/token.pipe';
-import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
-import { MockConfig } from '../../../testing/mock-config';
-import {
-    ErrorStateMatcher,
-    ShowOnDirtyErrorStateMatcher
-} from '@angular/material/core';
-
 import { TokenNetworkSelectorComponent } from './token-network-selector.component';
-import {
-    errorMessage,
-    mockFormInput
-} from '../../../testing/interaction-helper';
 import { TestProviders } from '../../../testing/test-providers';
 import BigNumber from 'bignumber.js';
+import { createToken, createAddress } from '../../../testing/test-data';
+import { TokenPollingService } from '../../services/token-polling.service';
+import { stub } from '../../../testing/stub';
+import { By } from '@angular/platform-browser';
 
 describe('TokenNetworkSelectorComponent', () => {
     let component: TokenNetworkSelectorComponent;
     let fixture: ComponentFixture<TokenNetworkSelectorComponent>;
 
-    let mockConfig: MockConfig;
-    let raidenSpy: jasmine.Spy;
-
-    const connectedToken: UserToken = {
-        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        symbol: 'TST',
-        name: 'Test Suite Token',
-        decimals: 8,
-        balance: new BigNumber(20),
+    const connectedToken = createToken({
         connected: {
             channels: 5,
             funds: new BigNumber(10),
             sum_deposits: new BigNumber(50)
         }
-    };
-
-    const ownedToken: UserToken = {
-        address: '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195',
+    });
+    const ownedToken = createToken({
         symbol: 'ATT',
-        name: 'Another Test Token',
-        decimals: 0,
-        balance: new BigNumber(400)
-    };
-
-    const notOwnedToken: UserToken = {
-        address: '0xB9eF346D094864794a0666D6E84D7Ebd640B4EC5',
+        name: 'Another Test Token'
+    });
+    const notOwnedToken = createToken({
         symbol: 'ATT2',
         name: 'Another Test Token2',
-        decimals: 18,
         balance: new BigNumber(0)
-    };
-
+    });
     const tokens = [notOwnedToken, connectedToken, ownedToken];
 
     beforeEach(async(() => {
+        const tokenPollingMock = stub<TokenPollingService>();
+        // @ts-ignore
+        tokenPollingMock.tokens$ = of(tokens);
+
         TestBed.configureTestingModule({
-            declarations: [
-                TokenNetworkSelectorComponent,
-                RegisteredNetworkValidatorDirective,
-                TokenPipe
-            ],
+            declarations: [TokenNetworkSelectorComponent, TokenPipe],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
-                {
-                    provide: ErrorStateMatcher,
-                    useClass: ShowOnDirtyErrorStateMatcher
-                }
+                { provide: TokenPollingService, useValue: tokenPollingMock },
+                TestProviders.HammerJSProvider(),
+                RaidenService
             ],
             imports: [
                 MaterialComponentsModule,
-                ReactiveFormsModule,
                 HttpClientTestingModule,
                 NoopAnimationsModule
             ],
@@ -94,102 +59,92 @@ describe('TokenNetworkSelectorComponent', () => {
     }));
 
     beforeEach(() => {
-        const raidenService = TestBed.get(RaidenService);
-        raidenSpy = spyOn(raidenService, 'getTokens');
-        raidenSpy.and.returnValue(of(tokens));
-        mockConfig = TestBed.get(RaidenConfig);
-        spyOn(raidenService, 'getUserToken').and.returnValue(connectedToken);
-
         fixture = TestBed.createComponent(TokenNetworkSelectorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-
-        mockConfig.setIsChecksum(true);
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should order filtered tokens first by connection, then owned and last not owned', fakeAsync(() => {
-        let done = false;
-        component.tokens$.subscribe(
-            value => {
-                expect(value[0].address).toBe(
-                    connectedToken.address,
-                    'connection token should go first'
-                );
-                expect(value[1].address).toBe(
-                    ownedToken.address,
-                    'owned token should go second'
-                );
-                expect(value[2].address).toBe(
-                    notOwnedToken.address,
-                    'not owned token should go third'
-                );
-                done = true;
-            },
-            error => fail(error)
-        );
-        tick();
-        expect(done).toBe(true);
-        flush();
-    }));
-
-    it('should not show an error without a user input', () => {
-        expect(errorMessage(fixture.debugElement)).toBeFalsy();
+    it('should sort tokens first by connection, then owned and last not owned', done => {
+        component.tokens$.subscribe(value => {
+            expect(value[0].address).toBe(
+                connectedToken.address,
+                'connection token should go first'
+            );
+            expect(value[1].address).toBe(
+                ownedToken.address,
+                'owned token should go second'
+            );
+            expect(value[2].address).toBe(
+                notOwnedToken.address,
+                'not owned token should go third'
+            );
+            done();
+        });
     });
 
-    it('should show an error if the input is empty', () => {
-        mockFormInput(fixture.debugElement, 'tokenFc', '');
+    it('should be able to only show connected tokens', done => {
+        component.onlyConnectedTokens = true;
         fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe(
-            `Please select a token network`
-        );
+        component.tokens$.subscribe(value => {
+            expect(value[0].address).toBe(
+                connectedToken.address,
+                'connection token should go first'
+            );
+            expect(value.length).toBe(1);
+            done();
+        });
     });
 
-    it('should show an error if the error is not 42 characters long', () => {
-        mockFormInput(fixture.debugElement, 'tokenFc', '0x34234');
+    it('should select a token network', () => {
+        const changeSpy = jasmine.createSpy('onChange');
+        const touchedSpy = jasmine.createSpy('onTouched');
+        const tokenChangedSpy = jasmine.createSpy('tokenChanged');
+        component.registerOnChange(changeSpy);
+        component.registerOnTouched(touchedSpy);
+        component.tokenChanged.subscribe(tokenChangedSpy);
         fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe(
-            `Invalid token network address length`
-        );
+
+        const selector = fixture.debugElement.query(
+            By.css('.mat-select-trigger')
+        ).nativeElement as HTMLElement;
+        selector.focus();
+        selector.click();
+        fixture.detectChanges();
+
+        const option = fixture.debugElement.query(By.css('.mat-option'))
+            .nativeElement as HTMLElement;
+        option.focus();
+        option.click();
+        fixture.detectChanges();
+
+        expect(component.value).toBe(connectedToken);
+        expect(touchedSpy).toHaveBeenCalledTimes(1);
+        expect(changeSpy).toHaveBeenCalledTimes(1);
+        expect(changeSpy).toHaveBeenCalledWith(connectedToken.address);
+        expect(tokenChangedSpy).toHaveBeenCalledTimes(1);
+        expect(tokenChangedSpy).toHaveBeenCalledWith(connectedToken);
     });
 
-    it('should show an error if the address is not valid', () => {
-        mockFormInput(
-            fixture.debugElement,
-            'tokenFc',
-            'abbfosdaiudaisduaosiduaoisduaoisdu23423423'
-        );
+    it('should be able to set a value programmatically', () => {
+        const raidenService: RaidenService = TestBed.get(RaidenService);
+        spyOn(raidenService, 'getUserToken').and.returnValue(notOwnedToken);
+        const address = notOwnedToken.address;
+        component.writeValue(address);
         fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe(
-            'This is not a valid token network address.'
-        );
+
+        expect(component.value).toBe(notOwnedToken);
     });
 
-    it('should show an error if network not in registered networks', () => {
-        const address = '0xc778417E063141139Fce010982780140Aa0cD5Ab';
-        mockFormInput(fixture.debugElement, 'tokenFc', address);
+    it('should not to set an unregistered token programmatically', () => {
+        const raidenService: RaidenService = TestBed.get(RaidenService);
+        spyOn(raidenService, 'getUserToken').and.returnValue(undefined);
+        component.writeValue(createAddress());
         fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe(
-            'This address does not belong to a registered token network'
-        );
-    });
 
-    it('should show error when address is not in checksum format', () => {
-        mockConfig.setIsChecksum(false);
-        mockConfig.updateChecksumAddress(
-            '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195'
-        );
-        mockFormInput(
-            fixture.debugElement,
-            'tokenFc',
-            '0xeb7f4bbaa1714f3e5a12ff8b681908d7b98bd195'
-        );
-        fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe(
-            'Address is not in checksum format: 0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195'
-        );
+        expect(component.value).toBe(undefined);
     });
 });
