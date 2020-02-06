@@ -87,7 +87,7 @@ describe('PaymentDialogComponent', () => {
     beforeEach(async(() => {
         const payload: PaymentDialogPayload = {
             tokenAddress: '',
-            amount: new BigNumber(0),
+            amount: undefined,
             targetAddress: ''
         };
 
@@ -150,7 +150,7 @@ describe('PaymentDialogComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should close the dialog with the result when send button is clicked', () => {
+    it('should close the dialog with the result when accept button is clicked', () => {
         mockAllInputs();
         // @ts-ignore
         const closeSpy = spyOn(component.dialogRef, 'close');

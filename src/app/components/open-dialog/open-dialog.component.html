@@ -33,7 +33,11 @@
             />
         </div>
         <div class="error" fxLayout="column" fxLayoutAlign="center">
-            <span *ngIf="form.get('settle_timeout').invalid" [@fallDown]="'in'">
+            <span
+                *ngIf="form.get('settle_timeout').invalid"
+                [@fallDown]="'in'"
+                id="timeout-error"
+            >
                 <span
                     *ngIf="form.get('settle_timeout').hasError('invalidAmount')"
                 >
