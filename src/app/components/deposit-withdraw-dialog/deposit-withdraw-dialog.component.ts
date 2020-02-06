@@ -44,9 +44,6 @@ export class DepositWithdrawDialogComponent implements OnInit {
     }
 
     accept() {
-        if (this.form.invalid) {
-            return;
-        }
         const tokenAmount = this.form.value.amount;
         this.dialogRef.close({ tokenAmount });
     }

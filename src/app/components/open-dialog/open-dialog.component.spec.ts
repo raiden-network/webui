@@ -139,14 +139,6 @@ describe('OpenDialogComponent', () => {
         expect(closeSpy).toHaveBeenCalledWith();
     });
 
-    it('should not submit the dialog by enter if the form is invalid', () => {
-        // @ts-ignore
-        const close = spyOn(component.dialogRef, 'close');
-        const dialog = fixture.debugElement.query(By.css('.dialog'));
-        dialog.triggerEventHandler('keyup.enter', {});
-        expect(close).toHaveBeenCalledTimes(0);
-    });
-
     describe('settle timeout input', () => {
         it('should not show an error without a user input', () => {
             const errorElement = fixture.debugElement.query(

@@ -42,9 +42,6 @@ export class ConnectionManagerDialogComponent implements OnInit {
     }
 
     accept() {
-        if (this.form.invalid) {
-            return;
-        }
         const payload: ConnectionManagerDialogPayload = {
             token: this.token,
             funds: this.form.value.amount

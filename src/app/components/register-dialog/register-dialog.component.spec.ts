@@ -83,12 +83,4 @@ describe('RegisterDialogComponent', () => {
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith();
     });
-
-    it('should not submit the dialog by enter if the form is invalid', () => {
-        // @ts-ignore
-        const close = spyOn(component.dialogRef, 'close');
-        const dialog = fixture.debugElement.query(By.css('.dialog'));
-        dialog.triggerEventHandler('keyup.enter', {});
-        expect(close).toHaveBeenCalledTimes(0);
-    });
 });

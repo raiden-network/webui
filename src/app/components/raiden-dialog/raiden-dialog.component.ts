@@ -15,4 +15,10 @@ export class RaidenDialogComponent implements OnInit {
     constructor() {}
 
     ngOnInit() {}
+
+    onEnter() {
+        if (!this.acceptDisabled) {
+            this.accept.emit(true);
+        }
+    }
 }

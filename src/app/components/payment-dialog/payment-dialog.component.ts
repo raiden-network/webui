@@ -54,9 +54,6 @@ export class PaymentDialogComponent implements OnInit {
     ngOnInit() {}
 
     accept() {
-        if (this.form.invalid) {
-            return;
-        }
         const value = this.form.value;
 
         const payload: PaymentDialogPayload = {

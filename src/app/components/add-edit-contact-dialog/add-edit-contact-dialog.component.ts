@@ -35,9 +35,6 @@ export class AddEditContactDialogComponent implements OnInit {
     ngOnInit() {}
 
     accept() {
-        if (this.form.invalid) {
-            return;
-        }
         const result: Contact = {
             address: this.form.value.address,
             label: this.form.value.label

@@ -257,12 +257,4 @@ describe('PaymentDialogComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(close).toHaveBeenCalledTimes(0);
     });
-
-    it('should not submit the dialog by enter if the form is invalid', () => {
-        // @ts-ignore
-        const close = spyOn(component.dialogRef, 'close');
-        const dialog = fixture.debugElement.query(By.css('.dialog'));
-        dialog.triggerEventHandler('keyup.enter', {});
-        expect(close).toHaveBeenCalledTimes(0);
-    });
 });

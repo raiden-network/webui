@@ -61,9 +61,6 @@ export class OpenDialogComponent {
     }
 
     accept() {
-        if (this.form.invalid) {
-            return;
-        }
         const value = this.form.value;
         const result: OpenDialogResult = {
             tokenAddress: value.token,
