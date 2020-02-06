@@ -86,7 +86,7 @@ export class AddressInputComponent
         this.network$ = raidenService.network$;
     }
 
-    ngOnInit(): void {
+    ngOnInit() {
         this.setupValidation();
 
         if (this.userAccount) {
@@ -94,7 +94,7 @@ export class AddressInputComponent
         }
     }
 
-    ngOnDestroy(): void {
+    ngOnDestroy() {
         const subscription = this.subscription;
         if (subscription) {
             subscription.unsubscribe();
@@ -121,7 +121,7 @@ export class AddressInputComponent
         return this.errors;
     }
 
-    onChange(value: any) {
+    onChange(value: string) {
         this.inputSubject.next(value);
     }
 
@@ -151,7 +151,7 @@ export class AddressInputComponent
             AddressUtils.isDomain(this.inputElement.nativeElement.value)
         ) {
             return `Resolved address: ${this.address}`;
-        } else if (label) {
+        } else if (this.userAccount && label) {
             return label;
         } else {
             return null;
@@ -222,14 +222,13 @@ export class AddressInputComponent
 
     private setupFiltering() {
         this.filteredOptions$ = this.inputSubject.pipe(
-            startWith(''),
             flatMap(value => this.filter(value))
         );
     }
 
     private filter(value: string): Observable<Contact[]> {
         const contacts$ = of(this.addressBookService.getArray());
-        if (!value || typeof value !== 'string') {
+        if (!value) {
             return contacts$;
         }
 

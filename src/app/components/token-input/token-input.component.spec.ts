@@ -62,7 +62,7 @@ describe('TokenInputComponent', () => {
         expect(component.errors).toBeFalsy();
     });
 
-    it('should not show an error without an user input', () => {
+    it('should not show an error without a user input', () => {
         const errorsElement = fixture.debugElement.query(By.css('#errors'));
         expect(errorsElement).toBeFalsy();
     });

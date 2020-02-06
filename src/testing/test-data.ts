@@ -99,7 +99,7 @@ export function createNetworkMock(obj: any = {}): Network {
         name: 'Test',
         shortName: 'tst',
         chainId: 9001,
-        ensSupported: false,
+        ensSupported: true,
         faucet: 'http://faucet.test/?${ADDRESS}'
     };
     return Object.assign(network, obj);

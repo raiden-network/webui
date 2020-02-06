@@ -1,7 +1,7 @@
 <div class="input" fxLayout="row" fxLayoutAlign="start center">
     <input
         type="text"
-        [placeholder]="placeholder"
+        placeholder="{{ placeholder }} address / ENS name"
         aria-label="Address input"
         class="input__field"
         [matAutocomplete]="auto"
@@ -77,7 +77,7 @@
         </span>
     </span>
     <ng-template #hint_text>
-        <span *ngIf="userAccount && hint()" class="info-box__hint">
+        <span *ngIf="hint()" class="info-box__hint">
             {{ hint() }}
         </span>
     </ng-template>
