@@ -21,7 +21,10 @@ import { MockConfig } from '../../../testing/mock-config';
 import { AddressInputComponent } from './address-input.component';
 import { AddressBookService } from '../../services/address-book.service';
 import { Contact, Contacts } from '../../models/contact';
-import { mockInput } from '../../../testing/interaction-helper';
+import {
+    mockInput,
+    mockMatSelectFirst
+} from '../../../testing/interaction-helper';
 import { TestProviders } from '../../../testing/test-providers';
 import { of } from 'rxjs';
 import {
@@ -253,10 +256,7 @@ describe('AddressInputComponent', () => {
             input.click();
             fixture.detectChanges();
 
-            const option = fixture.debugElement.query(By.directive(MatOption))
-                .nativeElement as HTMLElement;
-            option.focus();
-            option.click();
+            mockMatSelectFirst(fixture.debugElement);
             fixture.detectChanges();
 
             expect(input.value).toBe(contacts[0].address);

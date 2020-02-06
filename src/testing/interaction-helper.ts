@@ -36,6 +36,20 @@ export function mockInput(
     input.dispatchEvent(mockEvent('input'));
 }
 
+export function mockOpenMatSelect(element: DebugElement) {
+    const selector = element.query(By.css('.mat-select-trigger'))
+        .nativeElement as HTMLElement;
+    selector.focus();
+    selector.click();
+}
+
+export function mockMatSelectFirst(element: DebugElement) {
+    const option = element.query(By.css('.mat-option'))
+        .nativeElement as HTMLElement;
+    option.focus();
+    option.click();
+}
+
 export function mockFormInput(
     element: DebugElement,
     formControlProperty: string,

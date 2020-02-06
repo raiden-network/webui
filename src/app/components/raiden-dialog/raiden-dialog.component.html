@@ -14,6 +14,7 @@
             mat-flat-button
             color="accent"
             (click)="cancel.emit(true)"
+            id="cancel"
         >
             Cancel
         </button>
@@ -23,6 +24,7 @@
             [disabled]="acceptDisabled"
             color="primary"
             (click)="accept.emit(true)"
+            id="accept"
         >
             {{ acceptText }}
         </button>

@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js';
 import { Network } from '../app/utils/network-info';
 import { UserToken } from '../app/models/usertoken';
 import { PaymentEvent } from '../app/models/payment-event';
+import { PendingTransfer } from '../app/models/pending-transfer';
 
 const web3 = new Web3('http://localhost:8545');
 
@@ -157,4 +158,19 @@ export function createTestPaymentEvents(
         );
     }
     return events;
+}
+
+export function createPendingTransfer(obj: any = {}): PendingTransfer {
+    const pendingTransfer: PendingTransfer = {
+        channel_identifier: BigNumber.random(2).times(100),
+        initiator: createAddress(),
+        locked_amount: new BigNumber(100),
+        payment_identifier: BigNumber.random(3).times(1000),
+        role: 'initiator',
+        target: createAddress(),
+        token_address: createAddress(),
+        token_network_address: createAddress(),
+        transferred_amount: new BigNumber(0)
+    };
+    return Object.assign(pendingTransfer, obj);
 }

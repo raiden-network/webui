@@ -12,7 +12,10 @@ import BigNumber from 'bignumber.js';
 import { createToken, createAddress } from '../../../testing/test-data';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { stub } from '../../../testing/stub';
-import { By } from '@angular/platform-browser';
+import {
+    mockMatSelectFirst,
+    mockOpenMatSelect
+} from '../../../testing/interaction-helper';
 
 describe('TokenNetworkSelectorComponent', () => {
     let component: TokenNetworkSelectorComponent;
@@ -108,17 +111,10 @@ describe('TokenNetworkSelectorComponent', () => {
         component.tokenChanged.subscribe(tokenChangedSpy);
         fixture.detectChanges();
 
-        const selector = fixture.debugElement.query(
-            By.css('.mat-select-trigger')
-        ).nativeElement as HTMLElement;
-        selector.focus();
-        selector.click();
+        mockOpenMatSelect(fixture.debugElement);
         fixture.detectChanges();
 
-        const option = fixture.debugElement.query(By.css('.mat-option'))
-            .nativeElement as HTMLElement;
-        option.focus();
-        option.click();
+        mockMatSelectFirst(fixture.debugElement);
         fixture.detectChanges();
 
         expect(component.value).toBe(connectedToken);
