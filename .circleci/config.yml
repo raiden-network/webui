@@ -63,6 +63,21 @@ jobs:
           paths:
             - ./*
 
+  check_licenses:
+    executor: base-executor
+    working_directory: ~/
+    steps:
+      - attach_workspace: *attach_options
+      - run:
+          name: Update $PATH
+          command: echo 'export PATH=$PATH:/tmp/node_modules/.bin' >> $BASH_ENV
+      - run:
+          name: Install license checker
+          command: cd /tmp && npm install license-checker@25.0.1
+      - run:
+          name: Check Licenses
+          command: license-checker --production --onlyAllow 'MIT;BSD;Apache;MPL;LGPL;ZPL;ISC;WTFPL' --excludePackages 'uuid@2.0.1' --excludePrivatePackages # uuid@2.0.1 has an issue with the license information but it is licensed under MIT
+
   lint:
     executor: base-executor
     steps:
@@ -149,6 +164,9 @@ workflows:
   default_workflow:
     jobs:
       - install
+      - check_licenses:
+          requires:
+            - install
       - lint:
           requires:
             - install
