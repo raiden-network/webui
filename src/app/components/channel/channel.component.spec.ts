@@ -25,7 +25,7 @@ import {
     DepositWithdrawDialogComponent,
     DepositWithdrawDialogResult
 } from '../deposit-withdraw-dialog/deposit-withdraw-dialog.component';
-import { DepositMode } from '../../utils/helpers';
+import { DepositMode } from '../../models/deposit-mode.enum';
 import { MatDialog } from '@angular/material/dialog';
 import {
     ConfirmationDialogPayload,

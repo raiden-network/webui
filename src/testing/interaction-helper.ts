@@ -49,33 +49,3 @@ export function mockMatSelectFirst(element: DebugElement) {
     option.focus();
     option.click();
 }
-
-export function mockFormInput(
-    element: DebugElement,
-    formControlProperty: string,
-    value: string
-) {
-    const formControl = element.componentInstance[formControlProperty];
-    formControl.setValue(value);
-    formControl.markAsDirty();
-    formControl.markAsTouched();
-    mockInput(element, 'input', value);
-}
-
-export function errorMessage(element: DebugElement): string {
-    const matErrorElement = element.query(By.directive(MatError));
-    if (!matErrorElement) {
-        return undefined;
-    }
-    const spanElement = matErrorElement.query(By.css('span'));
-
-    let innerText: string;
-
-    if (spanElement) {
-        const span = spanElement.nativeElement as HTMLSpanElement;
-        innerText = span.innerText.trim();
-    } else {
-        innerText = matErrorElement.nativeElement.innerText.trim();
-    }
-    return innerText;
-}

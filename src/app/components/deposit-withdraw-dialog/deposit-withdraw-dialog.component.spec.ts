@@ -8,7 +8,7 @@ import {
     DepositWithdrawDialogPayload
 } from './deposit-withdraw-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
-import { DepositMode } from '../../utils/helpers';
+import { DepositMode } from '../../models/deposit-mode.enum';
 import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component';
 import { By } from '@angular/platform-browser';
 import { mockInput, clickElement } from '../../../testing/interaction-helper';

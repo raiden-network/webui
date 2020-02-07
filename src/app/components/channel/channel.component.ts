@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Channel } from '../../models/channel';
 import { AddressBookService } from '../../services/address-book.service';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
-import { DepositMode } from '../../utils/helpers';
+import { DepositMode } from '../../models/deposit-mode.enum';
 import {
     ConfirmationDialogPayload,
     ConfirmationDialogComponent

@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TokenInputComponent } from '../token-input/token-input.component';
-import { DepositMode } from '../../utils/helpers';
+import { DepositMode } from '../../models/deposit-mode.enum';
 import BigNumber from 'bignumber.js';
 import { UserToken } from '../../models/usertoken';
 

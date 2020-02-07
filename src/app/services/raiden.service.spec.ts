@@ -16,7 +16,7 @@ import { RaidenService } from './raiden.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { TestProviders } from '../../testing/test-providers';
 import BigNumber from 'bignumber.js';
-import { DepositMode } from '../utils/helpers';
+import { DepositMode } from '../models/deposit-mode.enum';
 import { createChannel } from '../../testing/test-data';
 import Spy = jasmine.Spy;
 import { amountToDecimal } from '../utils/amount.converter';
