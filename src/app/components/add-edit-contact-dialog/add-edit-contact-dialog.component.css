@@ -18,12 +18,3 @@
     color: #000000;
     width: 100%;
 }
-
-.error {
-    height: 32px;
-    font-size: 13px;
-    line-height: 15px;
-    letter-spacing: 0.35px;
-    padding-left: 18px;
-    color: #f54b47;
-}

@@ -2,7 +2,6 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Contact } from '../../models/contact';
-import { Animations } from '../../animations/animations';
 
 export interface AddEditContactDialogPayload {
     readonly address: string;
@@ -13,8 +12,7 @@ export interface AddEditContactDialogPayload {
 @Component({
     selector: 'app-add-edit-contact-dialog',
     templateUrl: './add-edit-contact-dialog.component.html',
-    styleUrls: ['./add-edit-contact-dialog.component.css'],
-    animations: Animations.fallDown
+    styleUrls: ['./add-edit-contact-dialog.component.css']
 })
 export class AddEditContactDialogComponent implements OnInit {
     readonly form: FormGroup;
@@ -44,10 +42,5 @@ export class AddEditContactDialogComponent implements OnInit {
 
     cancel() {
         this.dialogRef.close();
-    }
-
-    labelInvalid(): boolean {
-        const control = this.form.get('label');
-        return control.invalid && (control.dirty || control.touched);
     }
 }

@@ -12,20 +12,13 @@
         [displayIdenticon]="true"
     >
     </app-address-input>
-    <div>
-        <div class="label-input" fxLayout="row">
-            <input
-                placeholder="Name"
-                aria-label="Contact name input"
-                formControlName="label"
-                class="label-input__field"
-                type="text"
-            />
-        </div>
-        <div class="error" fxLayout="column" fxLayoutAlign="center">
-            <span *ngIf="labelInvalid()" [@fallDown]="'in'">
-                The name cannot be empty
-            </span>
-        </div>
+    <div class="label-input" fxLayout="row">
+        <input
+            placeholder="Name"
+            aria-label="Contact name input"
+            formControlName="label"
+            class="label-input__field"
+            type="text"
+        />
     </div>
 </app-raiden-dialog>
