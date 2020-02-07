@@ -34,8 +34,7 @@ describe('DepositWithdrawDialogComponent', () => {
             providers: [
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
-                TestProviders.MockRaidenConfigProvider()
+                TestProviders.MockMatDialogRef({ close: () => {} })
             ],
             imports: [
                 MaterialComponentsModule,
