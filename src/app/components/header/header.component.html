@@ -112,14 +112,6 @@
             >
             </mat-icon>
         </button>
-        <button mat-icon-button matTooltip="Show QR code to scan your address">
-            <mat-icon
-                class="header__icon"
-                svgIcon="qr"
-                aria-label="Show QR code to scan your address"
-            >
-            </mat-icon>
-        </button>
         <a
             *ngIf="(network$ | async)?.faucet"
             [href]="faucetLink$ | async"
