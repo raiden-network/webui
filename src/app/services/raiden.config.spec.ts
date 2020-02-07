@@ -153,7 +153,7 @@ describe('RaidenConfig', () => {
             environment_type: EnvironmentType.DEVELOPMENT
         });
 
-        expect(notificationService.rpcError).toBe(null);
+        expect(notificationService.rpcError).toBe(undefined);
         expect(tracking.current).toBe(1);
         flush();
     }));
@@ -194,7 +194,7 @@ describe('RaidenConfig', () => {
             environment_type: EnvironmentType.PRODUCTION
         });
 
-        expect(notificationService.rpcError).toBe(null);
+        expect(notificationService.rpcError).toBe(undefined);
         expect(tracking.current).toBe(1);
     }));
 
@@ -223,7 +223,7 @@ describe('RaidenConfig', () => {
 
         tick(2000);
 
-        expect(notificationService.rpcError).toBe(null);
+        expect(notificationService.rpcError).toBe(undefined);
         expect(tracking.current).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback
