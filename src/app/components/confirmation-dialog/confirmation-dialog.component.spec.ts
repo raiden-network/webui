@@ -1,23 +1,29 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
-
-import { ConfirmationDialogComponent } from './confirmation-dialog.component';
+import {
+    ConfirmationDialogComponent,
+    ConfirmationDialogPayload
+} from './confirmation-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
-import { MatDialogRef } from '@angular/material/dialog';
+import { clickElement } from '../../../testing/interaction-helper';
+import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component';
 
 describe('ConfirmationDialogComponent', () => {
     let component: ConfirmationDialogComponent;
     let fixture: ComponentFixture<ConfirmationDialogComponent>;
 
     beforeEach(async(() => {
+        const payload: ConfirmationDialogPayload = {
+            title: 'Test confirm',
+            message: 'Do you want to confirm this test?'
+        };
+
         TestBed.configureTestingModule({
-            declarations: [ConfirmationDialogComponent],
+            declarations: [ConfirmationDialogComponent, RaidenDialogComponent],
             providers: [
-                TestProviders.MockMatDialogData(),
-                TestProviders.MockMatDialogRef(
-                    jasmine.createSpyObj('MatDialogRef', ['close'])
-                )
+                TestProviders.MockMatDialogData(payload),
+                TestProviders.MockMatDialogRef({ close: () => {} })
             ],
             imports: [MaterialComponentsModule, ReactiveFormsModule]
         }).compileComponents();
@@ -33,10 +39,23 @@ describe('ConfirmationDialogComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should call return true when confirmed', function() {
-        const matDialogRef = TestBed.get(MatDialogRef);
-        component.accept();
-        expect(matDialogRef.close).toHaveBeenCalledTimes(1);
-        expect(matDialogRef.close).toHaveBeenCalledWith(true);
+    it('should close the dialog with true when confirmed', function() {
+        // @ts-ignore
+        const closeSpy = spyOn(component.dialogRef, 'close');
+        clickElement(fixture.debugElement, '#accept');
+        fixture.detectChanges();
+
+        expect(closeSpy).toHaveBeenCalledTimes(1);
+        expect(closeSpy).toHaveBeenCalledWith(true);
+    });
+
+    it('should close the dialog with no result when cancelled', () => {
+        // @ts-ignore
+        const closeSpy = spyOn(component.dialogRef, 'close');
+        clickElement(fixture.debugElement, '#cancel');
+        fixture.detectChanges();
+
+        expect(closeSpy).toHaveBeenCalledTimes(1);
+        expect(closeSpy).toHaveBeenCalledWith();
     });
 });
