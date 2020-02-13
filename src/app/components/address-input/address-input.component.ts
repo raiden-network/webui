@@ -19,15 +19,15 @@ import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenService } from '../../services/raiden.service';
 import { AddressBookService } from '../../services/address-book.service';
 import { Contact } from '../../models/contact';
-import { debounceTime, map, tap, switchMap } from 'rxjs/operators';
+import { debounceTime, map, tap, switchMap, takeUntil } from 'rxjs/operators';
 import {
     merge,
     Observable,
     of,
-    Subscription,
     partition,
     combineLatest,
-    BehaviorSubject
+    BehaviorSubject,
+    Subject
 } from 'rxjs';
 import AddressUtils from '../../utils/address-utils';
 import { isAddressValid } from '../../shared/address.validator';
@@ -67,7 +67,7 @@ export class AddressInputComponent
     filteredOptions$: Observable<Contact[]>;
     readonly network$: Observable<Network>;
 
-    private subscription: Subscription;
+    private ngUnsubscribe = new Subject();
     private inputSubject: BehaviorSubject<string> = new BehaviorSubject('');
     private propagateTouched = () => {};
     private propagateChange = (address: string) => {};
@@ -89,10 +89,8 @@ export class AddressInputComponent
     }
 
     ngOnDestroy() {
-        const subscription = this.subscription;
-        if (subscription) {
-            subscription.unsubscribe();
-        }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     registerOnChange(fn: any) {
@@ -205,13 +203,13 @@ export class AddressInputComponent
             })
         );
 
-        this.subscription = merge(resolveOnEns, handleAddress).subscribe(
-            (result: InputResult) => {
+        merge(resolveOnEns, handleAddress)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((result: InputResult) => {
                 this.address = result.value;
                 this.errors = result.errors;
                 this.propagateChange(this.address);
-            }
-        );
+            });
     }
 
     private setupFiltering() {

@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RaidenService } from '../../services/raiden.service';
 import { version } from '../../../version';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-about',
@@ -13,21 +14,23 @@ export class AboutComponent implements OnInit, OnDestroy {
     raidenVersion = '';
     networkName = '';
 
-    private subscription: Subscription;
+    private ngUnsubscribe = new Subject();
 
     constructor(private raidenService: RaidenService) {}
 
     ngOnInit() {
         this.raidenService
             .getVersion()
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(raidenVersion => (this.raidenVersion = raidenVersion));
-        this.subscription = this.raidenService.network$.subscribe(
-            network => (this.networkName = network.name)
-        );
+        this.raidenService.network$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(network => (this.networkName = network.name));
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     environmentInformation(): string {

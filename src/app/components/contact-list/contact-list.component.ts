@@ -16,10 +16,11 @@ import * as Ajv from 'ajv';
 import { contactsSchema } from '../../models/contacts-schema';
 import { NotificationService } from '../../services/notification.service';
 import { UploadError } from '../../models/upload-error';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { SharedService } from '../../services/shared.service';
 import { AddEditContactDialogComponent } from '../add-edit-contact-dialog/add-edit-contact-dialog.component';
 import { matchesContact } from '../../shared/keyword-matcher';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-contact-list',
@@ -40,8 +41,8 @@ export class ContactListComponent implements OnInit, OnDestroy {
     private filteredContacts: Contact[] = [];
     private readonly uploadChecks: UploadChecks = new UploadChecks();
     private readonly schema: ValidateFunction;
-    private subscription: Subscription;
     private searchFilter = '';
+    private ngUnsubscribe = new Subject();
 
     constructor(
         private addressBookService: AddressBookService,
@@ -54,30 +55,30 @@ export class ContactListComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.subscription = this.sharedService.globalClickTarget$.subscribe(
-            target => {
+        this.sharedService.globalClickTarget$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(target => {
                 if (
                     !this.contactsElement.nativeElement.contains(target) &&
                     this.dialog.openDialogs.length === 0
                 ) {
                     this.selectedContactAddress = '';
                 }
-            }
-        );
+            });
 
-        const searchSubscription = this.sharedService.searchFilter$.subscribe(
-            value => {
+        this.sharedService.searchFilter$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(value => {
                 this.searchFilter = value;
                 this.updateContacts();
-            }
-        );
-        this.subscription.add(searchSubscription);
+            });
 
         this.updateContacts();
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     trackByFn(index, item: Contact) {

@@ -6,7 +6,7 @@ import {
     ViewChild,
     HostListener
 } from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
@@ -25,6 +25,7 @@ import {
     ErrorComponent,
     ErrorPayload
 } from './components/error/error.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-root',
@@ -40,7 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
     readonly network$: Observable<Network>;
     showNetworkInfo = false;
 
-    private subscription: Subscription;
+    private ngUnsubscribe = new Subject();
     private errorDialog: MatDialogRef<ErrorComponent>;
 
     constructor(
@@ -61,7 +62,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.subscription = this.network$.subscribe(network => {
+        this.network$.pipe(takeUntil(this.ngUnsubscribe)).subscribe(network => {
             if (network.chainId !== 1) {
                 this.showNetworkInfo = true;
                 setTimeout(() => {
@@ -70,23 +71,24 @@ export class AppComponent implements OnInit, OnDestroy {
             }
         });
 
-        const channelSubscription = this.channelPollingService
+        this.channelPollingService
             .channels()
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe();
-        this.subscription.add(channelSubscription);
 
-        const pendingTransfersSubscription = this.pendingTransferPollingService.pendingTransfers$.subscribe();
-        this.subscription.add(pendingTransfersSubscription);
+        this.pendingTransferPollingService.pendingTransfers$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe();
 
-        const paymentHistorySubscription = this.paymentHistoryPollingService.paymentHistory$.subscribe();
-        this.subscription.add(paymentHistorySubscription);
+        this.paymentHistoryPollingService.paymentHistory$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe();
 
-        const connectionErrorsSubscription = this.notificationService.connectionErrors$.subscribe(
-            errors => {
+        this.notificationService.connectionErrors$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(errors => {
                 this.handleConnectionErrors(errors);
-            }
-        );
-        this.subscription.add(connectionErrorsSubscription);
+            });
 
         this.disableAnimationsOnAndroid();
         this.notificationService.setNotificationSidenav(
@@ -95,7 +97,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     hideNetworkInfo() {

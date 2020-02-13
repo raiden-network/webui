@@ -8,7 +8,7 @@ import {
     HostListener
 } from '@angular/core';
 import { Channel } from '../../models/channel';
-import { Subscription, EMPTY } from 'rxjs';
+import { Subscription, EMPTY, Subject } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { amountToDecimal } from '../../utils/amount.converter';
 import { UserToken } from '../../models/usertoken';
@@ -19,7 +19,7 @@ import {
 } from '../open-dialog/open-dialog.component';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
-import { flatMap, map } from 'rxjs/operators';
+import { flatMap, map, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Animations } from '../../animations/animations';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -48,7 +48,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
     private channels: Channel[] = [];
     private searchFilter = '';
     private selectedToken: UserToken;
-    private subscription: Subscription;
+    private ngUnsubscribe = new Subject();
 
     constructor(
         private channelPollingService: ChannelPollingService,
@@ -62,7 +62,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {}
 
     ngOnInit() {
-        this.subscription = this.channelPollingService
+        this.channelPollingService
             .channels()
             .pipe(
                 map(channels =>
@@ -71,7 +71,8 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
                             channel.state === 'opened' ||
                             channel.state === 'waiting_for_open'
                     )
-                )
+                ),
+                takeUntil(this.ngUnsubscribe)
             )
             .subscribe((channels: Channel[]) => {
                 this.channels = channels;
@@ -79,26 +80,25 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.updateVisibleChannels();
             });
 
-        const selectedTokenSubscription = this.selectedTokenService.selectedToken$.subscribe(
-            (token: UserToken) => {
+        this.selectedTokenService.selectedToken$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((token: UserToken) => {
                 this.selectedToken = token;
                 this.showAll = false;
                 this.updateVisibleChannels();
-            }
-        );
-        this.subscription.add(selectedTokenSubscription);
+            });
 
-        const searchSubscription = this.sharedService.searchFilter$.subscribe(
-            value => {
+        this.sharedService.searchFilter$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(value => {
                 this.searchFilter = value;
                 this.updateVisibleChannels();
-            }
-        );
-        this.subscription.add(searchSubscription);
+            });
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     ngAfterViewInit() {

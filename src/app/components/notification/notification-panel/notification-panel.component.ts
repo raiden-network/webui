@@ -6,9 +6,10 @@ import {
     EventEmitter
 } from '@angular/core';
 import { NotificationService } from '../../../services/notification.service';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { NotificationMessage } from '../../../models/notification';
 import { Animations } from '../../../animations/animations';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-notification-panel',
@@ -21,27 +22,27 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
     public notifications: NotificationMessage[];
     public pendingActions: NotificationMessage[];
 
-    private subscription: Subscription;
+    private ngUnsubscribe = new Subject();
 
     constructor(private notificationService: NotificationService) {}
 
     ngOnInit() {
-        this.subscription = this.notificationService.notifications$.subscribe(
-            (notifications: NotificationMessage[]) => {
+        this.notificationService.notifications$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((notifications: NotificationMessage[]) => {
                 this.notifications = notifications;
-            }
-        );
+            });
 
-        const pendingActionsSubscription = this.notificationService.pendingActions$.subscribe(
-            (pendingActions: NotificationMessage[]) => {
+        this.notificationService.pendingActions$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((pendingActions: NotificationMessage[]) => {
                 this.pendingActions = pendingActions;
-            }
-        );
-        this.subscription.add(pendingActionsSubscription);
+            });
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     trackByFn(index, item: NotificationMessage) {
