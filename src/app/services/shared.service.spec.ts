@@ -1,14 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { SharedService } from './shared.service';
 
-import { UtilityService } from './utility.service';
-
-describe('UtilityService', () => {
-    let service: UtilityService;
+describe('SharedService', () => {
+    let service: SharedService;
 
     beforeEach(() => TestBed.configureTestingModule({}));
 
     beforeEach(() => {
-        service = TestBed.get(UtilityService);
+        service = TestBed.get(SharedService);
     });
 
     it('should be created', () => {
@@ -21,5 +20,12 @@ describe('UtilityService', () => {
             expect(target).toEqual(element);
         });
         service.newGlobalClick(element);
+    });
+
+    it('should set a new search filter', () => {
+        service.searchFilter$.subscribe(value => {
+            expect(value).toEqual('TestToken');
+        });
+        service.setSearchValue('TestToken');
     });
 });

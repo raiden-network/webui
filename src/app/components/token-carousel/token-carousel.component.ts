@@ -3,20 +3,24 @@ import {
     OnInit,
     OnDestroy,
     ViewChild,
-    ElementRef
+    ElementRef,
+    HostListener,
+    AfterViewInit
 } from '@angular/core';
 import { UserToken } from '../../models/usertoken';
 import { TokenPollingService } from '../../services/token-polling.service';
-import { Subscription, Observable, EMPTY } from 'rxjs';
+import { Observable, EMPTY, Subject } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { TokenUtils } from '../../utils/token.utils';
 import { SelectedTokenService } from '../../services/selected-token.service';
 import { Network } from '../../utils/network-info';
 import { RaidenService } from '../../services/raiden.service';
-import { map, flatMap } from 'rxjs/operators';
+import { map, flatMap, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { AnimationBuilder, animate, style } from '@angular/animations';
+import { SharedService } from '../../services/shared.service';
+import { matchesToken } from '../../shared/keyword-matcher';
 
 interface AllNetworksView {
     allNetworksView: boolean;
@@ -27,16 +31,24 @@ interface AllNetworksView {
     templateUrl: './token-carousel.component.html',
     styleUrls: ['./token-carousel.component.css']
 })
-export class TokenCarouselComponent implements OnInit, OnDestroy {
+export class TokenCarouselComponent
+    implements OnInit, OnDestroy, AfterViewInit {
+    private static TOKEN_VIEW_WIDTH = 298;
+
     @ViewChild('carousel', { static: true }) private carousel: ElementRef;
+    @ViewChild('visible_section', { static: true })
+    private visibleSection: ElementRef;
 
     visibleItems: Array<UserToken | AllNetworksView> = [];
     currentItem = 0;
-    currentSelection: UserToken | AllNetworksView;
+    visibleSectionItems = 1;
+    currentSelection: UserToken | AllNetworksView = { allNetworksView: true };
     totalChannels = 0;
     readonly network$: Observable<Network>;
 
-    private subscription: Subscription;
+    private ngUnsubscribe = new Subject();
+    private searchFilter = '';
+    private tokens: UserToken[] = [];
 
     constructor(
         private tokenPollingService: TokenPollingService,
@@ -44,7 +56,8 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
         private selectedTokenService: SelectedTokenService,
         private raidenService: RaidenService,
         private dialog: MatDialog,
-        private animationBuilder: AnimationBuilder
+        private animationBuilder: AnimationBuilder,
+        private sharedService: SharedService
     ) {
         this.network$ = raidenService.network$;
     }
@@ -54,35 +67,58 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.subscription = this.tokenPollingService.tokens$
+        this.tokenPollingService.tokens$
             .pipe(
                 map(tokens =>
                     tokens.sort((a, b) => TokenUtils.compareTokens(a, b))
-                )
+                ),
+                takeUntil(this.ngUnsubscribe)
             )
             .subscribe((tokens: UserToken[]) => {
-                this.visibleItems = [{ allNetworksView: true }, ...tokens];
+                this.tokens = tokens;
+                this.updateVisibleTokens();
             });
 
-        const channelsSubscription = this.channelPollingService
+        this.channelPollingService
             .channels()
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(channels => {
                 this.totalChannels = channels.length;
             });
-        this.subscription.add(channelsSubscription);
 
-        const selectedTokenSubscription = this.selectedTokenService.selectedToken$.subscribe(
-            token => {
+        this.selectedTokenService.selectedToken$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(token => {
                 this.currentSelection = token
                     ? token
                     : { allNetworksView: true };
-            }
-        );
-        this.subscription.add(selectedTokenSubscription);
+
+                this.moveSelectionIntoView();
+            });
+
+        this.sharedService.searchFilter$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(value => {
+                this.searchFilter = value;
+                this.updateVisibleTokens();
+                this.moveSelectionIntoView();
+            });
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
+
+    ngAfterViewInit() {
+        this.calculateVisibleSectionItems();
+        this.moveSelectionIntoView();
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize() {
+        this.calculateVisibleSectionItems();
+        this.moveSelectionIntoView();
     }
 
     trackByFn(index, item: UserToken | AllNetworksView) {
@@ -90,7 +126,10 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     }
 
     next() {
-        if (this.currentItem + 1 === this.visibleItems.length) {
+        if (
+            this.currentItem + this.visibleSectionItems >=
+            this.visibleItems.length
+        ) {
             return;
         }
         this.currentItem++;
@@ -98,7 +137,7 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     }
 
     previous() {
-        if (this.currentItem === 0) {
+        if (this.currentItem <= 0) {
             return;
         }
         this.currentItem--;
@@ -136,6 +175,7 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     select(item: UserToken | AllNetworksView) {
         const selectedToken = this.isAllNetworksView(item) ? undefined : item;
         this.selectedTokenService.setToken(selectedToken);
+        this.moveSelectionIntoView();
     }
 
     register() {
@@ -160,7 +200,8 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
     }
 
     private playAnimation() {
-        const offset = this.currentItem * 298;
+        const offset =
+            this.currentItem * TokenCarouselComponent.TOKEN_VIEW_WIDTH;
         const animation = this.animationBuilder.build([
             animate(
                 '250ms ease-in',
@@ -168,5 +209,46 @@ export class TokenCarouselComponent implements OnInit, OnDestroy {
             )
         ]);
         animation.create(this.carousel.nativeElement).play();
+    }
+
+    private updateVisibleTokens() {
+        const filteredTokens = this.tokens.filter(item =>
+            matchesToken(this.searchFilter, item)
+        );
+        this.visibleItems = [{ allNetworksView: true }, ...filteredTokens];
+    }
+
+    private calculateVisibleSectionItems() {
+        const sectionWidth = this.visibleSection.nativeElement.getBoundingClientRect()
+            .width;
+        this.visibleSectionItems = Math.floor(
+            sectionWidth / TokenCarouselComponent.TOKEN_VIEW_WIDTH
+        );
+    }
+
+    private moveSelectionIntoView() {
+        const selectionIndex = this.findSelectionIndex();
+        const firstVisible = this.currentItem;
+        const lastVisible = this.currentItem + this.visibleSectionItems - 1;
+        if (selectionIndex > lastVisible) {
+            this.currentItem += selectionIndex - lastVisible;
+            this.playAnimation();
+        } else if (selectionIndex < firstVisible) {
+            this.currentItem -= firstVisible - selectionIndex;
+            this.playAnimation();
+        }
+    }
+
+    private findSelectionIndex(): number {
+        let selectionIndex = 0;
+        if (!this.isAllNetworksView(this.currentSelection)) {
+            const currentSelection = this.currentSelection;
+            const visibleTokens = this.visibleItems.slice(1) as UserToken[];
+            selectionIndex = visibleTokens.findIndex(
+                token => token.address === currentSelection.address
+            );
+            selectionIndex++;
+        }
+        return selectionIndex;
     }
 }

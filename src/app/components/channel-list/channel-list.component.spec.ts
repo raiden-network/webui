@@ -1,4 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    TestBed,
+    tick,
+    fakeAsync,
+    flush
+} from '@angular/core/testing';
 import { ChannelListComponent } from './channel-list.component';
 import {
     createToken,
@@ -30,6 +37,9 @@ import {
 } from '../open-dialog/open-dialog.component';
 import { RaidenConfig } from '../../services/raiden.config';
 import BigNumber from 'bignumber.js';
+import { SharedService } from '../../services/shared.service';
+import { AddressBookService } from '../../services/address-book.service';
+import { Contacts } from '../../models/contact';
 
 describe('ChannelListComponent', () => {
     let component: ChannelListComponent;
@@ -57,7 +67,8 @@ describe('ChannelListComponent', () => {
                 TestProviders.MockMatDialog(),
                 ChannelPollingService,
                 SelectedTokenService,
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
+                SharedService
             ],
             imports: [
                 MaterialComponentsModule,
@@ -112,7 +123,7 @@ describe('ChannelListComponent', () => {
         }
     });
 
-    it('should filter the channels by token', () => {
+    it('should filter the channels by the selected token', () => {
         const selectedTokenService: SelectedTokenService = TestBed.get(
             SelectedTokenService
         );
@@ -126,6 +137,43 @@ describe('ChannelListComponent', () => {
             );
         }
     });
+
+    it('should filter the channels by a token symbol search filter', fakeAsync(() => {
+        const sharedService: SharedService = TestBed.get(SharedService);
+        sharedService.setSearchValue(token2.symbol);
+        tick(1000);
+        fixture.detectChanges();
+
+        for (let i = 0; i < component.visibleChannels.length; i++) {
+            expect(component.visibleChannels[i].token_address).toBe(
+                token2.address
+            );
+        }
+        flush();
+    }));
+
+    it('should filter the channels by a contact label search filter', fakeAsync(() => {
+        const channel = channels[0];
+        const addressBookService: AddressBookService = TestBed.get(
+            AddressBookService
+        );
+        addressBookService.get = () => {
+            const contacts: Contacts = {
+                [channel.partner_address]: 'Test partner'
+            };
+            return contacts;
+        };
+        fixture.detectChanges();
+
+        const sharedService: SharedService = TestBed.get(SharedService);
+        sharedService.setSearchValue('Test partner');
+        tick(1000);
+        fixture.detectChanges();
+
+        expect(component.visibleChannels.length).toBe(1);
+        expect(component.visibleChannels[0]).toEqual(channel);
+        flush();
+    }));
 
     it('should open open channel dialog', () => {
         const dialog: MockMatDialog = TestBed.get(MatDialog);

@@ -1,4 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    TestBed,
+    fakeAsync,
+    tick,
+    flush
+} from '@angular/core/testing';
 import { TokenCarouselComponent } from './token-carousel.component';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { stub } from '../../../testing/stub';
@@ -23,6 +30,7 @@ import { clickElement } from '../../../testing/interaction-helper';
 import { MatDialog } from '@angular/material/dialog';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
+import { SharedService } from '../../services/shared.service';
 
 describe('TokenCarouselComponent', () => {
     let component: TokenCarouselComponent;
@@ -64,7 +72,8 @@ describe('TokenCarouselComponent', () => {
                 SelectedTokenService,
                 TestProviders.MockMatDialog(),
                 TestProviders.HammerJSProvider(),
-                TestProviders.MockRaidenConfigProvider()
+                TestProviders.MockRaidenConfigProvider(),
+                SharedService
             ],
             imports: [
                 RaidenIconsModule,
@@ -161,6 +170,19 @@ describe('TokenCarouselComponent', () => {
         expect(component.isSelected(allNetworksView)).toBe(false);
         expect(component.isSelected(tokens[0])).toBe(true);
     });
+
+    it('should filter the tokens by a token symbol search filter', fakeAsync(() => {
+        const token = tokens[3];
+        const sharedService: SharedService = TestBed.get(SharedService);
+        sharedService.setSearchValue(token.symbol);
+        tick(1000);
+        fixture.detectChanges();
+
+        expect(component.visibleItems.length).toBe(2);
+        expect(component.visibleItems[0]).toEqual({ allNetworksView: true });
+        expect(component.visibleItems[1]).toEqual(token);
+        flush();
+    }));
 
     it('should open register dialog', () => {
         const dialog: MockMatDialog = TestBed.get(MatDialog);

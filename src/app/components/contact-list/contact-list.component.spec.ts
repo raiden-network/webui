@@ -1,4 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    TestBed,
+    fakeAsync,
+    tick,
+    flush
+} from '@angular/core/testing';
 import { ContactListComponent } from './contact-list.component';
 import { ContactComponent } from '../contact/contact.component';
 import { ContactActionsComponent } from '../contact/contact-actions/contact-actions.component';
@@ -8,7 +15,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NotificationService } from '../../services/notification.service';
-import { UtilityService } from '../../services/utility.service';
+import { SharedService } from '../../services/shared.service';
 import { createTestContacts, createAddress } from '../../../testing/test-data';
 import { AddressBookService } from '../../services/address-book.service';
 import { clickElement } from '../../../testing/interaction-helper';
@@ -78,7 +85,7 @@ describe('ContactListComponent', () => {
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.MockMatDialog(),
                 NotificationService,
-                UtilityService
+                SharedService
             ],
             imports: [
                 MaterialComponentsModule,
@@ -136,16 +143,27 @@ describe('ContactListComponent', () => {
     });
 
     it('should deselect the contact when clicked elsewhere', () => {
-        const utilityService: UtilityService = TestBed.get(UtilityService);
+        const sharedService: SharedService = TestBed.get(SharedService);
         const contactElement = fixture.debugElement.query(
             By.directive(ContactComponent)
         );
         clickElement(contactElement, '.card');
         fixture.detectChanges();
-        utilityService.newGlobalClick(document.createElement('div'));
+        sharedService.newGlobalClick(document.createElement('div'));
         fixture.detectChanges();
         expect(component.selectedContactAddress).toBe('');
     });
+
+    it('should filter the contacts by the search value', fakeAsync(() => {
+        const sharedService: SharedService = TestBed.get(SharedService);
+        sharedService.setSearchValue(contacts[1].label);
+        tick(1000);
+        fixture.detectChanges();
+
+        expect(component.visibleContacts.length).toBe(1);
+        expect(component.visibleContacts[0]).toEqual(contacts[1]);
+        flush();
+    }));
 
     it('should open add contact dialog', () => {
         const dialog: MockMatDialog = TestBed.get(MatDialog);

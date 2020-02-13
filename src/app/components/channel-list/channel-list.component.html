@@ -1,7 +1,7 @@
 <div fxLayout="column">
     <div class="labels">
         Open Channels -
-        {{ showAll ? totalChannels : visibleChannels.length }} of
+        {{ visibleChannels.length }} of
         {{ totalChannels }}
     </div>
     <div
@@ -39,7 +39,7 @@
         >
         </app-channel>
         <button
-            *ngIf="totalChannels > itemsPerRow"
+            *ngIf="numberOfFilteredChannels > itemsPerRow"
             mat-flat-button
             class="button button--big"
             fxLayout="row"

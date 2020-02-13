@@ -19,14 +19,7 @@ import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenService } from '../../services/raiden.service';
 import { AddressBookService } from '../../services/address-book.service';
 import { Contact } from '../../models/contact';
-import {
-    debounceTime,
-    map,
-    tap,
-    switchMap,
-    startWith,
-    flatMap
-} from 'rxjs/operators';
+import { debounceTime, map, tap, switchMap } from 'rxjs/operators';
 import {
     merge,
     Observable,
@@ -40,6 +33,7 @@ import AddressUtils from '../../utils/address-utils';
 import { isAddressValid } from '../../shared/address.validator';
 import { Network } from '../../utils/network-info';
 import { Animations } from '../../animations/animations';
+import { matchesContact } from '../../shared/keyword-matcher';
 
 @Component({
     selector: 'app-address-input',
@@ -222,27 +216,13 @@ export class AddressInputComponent
 
     private setupFiltering() {
         this.filteredOptions$ = this.inputSubject.pipe(
-            flatMap(value => this.filter(value))
+            map(value => this.filter(value))
         );
     }
 
-    private filter(value: string): Observable<Contact[]> {
-        const contacts$ = of(this.addressBookService.getArray());
-        if (!value) {
-            return contacts$;
-        }
-
-        const keyword = value.toLowerCase();
-
-        function matches(contact: Contact) {
-            const label = contact.label.toLocaleLowerCase();
-            const address = contact.address.toLocaleLowerCase();
-            return label.indexOf(keyword) >= 0 || address.indexOf(keyword) >= 0;
-        }
-
-        return contacts$.pipe(
-            map((contacts: Contact[]) => contacts.filter(matches))
-        );
+    private filter(value: string): Contact[] {
+        const contacts = this.addressBookService.getArray();
+        return contacts.filter(contact => matchesContact(value, contact));
     }
 }
 

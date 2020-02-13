@@ -17,8 +17,9 @@ import { contactsSchema } from '../../models/contacts-schema';
 import { NotificationService } from '../../services/notification.service';
 import { UploadError } from '../../models/upload-error';
 import { Subscription } from 'rxjs';
-import { UtilityService } from '../../services/utility.service';
+import { SharedService } from '../../services/shared.service';
 import { AddEditContactDialogComponent } from '../add-edit-contact-dialog/add-edit-contact-dialog.component';
+import { matchesContact } from '../../shared/keyword-matcher';
 
 @Component({
     selector: 'app-contact-list',
@@ -32,26 +33,28 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
     visibleContacts: Contact[] = [];
     totalContacts = 0;
+    numberOfFilteredContacts = 0;
     showAll = false;
     selectedContactAddress = '';
 
-    private contacts: Contact[] = [];
+    private filteredContacts: Contact[] = [];
     private readonly uploadChecks: UploadChecks = new UploadChecks();
     private readonly schema: ValidateFunction;
     private subscription: Subscription;
+    private searchFilter = '';
 
     constructor(
         private addressBookService: AddressBookService,
         private dialog: MatDialog,
         private notificationService: NotificationService,
-        private utilityService: UtilityService
+        private sharedService: SharedService
     ) {
         const validator = new Ajv({ allErrors: true });
         this.schema = validator.compile(contactsSchema);
     }
 
     ngOnInit() {
-        this.subscription = this.utilityService.globalClickTarget$.subscribe(
+        this.subscription = this.sharedService.globalClickTarget$.subscribe(
             target => {
                 if (
                     !this.contactsElement.nativeElement.contains(target) &&
@@ -61,6 +64,14 @@ export class ContactListComponent implements OnInit, OnDestroy {
                 }
             }
         );
+
+        const searchSubscription = this.sharedService.searchFilter$.subscribe(
+            value => {
+                this.searchFilter = value;
+                this.updateContacts();
+            }
+        );
+        this.subscription.add(searchSubscription);
 
         this.updateContacts();
     }
@@ -103,9 +114,15 @@ export class ContactListComponent implements OnInit, OnDestroy {
     }
 
     updateContacts() {
-        this.contacts = this.addressBookService.getArray();
-        this.totalContacts = this.contacts.length;
-        this.contacts.sort((a, b) =>
+        const contacts = this.addressBookService.getArray();
+        this.totalContacts = contacts.length;
+
+        this.filteredContacts = contacts.filter(contact =>
+            matchesContact(this.searchFilter, contact)
+        );
+        this.numberOfFilteredContacts = this.filteredContacts.length;
+
+        this.filteredContacts.sort((a, b) =>
             StringUtils.compare(true, a.label, b.label)
         );
         this.updateVisibleContacts();
@@ -131,9 +148,9 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
     private updateVisibleContacts() {
         if (this.showAll) {
-            this.visibleContacts = this.contacts;
+            this.visibleContacts = this.filteredContacts;
         } else {
-            this.visibleContacts = this.contacts.slice(0, 2);
+            this.visibleContacts = this.filteredContacts.slice(0, 2);
         }
     }
 

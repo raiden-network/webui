@@ -55,34 +55,3 @@
 .header__link {
     outline: none;
 }
-
-.search {
-    border-radius: 25px;
-    background-color: #393939;
-}
-
-.search__icon {
-    margin-left: 18px;
-    height: 17px;
-    width: 17px;
-    line-height: 17px;
-    font-size: 17px;
-}
-
-.search__input {
-    width: 130px;
-    height: 32px;
-    padding: 0 18px;
-    background: none;
-    border: none;
-    box-shadow: none;
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
-    font-size: 13px;
-    line-height: 15px;
-    color: rgba(255, 255, 255, 0.5);
-}
-
-.search__input::placeholder,
-.search__input::-webkit-input-placeholder {
-    opacity: 0.5;
-}
