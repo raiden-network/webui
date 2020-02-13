@@ -7,14 +7,14 @@ import {
     OnDestroy
 } from '@angular/core';
 import { Contact } from '../../../models/contact';
-import { flatMap } from 'rxjs/operators';
+import { flatMap, takeUntil } from 'rxjs/operators';
 import { ChannelPollingService } from '../../../services/channel-polling.service';
 import { PendingTransferPollingService } from '../../../services/pending-transfer-polling.service';
 import {
     PaymentDialogPayload,
     PaymentDialogComponent
 } from '../../payment-dialog/payment-dialog.component';
-import { EMPTY, of, Subscription } from 'rxjs';
+import { EMPTY, Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { RaidenService } from '../../../services/raiden.service';
 import { AddressBookService } from '../../../services/address-book.service';
@@ -41,7 +41,7 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
     selectedToken: UserToken;
     hasAnyConnection = false;
 
-    private subscription: Subscription;
+    private ngUnsubscribe = new Subject();
 
     constructor(
         private channelPollingService: ChannelPollingService,
@@ -53,25 +53,26 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.subscription = this.selectedTokenService.selectedToken$.subscribe(
-            (token: UserToken) => {
+        this.selectedTokenService.selectedToken$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((token: UserToken) => {
                 this.selectedToken = token;
-            }
-        );
+            });
 
-        const channelsSubscription = this.channelPollingService
+        this.channelPollingService
             .channels()
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(channels => {
                 const openChannels = channels.filter(
                     channel => channel.state === 'opened'
                 );
                 this.hasAnyConnection = openChannels.length > 0;
             });
-        this.subscription.add(channelsSubscription);
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     isConnected(): boolean {

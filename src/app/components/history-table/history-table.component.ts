@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { PaymentEvent } from '../../models/payment-event';
 import { AddressBookService } from '../../services/address-book.service';
 import { Animations } from '../../animations/animations';
@@ -9,6 +9,7 @@ import { UserToken } from '../../models/usertoken';
 import { SharedService } from '../../services/shared.service';
 import { matchesToken, matchesContact } from '../../shared/keyword-matcher';
 import { Contact } from '../../models/contact';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-history-table',
@@ -22,7 +23,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
     private history: PaymentEvent[] = [];
     private searchFilter = '';
     private selectedToken: UserToken;
-    private subscription: Subscription;
+    private ngUnsubscribe = new Subject();
 
     constructor(
         private paymentHistoryPollingService: PaymentHistoryPollingService,
@@ -32,32 +33,31 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.subscription = this.paymentHistoryPollingService.paymentHistory$.subscribe(
-            events => {
+        this.paymentHistoryPollingService.paymentHistory$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(events => {
                 this.history = events;
                 this.updateVisibleEvents();
-            }
-        );
+            });
 
-        const selectedTokenSubscription = this.selectedTokenService.selectedToken$.subscribe(
-            (token: UserToken) => {
+        this.selectedTokenService.selectedToken$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((token: UserToken) => {
                 this.selectedToken = token;
                 this.updateVisibleEvents();
-            }
-        );
-        this.subscription.add(selectedTokenSubscription);
+            });
 
-        const searchSubscription = this.sharedService.searchFilter$.subscribe(
-            value => {
+        this.sharedService.searchFilter$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(value => {
                 this.searchFilter = value;
                 this.updateVisibleEvents();
-            }
-        );
-        this.subscription.add(searchSubscription);
+            });
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     trackByFn(index, item: PaymentEvent) {

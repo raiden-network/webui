@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Animations } from '../../animations/animations';
 import { RaidenService } from '../../services/raiden.service';
-import { map } from 'rxjs/operators';
-import { Observable, Subscription, zip } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { Observable, Subscription, zip, Subject } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { Channel } from '../../models/channel';
@@ -27,7 +27,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     readonly faucetLink$: Observable<string>;
     showAddress = false;
 
-    private subscription: Subscription;
+    private ngUnsubscribe = new Subject();
 
     constructor(
         private raidenService: RaidenService,
@@ -49,33 +49,33 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.subscription = this.raidenService.raidenAddress$.subscribe(
-            address => (this.raidenAddress = address)
-        );
+        this.raidenService.raidenAddress$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(address => (this.raidenAddress = address));
 
-        const channelsSubscription = this.channelPollingService
+        this.channelPollingService
             .channels()
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((channels: Channel[]) => {
                 const openChannels = channels.filter(channel => {
                     return channel.state === 'opened';
                 });
                 this.openChannels = openChannels.length;
             });
-        this.subscription.add(channelsSubscription);
 
-        const tokensSubscription = this.tokenPollingService.tokens$.subscribe(
-            (tokens: UserToken[]) => {
+        this.tokenPollingService.tokens$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((tokens: UserToken[]) => {
                 const connectedTokens = tokens.filter(
                     (token: UserToken) => !!token.connected
                 );
                 this.joinedNetworks = connectedTokens.length;
-            }
-        );
-        this.subscription.add(tokensSubscription);
+            });
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     toggleNotificationSidenav() {
