@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Contract } from 'web3-eth-contract';
 import { UserToken } from '../models/usertoken';
 import { RaidenConfig } from './raiden.config';
-import { tokenabi } from './tokenabi';
+import { tokenabi } from '../models/tokenabi';
 import Web3 from 'web3';
 import { BatchManager } from './batch-manager';
 import BigNumber from 'bignumber.js';

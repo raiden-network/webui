@@ -1,92 +1,69 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {
-    async,
     ComponentFixture,
     TestBed,
     fakeAsync,
     tick,
-    flush
+    async
 } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ClipboardModule } from 'ngx-clipboard';
-import { ToastrModule } from 'ngx-toastr';
-
 import { AppComponent } from './app.component';
 import { MockConfig } from '../testing/mock-config';
 import { MaterialComponentsModule } from './modules/material-components/material-components.module';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenConfig } from './services/raiden.config';
 import { RaidenService } from './services/raiden.service';
-import { ErrorComponent } from './components/error/error.component';
-import { MediaObserver } from '@angular/flex-layout';
-import Spy = jasmine.Spy;
-import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
-import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
-import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
-import { EMPTY, Observable, ReplaySubject } from 'rxjs';
+import {
+    ErrorComponent,
+    ErrorPayload
+} from './components/error/error.component';
+import { BehaviorSubject, of, NEVER } from 'rxjs';
 import { TestProviders } from '../testing/test-providers';
 import { Network } from './utils/network-info';
-import { By } from '@angular/platform-browser';
 import { NotificationService } from './services/notification.service';
 import { NotificationPanelComponent } from './components/notification/notification-panel/notification-panel.component';
 import { NotificationItemComponent } from './components/notification/notification-item/notification-item.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { clickElement } from '../testing/interaction-helper';
+import { RaidenIconsModule } from './modules/raiden-icons/raiden-icons.module';
+import { stub } from '../testing/stub';
+import { createNetworkMock } from '../testing/test-data';
+import { PendingTransferPollingService } from './services/pending-transfer-polling.service';
+import { PaymentHistoryPollingService } from './services/payment-history-polling.service';
+import { UtilityService } from './services/utility.service';
+import { ConnectionErrorType } from './models/connection-errors';
+import { MockMatDialog } from '../testing/mock-mat-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
     let app: AppComponent;
-    let isActive: Spy;
-    let raidenService: {
-        network$: ReplaySubject<Network>;
-        balance$: ReplaySubject<string>;
-        production: boolean;
-        raidenAddress$: ReplaySubject<string>;
-        paymentInitiated$: Observable<void>;
-        globalRetry$: Observable<void>;
-        getChannels: () => Observable<any>;
-        getPendingChannels: () => Observable<any>;
-        attemptRpcConnection: () => void;
-        attemptApiConnection: () => void;
-    };
+
+    let networkSubject: BehaviorSubject<Network>;
     let notificationService: NotificationService;
+    let dialog: MockMatDialog;
 
-    beforeEach(() => {
-        const networkMock = new ReplaySubject<Network>(1);
-        const balanceMock = new ReplaySubject<string>(1);
-        const addressMock = new ReplaySubject<string>(1);
+    beforeEach(async(() => {
+        const raidenServiceMock = stub<RaidenService>();
+        networkSubject = new BehaviorSubject(createNetworkMock());
+        // @ts-ignore
+        raidenServiceMock.network$ = networkSubject.asObservable();
+        // @ts-ignore
+        raidenServiceMock.paymentInitiated$ = NEVER;
 
-        raidenService = {
-            network$: networkMock,
-            balance$: balanceMock,
-            production: true,
-            raidenAddress$: addressMock,
-            paymentInitiated$: EMPTY,
-            globalRetry$: EMPTY,
-            getChannels: () => EMPTY,
-            getPendingChannels: () => EMPTY,
-            attemptRpcConnection: () => {},
-            attemptApiConnection: () => {}
-        };
+        const pendingTransferPollingMock = stub<
+            PendingTransferPollingService
+        >();
+        // @ts-ignore
+        pendingTransferPollingMock.pendingTransfers$ = of([]);
 
-        networkMock.next({
-            name: 'Test',
-            shortName: 'tst',
-            chainId: 9001,
-            ensSupported: false,
-            faucet: 'http://faucet.test/?${ADDRESS}'
-        });
-        balanceMock.next('0.00000001');
-        addressMock.next('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359');
+        const paymentHistoryPollingMock = stub<PaymentHistoryPollingService>();
+        // @ts-ignore
+        paymentHistoryPollingMock.paymentHistory$ = of([]);
 
         TestBed.configureTestingModule({
             declarations: [
                 AppComponent,
-                ErrorComponent,
-                NavigationEntryComponent,
-                ShortenAddressPipe,
-                DisplayDecimalsPipe,
                 NotificationPanelComponent,
                 NotificationItemComponent
             ],
@@ -97,186 +74,133 @@ describe('AppComponent', () => {
                 },
                 {
                     provide: RaidenService,
-                    useValue: raidenService
+                    useValue: raidenServiceMock
                 },
+                {
+                    provide: PendingTransferPollingService,
+                    useValue: pendingTransferPollingMock
+                },
+                {
+                    provide: PaymentHistoryPollingService,
+                    useValue: paymentHistoryPollingMock
+                },
+                NotificationService,
                 ChannelPollingService,
                 TestProviders.HammerJSProvider(),
-                NotificationService
+                TestProviders.MockMatDialog(),
+                UtilityService
             ],
             imports: [
                 MaterialComponentsModule,
                 RouterTestingModule,
-                ClipboardModule,
                 HttpClientTestingModule,
                 NoopAnimationsModule,
-                ToastrModule.forRoot({ timeOut: 50, easeTime: 0 })
+                RaidenIconsModule
             ]
         }).compileComponents();
+    }));
 
-        const mediaObserver = TestBed.get(MediaObserver);
-        isActive = spyOn(mediaObserver, 'isActive');
-
+    beforeEach(() => {
         fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-        app = fixture.debugElement.componentInstance;
+        app = fixture.componentInstance;
+
         notificationService = TestBed.get(NotificationService);
+        dialog = TestBed.get(MatDialog);
+        const channelPollingService = TestBed.get(ChannelPollingService);
+        spyOn(channelPollingService, 'channels').and.returnValue(of([]));
     });
 
-    afterEach(() => {
-        fixture.destroy();
-    });
-
-    it('should create the app', async(() => {
+    it('should create the app', () => {
+        fixture.detectChanges();
         expect(app).toBeTruthy();
         fixture.destroy();
+    });
+
+    it('should hide the network info after 5 seconds', fakeAsync(() => {
+        fixture.detectChanges();
+        expect(app.showNetworkInfo).toBe(true);
+        tick(5000);
+        expect(app.showNetworkInfo).toBe(false);
     }));
 
-    it(`should have as title 'Raiden!'`, async(() => {
-        expect(app.title).toEqual('Raiden');
-        fixture.destroy();
-    }));
-
-    it('should have the menu always open if it is not mobile', function() {
-        isActive.and.returnValue(false);
+    it('should not show the network info on mainnet', () => {
+        networkSubject.next(createNetworkMock({ chainId: 1 }));
         fixture.detectChanges();
-        expect(app.isMobile()).toBe(false);
-        expect(app.menuSidenav.opened).toBe(true);
-        app.closeMenu();
-        expect(app.menuSidenav.opened).toBe(true);
+        expect(app.showNetworkInfo).toBe(false);
     });
 
-    it('should allow the menu to be toggled on mobile devices', function() {
-        isActive.and.returnValue(true);
-        fixture.detectChanges();
-        expect(app.isMobile()).toBe(true);
-        expect(app.menuSidenav.opened).toBe(false);
-        app.toggleMenu();
-        expect(app.menuSidenav.opened).toBe(true);
-    });
-
-    it('should allow the menu to be closed on mobile devices', function() {
-        isActive.and.returnValue(true);
-        fixture.detectChanges();
-        expect(app.isMobile()).toBe(true);
-        app.toggleMenu();
-        expect(app.menuSidenav.opened).toBe(true);
-        app.closeMenu();
-        expect(app.menuSidenav.opened).toBe(false);
-    });
-
-    it('should have a faucet button when network has a faucet', function() {
-        expect(
-            fixture.debugElement.query(By.css('.faucet-button'))
-        ).toBeTruthy();
-    });
-
-    it('should not have a faucet button when network does not have a faucet', function() {
-        raidenService.network$.next({
-            name: 'Test',
-            shortName: 'tst',
-            ensSupported: false,
-            chainId: 9001
-        });
-        fixture.detectChanges();
-        expect(
-            fixture.debugElement.query(By.css('.faucet-button'))
-        ).toBeFalsy();
-    });
-
-    it('should insert the address correctly into the href attribute of the faucet button', function() {
-        const href = fixture.debugElement
-            .query(By.css('.faucet-button'))
-            .nativeElement.getAttribute('href');
-        expect(href).toBe(
-            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
-        );
-    });
-
-    it('should update the color of the notification panel button for new notifications', fakeAsync(() => {
-        notificationService.addSuccessNotification({
-            title: 'Test',
-            description: 'Testing'
-        });
-        tick(50);
-        expect(app.notificationBlink).toBe('rgba(255, 255, 255, 0.5)');
-        tick(150);
-        expect(app.notificationBlink).toBe('black');
-        flush();
-    }));
-
-    it('should insert the address correctly into the href attribute of the faucet button', function() {
-        const href = fixture.debugElement
-            .query(By.css('.faucet-button'))
-            .nativeElement.getAttribute('href');
-        expect(href).toBe(
-            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
-        );
-    });
-
-    it('should show the API error screen and call raiden service on retry', function() {
-        const attemptConnectionSpy = spyOn(
-            fixture.componentInstance,
-            'attemptApiConnection'
-        );
+    it('should show the API error screen', () => {
+        const dialogSpy = spyOn(dialog, 'open');
         const error = new HttpErrorResponse({});
         // @ts-ignore
         error.message = 'API error occurred.';
         notificationService.apiError = error;
         fixture.detectChanges();
 
-        const errorComponent = fixture.debugElement.query(
-            By.directive(ErrorComponent)
-        );
-        expect(errorComponent).toBeTruthy();
-        const title = errorComponent.query(By.css('.title'));
-        expect(title.nativeElement.innerText).toBe(
-            'Raiden API connection error!'
-        );
-        clickElement(errorComponent, '#retry');
-        expect(attemptConnectionSpy).toHaveBeenCalledTimes(1);
+        const payload: ErrorPayload = {
+            type: ConnectionErrorType.ApiError,
+            errorContent: error.message
+        };
+        expect(dialogSpy).toHaveBeenCalledTimes(1);
+        expect(dialogSpy).toHaveBeenCalledWith(ErrorComponent, {
+            data: payload,
+            width: '500px',
+            disableClose: true,
+            panelClass: 'grey-dialog'
+        });
     });
 
-    it('should show the RPC error screen and call raiden service on retry', function() {
-        const attemptConnectionSpy = spyOn(
-            fixture.componentInstance,
-            'attemptRpcConnection'
-        );
-        notificationService.rpcError = new Error('RPC error occurred.');
+    it('should show the RPC error screen', () => {
+        const dialogSpy = spyOn(dialog, 'open');
+        const error = new Error('RPC error occurred.');
+        notificationService.rpcError = error;
         fixture.detectChanges();
 
-        const errorComponent = fixture.debugElement.query(
-            By.directive(ErrorComponent)
-        );
-        expect(errorComponent).toBeTruthy();
-        const title = errorComponent.query(By.css('.title'));
-        expect(title.nativeElement.innerText).toBe(
-            'JSON RPC connection error!'
-        );
-        clickElement(errorComponent, '#retry');
-        expect(attemptConnectionSpy).toHaveBeenCalledTimes(1);
+        const payload: ErrorPayload = {
+            type: ConnectionErrorType.RpcError,
+            errorContent: error.stack
+        };
+        expect(dialogSpy).toHaveBeenCalledTimes(1);
+        expect(dialogSpy).toHaveBeenCalledWith(ErrorComponent, {
+            data: payload,
+            width: '500px',
+            disableClose: true,
+            panelClass: 'grey-dialog'
+        });
+    });
+
+    it('should close the error dialog when there is no error anymore', () => {
+        const error = new HttpErrorResponse({});
+        // @ts-ignore
+        error.message = 'API error occurred.';
+        notificationService.apiError = error;
+        fixture.detectChanges();
+
+        // @ts-ignore
+        const closeSpy = spyOn(app.errorDialog, 'close');
+        notificationService.apiError = undefined;
+        fixture.detectChanges();
+
+        expect(closeSpy).toHaveBeenCalledTimes(1);
+        // @ts-ignore
+        expect(app.errorDialog).toBe(undefined);
     });
 
     it('should show the API error screen when there is an API and a RPC error', function() {
+        notificationService.rpcError = new Error('RPC error occurred.');
+        fixture.detectChanges();
+
         const error = new HttpErrorResponse({});
         // @ts-ignore
         error.message = 'API error occurred.';
         notificationService.apiError = error;
-        notificationService.rpcError = new Error('RPC error occurred.');
         fixture.detectChanges();
 
-        const errorComponent = fixture.debugElement.query(
-            By.directive(ErrorComponent)
-        );
-        expect(errorComponent).toBeTruthy();
-        const title = errorComponent.query(By.css('.title'));
-        expect(title.nativeElement.innerText).toBe(
-            'Raiden API connection error!'
-        );
-    });
-
-    it('should return null for api error message and rpc stacktrace by default', function() {
-        const component = fixture.componentInstance;
-        expect(component.getApiErrorMessage()).toBeNull();
-        expect(component.getRpcErrorTrace()).toBeNull();
+        const payload: ErrorPayload = {
+            type: ConnectionErrorType.ApiError,
+            errorContent: error.message
+        };
+        // @ts-ignore
+        expect(app.errorDialog.componentInstance.data).toEqual(payload);
     });
 });

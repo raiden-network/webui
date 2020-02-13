@@ -1,0 +1,36 @@
+.navigation-block {
+    height: 132px;
+    margin-top: 70px;
+}
+
+.navigation {
+    height: 41px;
+    width: 41px;
+}
+
+.navigation__icon {
+    color: #ffffff;
+    height: 100%;
+    width: 100%;
+    line-height: 10px;
+}
+
+.wrapper {
+    overflow-x: hidden;
+}
+
+.carousel {
+    height: 202px;
+    overflow-x: hidden;
+}
+
+.register-button {
+    color: #ffffff;
+    height: 132px;
+    margin-top: 70px;
+    background-color: #2b2b2b;
+}
+
+.tokens {
+    overflow: hidden;
+}

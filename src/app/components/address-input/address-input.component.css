@@ -1,17 +1,49 @@
-mat-error span {
-    white-space: nowrap;
+.input {
+    z-index: 1;
+    position: relative;
+    height: 32px;
+}
+
+.input__field {
+    border-radius: 25px;
+    background-color: #e7e7e7;
+    border: none;
+    box-shadow: none;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    padding: 0 18px;
+    height: 100%;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.35px;
+    color: #000000;
+}
+
+.icon-box {
+    height: 100%;
+    margin: 0 auto;
+}
+
+.icon-box__identicon {
+    border-radius: 50%;
+    height: 100%;
+    width: auto;
+}
+
+.info-box {
+    height: 32px;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.35px;
+    padding-left: 18px;
+}
+
+.info-box__error {
+    color: #f54b47;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.blocky > * {
-    display: block;
-    line-height: 20px !important;
-    font-size: 14px;
-}
-
-.medium {
-    font-weight: 500;
-    color: rgba(0, 0, 0, 0.54);
-    font-size: 12px;
+.info-box__hint {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

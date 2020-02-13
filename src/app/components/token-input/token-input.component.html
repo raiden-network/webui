@@ -1,45 +1,44 @@
-<mat-form-field
-    [hideRequiredMarker]="true"
-    fxFlex="1 1 auto"
-    fxLayout="column"
-    fxLayout.xs="row"
-    ngClass.xs="full-width-form-field"
-    class="form"
->
+<div class="input" fxLayout="row" fxLayoutAlign="start center">
     <input
         [placeholder]="placeholder"
-        [required]="!allowZero"
-        [step]="minimumAmount()"
-        [formControl]="inputControl"
-        matInput
-        min="0"
-        type="number"
-        convertToBigNumber
-        (input)="convertFromDecimal()"
-        (focus)="onFocus()"
-        #amountInput
+        aria-label="Amount input"
+        class="input__field"
+        type="text"
+        (input)="onChange()"
+        (focus)="onTouched()"
+        fxFlex="0 1 226px"
+        #input
     />
 
-    <mat-hint align="start">
-        <span> The smallest allowed value is {{ minimumAmount() }} </span>
-    </mat-hint>
+    <div class="input__symbol">
+        {{ token?.symbol }}
+    </div>
 
-    <mat-error
-        *ngIf="
-            inputControl.invalid && (inputControl.touched || inputControl.dirty)
-        "
+    <mat-icon
+        *ngIf="infoText"
+        class="input__info"
+        svgIcon="info"
+        aria-label="Info text"
+        [matTooltip]="infoText"
     >
-        <span *ngIf="inputControl.errors['invalidAmount']">
-            The {{ errorPlaceholder }} should be a positive number
+    </mat-icon>
+</div>
+
+<div class="error" fxLayout="column" fxLayoutAlign="center">
+    <span
+        *ngIf="errors && touched && input.value.length > 0"
+        [@fallDown]="'in'"
+        id="errors"
+    >
+        <span *ngIf="errors['zeroAmount']">
+            The amount should be greater than 0
         </span>
-        <span *ngIf="inputControl.errors['tooManyDecimals']">
-            <span>
-                This token network only supports up to
-                {{ decimals }} decimals
-            </span>
+        <span *ngIf="errors['tooManyDecimals'] && token">
+            The selected token network only supports up to
+            {{ decimals }} decimals
         </span>
-        <span *ngIf="inputControl.errors['notANumber']">
-            The {{ errorPlaceholder }} should be a valid number
+        <span *ngIf="errors['notANumber']">
+            The amount should be a valid number
         </span>
-    </mat-error>
-</mat-form-field>
+    </span>
+</div>

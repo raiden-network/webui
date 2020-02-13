@@ -1,52 +1,41 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ErrorComponent } from './error.component';
-import { MatIconModule } from '@angular/material/icon';
-import { Component, EventEmitter } from '@angular/core';
+import { ErrorComponent, ErrorPayload } from './error.component';
 import { By } from '@angular/platform-browser';
-
-@Component({
-    template: `
-        <app-error
-            [errorTitle]="errorTitle"
-            [errorDescription]="errorDescription"
-            [buttonText]="buttonText"
-            [showError]="showError"
-            [errorContent]="errorContent"
-            (buttonClicked)="buttonClicked.emit($event)"
-        ></app-error>
-    `
-})
-class TestHostComponent {
-    errorTitle: string;
-    errorDescription: string;
-    buttonText: string;
-    errorContent: string;
-    showError = false;
-    buttonClicked: EventEmitter<any> = new EventEmitter();
-}
+import { RaidenService } from '../../services/raiden.service';
+import { TestProviders } from '../../../testing/test-providers';
+import { ConnectionErrorType } from '../../models/connection-errors';
+import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
+import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { clickElement } from '../../../testing/interaction-helper';
 
 describe('ErrorComponent', () => {
-    let component: TestHostComponent;
-    let fixture: ComponentFixture<TestHostComponent>;
-
-    function getErrorComponentInstance() {
-        const errorElement = fixture.debugElement.query(
-            By.directive(ErrorComponent)
-        );
-
-        return errorElement.componentInstance;
-    }
+    let component: ErrorComponent;
+    let fixture: ComponentFixture<ErrorComponent>;
 
     beforeEach(async(() => {
+        const payload: ErrorPayload = {
+            type: ConnectionErrorType.ApiError,
+            errorContent: 'API error!'
+        };
+
         TestBed.configureTestingModule({
-            declarations: [ErrorComponent, TestHostComponent],
-            imports: [MatIconModule]
+            declarations: [ErrorComponent],
+            providers: [
+                TestProviders.MockMatDialogData(payload),
+                RaidenService,
+                TestProviders.MockRaidenConfigProvider()
+            ],
+            imports: [
+                RaidenIconsModule,
+                MaterialComponentsModule,
+                HttpClientTestingModule
+            ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(TestHostComponent);
+        fixture = TestBed.createComponent(ErrorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -55,63 +44,71 @@ describe('ErrorComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should show multiple lines for new line separated text', async function() {
-        component.errorDescription = 'one\\ntwo\\nthree';
-        fixture.detectChanges();
-        await fixture.whenStable();
-        const descriptionRows = getErrorComponentInstance().descriptionRows;
-        expect(descriptionRows.length).toBe(3);
-        expect(descriptionRows).toEqual(['one', 'two', 'three']);
-    });
-
-    it('should not display a show error button if no content available', async function() {
-        component.buttonText = 'Test';
-        fixture.detectChanges();
-        await fixture.whenStable();
-        const buttonElements = fixture.debugElement.queryAll(By.css('button'));
-        expect(buttonElements.length).toBe(1);
-        const button = buttonElements[0].nativeElement as HTMLButtonElement;
-        expect(button.textContent.trim()).toEqual('TEST');
-    });
-
-    it('should emit an event when the button is clicked', async function(done) {
-        component.buttonText = 'Test';
-        fixture.detectChanges();
-        await fixture.whenStable();
-
-        component.buttonClicked.subscribe(value => {
-            expect(value).toBe(true);
-            done();
-        });
-
-        const element = fixture.debugElement.query(By.css('button'));
-        const button = element.nativeElement as HTMLButtonElement;
-        button.click();
-    });
-
-    it('should have the ability to display an error if there is a content', async function() {
-        component.buttonText = 'Test';
-        component.errorContent = 'Test text';
-        fixture.detectChanges();
-        await fixture.whenStable();
-
-        const elements = fixture.debugElement.queryAll(By.css('button'));
-        expect(elements.length).toBe(2);
-        const button = elements[0].nativeElement as HTMLButtonElement;
-        expect(button.innerText.trim()).toBe('SHOW ERROR');
-
-        button.click();
-
-        fixture.detectChanges();
-        await fixture.whenStable();
-        expect(button.innerText.trim()).toBe('HIDE ERROR');
-
-        const contentArea = fixture.debugElement.query(
-            By.css('.error-content')
+    it('should show an API error', () => {
+        const title = fixture.debugElement.query(By.css('.title'));
+        const description = fixture.debugElement.query(By.css('.description'));
+        expect(title.nativeElement.innerText.trim()).toBe(
+            'Raiden API connection error!'
         );
-        expect(contentArea).toBeTruthy();
-        const preElement = contentArea.query(By.css('pre'))
-            .nativeElement as HTMLPreElement;
-        expect(preElement.innerText.trim()).toBe('Test text');
+        expect(description.nativeElement.innerText.trim()).toBe(
+            'A connection with the Raiden API could not be established. Please try again.'
+        );
+    });
+
+    it('should show a RPC error', () => {
+        const payload: ErrorPayload = {
+            type: ConnectionErrorType.RpcError,
+            errorContent: 'RPC error!'
+        };
+        component.data = payload;
+        fixture.detectChanges();
+
+        const title = fixture.debugElement.query(By.css('.title'));
+        const description = fixture.debugElement.query(By.css('.description'));
+        expect(title.nativeElement.innerText.trim()).toBe(
+            'JSON RPC connection error!'
+        );
+        expect(description.nativeElement.innerText.trim()).toBe(
+            'A connection with the Web3 provider could not be established. Please try again.'
+        );
+    });
+
+    it('should attempt to connect to the API when retry button clicked', () => {
+        const raidenService: RaidenService = TestBed.get(RaidenService);
+        const attemptApiConnectionSpy = spyOn(
+            raidenService,
+            'attemptApiConnection'
+        );
+        clickElement(fixture.debugElement, '#retry');
+        expect(attemptApiConnectionSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should attempt to connect to the RPC when retry button clicked', () => {
+        const payload: ErrorPayload = {
+            type: ConnectionErrorType.RpcError,
+            errorContent: 'RPC error!'
+        };
+        component.data = payload;
+        fixture.detectChanges();
+
+        const raidenService: RaidenService = TestBed.get(RaidenService);
+        const attemptRpcConnectionSpy = spyOn(
+            raidenService,
+            'attemptRpcConnection'
+        );
+        clickElement(fixture.debugElement, '#retry');
+        expect(attemptRpcConnectionSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not show the error content by default', () => {
+        const content = fixture.debugElement.query(By.css('.content'));
+        expect(content).toBeFalsy();
+    });
+
+    it('should show the error content when show error button clicked', () => {
+        clickElement(fixture.debugElement, '#show-error');
+        fixture.detectChanges();
+        const content = fixture.debugElement.query(By.css('.content'));
+        expect(content.nativeElement.innerText.trim()).toBe('API error!');
     });
 });

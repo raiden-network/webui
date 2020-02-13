@@ -1,0 +1,55 @@
+.history {
+    font-size: 13px;
+    line-height: 15px;
+}
+
+.history__label {
+    font-size: 11px !important;
+    line-height: 13px !important;
+    letter-spacing: 0.91px;
+    text-transform: uppercase;
+    height: 32px;
+    opacity: 0.47;
+}
+
+.table {
+    background-color: #2b2b2b;
+    border-radius: 25px;
+    padding: 30px;
+}
+
+.table__row {
+    padding-bottom: 13px;
+    border-bottom: 1px solid rgba(151, 151, 151, 0.21);
+}
+
+.table__row:last-child {
+    padding: 0;
+    border: none;
+}
+
+.table__element {
+    max-width: 120px;
+}
+
+.table__address {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    border-radius: 15px;
+    background-color: #000000;
+}
+
+.icon-box--round {
+    border-radius: 50% !important;
+}
+
+.icon-box__icon {
+    height: 100%;
+    width: auto;
+}

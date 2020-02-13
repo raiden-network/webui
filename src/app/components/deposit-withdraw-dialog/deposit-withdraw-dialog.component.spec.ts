@@ -3,44 +3,43 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { TokenInputComponent } from '../token-input/token-input.component';
-
 import {
     DepositWithdrawDialogComponent,
     DepositWithdrawDialogPayload
 } from './deposit-withdraw-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
-import { DepositMode } from '../../utils/helpers';
-import { MatDialogContent } from '@angular/material/dialog';
+import { DepositMode } from '../../models/deposit-mode.enum';
+import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component';
 import { By } from '@angular/platform-browser';
-import { mockFormInput } from '../../../testing/interaction-helper';
+import { mockInput, clickElement } from '../../../testing/interaction-helper';
 import BigNumber from 'bignumber.js';
-import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
 
-describe('DepositDialogComponent', () => {
+describe('DepositWithdrawDialogComponent', () => {
     let component: DepositWithdrawDialogComponent;
     let fixture: ComponentFixture<DepositWithdrawDialogComponent>;
 
+    const amountInput = '3333';
+
     beforeEach(async(() => {
         const payload: DepositWithdrawDialogPayload = {
-            decimals: 8,
+            token: undefined,
             depositMode: DepositMode.DEPOSIT
         };
         TestBed.configureTestingModule({
             declarations: [
                 DepositWithdrawDialogComponent,
                 TokenInputComponent,
-                BigNumberConversionDirective
+                RaidenDialogComponent
             ],
             providers: [
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
-                TestProviders.MockRaidenConfigProvider()
+                TestProviders.MockMatDialogRef({ close: () => {} })
             ],
             imports: [
                 MaterialComponentsModule,
-                ReactiveFormsModule,
-                NoopAnimationsModule
+                NoopAnimationsModule,
+                ReactiveFormsModule
             ]
         }).compileComponents();
     }));
@@ -55,29 +54,39 @@ describe('DepositDialogComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should submit the dialog by enter', () => {
-        mockFormInput(
+    it('should close the dialog with the result when accept button is clicked', () => {
+        mockInput(
             fixture.debugElement.query(By.directive(TokenInputComponent)),
-            'inputControl',
-            '10'
+            'input',
+            amountInput
         );
-        const close = spyOn(component.dialogRef, 'close');
-        const dialog = fixture.debugElement.query(
-            By.directive(MatDialogContent)
-        );
-        dialog.triggerEventHandler('keyup.enter', {});
-        expect(close).toHaveBeenCalledTimes(1);
-        expect(close).toHaveBeenCalledWith({
-            tokenAmount: new BigNumber(1000000000)
+        fixture.detectChanges();
+
+        // @ts-ignore
+        const closeSpy = spyOn(component.dialogRef, 'close');
+        clickElement(fixture.debugElement, '#accept');
+        fixture.detectChanges();
+
+        expect(closeSpy).toHaveBeenCalledTimes(1);
+        expect(closeSpy).toHaveBeenCalledWith({
+            tokenAmount: new BigNumber(amountInput)
         });
     });
 
-    it('should not submit the dialog by enter if the form is invalid', () => {
-        const close = spyOn(component.dialogRef, 'close');
-        const dialog = fixture.debugElement.query(
-            By.directive(MatDialogContent)
+    it('should close the dialog with no result when cancel button is clicked', () => {
+        mockInput(
+            fixture.debugElement.query(By.directive(TokenInputComponent)),
+            'input',
+            amountInput
         );
-        dialog.triggerEventHandler('keyup.enter', {});
-        expect(close).toHaveBeenCalledTimes(0);
+        fixture.detectChanges();
+
+        // @ts-ignore
+        const closeSpy = spyOn(component.dialogRef, 'close');
+        clickElement(fixture.debugElement, '#cancel');
+        fixture.detectChanges();
+
+        expect(closeSpy).toHaveBeenCalledTimes(1);
+        expect(closeSpy).toHaveBeenCalledWith();
     });
 });

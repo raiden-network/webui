@@ -100,18 +100,18 @@ describe('PendingTransferPollingService', () => {
             // @ts-ignore
             let payload = notificationService.addPendingAction.calls.first()
                 .args[0];
-            expect(payload.title).toBe('Payment in flight');
+            expect(payload.title).toBe('Transfer in flight');
             expect(payload.description).toBe(
-                `A payment of 0.00000119 ${token.symbol} is being sent to ${
+                `A transfer of 0.00000119 ${token.symbol} is being sent to ${
                     pendingTransfer1.target
                 }`
             );
             // @ts-ignore
             payload = notificationService.addPendingAction.calls.mostRecent()
                 .args[0];
-            expect(payload.title).toBe('Payment incoming');
+            expect(payload.title).toBe('Transfer incoming');
             expect(payload.description).toBe(
-                `A payment of 0.0000002 ${token.symbol} is incoming from ${
+                `A transfer of 0.0000002 ${token.symbol} is incoming from ${
                     pendingTransfer2.initiator
                 }`
             );

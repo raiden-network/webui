@@ -71,7 +71,8 @@ export class ChannelPollingService {
                         )
                 );
                 return channels.concat(uniquePendingChannels);
-            })
+            }),
+            shareReplay({ refCount: true, bufferSize: 1 })
         );
     }
 

@@ -5,7 +5,14 @@ export interface Channel {
     channel_identifier: BigNumber;
     token_address: string;
     partner_address: string;
-    state: string;
+    state:
+        | 'opened'
+        | 'closed'
+        | 'settled'
+        | 'waiting_for_open'
+        | 'waiting_for_close'
+        | 'waiting_for_settle'
+        | 'channel_unusable';
     total_deposit: BigNumber;
     total_withdraw: BigNumber;
     balance: BigNumber;

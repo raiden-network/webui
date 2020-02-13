@@ -7,55 +7,78 @@ import { TokenPipe } from '../../pipes/token.pipe';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
-
 import {
     OpenDialogComponent,
     OpenDialogPayload
 } from './open-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
 import {
-    ErrorStateMatcher,
-    ShowOnDirtyErrorStateMatcher
-} from '@angular/material/core';
-import {
-    errorMessage,
     mockInput,
-    mockFormInput
+    mockOpenMatSelect,
+    mockMatSelectFirst,
+    clickElement
 } from '../../../testing/interaction-helper';
-import { MatDialogContent } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
-import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
 import BigNumber from 'bignumber.js';
 import { RaidenService } from '../../services/raiden.service';
-import { UserToken } from '../../models/usertoken';
+import { createToken, createAddress } from '../../../testing/test-data';
+import { TokenPollingService } from '../../services/token-polling.service';
+import { stub } from '../../../testing/stub';
+import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component';
+import { of } from 'rxjs';
 
 describe('OpenDialogComponent', () => {
     let component: OpenDialogComponent;
     let fixture: ComponentFixture<OpenDialogComponent>;
 
-    const token: UserToken = {
-        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        symbol: 'TST',
-        name: 'Test Suite Token',
-        decimals: 8,
-        balance: new BigNumber(20)
-    };
+    const token = createToken({
+        decimals: 0
+    });
+    const addressInput = createAddress();
+    const amountInput = '500';
+    const defaultSettleTimeout = 500;
+    const revealTimeout = 20;
+
+    function mockAllInputs() {
+        mockInput(
+            fixture.debugElement.query(By.directive(AddressInputComponent)),
+            'input',
+            addressInput
+        );
+        mockInput(
+            fixture.debugElement.query(By.directive(TokenInputComponent)),
+            'input',
+            amountInput
+        );
+
+        const networkSelectorElement = fixture.debugElement.query(
+            By.directive(TokenNetworkSelectorComponent)
+        );
+        mockOpenMatSelect(networkSelectorElement);
+        fixture.detectChanges();
+        mockMatSelectFirst(fixture.debugElement);
+        fixture.detectChanges();
+    }
 
     beforeEach(async(() => {
         const payload: OpenDialogPayload = {
-            ownAddress: '0x00AF5cBfc8dC76cd599aF623E60F763228906F3E',
-            defaultSettleTimeout: 500,
-            revealTimeout: 10
+            tokenAddress: token.address,
+            defaultSettleTimeout: defaultSettleTimeout,
+            revealTimeout: revealTimeout
         };
+
+        const tokenPollingMock = stub<TokenPollingService>();
+        // @ts-ignore
+        tokenPollingMock.tokens$ = of([token]);
 
         TestBed.configureTestingModule({
             declarations: [
                 OpenDialogComponent,
+                TokenPipe,
                 TokenInputComponent,
                 AddressInputComponent,
-                TokenPipe,
                 TokenNetworkSelectorComponent,
-                BigNumberConversionDirective
+                RaidenDialogComponent
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
@@ -63,16 +86,13 @@ describe('OpenDialogComponent', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.HammerJSProvider(),
-                {
-                    provide: ErrorStateMatcher,
-                    useClass: ShowOnDirtyErrorStateMatcher
-                }
+                { provide: TokenPollingService, useValue: tokenPollingMock }
             ],
             imports: [
                 MaterialComponentsModule,
+                NoopAnimationsModule,
                 ReactiveFormsModule,
-                HttpClientTestingModule,
-                NoopAnimationsModule
+                HttpClientTestingModule
             ]
         }).compileComponents();
     }));
@@ -92,60 +112,80 @@ describe('OpenDialogComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should not show an error without a user input', () => {
-        expect(errorMessage(fixture.debugElement)).toBeFalsy();
-    });
-
-    it('should show errors for the settle timeout while the user types', () => {
-        mockInput(
-            fixture.debugElement,
-            'input[formControlName="settle_timeout"]',
-            '0.1'
-        );
+    it('should close the dialog with the result when accept button is clicked', () => {
+        mockAllInputs();
+        // @ts-ignore
+        const closeSpy = spyOn(component.dialogRef, 'close');
+        clickElement(fixture.debugElement, '#accept');
         fixture.detectChanges();
-        expect(errorMessage(fixture.debugElement)).toBe(
-            'The settle timeout has to be a number greater than zero'
-        );
-    });
 
-    it('should submit the dialog by enter', () => {
-        mockFormInput(
-            fixture.debugElement.query(By.directive(AddressInputComponent)),
-            'inputFieldFc',
-            '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
-        );
-        mockFormInput(
-            fixture.debugElement.query(
-                By.directive(TokenNetworkSelectorComponent)
-            ),
-            'tokenFc',
-            '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
-        );
-        mockFormInput(
-            fixture.debugElement.query(By.directive(TokenInputComponent)),
-            'inputControl',
-            '1'
-        );
-        const close = spyOn(component.dialogRef, 'close');
-        const dialog = fixture.debugElement.query(
-            By.directive(MatDialogContent)
-        );
-        dialog.triggerEventHandler('keyup.enter', {});
-        expect(close).toHaveBeenCalledTimes(1);
-        expect(close).toHaveBeenCalledWith({
-            tokenAddress: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            partnerAddress: '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359',
-            settleTimeout: 500,
-            balance: new BigNumber(100000000)
+        expect(closeSpy).toHaveBeenCalledTimes(1);
+        expect(closeSpy).toHaveBeenCalledWith({
+            tokenAddress: token.address,
+            partnerAddress: addressInput,
+            settleTimeout: defaultSettleTimeout,
+            balance: new BigNumber(amountInput)
         });
     });
 
-    it('should not submit the dialog by enter if the form is invalid', () => {
-        const close = spyOn(component.dialogRef, 'close');
-        const dialog = fixture.debugElement.query(
-            By.directive(MatDialogContent)
-        );
-        dialog.triggerEventHandler('keyup.enter', {});
-        expect(close).toHaveBeenCalledTimes(0);
+    it('should close the dialog with no result when cancel button is clicked', () => {
+        mockAllInputs();
+        // @ts-ignore
+        const closeSpy = spyOn(component.dialogRef, 'close');
+        clickElement(fixture.debugElement, '#cancel');
+        fixture.detectChanges();
+
+        expect(closeSpy).toHaveBeenCalledTimes(1);
+        expect(closeSpy).toHaveBeenCalledWith();
+    });
+
+    describe('settle timeout input', () => {
+        it('should not show an error without a user input', () => {
+            const errorElement = fixture.debugElement.query(
+                By.css('#timeout-error')
+            );
+            expect(errorElement).toBeFalsy();
+        });
+
+        it('should show an error if the input is invalid', () => {
+            mockInput(
+                fixture.debugElement,
+                'input[formControlName="settle_timeout"]',
+                '0x'
+            );
+            fixture.detectChanges();
+
+            const errorElement = fixture.debugElement.query(
+                By.css('#timeout-error')
+            );
+            const errorMessage = errorElement.nativeElement.innerText.trim();
+            expect(errorMessage).toBe(
+                'The settle timeout is not a valid number'
+            );
+            expect(
+                component.form.get('settle_timeout').errors['invalidAmount']
+            ).toBe(true);
+        });
+
+        it('should show an error if the input is below the minimum', () => {
+            mockInput(
+                fixture.debugElement,
+                'input[formControlName="settle_timeout"]',
+                '1'
+            );
+            fixture.detectChanges();
+
+            const errorElement = fixture.debugElement.query(
+                By.css('#timeout-error')
+            );
+            const errorMessage = errorElement.nativeElement.innerText.trim();
+            expect(errorMessage).toBe(
+                `Reveal timeout is ${revealTimeout}, settle timeout should be at least ${revealTimeout *
+                    2}`
+            );
+            expect(
+                component.form.get('settle_timeout').errors['min']
+            ).toBeTruthy();
+        });
     });
 });

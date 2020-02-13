@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="8px" viewBox="0 0 18 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M3.61000013,10.54 C4.46051863,10.54 5.1500001,9.85051849 5.1500001,9 C5.1500001,8.14948151 4.46051863,7.46000004 3.61000013,7.46000004 C2.75948164,7.46000004 2.07000017,8.14948151 2.07000017,9 C2.07000017,9.85051849 2.75948164,10.54 3.61000013,10.54 Z M14.3899999,5.92000008 C16.0910369,5.92000008 17.4699998,7.29896301 17.4699998,9 C17.4699998,10.701037 16.0910369,12.0799999 14.3899999,12.0799999 C12.9547499,12.0799999 11.748789,11.0982968 11.4069665,9.76973997 L6.59303351,9.76973997 C6.251211,11.0982968 5.04525009,12.0799999 3.61000013,12.0799999 C1.90896315,12.0799999 0.53000021,10.701037 0.53000021,9 C0.53000021,7.29896301 1.90896315,5.92000008 3.61000013,5.92000008 C5.04488848,5.92000008 6.2506033,6.90120856 6.59277497,8.2292559 L11.407225,8.2292559 C11.7493967,6.90120856 12.9551115,5.92000008 14.3899999,5.92000008 Z" id="path-channel-1"></path>
+    </defs>
+    <g id="UI" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="191219-WebUI-Skeleton-SSS" transform="translate(-187.000000, -384.000000)">
+            <g id="networks-carousel" transform="translate(100.000000, 285.000000)">
+                <g id="default-all-networks" transform="translate(62.000000, 0.000000)">
+                    <g id="Icons-/-Length" transform="translate(25.000000, 94.000000)">
+                        <mask id="mask-channel">
+                            <use xlink:href="#path-channel-1"></use>
+                        </mask>
+                        <use id="Glyph" fill-rule="nonzero" xlink:href="#path-channel-1"></use>
+                        <g id="Colors-/-Black" style="mix-blend-mode: screen;" mask="url(#mask-channel)" fill-rule="evenodd">
+                            <rect id="Color" x="0" y="0" width="18" height="18"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -26,6 +26,9 @@ export class TestProviders {
                 const addressBookStub = stub<AddressBookService>();
                 addressBookStub.getArray = () => [];
                 addressBookStub.get = () => ({});
+                addressBookStub.save = () => {};
+                addressBookStub.delete = () => {};
+                addressBookStub.store = () => {};
                 return addressBookStub;
             }
         };

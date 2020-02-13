@@ -8,24 +8,21 @@ import {
 import {
     AbstractControl,
     ControlValueAccessor,
-    FormControl,
-    NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
-    ValidationErrors,
     Validator,
-    ValidatorFn
+    ValidationErrors,
+    NG_VALIDATORS
 } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { BigNumber } from 'bignumber.js';
-import {
-    amountFromDecimal,
-    amountToDecimal
-} from '../../utils/amount.converter';
+import { amountFromDecimal } from '../../utils/amount.converter';
+import { UserToken } from '../../models/usertoken';
+import { Animations } from '../../animations/animations';
 
 @Component({
     selector: 'app-token-input',
     templateUrl: './token-input.component.html',
     styleUrls: ['./token-input.component.css'],
+    animations: Animations.fallDown,
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -40,106 +37,78 @@ import {
     ]
 })
 export class TokenInputComponent implements ControlValueAccessor, Validator {
-    @Input() allowZero: boolean;
-    @Input() placeholder: string;
-    @Input() errorPlaceholder: string;
-    @ViewChild('amountInput', { static: true }) amountInput: ElementRef;
+    @Input() allowZero = false;
+    @Input() infoText = '';
+    @Input() placeholder = 'Amount';
+    @ViewChild('input', { static: true }) private inputElement: ElementRef;
 
-    readonly inputControl = new FormControl(
-        new BigNumber(0),
-        this.amountValidator()
-    );
-    decimals = 0;
+    token: UserToken;
+    amount: BigNumber;
+    errors: ValidationErrors = { empty: true };
+    touched = false;
+
+    private propagateTouched = () => {};
+    private propagateChange = (amount: BigNumber) => {};
 
     constructor() {}
 
-    resetAmount() {
-        this.inputControl.reset(new BigNumber(0));
+    get decimals(): number {
+        return this.token ? this.token.decimals : 0;
     }
 
-    minimumAmount(): string {
-        return (1 / 10 ** this.decimals).toFixed(this.decimals);
+    set selectedToken(value: UserToken) {
+        this.token = value;
+        this.setAmount();
     }
 
-    convertFromDecimal() {
-        const amount: BigNumber = this.inputControl.value;
-        if (
-            BigNumber.isBigNumber(amount) &&
-            amount.decimalPlaces() <= this.decimals
-        ) {
-            this.inputControl.setValue(
-                amountFromDecimal(amount, this.decimals),
-                { emitModelToViewChange: false }
-            );
+    registerOnChange(fn: any) {
+        this.propagateChange = fn;
+    }
+
+    registerOnTouched(fn: any) {
+        this.propagateTouched = fn;
+    }
+
+    writeValue(obj: any) {
+        if (!obj || typeof obj !== 'string') {
+            return;
         }
-    }
-
-    registerOnChange(fn: any): void {
-        this.inputControl.valueChanges.subscribe(fn);
-    }
-
-    registerOnTouched(fn: any): void {
-        this.inputControl.registerOnChange(fn);
-    }
-
-    registerOnValidatorChange(fn: () => void): void {}
-
-    setDisabledState(isDisabled: boolean): void {
-        if (isDisabled) {
-            this.inputControl.disable();
-        } else {
-            this.inputControl.enable();
-        }
+        this.inputElement.nativeElement.value = obj;
+        this.onChange();
     }
 
     validate(c: AbstractControl): ValidationErrors | null {
-        const value: BigNumber = this.inputControl.value;
+        return this.errors;
+    }
 
-        if (!BigNumber.isBigNumber(value) || value.isNaN()) {
-            return {
+    onChange() {
+        this.setAmount();
+    }
+
+    onTouched() {
+        this.touched = true;
+        this.propagateTouched();
+    }
+
+    private setAmount() {
+        const amount = new BigNumber(this.inputElement.nativeElement.value);
+        if (!BigNumber.isBigNumber(amount) || amount.isNaN()) {
+            this.errors = {
                 notANumber: true
             };
+        } else if (!this.allowZero && amount.isZero()) {
+            this.errors = {
+                zeroAmount: true
+            };
+        } else if (amount.decimalPlaces() > this.decimals) {
+            this.errors = {
+                tooManyDecimals: true
+            };
+        } else {
+            this.errors = undefined;
         }
-        if (this.allowZero && value.isZero()) {
-            return null;
-        }
-        if (!value) {
-            return { empty: true };
-        }
-        return this.inputControl.errors;
-    }
 
-    writeValue(obj: any): void {
-        if (!obj) {
-            return;
-        }
-        this.inputControl.setValue(new BigNumber(obj), { emitEvent: false });
-    }
-
-    onFocus(): void {
-        if (!this.inputControl.dirty) {
-            this.inputControl.setValue('');
-        }
-    }
-
-    private amountValidator(): ValidatorFn {
-        return (control: AbstractControl) => {
-            const value: BigNumber = control.value;
-
-            if (!BigNumber.isBigNumber(value) || value.isNaN()) {
-                return {
-                    notANumber: true
-                };
-            } else if (value.decimalPlaces() > 0) {
-                return {
-                    tooManyDecimals: true
-                };
-            } else if (!this.allowZero && value.isZero()) {
-                return {
-                    invalidAmount: true
-                };
-            }
-            return undefined;
-        };
+        this.amount = amountFromDecimal(amount, this.decimals);
+        this.propagateChange(this.amount);
     }
 }

@@ -1,0 +1,112 @@
+<div
+    class="history"
+    fxLayout="column"
+    fxLayoutGap="20px"
+    fxLayoutAlign="space-between stretch"
+>
+    <div class="history__label" fxLayout="row" fxLayoutAlign="start center">
+        History
+    </div>
+    <cdk-table
+        *ngIf="history.length !== 0; else no_transfers"
+        class="table"
+        [dataSource]="history"
+        [trackBy]="trackByFn"
+        fxLayout="column"
+        fxLayoutGap="13px"
+        [@flyInOut]="'in'"
+    >
+        <ng-container cdkColumnDef="event">
+            <cdk-cell *cdkCellDef="let event">
+                <div
+                    class="icon-box"
+                    fxLayout="column"
+                    fxLayoutAlign="center center"
+                >
+                    <mat-icon
+                        *ngIf="
+                            event.event === 'EventPaymentReceivedSuccess';
+                            else sent
+                        "
+                        class="icon-box__icon"
+                        svgIcon="received"
+                        matTooltip="Received transfer"
+                    ></mat-icon>
+                    <ng-template #sent>
+                        <mat-icon
+                            class="icon-box__icon"
+                            svgIcon="sent"
+                            matTooltip="Sent transfer"
+                        ></mat-icon>
+                    </ng-template>
+                </div>
+            </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="label">
+            <cdk-cell class="table__element" *cdkCellDef="let event">
+                {{ addressLabel(paymentPartner(event)) }}
+            </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="partner">
+            <cdk-cell
+                class="table__element table__address"
+                *cdkCellDef="let event"
+            >
+                {{ paymentPartner(event) }}
+            </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="date">
+            <cdk-cell class="table__element" *cdkCellDef="let event">
+                {{ getUTCTimeString(event) | date: 'short' }}
+            </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="icon">
+            <cdk-cell *cdkCellDef="let event">
+                <span *ngIf="event.userToken">
+                    <div
+                        class="icon-box icon-box--round"
+                        fxLayout="column"
+                        fxLayoutAlign="center center"
+                    >
+                        {{ event.userToken.symbol }}
+                    </div>
+                </span>
+            </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="amount">
+            <cdk-cell class="table__element" *cdkCellDef="let event">
+                <span *ngIf="event.userToken">
+                    <span
+                        *ngIf="
+                            (event.amount
+                                | decimal: event.userToken.decimals) as amount
+                        "
+                        [matTooltip]="amount"
+                    >
+                        {{ amount | displayDecimals: 3 }}
+                    </span>
+                    {{ event.userToken.symbol }}
+                </span>
+            </cdk-cell>
+        </ng-container>
+
+        <cdk-row
+            class="table__row"
+            *cdkRowDef="
+                let row;
+                columns: ['event', 'label', 'partner', 'date', 'icon', 'amount']
+            "
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+            fxLayoutGap="20px"
+        ></cdk-row>
+    </cdk-table>
+    <ng-template #no_transfers>
+        <div>No {{ selectedToken?.symbol }} transfers yet</div>
+    </ng-template>
+</div>

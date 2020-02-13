@@ -16,7 +16,7 @@ import { RaidenService } from './raiden.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { TestProviders } from '../../testing/test-providers';
 import BigNumber from 'bignumber.js';
-import { DepositMode } from '../utils/helpers';
+import { DepositMode } from '../models/deposit-mode.enum';
 import { createChannel } from '../../testing/test-data';
 import Spy = jasmine.Spy;
 import { amountToDecimal } from '../utils/amount.converter';
@@ -52,17 +52,17 @@ describe('RaidenService', () => {
     let retrieverSpy: Spy;
 
     const channel1: Channel = createChannel({
-        id: new BigNumber(1),
+        channel_identifier: new BigNumber(1),
         balance: new BigNumber(0),
-        totalDeposit: new BigNumber(10),
-        totalWithdraw: new BigNumber(10)
+        total_deposit: new BigNumber(10),
+        total_withdraw: new BigNumber(10)
     });
 
     const channel2: Channel = createChannel({
-        id: new BigNumber(2),
+        channel_identifier: new BigNumber(2),
         balance: new BigNumber(0),
-        totalDeposit: new BigNumber(10),
-        totalWithdraw: new BigNumber(10)
+        total_deposit: new BigNumber(10),
+        total_withdraw: new BigNumber(10)
     });
 
     const paymentEvent: PaymentEvent = {
@@ -435,10 +435,10 @@ describe('RaidenService', () => {
 
     it('should notify the user when a deposit was complete successfully', fakeAsync(() => {
         const channel = createChannel({
-            id: new BigNumber(1),
-            totalDeposit: new BigNumber(1000000),
+            channel_identifier: new BigNumber(1),
+            total_deposit: new BigNumber(1000000),
             balance: new BigNumber(10),
-            totalWithdraw: new BigNumber(0)
+            total_withdraw: new BigNumber(0)
         });
         spyOn(service, 'getChannel').and.returnValue(of(channel));
 
@@ -452,10 +452,11 @@ describe('RaidenService', () => {
             .subscribe(value => {
                 expect(value).toEqual(
                     createChannel({
-                        id: new BigNumber(1),
-                        totalWithdraw: new BigNumber(0),
-                        totalDeposit: new BigNumber(100001000000),
-                        balance: new BigNumber(100000000010)
+                        channel_identifier: new BigNumber(1),
+                        total_withdraw: new BigNumber(0),
+                        total_deposit: new BigNumber(100001000000),
+                        balance: new BigNumber(100000000010),
+                        partner_address: channel.partner_address
                     })
                 );
             })
@@ -504,10 +505,10 @@ describe('RaidenService', () => {
 
     it('should inform the user when a withdraw was completed successfully', fakeAsync(() => {
         const channel = createChannel({
-            id: new BigNumber(1),
-            totalDeposit: new BigNumber(10),
+            channel_identifier: new BigNumber(1),
+            total_deposit: new BigNumber(10),
             balance: new BigNumber(1000000000000),
-            totalWithdraw: new BigNumber(1000000)
+            total_withdraw: new BigNumber(1000000)
         });
         spyOn(service, 'getChannel').and.returnValue(of(channel));
 
@@ -521,10 +522,11 @@ describe('RaidenService', () => {
             .subscribe(value => {
                 expect(value).toEqual(
                     createChannel({
-                        id: new BigNumber(1),
-                        totalWithdraw: new BigNumber(1000001000000),
-                        totalDeposit: new BigNumber(10),
-                        balance: new BigNumber(0)
+                        channel_identifier: new BigNumber(1),
+                        total_withdraw: new BigNumber(1000001000000),
+                        total_deposit: new BigNumber(10),
+                        balance: new BigNumber(0),
+                        partner_address: channel.partner_address
                     })
                 );
             })
@@ -661,7 +663,7 @@ describe('RaidenService', () => {
         );
     });
 
-    it('should inform the user when joining a token network was successful', fakeAsync(() => {
+    it('should inform the user when quick connect was successful', fakeAsync(() => {
         service
             .connectTokenNetwork(new BigNumber(1000), tokenAddress, true)
             .subscribe(value => expect(value).toBeFalsy())
@@ -691,10 +693,10 @@ describe('RaidenService', () => {
         flush();
 
         const notificationMessage: UiMessage = {
-            title: 'Joined token network',
-            description: `${
+            title: 'Quick connect successful',
+            description: `Quick connect successfully opened channels in ${
                 token.name
-            } network was joined successfully with 0.00001 ${token.symbol}`
+            } network`
         };
         expect(
             notificationService.addSuccessNotification
@@ -734,8 +736,8 @@ describe('RaidenService', () => {
         flush();
 
         const notificationMessage: UiMessage = {
-            title: 'Funds added',
-            description: `Funds for ${
+            title: 'Quick connect successful',
+            description: `Funds for quick connect in ${
                 token.name
             } network were successfully changed to 0.00001 ${token.symbol}`
         };
@@ -918,7 +920,7 @@ describe('RaidenService', () => {
 
         const notificationMessage: UiMessage = {
             title: 'Transfer successful',
-            description: `A payment of 0.0000001 ${
+            description: `A transfer of 0.0000001 ${
                 token.symbol
             } was successfully sent to ${targetAddress}`
         };
@@ -1126,10 +1128,10 @@ describe('RaidenService', () => {
 
     it('should inform the user when a channel has been closed successfully', () => {
         const channel3: Channel = createChannel({
-            id: new BigNumber(2),
+            channel_identifier: new BigNumber(2),
             balance: new BigNumber(0),
-            totalDeposit: new BigNumber(10),
-            totalWithdraw: new BigNumber(10)
+            total_deposit: new BigNumber(10),
+            total_withdraw: new BigNumber(10)
         });
         spyOn(service, 'getChannel').and.returnValue(
             of(Object.assign({}, channel3))
@@ -1222,12 +1224,12 @@ describe('RaidenService', () => {
     it('should mark channels deposit as pending while they are opened', fakeAsync(() => {
         spyOn(service, 'getTokens').and.returnValue(of([token]));
         const channel3: Channel = createChannel({
-            id: new BigNumber(2),
+            channel_identifier: new BigNumber(2),
             balance: new BigNumber(0),
-            totalDeposit: new BigNumber(10),
-            totalWithdraw: new BigNumber(10)
+            total_deposit: new BigNumber(10),
+            total_withdraw: new BigNumber(10),
+            partner_address: '0xc52952ebad56f2c5e5b42bb881481ae27d036475'
         });
-        channel3.partner_address = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
 
         service
             .openChannel(
@@ -1354,7 +1356,7 @@ describe('RaidenService', () => {
                 expect(value).toEqual([
                     {
                         channel_identifier: new BigNumber(0),
-                        state: 'Waiting for open',
+                        state: 'waiting_for_open',
                         total_deposit: new BigNumber(0),
                         total_withdraw: new BigNumber(0),
                         balance: new BigNumber(0),
@@ -1381,11 +1383,14 @@ describe('RaidenService', () => {
         flush();
     }));
 
-    it('should query the payment history', () => {
+    it('should query the payment history with UserTokens added', () => {
         const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
+        const eventWithToken = Object.assign({}, paymentEvent, {
+            userToken: token
+        });
         service.getPaymentHistory(tokenAddress, partnerAddress).subscribe(
             (history: PaymentEvent[]) => {
-                expect(history).toEqual([paymentEvent]);
+                expect(history).toEqual([eventWithToken]);
             },
             error => {
                 fail(error);

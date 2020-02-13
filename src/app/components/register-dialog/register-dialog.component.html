@@ -1,16 +1,11 @@
-<h1 mat-dialog-title>Register a New Token</h1>
-<div mat-dialog-content [formGroup]="form" (keyup.enter)="registerToken()">
-    <app-address-input
-        [displayIdenticon]="false"
-        formControlName="token_address"
-        placeholder="Enter token address"
-        errorPlaceholder="Token network"
-    >
+<app-raiden-dialog
+    titleText="New Token Network"
+    acceptText="Register"
+    [acceptDisabled]="form.invalid"
+    [formGroup]="form"
+    (accept)="accept()"
+    (cancel)="cancel()"
+>
+    <app-address-input formControlName="token_address" placeholder="Token">
     </app-address-input>
-</div>
-<div mat-dialog-actions>
-    <button mat-button mat-dialog-close>Close</button>
-    <button mat-button [disabled]="form.invalid" (click)="registerToken()">
-        Register
-    </button>
-</div>
+</app-raiden-dialog>

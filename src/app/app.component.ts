@@ -3,102 +3,140 @@ import {
     HostBinding,
     OnDestroy,
     OnInit,
-    ViewChild
+    ViewChild,
+    HostListener
 } from '@angular/core';
-import { default as makeBlockie } from 'ethereum-blockies-base64';
-import { Observable, Subscription, zip } from 'rxjs';
-import { map, tap, debounceTime } from 'rxjs/operators';
+import { Subscription, Observable } from 'rxjs';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
-import { MediaObserver } from '@angular/flex-layout';
-import { Network } from './utils/network-info';
 import { NotificationService } from './services/notification.service';
+import { Animations } from './animations/animations';
+import { PendingTransferPollingService } from './services/pending-transfer-polling.service';
+import { PaymentHistoryPollingService } from './services/payment-history-polling.service';
+import { Network } from './utils/network-info';
+import { UtilityService } from './services/utility.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+    ConnectionErrors,
+    ConnectionErrorType
+} from './models/connection-errors';
+import {
+    ErrorComponent,
+    ErrorPayload
+} from './components/error/error.component';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+    styleUrls: ['./app.component.css'],
+    animations: Animations.easeInOut
 })
 export class AppComponent implements OnInit, OnDestroy {
-    @HostBinding('@.disabled')
-    public animationsDisabled = false;
-    @ViewChild('menu_sidenav', { static: true })
-    public menuSidenav: MatSidenav;
+    @HostBinding('@.disabled') animationsDisabled = false;
+    @ViewChild('notification_sidenav', { static: true })
+    private notificationSidenav: MatSidenav;
 
-    public title = 'Raiden';
-    public raidenAddress: string;
-    public readonly balance$: Observable<string>;
-    public readonly network$: Observable<Network>;
-    public readonly production: boolean;
-    public readonly faucetLink$: Observable<string>;
-    public notificationBlink = 'none';
-
-    private _numberOfNotifications = 0;
-
-    get pendingRequests(): string {
-        return this._numberOfNotifications.toString();
-    }
+    readonly network$: Observable<Network>;
+    showNetworkInfo = false;
 
     private subscription: Subscription;
+    private errorDialog: MatDialogRef<ErrorComponent>;
 
     constructor(
         private raidenService: RaidenService,
         private channelPollingService: ChannelPollingService,
-        private mediaObserver: MediaObserver,
-        private notificationService: NotificationService
+        private pendingTransferPollingService: PendingTransferPollingService,
+        private paymentHistoryPollingService: PaymentHistoryPollingService,
+        private notificationService: NotificationService,
+        private utilityService: UtilityService,
+        private dialog: MatDialog
     ) {
-        this.balance$ = raidenService.balance$;
         this.network$ = raidenService.network$;
-        this.production = raidenService.production;
-        this.faucetLink$ = zip(
-            raidenService.network$,
-            raidenService.raidenAddress$
-        ).pipe(
-            map(([network, raidenAddress]) =>
-                network.faucet.replace('${ADDRESS}', raidenAddress)
-            )
-        );
     }
 
-    isMobile(): boolean {
-        return this.mediaObserver.isActive('xs');
-    }
-
-    isSmallScreen(): boolean {
-        return this.mediaObserver.isActive('lt-md');
+    @HostListener('document:click', ['$event'])
+    documentClick(event: any) {
+        this.utilityService.newGlobalClick(event.target);
     }
 
     ngOnInit() {
-        this.subscription = this.raidenService.raidenAddress$.subscribe(
-            address => (this.raidenAddress = address)
-        );
-
-        const numberOfNotificationsSubscription = this.notificationService.numberOfNotifications$.subscribe(
-            numberOfNotifications => {
-                this._numberOfNotifications = numberOfNotifications;
+        this.subscription = this.network$.subscribe(network => {
+            if (network.chainId !== 1) {
+                this.showNetworkInfo = true;
+                setTimeout(() => {
+                    this.hideNetworkInfo();
+                }, 5000);
             }
-        );
-        this.subscription.add(numberOfNotificationsSubscription);
+        });
 
-        const newNotificationSubscription = this.notificationService.newNotification$
-            .pipe(
-                tap(() => {
-                    this.notificationBlink = 'rgba(255, 255, 255, 0.5)';
-                }),
-                debounceTime(150)
-            )
-            .subscribe(() => {
-                this.notificationBlink = 'black';
-            });
-        this.subscription.add(newNotificationSubscription);
-
-        const pollingSubscription = this.channelPollingService
+        const channelSubscription = this.channelPollingService
             .channels()
             .subscribe();
-        this.subscription.add(pollingSubscription);
+        this.subscription.add(channelSubscription);
+
+        const pendingTransfersSubscription = this.pendingTransferPollingService.pendingTransfers$.subscribe();
+        this.subscription.add(pendingTransfersSubscription);
+
+        const paymentHistorySubscription = this.paymentHistoryPollingService.paymentHistory$.subscribe();
+        this.subscription.add(paymentHistorySubscription);
+
+        const connectionErrorsSubscription = this.notificationService.connectionErrors$.subscribe(
+            errors => {
+                this.handleConnectionErrors(errors);
+            }
+        );
+        this.subscription.add(connectionErrorsSubscription);
 
         this.disableAnimationsOnAndroid();
+        this.notificationService.setNotificationSidenav(
+            this.notificationSidenav
+        );
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    hideNetworkInfo() {
+        this.showNetworkInfo = false;
+    }
+
+    private handleConnectionErrors(errors: ConnectionErrors) {
+        let errorPayload: ErrorPayload;
+        if (errors.apiError) {
+            errorPayload = {
+                type: ConnectionErrorType.ApiError,
+                errorContent: errors.apiError.message
+            };
+        } else if (errors.rpcError) {
+            errorPayload = {
+                type: ConnectionErrorType.RpcError,
+                errorContent: errors.rpcError.stack
+            };
+        }
+        this.updateErrorDialog(errorPayload);
+    }
+
+    private updateErrorDialog(payload: ErrorPayload) {
+        if (!payload) {
+            if (this.errorDialog) {
+                this.errorDialog.close();
+                this.errorDialog = undefined;
+            }
+            return;
+        }
+
+        if (this.errorDialog) {
+            this.errorDialog.componentInstance.data = payload;
+        } else {
+            this.errorDialog = this.dialog.open(ErrorComponent, {
+                data: payload,
+                width: '500px',
+                disableClose: true,
+                panelClass: 'grey-dialog'
+            });
+        }
     }
 
     private disableAnimationsOnAndroid() {
@@ -106,62 +144,6 @@ export class AppComponent implements OnInit, OnDestroy {
         const isAndroid = userAgent.indexOf('android') > -1;
         if (isAndroid) {
             this.animationsDisabled = true;
-        }
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
-
-    // noinspection JSMethodCanBeStatic
-    identicon(address: string): string {
-        if (address) {
-            return makeBlockie(address);
-        } else {
-            return '';
-        }
-    }
-
-    hasError(): boolean {
-        return (
-            this.notificationService.rpcError !== null ||
-            this.notificationService.apiError !== null
-        );
-    }
-
-    hasApiError(): boolean {
-        return this.notificationService.apiError !== null;
-    }
-
-    getRpcErrorTrace(): string {
-        if (this.notificationService.rpcError === null) {
-            return null;
-        }
-        return this.notificationService.rpcError.stack;
-    }
-
-    getApiErrorMessage(): string {
-        if (this.notificationService.apiError === null) {
-            return null;
-        }
-        return this.notificationService.apiError.message;
-    }
-
-    attemptRpcConnection() {
-        this.raidenService.attemptRpcConnection();
-    }
-
-    attemptApiConnection() {
-        this.raidenService.attemptApiConnection();
-    }
-
-    toggleMenu() {
-        this.menuSidenav.toggle();
-    }
-
-    closeMenu() {
-        if (this.isMobile()) {
-            this.menuSidenav.close();
         }
     }
 }

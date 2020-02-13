@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="41px" height="41px" viewBox="0 0 41 41" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <desc>Created with Sketch.</desc>
+    <g id="UI" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="191219-WebUI-Skeleton-SSS" transform="translate(-1000.000000, -1242.000000)">
+            <g id="history" transform="translate(472.000000, 1204.000000)">
+                <g id="li-transaction-1" transform="translate(0.000000, 36.000000)">
+                    <g id="button:-right" transform="translate(528.000000, 2.000000)">
+                        <g id="Icons-/-Arrow-(Right)" transform="translate(14.000000, 14.000000)">
+                            <mask id="mask-right">
+                                <path d="M2.04289322,15.2928932 C1.65236893,15.6834175 1.65236893,16.3165825 2.04289322,16.7071068 C2.43341751,17.0976311 3.06658249,17.0976311 3.45710678,16.7071068 L12.4571068,7.70710678 C12.8476311,7.31658249 12.8476311,6.68341751 12.4571068,6.29289322 L3.45710678,-2.70710678 C3.06658249,-3.09763107 2.43341751,-3.09763107 2.04289322,-2.70710678 C1.65236893,-2.31658249 1.65236893,-1.68341751 2.04289322,-1.29289322 L10.3357864,7 L2.04289322,15.2928932 Z" id="path-1"></path>
+                            </mask>
+                            <g id="Colors-/-Black" mask="url(#mask-right)">
+                                <g id="Color">
+                                    <rect fill-rule="evenodd"  id="path-3" x="0" y="0" width="14" height="14"></rect>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

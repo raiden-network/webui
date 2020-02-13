@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="14px" viewBox="0 0 16 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <desc>Created with Sketch.</desc>
+    <g id="UI" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="191219-WebUI-Skeleton-SSS" transform="translate(-485.000000, -381.000000)">
+            <g id="networks-carousel" transform="translate(100.000000, 285.000000)">
+                <g id="wiz-network" transform="translate(360.000000, 0.000000)">
+                    <g id="icon-token" transform="translate(26.000000, 97.000000)">
+                        <g id="Oval">
+                            <mask id="mask-token-2">
+                                <circle cx="4.5" cy="4.5" r="4.5"></circle>
+                            </mask>
+                            <circle stroke="#29292B" cx="4.5" cy="4.5" r="5"></circle>
+                            <g stroke-linejoin="round" stroke-dasharray="1" mask="url(#mask-token-2)" stroke="#000000">
+                                <circle cx="4.5" cy="4.5" r="2.5"></circle>
+                            </g>
+                        </g>
+                        <g id="Oval" transform="translate(5.000000, 3.000000)">
+                            <mask id="mask-token-6">
+                                <circle cx="4.5" cy="4.5" r="4.5"></circle>
+                            </mask>
+                            <circle stroke="#29292B" cx="4.5" cy="4.5" r="5"></circle>
+                            <g stroke-linejoin="round" stroke-dasharray="1" mask="url(#mask-token-6)" stroke="#000000">
+                                <circle cx="4.5" cy="4.5" r="2.5"></circle>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

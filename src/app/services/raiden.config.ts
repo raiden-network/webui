@@ -1,6 +1,6 @@
 import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { EnvironmentType } from './enviroment-type.enum';
+import { EnvironmentType } from '../models/enviroment-type.enum';
 import { BatchManager } from './batch-manager';
 import { HttpProvider } from 'web3-providers/types';
 import Web3 from 'web3';
@@ -76,7 +76,7 @@ export class RaidenConfig {
         await this.loadConfiguration(url);
         try {
             await this.setupWeb3();
-            this.notificationService.rpcError = null;
+            this.notificationService.rpcError = undefined;
             return true;
         } catch (e) {
             console.error(e.message);

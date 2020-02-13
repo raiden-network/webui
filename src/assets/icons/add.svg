@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="21px" height="20px" viewBox="0 0 21 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <desc>Created with Sketch.</desc>
+    <g id="UI" stroke="none" stroke-width="1" fill-rule="evenodd" opacity="0.760718936">
+        <g id="191219-WebUI-Skeleton-SSS" transform="translate(-125.000000, -585.000000)">
+            <g id="open-channels-all-networks" transform="translate(99.000000, 527.000000)">
+                <g id="button-open-new-wiz-channel" transform="translate(0.000000, 42.000000)">
+                    <g id="Icons-/-Plus" transform="translate(22.932749, 12.000000)">
+                        <path d="M14.9590643,13 L14.9590643,5 C14.9590643,4.44771525 14.5113491,4 13.9590643,4 C13.4067796,4 12.9590643,4.44771525 12.9590643,5 L12.9590643,13 L4.95906433,13 C4.40677958,13 3.95906433,13.4477153 3.95906433,14 C3.95906433,14.5522847 4.40677958,15 4.95906433,15 L12.9590643,15 L12.9590643,23 C12.9590643,23.5522847 13.4067796,24 13.9590643,24 C14.5113491,24 14.9590643,23.5522847 14.9590643,23 L14.9590643,15 L22.9590643,15 C23.5113491,15 23.9590643,14.5522847 23.9590643,14 C23.9590643,13.4477153 23.5113491,13 22.9590643,13 L14.9590643,13 Z"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

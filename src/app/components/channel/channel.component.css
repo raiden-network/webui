@@ -1,24 +1,46 @@
-.channel-id {
-    text-align: center;
-    font-size: 14px;
+.card {
+    height: 130px;
+    width: 210px;
+    border-radius: 25px;
+    background-color: #2b2b2b;
+    padding: 0 25px;
+    color: #b8b8b8;
 }
 
-.channel-status {
-    font-size: 13px;
+.options__divider {
+    height: 1px;
+    width: 84%;
+    margin: 0 auto;
+    background-color: #000000;
+    opacity: 0.17;
 }
 
-.no-margin {
-    margin: 0 !important;
+.icon-box {
+    width: 26px;
+    height: 26px;
 }
 
-.space {
-    margin-left: 6px;
+.icon-box__identicon {
+    border-radius: 50%;
+    height: 100%;
+    width: auto;
 }
 
-.light {
+.info__balance {
     font-weight: 300;
+    font-size: 28px;
+    line-height: 33px;
+    letter-spacing: 0.4px;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.gray {
-    color: #424242 !important;
+.info__label {
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.91px;
+    line-height: 13px;
+    opacity: 0.43;
 }

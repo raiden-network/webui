@@ -1,0 +1,63 @@
+<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between start">
+    <div class="navigation-block" fxLayout="column" fxLayoutAlign="center">
+        <button
+            class="navigation"
+            mat-flat-button
+            color="primary"
+            [disabled]="currentItem === 0"
+            (click)="previous()"
+            id="previous"
+        >
+            <mat-icon
+                class="navigation__icon"
+                svgIcon="left"
+                aria-label="Previous token network"
+            >
+            </mat-icon>
+        </button>
+    </div>
+    <div class="carousel" fxLayout="row" fxLayoutGap="20px" fxFlex>
+        <button
+            *ngIf="!production"
+            mat-flat-button
+            class="register-button"
+            fxLayout="column"
+            fxLayoutAlign="center"
+            (click)="register()"
+            fxFlex="0 0 64px"
+        >
+            <mat-icon svgIcon="add" aria-label="Add token"> </mat-icon>
+        </button>
+        <div class="tokens" fxFlex>
+            <div fxLayout="row" fxLayoutGap="20px" fxFlex #carousel>
+                <app-token
+                    *ngFor="let item of visibleItems; trackBy: trackByFn"
+                    [token]="isAllNetworksView(item) ? undefined : item"
+                    [openChannels]="getNumberOfChannels(item)"
+                    [selected]="isSelected(item)"
+                    [allNetworksView]="isAllNetworksView(item)"
+                    [onMainnet]="(network$ | async)?.chainId === 1"
+                    (select)="select(item)"
+                >
+                </app-token>
+            </div>
+        </div>
+    </div>
+    <div class="navigation-block" fxLayout="column" fxLayoutAlign="center">
+        <button
+            class="navigation"
+            mat-flat-button
+            color="primary"
+            [disabled]="currentItem === visibleItems.length - 1"
+            (click)="next()"
+            id="next"
+        >
+            <mat-icon
+                class="navigation__icon"
+                svgIcon="right"
+                aria-label="Next token network"
+            >
+            </mat-icon>
+        </button>
+    </div>
+</div>

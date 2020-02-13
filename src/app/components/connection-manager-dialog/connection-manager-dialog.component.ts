@@ -1,20 +1,13 @@
-import {
-    ChangeDetectorRef,
-    Component,
-    Inject,
-    OnInit,
-    ViewChild
-} from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import BigNumber from 'bignumber.js';
+import { UserToken } from '../../models/usertoken';
 
 export interface ConnectionManagerDialogPayload {
-    tokenAddress: string;
+    token: UserToken;
     funds: BigNumber;
-    decimals: number;
-    join: boolean;
 }
 
 @Component({
@@ -24,34 +17,39 @@ export interface ConnectionManagerDialogPayload {
 })
 export class ConnectionManagerDialogComponent implements OnInit {
     @ViewChild(TokenInputComponent, { static: true })
-    tokenInput: TokenInputComponent;
+    private tokenInput: TokenInputComponent;
 
     form = this.fb.group({
-        amount: new BigNumber(0)
+        amount: ['', Validators.required]
     });
+    token: UserToken;
+    funds = new BigNumber(0);
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: ConnectionManagerDialogPayload,
-        public dialogRef: MatDialogRef<ConnectionManagerDialogComponent>,
-        private fb: FormBuilder,
-        private cdRef: ChangeDetectorRef
-    ) {}
-
-    ngOnInit(): void {
-        this.tokenInput.decimals = this.data.decimals;
-        this.cdRef.detectChanges();
+        @Inject(MAT_DIALOG_DATA) data: ConnectionManagerDialogPayload,
+        private dialogRef: MatDialogRef<ConnectionManagerDialogComponent>,
+        private fb: FormBuilder
+    ) {
+        const token = data.token;
+        this.token = token;
+        if (token.connected) {
+            this.funds = token.connected.funds;
+        }
     }
 
-    public allocateFunds() {
-        if (this.form.invalid) {
-            return;
-        }
+    ngOnInit(): void {
+        this.tokenInput.selectedToken = this.token;
+    }
+
+    accept() {
         const payload: ConnectionManagerDialogPayload = {
-            tokenAddress: this.data.tokenAddress,
-            funds: this.form.value.amount,
-            decimals: this.tokenInput.decimals,
-            join: this.data.join
+            token: this.token,
+            funds: this.form.value.amount
         };
         this.dialogRef.close(payload);
+    }
+
+    cancel() {
+        this.dialogRef.close();
     }
 }

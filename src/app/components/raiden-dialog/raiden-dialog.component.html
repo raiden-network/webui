@@ -1,0 +1,32 @@
+<div
+    class="dialog"
+    (keyup.enter)="onEnter()"
+    fxLayout="column"
+    fxLayoutGap="20px"
+>
+    <div class="dialog__title">{{ titleText }}</div>
+
+    <ng-content></ng-content>
+
+    <div fxLayout="row" fxLayoutAlign="space-between">
+        <button
+            class="dialog__button dialog__button--white"
+            mat-flat-button
+            color="accent"
+            (click)="cancel.emit(true)"
+            id="cancel"
+        >
+            Cancel
+        </button>
+        <button
+            class="dialog__button dialog__button--black"
+            mat-flat-button
+            [disabled]="acceptDisabled"
+            color="primary"
+            (click)="accept.emit(true)"
+            id="accept"
+        >
+            {{ acceptText }}
+        </button>
+    </div>
+</div>

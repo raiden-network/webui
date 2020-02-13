@@ -1,19 +1,10 @@
-<h1 mat-dialog-title>
-    {{ withdraw ? 'Withdraw from channel' : 'Deposit to channel' }}
-</h1>
-<div mat-dialog-content [formGroup]="form" (keyup.enter)="accept()">
-    <app-token-input
-        [placeholder]="
-            withdraw ? 'Funds to withdraw' : 'Enter Funds to be allocated'
-        "
-        [errorPlaceholder]="withdraw ? 'withdraw' : 'deposit'"
-        formControlName="amount"
-    >
-    </app-token-input>
-</div>
-<div mat-dialog-actions>
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button [disabled]="form.invalid" (click)="accept()">
-        Confirm
-    </button>
-</div>
+<app-raiden-dialog
+    [titleText]="withdraw ? 'Withdraw' : 'Deposit'"
+    [acceptText]="withdraw ? 'Withdraw' : 'Deposit'"
+    [acceptDisabled]="form.invalid"
+    [formGroup]="form"
+    (accept)="accept()"
+    (cancel)="cancel()"
+>
+    <app-token-input formControlName="amount"> </app-token-input>
+</app-raiden-dialog>

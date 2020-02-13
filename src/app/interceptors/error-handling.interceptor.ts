@@ -8,9 +8,7 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-
 import { catchError, tap } from 'rxjs/operators';
-
 import { NotificationService } from '../services/notification.service';
 import { UiMessage } from '../models/notification';
 import { RaidenService } from '../services/raiden.service';
@@ -30,11 +28,12 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
             tap(event => {
                 if (
                     event instanceof HttpResponse &&
-                    this.notificationService.apiError !== null
+                    event.url.includes('/api') &&
+                    this.notificationService.apiError
                 ) {
                     this.raidenService.attemptRpcConnection();
                     this.raidenService.refreshAddress();
-                    this.notificationService.apiError = null;
+                    this.notificationService.apiError = undefined;
                 }
             }),
             catchError(error => this.handleError(error))
@@ -50,7 +49,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
         ) {
             errMsg = 'Could not connect to the Raiden API';
             if (
-                this.notificationService.apiError === null ||
+                !this.notificationService.apiError ||
                 this.notificationService.apiError.retrying
             ) {
                 this.notificationService.apiError = error;

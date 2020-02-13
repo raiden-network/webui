@@ -6,7 +6,7 @@ import {
     HttpTestingController
 } from '@angular/common/http/testing';
 import { NotificationService } from './notification.service';
-import { EnvironmentType } from './enviroment-type.enum';
+import { EnvironmentType } from '../models/enviroment-type.enum';
 import Web3 from 'web3';
 import { HttpProvider } from 'web3-providers/types';
 import Spy = jasmine.Spy;
@@ -153,7 +153,7 @@ describe('RaidenConfig', () => {
             environment_type: EnvironmentType.DEVELOPMENT
         });
 
-        expect(notificationService.rpcError).toBe(null);
+        expect(notificationService.rpcError).toBe(undefined);
         expect(tracking.current).toBe(1);
         flush();
     }));
@@ -194,7 +194,7 @@ describe('RaidenConfig', () => {
             environment_type: EnvironmentType.PRODUCTION
         });
 
-        expect(notificationService.rpcError).toBe(null);
+        expect(notificationService.rpcError).toBe(undefined);
         expect(tracking.current).toBe(1);
     }));
 
@@ -223,7 +223,7 @@ describe('RaidenConfig', () => {
 
         tick(2000);
 
-        expect(notificationService.rpcError).toBe(null);
+        expect(notificationService.rpcError).toBe(undefined);
         expect(tracking.current).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback

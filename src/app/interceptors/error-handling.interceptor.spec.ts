@@ -31,7 +31,7 @@ describe('ErrorHandlingInterceptor', () => {
         notificationService = jasmine.createSpyObj('NotificationService', [
             'addErrorNotification'
         ]);
-        notificationService.apiError = null;
+        notificationService.apiError = undefined;
 
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
@@ -293,6 +293,6 @@ describe('ErrorHandlingInterceptor', () => {
 
         expect(attemptSpy).toHaveBeenCalledTimes(1);
         expect(refreshSpy).toHaveBeenCalledTimes(1);
-        expect(notificationService.apiError).toBeNull();
+        expect(notificationService.apiError).toBeFalsy();
     });
 });

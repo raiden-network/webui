@@ -1,57 +1,25 @@
 <div
-    class="mat-typography match-parent-height"
+    class="page"
+    fxFlex="90"
+    fxFlex.xs="96"
+    fxFlex.lg="70"
+    fxFlex.xl="60"
     fxLayout="column"
-    fxFlexAlign="center"
-    fxFlex="60"
-    fxFlex.gt-lg="40"
-    fxFlex.sm="70"
-    fxFlex.xs="90"
-    fxFlexOffset="20"
-    fxFlexOffset.gt-lg="30"
-    fxFlexOffset.sm="15"
-    fxFlexOffset.xs="5"
+    fxLayoutGap="37px"
 >
-    <div class="information">
-        <h1 ngClass="mat-display-2" ngClass.xs="headline">
-            Welcome to the Raiden WebUI
-        </h1>
-        <p>
-            The WebUI is a user interface which allows you to interact with a
-            Raiden node through the browser. The WebUI utilizes Raidens REST API
-            endpoints.
-        </p>
-        <h2>
-            Get started by:
-        </h2>
-        <ul>
-            <li>
-                <p>
-                    <a routerLink="/tokens">Joining a token network</a>
-                </p>
-            </li>
-            <li>
-                <p>
-                    <a
-                        target="_blank"
-                        href="https://docs.raiden.network/the-raiden-web-interface"
-                        >Checking out the WebUI tutorial</a
-                    >
-                </p>
-            </li>
-            <li>
-                <p>
-                    <a
-                        target="_blank"
-                        href="https://raiden-network.readthedocs.io/en/latest/"
-                        >Reading the full Raiden documentation</a
-                    >
-                </p>
-            </li>
-        </ul>
-        <p>
-            For more information, visit the
-            <a href="https://raiden.network/" target="_blank">Raiden website</a
-            >.
-        </p>
+    <app-header></app-header>
+    <app-token-carousel></app-token-carousel>
+    <app-channel-list></app-channel-list>
+    <div fxLayout="row" fxLayoutGap="61px">
+        <app-contact-list fxFlex="1 1 341px"></app-contact-list>
+        <app-history-table fxFlex="1 1 auto"></app-history-table>
     </div>
+    <a mat-icon-button class="button" routerLink="/about">
+        <mat-icon
+            class="button__icon"
+            svgIcon="info"
+            matTooltip="Open about page"
+        >
+        </mat-icon>
+    </a>
 </div>

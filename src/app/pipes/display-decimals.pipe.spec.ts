@@ -24,19 +24,21 @@ describe('DisplayDecimalsPipe', () => {
     });
 
     it('should display the amount cutoff at 5 decimal points', function() {
-        expect(pipe.transform('0.0011111111111')).toEqual('~0.00111[...]');
+        expect(pipe.transform('0.0011111111111')).toEqual('0.00111');
     });
 
     it('should display the amount cutoff at the passed decimal point', function() {
-        expect(pipe.transform('0.0011111111111', 3)).toEqual('~0.001[...]');
+        expect(pipe.transform('0.0011111111111', 3)).toEqual('0.001');
     });
 
-    it('should display the amount cutoff without dots when shortVersion is set true', function() {
-        expect(pipe.transform('0.0011111111111', 3, true)).toEqual('~0.001');
+    it('should display the amount cutoff with dots when shortVersion is set false', function() {
+        expect(pipe.transform('0.0011111111111', 3, false)).toEqual(
+            '~0.001[...]'
+        );
     });
 
     it('should display an integer when 0 decimal points passed', function() {
-        expect(pipe.transform('1000.9', 0)).toEqual('~1000');
+        expect(pipe.transform('1000.9', 0)).toEqual('1000');
     });
 
     it('should return the number formatted as it is if not enough decimals', function() {

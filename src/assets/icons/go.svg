@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="32px" viewBox="0 0 18 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <desc>Created with Sketch.</desc>
+    <g id="UI" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="191219-WebUI-Skeleton-SSS" transform="translate(-845.000000, -685.000000)">
+            <g id="open-channels-all-networks" transform="translate(99.000000, 527.000000)">
+                <g id="ul-channels" transform="translate(0.000000, 117.000000)">
+                    <g id="li-channel-1">
+                        <g id="Icons-/-Arrow-(Right)" transform="translate(732.000000, 35.000000)">
+                            <path d="M14.610557,35.0198418 C13.9974339,35.6329649 13.9974339,36.6270339 14.610557,37.240157 C15.2236801,37.8532801 16.2177491,37.8532801 16.8308722,37.240157 L30.9608716,23.1101576 C31.5739947,22.4970345 31.5739947,21.5029655 30.9608716,20.8898424 L16.8308722,6.759843 C16.2177491,6.14671989 15.2236801,6.14671989 14.610557,6.759843 C13.9974339,7.37296611 13.9974339,8.36703509 14.610557,8.9801582 L27.6303988,22 L14.610557,35.0198418 Z"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

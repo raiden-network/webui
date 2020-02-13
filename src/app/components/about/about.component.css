@@ -1,0 +1,51 @@
+.page {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 95px;
+}
+
+.about {
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 23px;
+}
+
+.section {
+    font-size: 16px;
+    line-height: 25px;
+}
+
+.section__descriptor {
+    font-weight: 500;
+    margin-right: 5px;
+}
+
+.section__text {
+    margin-top: 0;
+}
+
+.section__text--small {
+    font-size: 13px;
+}
+
+.section__box {
+    height: 100px;
+    padding: 22px 39px;
+    background-color: rgba(216, 216, 216, 0.1);
+    border-radius: 20px;
+}
+
+.section__version {
+    opacity: 0.51;
+    font-family: 'Roboto Mono', 'Helvetica Neue', sans-serif;
+}
+
+.section__icon {
+    height: 20px;
+    width: 20px;
+    line-height: 20px;
+}
+
+.section__box-offset {
+    margin-top: 22px;
+}

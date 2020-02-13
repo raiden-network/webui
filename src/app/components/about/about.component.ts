@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'app-about',
     templateUrl: './about.component.html',
-    styleUrls: ['./about.component.scss']
+    styleUrls: ['./about.component.css']
 })
 export class AboutComponent implements OnInit, OnDestroy {
     readonly webuiVersion = version;
@@ -39,5 +39,9 @@ export class AboutComponent implements OnInit, OnDestroy {
         }\n- Environment: ${environment}\n- Network: ${
             this.networkName
         }\n- User agent: ${window.navigator.userAgent}`;
+    }
+
+    currentYear(): string {
+        return new Date().getFullYear().toString();
     }
 }

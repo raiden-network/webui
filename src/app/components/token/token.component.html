@@ -1,0 +1,144 @@
+<div class="actions-section">
+    <span *ngIf="selected" fxLayout="row">
+        <button
+            class="action"
+            id="transfer"
+            mat-flat-button
+            color="accent"
+            (click)="pay()"
+            [disabled]="openChannels === 0"
+            [matTooltip]="
+                openChannels === 0
+                    ? 'You need open ' +
+                      getTokenSymbol() +
+                      ' channels to send a transfer'
+                    : ''
+            "
+        >
+            <mat-icon
+                class="action__icon"
+                svgIcon="transfer"
+                aria-label="Transfer tokens"
+            >
+            </mat-icon>
+            <span>
+                Transfer
+            </span>
+        </button>
+        <div fxFlex="1 1 auto"></div>
+        <button
+            *ngIf="!allNetworksView"
+            id="quick-connect"
+            class="action action--black"
+            mat-flat-button
+            color="primary"
+            (click)="openConnectionManager()"
+        >
+            <mat-icon
+                class="action__icon action__icon--small"
+                svgIcon="thunderbolt"
+                aria-label="Open quick connect dialog"
+            >
+            </mat-icon>
+            <span>
+                Quick connect
+            </span>
+        </button>
+    </span>
+</div>
+
+<div
+    class="card"
+    [class.card--focus]="selected"
+    [class.card--normal]="!selected"
+    fxLayout="column"
+    fxLayoutAlign="center start"
+    (click)="select.emit(true)"
+>
+    <div class="top" fxLayout="row" fxLayoutAlign="start center">
+        <span *ngIf="selected; else inactive">
+            Viewing
+        </span>
+        <ng-template #inactive>
+            View network
+        </ng-template>
+        <div fxFlex="1 1 auto"></div>
+        <ng-container
+            *ngIf="!allNetworksView && (!onMainnet || openChannels > 0)"
+        >
+            <button
+                mat-icon-button
+                [matMenuTriggerFor]="options"
+                stopClickPropagation
+                id="options"
+            >
+                <mat-icon svgIcon="more" aria-label="Options"></mat-icon>
+            </button>
+            <mat-menu
+                class="options"
+                #options="matMenu"
+                [overlapTrigger]="true"
+                xPosition="before"
+            >
+                <button
+                    *ngIf="!onMainnet"
+                    mat-menu-item
+                    (click)="mint()"
+                    id="mint"
+                >
+                    Mint
+                </button>
+                <div
+                    *ngIf="!onMainnet && openChannels > 0"
+                    class="options__divider"
+                ></div>
+                <button
+                    *ngIf="openChannels > 0"
+                    mat-menu-item
+                    (click)="leaveNetwork()"
+                    id="leave"
+                >
+                    Leave network
+                </button>
+            </mat-menu>
+        </ng-container>
+    </div>
+    <div class="card__network">
+        <span
+            *ngIf="!allNetworksView; else all_networks"
+            [matTooltip]="token.name"
+        >
+            {{ token.symbol }}
+        </span>
+        <ng-template #all_networks>
+            All Networks
+        </ng-template>
+    </div>
+    <div class="card__values" fxLayout="row" fxLayoutAlign="space-between">
+        <div
+            *ngIf="
+                !allNetworksView &&
+                (token.balance | decimal: token.decimals) as balance
+            "
+            [matTooltip]="balance"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+            fxLayoutGap="4px"
+        >
+            <mat-icon
+                class="card__icon"
+                svgIcon="token"
+                aria-hidden="true"
+            ></mat-icon>
+            <span>{{ balance | displayDecimals: 3 }} Tokens</span>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="4px">
+            <mat-icon
+                class="card__icon"
+                svgIcon="channel"
+                aria-hidden="true"
+            ></mat-icon>
+            <span>{{ openChannels }} Open channels</span>
+        </div>
+    </div>
+</div>

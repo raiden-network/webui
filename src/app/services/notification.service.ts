@@ -1,49 +1,60 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { scan } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { UiMessage, NotificationMessage } from '../models/notification';
-
-export interface ApiErrorResponse extends HttpErrorResponse {
-    retrying?: boolean;
-}
+import { MatSidenav } from '@angular/material/sidenav';
+import {
+    ConnectionErrors,
+    ApiErrorResponse
+} from '../models/connection-errors';
 
 @Injectable({
     providedIn: 'root'
 })
 export class NotificationService {
-    private numberOfNotificationsSubject = new BehaviorSubject<number>(0);
-    private newNotificationSubject = new Subject<void>();
     private notificationsSubject = new BehaviorSubject<NotificationMessage[]>(
         []
     );
     private pendingActionsSubject = new BehaviorSubject<NotificationMessage[]>(
         []
     );
+    private connectionErrorsSubject = new BehaviorSubject<ConnectionErrors>({});
 
-    public readonly numberOfNotifications$: Observable<
-        number
-    > = this.numberOfNotificationsSubject
-        .asObservable()
-        .pipe(scan((acc, value) => Math.max(acc + value, 0), 0));
-    public readonly newNotification$: Observable<
-        void
-    > = this.newNotificationSubject.asObservable();
     public readonly notifications$: Observable<
         NotificationMessage[]
     > = this.notificationsSubject.asObservable();
     public readonly pendingActions$: Observable<
         NotificationMessage[]
     > = this.pendingActionsSubject.asObservable();
-    public rpcError: Error = null;
-    public apiError: ApiErrorResponse = null;
+    public readonly connectionErrors$: Observable<
+        ConnectionErrors
+    > = this.connectionErrorsSubject.asObservable();
 
     private notifications: NotificationMessage[] = [];
     private pendingActions: NotificationMessage[] = [];
     private notificationCounter = 0;
+    private connectionErrors: ConnectionErrors = {};
+    private sidenav: MatSidenav;
 
     constructor(@Inject(Injector) private injector: Injector) {}
+
+    public get rpcError(): Error {
+        return this.connectionErrors.rpcError;
+    }
+
+    public get apiError(): ApiErrorResponse {
+        return this.connectionErrors.apiError;
+    }
+
+    public set rpcError(error: Error) {
+        this.connectionErrors.rpcError = error;
+        this.connectionErrorsSubject.next(this.connectionErrors);
+    }
+
+    public set apiError(error: ApiErrorResponse) {
+        this.connectionErrors.apiError = error;
+        this.connectionErrorsSubject.next(this.connectionErrors);
+    }
 
     public addSuccessNotification(message: UiMessage): number {
         this.success(message);
@@ -74,38 +85,35 @@ export class NotificationService {
         ];
 
         this.pendingActionsSubject.next(this.pendingActions);
-        this.numberOfNotificationsSubject.next(+1);
         return identifier;
     }
 
     public clearNotifications() {
-        this.numberOfNotificationsSubject.next(-this.notifications.length);
-
         this.notifications = [];
 
         this.notificationsSubject.next(this.notifications);
     }
 
     public removeNotification(identifier: number) {
-        this.notifications = this.notifications.filter(notification => {
-            if (notification.identifier === identifier) {
-                this.numberOfNotificationsSubject.next(-1);
-                return false;
-            }
-            return true;
-        });
+        this.notifications = this.notifications.filter(
+            notification => notification.identifier !== identifier
+        );
         this.notificationsSubject.next(this.notifications);
     }
 
     public removePendingAction(identifier: number) {
-        this.pendingActions = this.pendingActions.filter(pendingAction => {
-            if (pendingAction.identifier === identifier) {
-                this.numberOfNotificationsSubject.next(-1);
-                return false;
-            }
-            return true;
-        });
+        this.pendingActions = this.pendingActions.filter(
+            pendingAction => pendingAction.identifier !== identifier
+        );
         this.pendingActionsSubject.next(this.pendingActions);
+    }
+
+    public setNotificationSidenav(sidenav: MatSidenav) {
+        this.sidenav = sidenav;
+    }
+
+    public toggleSidenav() {
+        this.sidenav.toggle();
     }
 
     private get toastrService(): ToastrService {
@@ -113,27 +121,15 @@ export class NotificationService {
     }
 
     private success(message: UiMessage) {
-        this.toastrService
-            .success(message.description, message.title)
-            .onHidden.subscribe(() => {
-                this.newNotificationSubject.next(null);
-            });
+        this.toastrService.success(message.description, message.title);
     }
 
     private error(message: UiMessage) {
-        this.toastrService
-            .error(message.description, message.title)
-            .onHidden.subscribe(() => {
-                this.newNotificationSubject.next(null);
-            });
+        this.toastrService.error(message.description, message.title);
     }
 
     private info(message: UiMessage) {
-        this.toastrService
-            .info(message.description, message.title)
-            .onHidden.subscribe(() => {
-                this.newNotificationSubject.next(null);
-            });
+        this.toastrService.info(message.description, message.title);
     }
 
     private addNotification(message: UiMessage): number {
@@ -149,7 +145,6 @@ export class NotificationService {
         ];
 
         this.notificationsSubject.next(this.notifications);
-        this.numberOfNotificationsSubject.next(+1);
         return identifier;
     }
 

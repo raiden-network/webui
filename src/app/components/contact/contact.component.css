@@ -1,0 +1,46 @@
+:host {
+    width: 100%;
+}
+
+.card {
+    height: 113px;
+    border-radius: 25px;
+    background-color: #3a3a3a;
+    padding: 0 25px;
+    font-size: 13px;
+    line-height: 15px;
+    cursor: pointer;
+}
+
+.contact {
+    overflow: hidden;
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+}
+
+.icon-box__identicon {
+    border-radius: 50%;
+    height: 100%;
+    width: auto;
+}
+
+.info {
+    height: 44px;
+    width: 180px;
+    color: #ffffff;
+}
+
+.info__text {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card__go-icon {
+    height: 20px;
+    color: rgba(255, 255, 255, 0.65);
+}

@@ -1,0 +1,47 @@
+.list__labels {
+    width: 100%;
+    font-size: 11px;
+    letter-spacing: 0.91px;
+    line-height: 13px;
+    text-transform: uppercase;
+    opacity: 0.47;
+}
+
+.list__contacts {
+    width: 100%;
+}
+
+.button-section {
+    width: 100%;
+}
+
+.button {
+    padding: 0 25px !important;
+    color: #ffffff;
+}
+
+.button--grey {
+    background-color: #3a3a3a;
+}
+
+.button__icon {
+    height: 20px;
+    line-height: 20px;
+    margin-right: 15px;
+}
+
+.button__icon--big {
+    height: 24px !important;
+}
+
+.options__file-input {
+    display: none;
+}
+
+.options__divider {
+    height: 1px;
+    width: 84%;
+    margin: 0 auto;
+    background-color: #000000;
+    opacity: 0.17;
+}
