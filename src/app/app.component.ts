@@ -15,7 +15,7 @@ import { Animations } from './animations/animations';
 import { PendingTransferPollingService } from './services/pending-transfer-polling.service';
 import { PaymentHistoryPollingService } from './services/payment-history-polling.service';
 import { Network } from './utils/network-info';
-import { UtilityService } from './services/utility.service';
+import { SharedService } from './services/shared.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
     ConnectionErrors,
@@ -49,7 +49,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private pendingTransferPollingService: PendingTransferPollingService,
         private paymentHistoryPollingService: PaymentHistoryPollingService,
         private notificationService: NotificationService,
-        private utilityService: UtilityService,
+        private sharedService: SharedService,
         private dialog: MatDialog
     ) {
         this.network$ = raidenService.network$;
@@ -57,7 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     @HostListener('document:click', ['$event'])
     documentClick(event: any) {
-        this.utilityService.newGlobalClick(event.target);
+        this.sharedService.newGlobalClick(event.target);
     }
 
     ngOnInit() {

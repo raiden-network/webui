@@ -28,9 +28,9 @@
         class="header__account-button"
         (click)="showAddress = !showAddress"
     >
-        <span *ngIf="!showAddress; else close">
+        <ng-container *ngIf="!showAddress; else close">
             Top up
-        </span>
+        </ng-container>
         <ng-template #close>
             Close
         </ng-template>
@@ -52,6 +52,7 @@
         </span>
     </div>
     <span fxFlex="1 1 auto"></span>
+    <app-search-field fxFlexAlign="end"></app-search-field>
     <button
         mat-icon-button
         matTooltip="Open notification panel"

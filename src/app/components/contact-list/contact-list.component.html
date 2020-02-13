@@ -1,8 +1,7 @@
 <div class="list" fxLayout="column" fxLayoutGap="20px">
     <div class="list__labels" fxLayout="row" fxLayoutAlign="start center">
         <span
-            >Contacts -
-            {{ showAll ? totalContacts : visibleContacts.length }} of
+            >Contacts - {{ visibleContacts.length }} of
             {{ totalContacts }}</span
         >
         <div fxFlex="1 1 auto"></div>
@@ -67,7 +66,7 @@
         </button>
         <div fxFlex="1 1 auto"></div>
         <button
-            *ngIf="totalContacts > 2"
+            *ngIf="numberOfFilteredContacts > 2"
             mat-flat-button
             color="primary"
             class="button button--grey"

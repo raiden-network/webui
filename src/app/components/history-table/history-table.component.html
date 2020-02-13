@@ -8,9 +8,9 @@
         History
     </div>
     <cdk-table
-        *ngIf="history.length !== 0; else no_transfers"
+        *ngIf="visibleHistory.length !== 0; else no_transfers"
         class="table"
-        [dataSource]="history"
+        [dataSource]="visibleHistory"
         [trackBy]="trackByFn"
         fxLayout="column"
         fxLayoutGap="13px"

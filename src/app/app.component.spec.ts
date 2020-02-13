@@ -30,7 +30,7 @@ import { stub } from '../testing/stub';
 import { createNetworkMock } from '../testing/test-data';
 import { PendingTransferPollingService } from './services/pending-transfer-polling.service';
 import { PaymentHistoryPollingService } from './services/payment-history-polling.service';
-import { UtilityService } from './services/utility.service';
+import { SharedService } from './services/shared.service';
 import { ConnectionErrorType } from './models/connection-errors';
 import { MockMatDialog } from '../testing/mock-mat-dialog';
 import { MatDialog } from '@angular/material/dialog';
@@ -88,7 +88,7 @@ describe('AppComponent', () => {
                 ChannelPollingService,
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialog(),
-                UtilityService
+                SharedService
             ],
             imports: [
                 MaterialComponentsModule,

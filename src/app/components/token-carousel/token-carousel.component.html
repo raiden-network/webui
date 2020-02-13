@@ -4,7 +4,7 @@
             class="navigation"
             mat-flat-button
             color="primary"
-            [disabled]="currentItem === 0"
+            [disabled]="currentItem <= 0"
             (click)="previous()"
             id="previous"
         >
@@ -28,7 +28,7 @@
         >
             <mat-icon svgIcon="add" aria-label="Add token"> </mat-icon>
         </button>
-        <div class="tokens" fxFlex>
+        <div class="tokens" fxFlex #visible_section>
             <div fxLayout="row" fxLayoutGap="20px" fxFlex #carousel>
                 <app-token
                     *ngFor="let item of visibleItems; trackBy: trackByFn"
@@ -48,7 +48,9 @@
             class="navigation"
             mat-flat-button
             color="primary"
-            [disabled]="currentItem === visibleItems.length - 1"
+            [disabled]="
+                currentItem + visibleSectionItems >= visibleItems.length
+            "
             (click)="next()"
             id="next"
         >

@@ -24,6 +24,8 @@ import { Network } from '../../utils/network-info';
 import { MatDialog } from '@angular/material/dialog';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { QrCodePayload, QrCodeComponent } from '../qr-code/qr-code.component';
+import { SearchFieldComponent } from '../search-field/search-field.component';
+import { TokenPipe } from '../../pipes/token.pipe';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -51,7 +53,12 @@ describe('HeaderComponent', () => {
         tokenPollingMock.tokens$ = of(tokens);
 
         TestBed.configureTestingModule({
-            declarations: [HeaderComponent, DisplayDecimalsPipe],
+            declarations: [
+                HeaderComponent,
+                DisplayDecimalsPipe,
+                SearchFieldComponent,
+                TokenPipe
+            ],
             providers: [
                 NotificationService,
                 ChannelPollingService,
@@ -59,7 +66,8 @@ describe('HeaderComponent', () => {
                 { provide: TokenPollingService, useValue: tokenPollingMock },
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.HammerJSProvider(),
-                TestProviders.MockMatDialog()
+                TestProviders.MockMatDialog(),
+                TestProviders.AddressBookStubProvider()
             ],
             imports: [
                 MaterialComponentsModule,

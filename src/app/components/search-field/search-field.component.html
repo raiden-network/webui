@@ -1,0 +1,54 @@
+<div class="search" fxLayout="row" fxLayoutAlign="center center">
+    <mat-icon
+        class="search__icon"
+        svgIcon="search"
+        aria-hidden="true"
+    ></mat-icon>
+    <input
+        class="search__input"
+        aria-label="Search field"
+        type="text"
+        placeholder="Search"
+        (input)="onInput($event.target.value)"
+        [matAutocomplete]="auto"
+        #search_input
+    />
+    <button
+        mat-icon-button
+        class="reset-button"
+        *ngIf="search_input.value"
+        (click)="resetInput()"
+        id="reset"
+    >
+        <mat-icon
+            svgIcon="close"
+            aria-label="Reset search field"
+            class="reset-button__icon"
+        ></mat-icon>
+    </button>
+    <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="onInput($event.option.value)"
+    >
+        <div class="options">
+            <mat-option
+                *ngFor="
+                    let userToken of (filteredTokenOptions$ | async);
+                    trackBy: tokenTrackByFn
+                "
+                [value]="userToken.address"
+            >
+                {{ userToken | token }}
+            </mat-option>
+            <mat-option
+                *ngFor="
+                    let contact of (filteredContactOptions$ | async);
+                    trackBy: contactTrackByFn
+                "
+                [value]="contact.address"
+            >
+                {{ contact.label }} {{ contact.address }}
+            </mat-option>
+        </div>
+    </mat-autocomplete>
+</div>

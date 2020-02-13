@@ -56,6 +56,7 @@ import { RaidenDialogComponent } from './components/raiden-dialog/raiden-dialog.
 import { AddEditContactDialogComponent } from './components/add-edit-contact-dialog/add-edit-contact-dialog.component';
 import { RaidenIconsModule } from './modules/raiden-icons/raiden-icons.module';
 import { QrCodeComponent } from './components/qr-code/qr-code.component';
+import { SearchFieldComponent } from './components/search-field/search-field.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -101,7 +102,8 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         HeaderComponent,
         RaidenDialogComponent,
         AddEditContactDialogComponent,
-        QrCodeComponent
+        QrCodeComponent,
+        SearchFieldComponent
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

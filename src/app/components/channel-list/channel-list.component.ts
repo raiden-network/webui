@@ -19,11 +19,15 @@ import {
 } from '../open-dialog/open-dialog.component';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
-import { flatMap } from 'rxjs/operators';
+import { flatMap, map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Animations } from '../../animations/animations';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { SelectedTokenService } from '../../services/selected-token.service';
+import { SharedService } from '../../services/shared.service';
+import { matchesChannel, matchesContact } from '../../shared/keyword-matcher';
+import { AddressBookService } from '../../services/address-book.service';
+import { Contact } from '../../models/contact';
 
 @Component({
     selector: 'app-channel-list',
@@ -37,11 +41,13 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     visibleChannels: Channel[] = [];
     totalChannels = 0;
+    numberOfFilteredChannels = 0;
     showAll = false;
-    selectedToken: UserToken;
     itemsPerRow = 0;
 
     private channels: Channel[] = [];
+    private searchFilter = '';
+    private selectedToken: UserToken;
     private subscription: Subscription;
 
     constructor(
@@ -50,14 +56,26 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
         private raidenService: RaidenService,
         private dialog: MatDialog,
         private tokenPollingService: TokenPollingService,
-        private selectedTokenService: SelectedTokenService
+        private selectedTokenService: SelectedTokenService,
+        private sharedService: SharedService,
+        private addressBookService: AddressBookService
     ) {}
 
     ngOnInit() {
         this.subscription = this.channelPollingService
             .channels()
+            .pipe(
+                map(channels =>
+                    channels.filter(
+                        channel =>
+                            channel.state === 'opened' ||
+                            channel.state === 'waiting_for_open'
+                    )
+                )
+            )
             .subscribe((channels: Channel[]) => {
                 this.channels = channels;
+                this.totalChannels = channels.length;
                 this.updateVisibleChannels();
             });
 
@@ -69,6 +87,14 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         );
         this.subscription.add(selectedTokenSubscription);
+
+        const searchSubscription = this.sharedService.searchFilter$.subscribe(
+            value => {
+                this.searchFilter = value;
+                this.updateVisibleChannels();
+            }
+        );
+        this.subscription.add(searchSubscription);
     }
 
     ngOnDestroy() {
@@ -77,11 +103,13 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit() {
         this.calculateItemsPerRow();
+        this.updateVisibleChannels();
     }
 
     @HostListener('window:resize', ['$event'])
     onResize() {
         this.calculateItemsPerRow();
+        this.updateVisibleChannels();
     }
 
     trackByFn(index, item: Channel) {
@@ -136,17 +164,32 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
                 matchesToken =
                     channel.token_address === this.selectedToken.address;
             }
-            return (
-                matchesToken &&
-                (channel.state === 'opened' ||
-                    channel.state === 'waiting_for_open')
-            );
+
+            let contactMatchesSearchFilter = false;
+            const partnerLabel = this.addressBookService.get()[
+                channel.partner_address
+            ];
+            if (partnerLabel) {
+                const contact: Contact = {
+                    address: channel.partner_address,
+                    label: partnerLabel
+                };
+                contactMatchesSearchFilter = matchesContact(
+                    this.searchFilter,
+                    contact
+                );
+            }
+            const matchesSearchFilter =
+                matchesChannel(this.searchFilter, channel) ||
+                contactMatchesSearchFilter;
+
+            return matchesToken && matchesSearchFilter;
         });
     }
 
     private updateVisibleChannels() {
         const filteredChannels = this.getFilteredChannels();
-        this.totalChannels = filteredChannels.length;
+        this.numberOfFilteredChannels = filteredChannels.length;
 
         filteredChannels.sort((a, b) => {
             const aBalance = amountToDecimal(a.balance, a.userToken.decimals);

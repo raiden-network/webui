@@ -16,15 +16,17 @@
         #auto="matAutocomplete"
         (optionSelected)="onChange($event.option.value)"
     >
-        <mat-option
-            *ngFor="
-                let option of (filteredOptions$ | async);
-                trackBy: trackByFn
-            "
-            [value]="option.address"
-        >
-            {{ option.label }} ({{ option.address }})
-        </mat-option>
+        <div class="options">
+            <mat-option
+                *ngFor="
+                    let option of (filteredOptions$ | async);
+                    trackBy: trackByFn
+                "
+                [value]="option.address"
+            >
+                {{ option.label }} ({{ option.address }})
+            </mat-option>
+        </div>
     </mat-autocomplete>
 
     <div
