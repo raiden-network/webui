@@ -16,10 +16,14 @@ import { of, BehaviorSubject } from 'rxjs';
 import {
     createNetworkMock,
     createTestChannels,
-    createTestTokens
+    createTestTokens,
+    createAddress
 } from '../../../testing/test-data';
 import { stub } from '../../../testing/stub';
 import { Network } from '../../utils/network-info';
+import { MatDialog } from '@angular/material/dialog';
+import { MockMatDialog } from '../../../testing/mock-mat-dialog';
+import { QrCodePayload, QrCodeComponent } from '../qr-code/qr-code.component';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -27,7 +31,7 @@ describe('HeaderComponent', () => {
 
     let notificationService: NotificationService;
     let networkSubject: BehaviorSubject<Network>;
-    const raidenAddress = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
+    const raidenAddress = createAddress();
     const balance = '10.123456789';
     const channels = createTestChannels();
     const tokens = createTestTokens();
@@ -54,7 +58,8 @@ describe('HeaderComponent', () => {
                 { provide: RaidenService, useValue: raidenServiceMock },
                 { provide: TokenPollingService, useValue: tokenPollingMock },
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.HammerJSProvider()
+                TestProviders.HammerJSProvider(),
+                TestProviders.MockMatDialog()
             ],
             imports: [
                 MaterialComponentsModule,
@@ -105,14 +110,31 @@ describe('HeaderComponent', () => {
         const href = fixture.debugElement
             .query(By.css('.header__faucet'))
             .nativeElement.getAttribute('href');
-        expect(href).toBe(
-            'http://faucet.test/?0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
-        );
+        expect(href).toBe(`http://faucet.test/?${raidenAddress}`);
     });
 
     it('should toggle the notification panel', () => {
         const toggleSpy = spyOn(notificationService, 'toggleSidenav');
         clickElement(fixture.debugElement, '#notification_button');
         expect(toggleSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should show the qr code dialog for the raiden address', () => {
+        const dialog: MockMatDialog = TestBed.get(MatDialog);
+        const dialogSpy = spyOn(dialog, 'open');
+
+        clickElement(fixture.debugElement, '.header__account-button');
+        fixture.detectChanges();
+        clickElement(fixture.debugElement, '.header__qr-code');
+        fixture.detectChanges();
+
+        const payload: QrCodePayload = {
+            content: raidenAddress
+        };
+        expect(dialogSpy).toHaveBeenCalledTimes(1);
+        expect(dialogSpy).toHaveBeenCalledWith(QrCodeComponent, {
+            data: payload,
+            width: '360px'
+        });
     });
 });
