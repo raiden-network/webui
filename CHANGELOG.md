@@ -10,6 +10,7 @@
 - [#6] View for the transfer history and history per token.
 - [#142] Shows the allocated funds for the connection manager in the quick connect dialog.
 - [#239] Adds a QR code overlay for the user address.
+- [#238] Search functionality for filtering tokens, channels, contacts and transfer history.
 
 ### Fixed
 - [#138] Fixes the decimals of token amount inputs to not get cut off on Firefox.
@@ -149,6 +150,7 @@ token network.
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
 [#239]: https://github.com/raiden-network/webui/issues/239
+[#238]: https://github.com/raiden-network/webui/issues/238
 [#227]: https://github.com/raiden-network/webui/issues/227
 [#218]: https://github.com/raiden-network/webui/issues/218
 [#212]: https://github.com/raiden-network/webui/issues/212
