@@ -9,6 +9,8 @@ import { Channel } from '../../models/channel';
 import { UserToken } from '../../models/usertoken';
 import { NotificationService } from '../../services/notification.service';
 import { Network } from '../../utils/network-info';
+import { MatDialog } from '@angular/material/dialog';
+import { QrCodeComponent, QrCodePayload } from '../qr-code/qr-code.component';
 
 @Component({
     selector: 'app-header',
@@ -31,7 +33,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private raidenService: RaidenService,
         private tokenPollingService: TokenPollingService,
         private channelPollingService: ChannelPollingService,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private dialog: MatDialog
     ) {
         this.network$ = raidenService.network$;
         this.balance$ = raidenService.balance$;
@@ -77,5 +80,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     toggleNotificationSidenav() {
         this.notificationService.toggleSidenav();
+    }
+
+    showOwnAddressQrCode() {
+        const payload: QrCodePayload = {
+            content: this.raidenAddress
+        };
+        this.dialog.open(QrCodeComponent, {
+            data: payload,
+            width: '360px'
+        });
     }
 }
