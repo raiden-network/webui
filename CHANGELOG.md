@@ -2,8 +2,19 @@
 
 ## [Unreleased]
 ### Changed
-- [#227] Removes non-decimal input for token amounts.
+- **Complete redesign of the UI**
 - [#189] Only shows one notification for a channel deposit.
+- [#143] The quick connect (connection manager) dialog adds funds properly when already connected.
+
+### Added
+- [#6] View for the transfer history and history per token.
+- [#142] Shows the allocated funds for the connection manager in the quick connect dialog.
+
+### Fixed
+- [#138] Fixes the decimals of token amount inputs to not get cut off on Firefox.
+
+### Removed
+- [#227] Removes non-decimal input for token amounts.
 
 ## [0.11.0] - 2019-12-20
 ### Changed
@@ -158,9 +169,12 @@ token network.
 [#156]: https://github.com/raiden-network/webui/issues/156
 [#146]: https://github.com/raiden-network/webui/issues/146
 [#144]: https://github.com/raiden-network/webui/issues/144
+[#143]: https://github.com/raiden-network/webui/issues/143
+[#142]: https://github.com/raiden-network/webui/issues/142
 [#141]: https://github.com/raiden-network/webui/issues/141
 [#140]: https://github.com/raiden-network/webui/issues/140
 [#139]: https://github.com/raiden-network/webui/issues/139
+[#138]: https://github.com/raiden-network/webui/issues/138
 [#133]: https://github.com/raiden-network/webui/issues/133
 [#131]: https://github.com/raiden-network/webui/issues/131
 [#129]: https://github.com/raiden-network/webui/issues/129
@@ -200,4 +214,5 @@ token network.
 [#11]: https://github.com/raiden-network/webui/issues/11
 [#9]: https://github.com/raiden-network/webui/issues/9
 [#8]: https://github.com/raiden-network/webui/issues/8
+[#6]: https://github.com/raiden-network/webui/issues/6
 [#5]: https://github.com/raiden-network/webui/issues/5
