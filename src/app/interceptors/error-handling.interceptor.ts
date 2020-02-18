@@ -55,8 +55,9 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
                 this.notificationService.apiError = error;
                 console.error(`${errMsg}: ${error.message}`);
                 const notificationMessage: UiMessage = {
-                    title: 'API not available',
-                    description: errMsg
+                    title: 'API',
+                    description: 'connection failure',
+                    icon: 'error-mark'
                 };
                 this.notificationService.addErrorNotification(
                     notificationMessage
@@ -88,11 +89,6 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
         }
 
         console.error(errMsg);
-        const message: UiMessage = {
-            title: 'Raiden Error',
-            description: errMsg
-        };
-        this.notificationService.addErrorNotification(message);
         return throwError(errMsg);
     }
 }

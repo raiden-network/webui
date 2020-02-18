@@ -8,6 +8,7 @@ import { NotificationService } from './notification.service';
 import { UiMessage } from '../models/notification';
 import { PendingTransfer } from '../models/pending-transfer';
 import { amountToDecimal } from '../utils/amount.converter';
+import { AddressBookService } from './address-book.service';
 
 @Injectable({
     providedIn: 'root'
@@ -22,7 +23,8 @@ export class PendingTransferPollingService {
     constructor(
         private raidenService: RaidenService,
         private notificationService: NotificationService,
-        private raidenConfig: RaidenConfig
+        private raidenConfig: RaidenConfig,
+        private addressBookService: AddressBookService
     ) {
         let timeout;
         this.pendingTransfers$ = this.pendingTransfersSubject.pipe(
@@ -86,21 +88,41 @@ export class PendingTransferPollingService {
                 pendingTransfer.locked_amount,
                 token.decimals
             ).toFixed();
+
             if (pendingTransfer.role === 'initiator') {
+                const targetAddress = pendingTransfer.target;
+                let targetLabel = this.addressBookService.get()[targetAddress];
+                if (!targetLabel) {
+                    targetLabel = '';
+                }
                 message = {
                     title: 'Transfer in flight',
-                    description: `A transfer of ${formattedAmount} ${
+                    description: `${formattedAmount} ${
                         token.symbol
-                    } is being sent to ${pendingTransfer.target}`
+                    } to ${targetLabel} ${targetAddress}`,
+                    icon: 'sent',
+                    identiconAddress: targetAddress,
+                    tokenSymbol: token.symbol
                 };
             } else {
+                const initiatorAddress = pendingTransfer.initiator;
+                let initiatorLabel = this.addressBookService.get()[
+                    initiatorAddress
+                ];
+                if (!initiatorLabel) {
+                    initiatorLabel = '';
+                }
                 message = {
                     title: 'Transfer incoming',
-                    description: `A transfer of ${formattedAmount} ${
+                    description: `${formattedAmount} ${
                         token.symbol
-                    } is incoming from ${pendingTransfer.initiator}`
+                    } from ${initiatorLabel} ${initiatorAddress}`,
+                    icon: 'received',
+                    identiconAddress: initiatorAddress,
+                    tokenSymbol: token.symbol
                 };
             }
+
             pendingTransfer.notificationIdentifier = this.notificationService.addPendingAction(
                 message
             );

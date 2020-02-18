@@ -8,6 +8,7 @@ import { PaymentEvent } from '../models/payment-event';
 import { NotificationService } from './notification.service';
 import { UiMessage } from '../models/notification';
 import { amountToDecimal } from '../utils/amount.converter';
+import { AddressBookService } from './address-book.service';
 
 @Injectable({
     providedIn: 'root'
@@ -23,7 +24,8 @@ export class PaymentHistoryPollingService {
     constructor(
         private raidenService: RaidenService,
         private notificationService: NotificationService,
-        private raidenConfig: RaidenConfig
+        private raidenConfig: RaidenConfig,
+        private addressBookService: AddressBookService
     ) {
         let timeout;
         this.paymentHistory$ = this.paymentHistorySubject.pipe(
@@ -71,12 +73,20 @@ export class PaymentHistoryPollingService {
     private informAboutNewReceivedPayment(event: PaymentEvent) {
         const token = this.raidenService.getUserToken(event.token_address);
         const formattedAmount = amountToDecimal(event.amount, token.decimals);
+        const initiatorAddress = event.initiator;
+        let initiatorLabel = this.addressBookService.get()[initiatorAddress];
+        if (!initiatorLabel) {
+            initiatorLabel = '';
+        }
         const message: UiMessage = {
-            title: 'Transfer Received',
-            description: `A transfer of ${formattedAmount} ${
+            title: 'Received transfer',
+            description: `${formattedAmount} ${
                 token.symbol
-            } was received from ${event.initiator}`
+            } from ${initiatorLabel} ${event.initiator}`,
+            icon: 'received',
+            identiconAddress: initiatorAddress,
+            tokenSymbol: token.symbol
         };
-        this.notificationService.addSuccessNotification(message);
+        this.notificationService.addInfoNotification(message);
     }
 }

@@ -4,43 +4,21 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import Spy = jasmine.Spy;
 import { of, from } from 'rxjs';
-import BigNumber from 'bignumber.js';
-
 import { RaidenService } from './raiden.service';
 import { TestProviders } from '../../testing/test-providers';
-import { PaymentEvent } from '../models/payment-event';
 import { NotificationService } from './notification.service';
 import { UserToken } from '../models/usertoken';
+import { AddressBookService } from './address-book.service';
+import { createToken, createPaymentEvent } from '../../testing/test-data';
 
 describe('PaymentHistoryPollingService', () => {
     let getPaymentHistorySpy: Spy;
     let notificationService: NotificationService;
 
-    const paymentEvent: PaymentEvent = {
-        event: 'EventPaymentReceivedSuccess',
-        amount: new BigNumber(5),
-        initiator: '0x82641569b2062B545431cF6D7F0A418582865ba7',
-        identifier: new BigNumber(1536847755083),
-        log_time: '2019-03-07T18:19:13.976',
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
-    };
+    const paymentEvent = createPaymentEvent('EventPaymentReceivedSuccess');
+    const paymentEvent2 = createPaymentEvent('EventPaymentReceivedSuccess');
 
-    const paymentEvent2: PaymentEvent = {
-        log_time: '2019-12-23T10:26:18.188000',
-        initiator: '0xc52952ebad56f2c5e5b42bb881481ae27d036475',
-        identifier: new BigNumber(1577096774214),
-        event: 'EventPaymentReceivedSuccess',
-        amount: new BigNumber(100000000000000),
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
-    };
-
-    const token: UserToken = {
-        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        symbol: 'TST',
-        name: 'Test Suite Token',
-        decimals: 8,
-        balance: new BigNumber(20)
-    };
+    const token: UserToken = createToken();
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -49,7 +27,8 @@ describe('PaymentHistoryPollingService', () => {
                 PaymentHistoryPollingService,
                 RaidenService,
                 TestProviders.MockRaidenConfigProvider(),
-                NotificationService
+                NotificationService,
+                TestProviders.AddressBookStubProvider()
             ]
         });
     });
@@ -58,7 +37,7 @@ describe('PaymentHistoryPollingService', () => {
         const raidenService = TestBed.get(RaidenService);
         getPaymentHistorySpy = spyOn(raidenService, 'getPaymentHistory');
         notificationService = TestBed.get(NotificationService);
-        spyOn(notificationService, 'addSuccessNotification');
+        spyOn(notificationService, 'addInfoNotification');
         spyOn(raidenService, 'getUserToken').and.returnValue(token);
     });
 
@@ -86,22 +65,20 @@ describe('PaymentHistoryPollingService', () => {
     it('should show a notification if new payment events are detected', inject(
         [PaymentHistoryPollingService],
         (service: PaymentHistoryPollingService) => {
+            const mockAddressBookService = TestBed.get(AddressBookService);
+            mockAddressBookService.get = () => {
+                return {
+                    [paymentEvent2.initiator]: 'Test account'
+                };
+            };
             getPaymentHistorySpy.and.returnValues(
                 from([[paymentEvent], [paymentEvent, paymentEvent2]])
             );
             service.paymentHistory$.subscribe();
 
             expect(
-                notificationService.addSuccessNotification
+                notificationService.addInfoNotification
             ).toHaveBeenCalledTimes(1);
-            expect(
-                notificationService.addSuccessNotification
-            ).toHaveBeenCalledWith({
-                title: 'Transfer Received',
-                description: `A transfer of 1000000 ${
-                    token.symbol
-                } was received from ${paymentEvent2.initiator}`
-            });
         }
     ));
 });

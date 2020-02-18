@@ -26,7 +26,8 @@ describe('TokenPollingService', () => {
             providers: [
                 TokenPollingService,
                 RaidenService,
-                TestProviders.MockRaidenConfigProvider()
+                TestProviders.MockRaidenConfigProvider(),
+                TestProviders.AddressBookStubProvider()
             ]
         })
     );

@@ -7,6 +7,7 @@ import { RaidenService } from './raiden.service';
 import { backoff } from '../shared/backoff.operator';
 import { NotificationService } from './notification.service';
 import { UiMessage } from '../models/notification';
+import { AddressBookService } from './address-book.service';
 
 @Injectable({
     providedIn: 'root'
@@ -22,7 +23,8 @@ export class ChannelPollingService {
     constructor(
         private raidenService: RaidenService,
         private notificationService: NotificationService,
-        private raidenConfig: RaidenConfig
+        private raidenConfig: RaidenConfig,
+        private addressBookService: AddressBookService
     ) {
         let timeout;
         this.channels$ = this.channelsSubject.pipe(
@@ -116,12 +118,18 @@ export class ChannelPollingService {
     }
 
     private informAboutNewChannel(channel: Channel) {
-        const channelId = channel.channel_identifier;
+        const symbol = channel.userToken.symbol;
         const partnerAddress = channel.partner_address;
-        const network = channel.userToken.name;
+        let partnerLabel = this.addressBookService.get()[partnerAddress];
+        if (!partnerLabel) {
+            partnerLabel = '';
+        }
         const message: UiMessage = {
             title: 'New channel',
-            description: `A new channel (${channelId}) was opened with ${partnerAddress} in ${network} network`
+            description: `${symbol} with ${partnerLabel} ${partnerAddress}`,
+            icon: 'channel',
+            identiconAddress: partnerAddress,
+            tokenSymbol: symbol
         };
 
         this.notificationService.addInfoNotification(message);

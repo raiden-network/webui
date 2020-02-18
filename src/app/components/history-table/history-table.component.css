@@ -48,8 +48,3 @@
 .icon-box--round {
     border-radius: 50% !important;
 }
-
-.icon-box__icon {
-    height: 100%;
-    width: auto;
-}

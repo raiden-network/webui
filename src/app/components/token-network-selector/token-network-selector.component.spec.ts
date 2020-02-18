@@ -50,7 +50,8 @@ describe('TokenNetworkSelectorComponent', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 { provide: TokenPollingService, useValue: tokenPollingMock },
                 TestProviders.HammerJSProvider(),
-                RaidenService
+                RaidenService,
+                TestProviders.AddressBookStubProvider()
             ],
             imports: [
                 MaterialComponentsModule,

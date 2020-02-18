@@ -164,8 +164,9 @@ export class ContactListComponent implements OnInit, OnDestroy {
                 this.addressBookService.store(result, true);
                 this.updateContacts();
                 this.notificationService.addSuccessNotification({
-                    title: 'Contact import',
-                    description: 'Successfully imported contacts'
+                    title: 'Contacts import',
+                    description: 'successful',
+                    icon: 'info'
                 });
             } else {
                 this.showImportError({ invalidFormat: true });
@@ -178,21 +179,22 @@ export class ContactListComponent implements OnInit, OnDestroy {
     private showImportError(error: UploadError) {
         let message: string;
         if (error.invalidExtension) {
-            message = 'Only json files are allowed';
+            message = 'Only json files allowed';
         } else if (error.multiple) {
-            message = 'Only a single file is supported';
+            message = 'Only single file supported';
         } else if (error.exceedsUploadLimit) {
-            message = `The file exceeds the max allowed size of ${
+            message = `Max allowed size of ${
                 error.exceedsUploadLimit
-            } bytes`;
+            } bytes exceeded`;
         } else {
-            message = 'The uploaded file is not in a valid format';
+            message = 'Invalid file format';
         }
-        const title = 'Contact import failed';
+        const title = 'Contacts import';
         console.error(`${title}: ${message}`);
         this.notificationService.addErrorNotification({
             title: title,
-            description: message
+            description: message,
+            icon: 'error-mark'
         });
     }
 }

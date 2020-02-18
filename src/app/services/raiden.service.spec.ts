@@ -10,16 +10,18 @@ import {
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { Channel } from '../models/channel';
-import { UserToken } from '../models/usertoken';
 import { RaidenConfig, Web3Factory } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { TestProviders } from '../../testing/test-providers';
 import BigNumber from 'bignumber.js';
 import { DepositMode } from '../models/deposit-mode.enum';
-import { createChannel } from '../../testing/test-data';
+import {
+    createChannel,
+    createPaymentEvent,
+    createToken
+} from '../../testing/test-data';
 import Spy = jasmine.Spy;
-import { amountToDecimal } from '../utils/amount.converter';
 import { Connection } from '../models/connection';
 import { LosslessJsonInterceptor } from '../interceptors/lossless-json.interceptor';
 import {
@@ -28,19 +30,12 @@ import {
 } from '../utils/lossless-json.converter';
 import { NotificationService } from './notification.service';
 import { PendingTransfer } from '../models/pending-transfer';
-import { UiMessage } from '../models/notification';
 import { ErrorHandlingInterceptor } from '../interceptors/error-handling.interceptor';
 import { PaymentEvent } from '../models/payment-event';
 
 describe('RaidenService', () => {
     const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
-    const token: UserToken = {
-        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        symbol: 'TST',
-        name: 'Test Suite Token',
-        decimals: 8,
-        balance: new BigNumber(20)
-    };
+    const token = createToken();
     const raidenAddress = '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C';
 
     let mockHttp: HttpTestingController;
@@ -65,14 +60,7 @@ describe('RaidenService', () => {
         total_withdraw: new BigNumber(10)
     });
 
-    const paymentEvent: PaymentEvent = {
-        log_time: '2019-12-23T10:26:18.188000',
-        initiator: '0xc52952ebad56f2c5e5b42bb881481ae27d036475',
-        identifier: new BigNumber(1577096774214),
-        event: 'EventPaymentReceivedSuccess',
-        amount: new BigNumber(100000000000000),
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED'
-    };
+    const paymentEvent = createPaymentEvent('EventPaymentReceivedSuccess');
 
     beforeEach(() => {
         notificationService = jasmine.createSpyObj('NotificationService', [
@@ -105,7 +93,8 @@ describe('RaidenService', () => {
                     provide: HTTP_INTERCEPTORS,
                     useClass: LosslessJsonInterceptor,
                     multi: true
-                }
+                },
+                TestProviders.AddressBookStubProvider()
             ]
         });
 
@@ -177,16 +166,9 @@ describe('RaidenService', () => {
             }
         );
 
-        const notificationMessage: UiMessage = {
-            title: 'Token registered',
-            description: `Token ${tokenAddress} was successfully registered`
-        };
         expect(
             notificationService.addSuccessNotification
         ).toHaveBeenCalledTimes(1);
-        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     });
 
     it('When token network creation fails there should be a nice message', () => {
@@ -222,15 +204,8 @@ describe('RaidenService', () => {
             statusText: ''
         });
 
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: errorMessage
-        };
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
         );
     });
 
@@ -300,15 +275,8 @@ describe('RaidenService', () => {
             statusText: ''
         });
 
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: 'Not a valid EIP55 encoded address'
-        };
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
         );
     });
 
@@ -353,10 +321,6 @@ describe('RaidenService', () => {
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             1
         );
-        expect(notificationService.addInfoNotification).toHaveBeenCalledWith({
-            title: 'JSON RPC Connection',
-            description: 'JSON-RPC connection established successfully'
-        });
     }));
 
     it('should show an error message if attempted connection is unsuccessful', fakeAsync(function() {
@@ -369,10 +333,6 @@ describe('RaidenService', () => {
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith({
-            title: 'JSON RPC Connection',
-            description: 'Could not establish a JSON-RPC connection'
-        });
     }));
 
     it('should show an error message if attempted connection is load fails', fakeAsync(function() {
@@ -385,10 +345,6 @@ describe('RaidenService', () => {
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith({
-            title: 'JSON RPC Connection',
-            description: 'Could not establish a JSON-RPC connection'
-        });
     }));
 
     it('should periodically poll the balance', fakeAsync(function() {
@@ -438,7 +394,8 @@ describe('RaidenService', () => {
             channel_identifier: new BigNumber(1),
             total_deposit: new BigNumber(1000000),
             balance: new BigNumber(10),
-            total_withdraw: new BigNumber(0)
+            total_withdraw: new BigNumber(0),
+            token_address: token.address
         });
         spyOn(service, 'getChannel').and.returnValue(of(channel));
 
@@ -456,7 +413,8 @@ describe('RaidenService', () => {
                         total_withdraw: new BigNumber(0),
                         total_deposit: new BigNumber(100001000000),
                         balance: new BigNumber(100000000010),
-                        partner_address: channel.partner_address
+                        partner_address: channel.partner_address,
+                        token_address: token.address
                     })
                 );
             })
@@ -489,18 +447,9 @@ describe('RaidenService', () => {
 
         flush();
 
-        const notificationMessage: UiMessage = {
-            title: 'Deposit',
-            description: `1000 ${
-                token.symbol
-            } were deposited to channel 1 with 0xpartn`
-        };
-        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
-            1
-        );
-        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
     }));
 
     it('should inform the user when a withdraw was completed successfully', fakeAsync(() => {
@@ -508,7 +457,8 @@ describe('RaidenService', () => {
             channel_identifier: new BigNumber(1),
             total_deposit: new BigNumber(10),
             balance: new BigNumber(1000000000000),
-            total_withdraw: new BigNumber(1000000)
+            total_withdraw: new BigNumber(1000000),
+            token_address: token.address
         });
         spyOn(service, 'getChannel').and.returnValue(of(channel));
 
@@ -526,7 +476,8 @@ describe('RaidenService', () => {
                         total_withdraw: new BigNumber(1000001000000),
                         total_deposit: new BigNumber(10),
                         balance: new BigNumber(0),
-                        partner_address: channel.partner_address
+                        partner_address: channel.partner_address,
+                        token_address: token.address
                     })
                 );
             })
@@ -559,19 +510,107 @@ describe('RaidenService', () => {
 
         flush();
 
-        const notificationMessage: UiMessage = {
-            title: 'Withdraw',
-            description: `10000 ${
-                token.symbol
-            } were withdrawn from channel 1 with 0xpartn`
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
+    }));
+
+    it('should inform the user when a deposit was not successful', () => {
+        const channel = createChannel({
+            channel_identifier: new BigNumber(1),
+            total_deposit: new BigNumber(1000000),
+            balance: new BigNumber(10),
+            total_withdraw: new BigNumber(0),
+            token_address: token.address
+        });
+        spyOn(service, 'getChannel').and.returnValue(of(channel));
+
+        service
+            .modifyDeposit(
+                '0xtkn',
+                '0xpartn',
+                new BigNumber(100000000000),
+                DepositMode.DEPOSIT
+            )
+            .subscribe(
+                () => {
+                    fail('On next should not be called');
+                },
+                error => {
+                    expect(error).toBeTruthy('An error was expected');
+                }
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/channels/0xtkn/0xpartn`,
+            method: 'PATCH'
+        });
+
+        const errorMessage = 'Not enough funds';
+        const errorBody = {
+            errors: errorMessage
         };
-        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+        request.flush(errorBody, {
+            status: 400,
+            statusText: ''
+        });
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
-        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
-            notificationMessage
+    });
+
+    it('should inform the user when a withdraw was not successful', () => {
+        const channel = createChannel({
+            channel_identifier: new BigNumber(1),
+            total_deposit: new BigNumber(10),
+            balance: new BigNumber(1000000000000),
+            total_withdraw: new BigNumber(1000000)
+        });
+        spyOn(service, 'getChannel').and.returnValue(of(channel));
+
+        service
+            .modifyDeposit(
+                '0xtkn',
+                '0xpartn',
+                new BigNumber(1000000000000),
+                DepositMode.WITHDRAW
+            )
+            .subscribe(
+                () => {
+                    fail('On next should not be called');
+                },
+                error => {
+                    expect(error).toBeTruthy('An error was expected');
+                }
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/channels/0xtkn/0xpartn`,
+            method: 'PATCH'
+        });
+
+        const errorMessage = 'Withdraw failed';
+        const errorBody = {
+            errors: errorMessage
+        };
+        request.flush(errorBody, {
+            status: 400,
+            statusText: ''
+        });
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
-    }));
+    });
 
     it('should inform the user when minting was completed successfully', () => {
         service
@@ -600,22 +639,9 @@ describe('RaidenService', () => {
             }
         );
 
-        const decimalValue = amountToDecimal(
-            new BigNumber(1000),
-            token.decimals
-        );
-        const notificationMessage: UiMessage = {
-            title: 'Mint',
-            description: `${decimalValue} ${
-                token.symbol
-            } were successfully minted`
-        };
         expect(
             notificationService.addSuccessNotification
         ).toHaveBeenCalledTimes(1);
-        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     });
 
     it('should inform the user when minting was not successful', () => {
@@ -651,15 +677,8 @@ describe('RaidenService', () => {
             statusText: ''
         });
 
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: errorMessage
-        };
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
         );
     });
 
@@ -692,18 +711,9 @@ describe('RaidenService', () => {
         );
         flush();
 
-        const notificationMessage: UiMessage = {
-            title: 'Quick connect successful',
-            description: `Quick connect successfully opened channels in ${
-                token.name
-            } network`
-        };
         expect(
             notificationService.addSuccessNotification
         ).toHaveBeenCalledTimes(1);
-        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     }));
 
     it('should inform the user when adding funds to a token network was successful', fakeAsync(() => {
@@ -735,21 +745,12 @@ describe('RaidenService', () => {
         );
         flush();
 
-        const notificationMessage: UiMessage = {
-            title: 'Quick connect successful',
-            description: `Funds for quick connect in ${
-                token.name
-            } network were successfully changed to 0.00001 ${token.symbol}`
-        };
         expect(
             notificationService.addSuccessNotification
         ).toHaveBeenCalledTimes(1);
-        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     }));
 
-    it('should inform the user when joining a token network was not successful', fakeAsync(() => {
+    it('should inform the user when quick connect was not successful', fakeAsync(() => {
         service
             .connectTokenNetwork(new BigNumber(1000), tokenAddress, true)
             .subscribe(
@@ -784,15 +785,8 @@ describe('RaidenService', () => {
         });
         flush();
 
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: errorMessage
-        };
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
         );
     }));
 
@@ -823,18 +817,9 @@ describe('RaidenService', () => {
         );
         flush();
 
-        const notificationMessage: UiMessage = {
-            title: 'Left token network',
-            description: `Successfully closed and settled all channels in ${
-                token.name
-            } network`
-        };
         expect(
             notificationService.addSuccessNotification
         ).toHaveBeenCalledTimes(1);
-        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     }));
 
     it('should inform the user when leaving a token network was not successful', fakeAsync(() => {
@@ -872,15 +857,8 @@ describe('RaidenService', () => {
         });
         flush();
 
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: errorMessage
-        };
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
         );
     }));
 
@@ -918,18 +896,9 @@ describe('RaidenService', () => {
         });
         flush();
 
-        const notificationMessage: UiMessage = {
-            title: 'Transfer successful',
-            description: `A transfer of 0.0000001 ${
-                token.symbol
-            } was successfully sent to ${targetAddress}`
-        };
         expect(
             notificationService.addSuccessNotification
         ).toHaveBeenCalledTimes(1);
-        expect(notificationService.addSuccessNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     }));
 
     it('should set a payment identifier for a payment when none is passed', fakeAsync(() => {
@@ -989,15 +958,8 @@ describe('RaidenService', () => {
         });
         flush();
 
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: errorMessage
-        };
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
         );
     }));
 
@@ -1104,7 +1066,7 @@ describe('RaidenService', () => {
     }));
 
     it('should return a Channel for a token and a partner', () => {
-        const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
+        const partnerAddress = channel1.partner_address;
 
         service.getChannel(token.address, partnerAddress).subscribe(
             (channel: Channel) => {
@@ -1171,17 +1133,56 @@ describe('RaidenService', () => {
             statusText: ''
         });
 
-        const notificationMessage: UiMessage = {
-            title: 'Close',
-            description: `Channel ${channel3.channel_identifier} with ${
-                channel3.partner_address
-            } in ${token.name} network was closed successfully`
-        };
-        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
-            1
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
+    });
+
+    it('should inform the user when closing a channel was not successful', () => {
+        const channel3: Channel = createChannel({
+            channel_identifier: new BigNumber(2),
+            balance: new BigNumber(0),
+            total_deposit: new BigNumber(10),
+            total_withdraw: new BigNumber(10)
+        });
+        spyOn(service, 'getChannel').and.returnValue(
+            of(Object.assign({}, channel3))
         );
-        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
-            notificationMessage
+        channel3.state = 'closed';
+
+        service
+            .closeChannel(token.address, channel3.partner_address)
+            .subscribe(
+                () => {
+                    fail('On next should not be called');
+                },
+                error => {
+                    expect(error).toBeTruthy('An error was expected');
+                }
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/channels/${token.address}/${
+                channel3.partner_address
+            }`,
+            method: 'PATCH'
+        });
+
+        const errorMessage = 'Channel is already closed';
+        const errorBody = {
+            errors: errorMessage
+        };
+        request.flush(errorBody, {
+            status: 400,
+            statusText: ''
+        });
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
         );
     });
 
@@ -1228,7 +1229,8 @@ describe('RaidenService', () => {
             balance: new BigNumber(0),
             total_deposit: new BigNumber(10),
             total_withdraw: new BigNumber(10),
-            partner_address: '0xc52952ebad56f2c5e5b42bb881481ae27d036475'
+            partner_address: '0xc52952ebad56f2c5e5b42bb881481ae27d036475',
+            userToken: token
         });
 
         service
