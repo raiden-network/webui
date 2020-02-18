@@ -1,3 +1,35 @@
 :host {
     display: block;
+    padding: 20px !important;
+    border-radius: 25px !important;
+    box-shadow: none !important;
+    background-image: none;
+}
+
+:host.toast-success {
+    background-color: #38c141 !important;
+}
+
+:host.toast-error {
+    background-color: #f54b47 !important;
+}
+
+:host.toast-info {
+    background-color: #2c8f94 !important;
+}
+
+.title {
+    font-size: 11px;
+    line-height: 13px;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 13px;
+}
+
+.description {
+    font-size: 16px;
+    line-height: 19px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 }
