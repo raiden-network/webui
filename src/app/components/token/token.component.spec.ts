@@ -29,6 +29,7 @@ import {
     ConfirmationDialogPayload,
     ConfirmationDialogComponent
 } from '../confirmation-dialog/confirmation-dialog.component';
+import { ClipboardModule } from 'ngx-clipboard';
 
 describe('TokenComponent', () => {
     let component: TokenComponent;
@@ -54,7 +55,8 @@ describe('TokenComponent', () => {
                 RaidenIconsModule,
                 MaterialComponentsModule,
                 HttpClientTestingModule,
-                NoopAnimationsModule
+                NoopAnimationsModule,
+                ClipboardModule
             ]
         }).compileComponents();
     }));

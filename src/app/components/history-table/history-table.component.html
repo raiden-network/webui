@@ -71,6 +71,11 @@
                         class="icon-box icon-box--round"
                         fxLayout="column"
                         fxLayoutAlign="center center"
+                        matTooltip="{{ event.userToken.name }}
+                            {{ event.userToken.address }}
+                            (Click to copy)"
+                        ngxClipboard
+                        [cbContent]="event.userToken.address"
                     >
                         {{ event.userToken.symbol }}
                     </div>

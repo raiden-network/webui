@@ -102,7 +102,7 @@ export class PendingTransferPollingService {
                     } to ${targetLabel} ${targetAddress}`,
                     icon: 'sent',
                     identiconAddress: targetAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
             } else {
                 const initiatorAddress = pendingTransfer.initiator;
@@ -119,7 +119,7 @@ export class PendingTransferPollingService {
                     } from ${initiatorLabel} ${initiatorAddress}`,
                     icon: 'received',
                     identiconAddress: initiatorAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
             }
 

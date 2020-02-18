@@ -295,7 +295,7 @@ export class RaidenService {
                     } deposit`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -340,7 +340,7 @@ export class RaidenService {
                     description: error,
                     icon: 'error-mark',
                     identiconAddress: partnerAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 });
                 return throwError(error);
             }),
@@ -399,7 +399,7 @@ export class RaidenService {
                     } to ${targetLabel} ${targetAddress}`,
                     icon: 'sent',
                     identiconAddress: targetAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
@@ -410,7 +410,7 @@ export class RaidenService {
                     description: error,
                     icon: 'error-mark',
                     identiconAddress: targetAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 });
                 return throwError(error);
             })
@@ -462,7 +462,7 @@ export class RaidenService {
                     description: `${formattedAmount} ${token.symbol}`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -504,7 +504,7 @@ export class RaidenService {
                     description: `${formattedAmount} ${token.symbol}`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
@@ -517,7 +517,7 @@ export class RaidenService {
                     description: error,
                     icon: 'error-mark',
                     identiconAddress: partnerAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 });
                 return throwError(error);
             }),
@@ -546,7 +546,7 @@ export class RaidenService {
                     } with ${partnerLabel} ${partnerAddress}`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -578,7 +578,7 @@ export class RaidenService {
                     } with ${partnerLabel} ${partnerAddress}`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
@@ -588,7 +588,7 @@ export class RaidenService {
                     description: error,
                     icon: 'error-mark',
                     identiconAddress: partnerAddress,
-                    tokenSymbol: token.symbol
+                    userToken: token
                 });
                 return throwError(error);
             }),
@@ -665,7 +665,7 @@ export class RaidenService {
                         : 'Quick connect raising funds',
                     description: `${formattedAmount} ${token.symbol} funds`,
                     icon: 'thunderbolt',
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -687,7 +687,7 @@ export class RaidenService {
                         : 'Quick connect raised funds',
                     description: `${formattedAmount} ${token.symbol} funds`,
                     icon: 'thunderbolt',
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
@@ -696,7 +696,7 @@ export class RaidenService {
                     title: 'Quick connect failed',
                     description: error,
                     icon: 'error-mark',
-                    tokenSymbol: token.symbol
+                    userToken: token
                 });
                 return throwError(error);
             }),
@@ -717,7 +717,7 @@ export class RaidenService {
                     title: 'Leaving token network',
                     description: `${userToken.symbol}`,
                     icon: 'close',
-                    tokenSymbol: userToken.symbol
+                    userToken: userToken
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -734,7 +734,7 @@ export class RaidenService {
                     title: 'Left token network',
                     description: `${userToken.symbol}`,
                     icon: 'close',
-                    tokenSymbol: userToken.symbol
+                    userToken: userToken
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
@@ -743,7 +743,7 @@ export class RaidenService {
                     title: 'Leave token network failed',
                     description: error,
                     icon: 'error-mark',
-                    tokenSymbol: userToken.symbol
+                    userToken: userToken
                 });
                 return throwError(error);
             }),
@@ -797,7 +797,7 @@ export class RaidenService {
                     title: 'Minting',
                     description: `${formattedAmount} ${token.symbol} `,
                     icon: 'token',
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -817,7 +817,7 @@ export class RaidenService {
                     title: 'Minted',
                     description: `${formattedAmount} ${token.symbol}`,
                     icon: 'token',
-                    tokenSymbol: token.symbol
+                    userToken: token
                 };
 
                 this.notificationService.addSuccessNotification(message);
@@ -827,7 +827,7 @@ export class RaidenService {
                     title: 'Mint failed',
                     description: error,
                     icon: 'error-mark',
-                    tokenSymbol: token.symbol
+                    userToken: token
                 });
                 return throwError(error);
             }),

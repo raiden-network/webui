@@ -54,9 +54,14 @@
                     >{{ balance | displayDecimals: 3 }}
                 </span>
             </ng-container>
-            <span [matTooltip]="channel.userToken.name">{{
-                channel.userToken.symbol
-            }}</span>
+            <span
+                matTooltip="{{ channel.userToken.name }}
+                {{ channel.userToken.address }}
+                (Click to copy)"
+                ngxClipboard
+                [cbContent]="channel.userToken.address"
+                >{{ channel.userToken.symbol }}</span
+            >
         </div>
         <div class="info__label">
             <ng-container *ngIf="channel.depositPending">
