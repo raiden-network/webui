@@ -27,6 +27,7 @@ import { stub } from '../../../testing/stub';
 import { SharedService } from '../../services/shared.service';
 import { AddressBookService } from '../../services/address-book.service';
 import { Contacts } from '../../models/contact';
+import { ClipboardModule } from 'ngx-clipboard';
 
 describe('HistoryTableComponent', () => {
     let component: HistoryTableComponent;
@@ -65,7 +66,8 @@ describe('HistoryTableComponent', () => {
                 MaterialComponentsModule,
                 NoopAnimationsModule,
                 RaidenIconsModule,
-                HttpClientTestingModule
+                HttpClientTestingModule,
+                ClipboardModule
             ]
         }).compileComponents();
     }));

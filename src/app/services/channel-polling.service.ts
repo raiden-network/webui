@@ -118,7 +118,7 @@ export class ChannelPollingService {
     }
 
     private informAboutNewChannel(channel: Channel) {
-        const symbol = channel.userToken.symbol;
+        const token = channel.userToken;
         const partnerAddress = channel.partner_address;
         let partnerLabel = this.addressBookService.get()[partnerAddress];
         if (!partnerLabel) {
@@ -126,10 +126,12 @@ export class ChannelPollingService {
         }
         const message: UiMessage = {
             title: 'New channel',
-            description: `${symbol} with ${partnerLabel} ${partnerAddress}`,
+            description: `${
+                token.symbol
+            } with ${partnerLabel} ${partnerAddress}`,
             icon: 'channel',
             identiconAddress: partnerAddress,
-            tokenSymbol: symbol
+            userToken: token
         };
 
         this.notificationService.addInfoNotification(message);

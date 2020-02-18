@@ -85,7 +85,7 @@ export class PaymentHistoryPollingService {
             } from ${initiatorLabel} ${event.initiator}`,
             icon: 'received',
             identiconAddress: initiatorAddress,
-            tokenSymbol: token.symbol
+            userToken: token
         };
         this.notificationService.addInfoNotification(message);
     }

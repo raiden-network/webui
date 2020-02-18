@@ -31,6 +31,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { SharedService } from '../../services/shared.service';
+import { ClipboardModule } from 'ngx-clipboard';
 
 describe('TokenCarouselComponent', () => {
     let component: TokenCarouselComponent;
@@ -80,7 +81,8 @@ describe('TokenCarouselComponent', () => {
                 RaidenIconsModule,
                 MaterialComponentsModule,
                 HttpClientTestingModule,
-                NoopAnimationsModule
+                NoopAnimationsModule,
+                ClipboardModule
             ]
         }).compileComponents();
     }));

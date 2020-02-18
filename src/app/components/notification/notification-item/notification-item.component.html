@@ -46,12 +46,17 @@
             />
         </div>
         <div
-            *ngIf="notification.tokenSymbol"
+            *ngIf="notification.userToken"
             class="side__token-symbol"
             fxLayout="column"
             fxLayoutAlign="center center"
+            matTooltip="{{ notification.userToken.name }}
+                {{ notification.userToken.address }}
+                (Click to copy)"
+            ngxClipboard
+            [cbContent]="notification.userToken.address"
         >
-            {{ notification.tokenSymbol }}
+            {{ notification.userToken.symbol }}
         </div>
     </div>
 </div>

@@ -6,7 +6,7 @@ import { TestProviders } from '../../../../testing/test-providers';
 import { MaterialComponentsModule } from '../../../modules/material-components/material-components.module';
 import { NotificationMessage } from '../../../models/notification';
 import { By } from '@angular/platform-browser';
-import { createAddress } from '../../../../testing/test-data';
+import { createAddress, createToken } from '../../../../testing/test-data';
 import { RaidenIconsModule } from '../../../modules/raiden-icons/raiden-icons.module';
 import { ClipboardModule } from 'ngx-clipboard';
 import { IdenticonCacheService } from '../../../services/identicon-cache.service';
@@ -23,7 +23,7 @@ describe('NotificationItemComponent', () => {
         icon: '',
         timestamp: new Date().toISOString(),
         identiconAddress: createAddress(),
-        tokenSymbol: 'TTT'
+        userToken: createToken()
     };
 
     beforeEach(async(() => {
