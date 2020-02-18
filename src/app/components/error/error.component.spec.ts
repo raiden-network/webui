@@ -24,7 +24,8 @@ describe('ErrorComponent', () => {
             providers: [
                 TestProviders.MockMatDialogData(payload),
                 RaidenService,
-                TestProviders.MockRaidenConfigProvider()
+                TestProviders.MockRaidenConfigProvider(),
+                TestProviders.AddressBookStubProvider()
             ],
             imports: [
                 RaidenIconsModule,

@@ -27,7 +27,8 @@ export class RaidenIconsModule {
         'more',
         'info',
         'close',
-        'error'
+        'error',
+        'error-mark'
     ];
 
     constructor(

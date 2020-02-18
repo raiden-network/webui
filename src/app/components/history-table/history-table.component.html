@@ -60,7 +60,7 @@
 
         <ng-container cdkColumnDef="date">
             <cdk-cell class="table__element" *cdkCellDef="let event">
-                {{ getUTCTimeString(event) | date: 'short' }}
+                {{ getUTCTimeString(event) | date: 'dd-MM-yyy H:mm' }}
             </cdk-cell>
         </ng-container>
 

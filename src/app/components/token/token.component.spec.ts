@@ -47,7 +47,8 @@ describe('TokenComponent', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 PendingTransferPollingService,
                 TestProviders.MockMatDialog(),
-                TestProviders.HammerJSProvider()
+                TestProviders.HammerJSProvider(),
+                TestProviders.AddressBookStubProvider()
             ],
             imports: [
                 RaidenIconsModule,

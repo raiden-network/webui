@@ -3,15 +3,13 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { from, of } from 'rxjs';
 import { Channel } from '../models/channel';
-import { UserToken } from '../models/usertoken';
-
 import { ChannelPollingService } from './channel-polling.service';
 import { RaidenService } from './raiden.service';
 import Spy = jasmine.Spy;
 import { TestProviders } from '../../testing/test-providers';
-import BigNumber from 'bignumber.js';
 import { NotificationService } from './notification.service';
-import { UiMessage } from '../models/notification';
+import { createToken, createChannel } from '../../testing/test-data';
+import { AddressBookService } from './address-book.service';
 
 describe('ChannelPollingService', () => {
     beforeEach(() => {
@@ -31,80 +29,25 @@ describe('ChannelPollingService', () => {
     let raidenService: RaidenService;
     let raidenServiceSpy: Spy;
 
-    const token: UserToken = {
-        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        symbol: 'TST',
-        name: 'Test Suite Token',
-        balance: new BigNumber(20),
-        decimals: 8
-    };
-
-    const token2: UserToken = {
-        address: '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195',
+    const token = createToken();
+    const token2 = createToken({
         symbol: 'TST2',
-        name: 'Test Suite Token 2',
-        balance: new BigNumber(20),
-        decimals: 8
-    };
-
-    const channel1: Channel = {
-        state: 'opened',
-        channel_identifier: new BigNumber(1),
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-        reveal_timeout: 600,
-        balance: new BigNumber(10),
-        total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10),
-        settle_timeout: 500,
-        userToken: token
-    };
-
-    const channel1Network2: Channel = {
-        state: 'opened',
-        channel_identifier: new BigNumber(1),
-        token_address: '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195',
-        partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-        reveal_timeout: 600,
-        balance: new BigNumber(20),
-        total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10),
-        settle_timeout: 500,
-        userToken: token2
-    };
-
-    const channel1Updated: Channel = {
-        state: 'opened',
-        channel_identifier: new BigNumber(1),
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-        reveal_timeout: 600,
-        balance: new BigNumber(20),
-        total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10),
-        settle_timeout: 500,
-        userToken: token
-    };
-
-    const channel2: Channel = {
-        state: 'opened',
-        channel_identifier: new BigNumber(2),
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        partner_address: '0xFC57d325f23b9121a8488fFdE2E6b3ef1208a20b',
-        reveal_timeout: 600,
-        balance: new BigNumber(0),
-        total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10),
-        settle_timeout: 500,
-        userToken: token
-    };
+        name: 'Test Suite Token 2'
+    });
+    const channel1 = createChannel({ userToken: token });
+    const channel1Network2 = Object.assign({}, channel1, { userToken: token2 });
+    const channel1Updated = Object.assign({}, channel1, {
+        balance: channel1.balance.plus(10)
+    });
+    const channel2 = createChannel({ userToken: token });
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 ChannelPollingService,
                 RaidenService,
-                NotificationService
+                NotificationService,
+                TestProviders.AddressBookStubProvider()
             ]
         });
 
@@ -136,27 +79,21 @@ describe('ChannelPollingService', () => {
     }));
 
     it('should send a notification when user opens the first channel', fakeAsync(() => {
+        const mockAddressBookService = TestBed.get(AddressBookService);
+        mockAddressBookService.get = () => {
+            return {
+                [channel1.partner_address]: 'Test account'
+            };
+        };
         raidenServiceSpy.and.returnValues(
             from([[], [], [channel1], [channel1]])
         );
         const subscription = pollingService.channels().subscribe();
         tick();
 
-        const notificationMessage: UiMessage = {
-            title: 'New channel',
-            description: `A new channel (${
-                channel1.channel_identifier
-            }) was opened with ${channel1.partner_address} in ${
-                channel1.userToken.name
-            } network`
-        };
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             1
         );
-        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
-
         subscription.unsubscribe();
         flush();
     }));

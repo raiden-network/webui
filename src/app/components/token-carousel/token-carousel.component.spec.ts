@@ -73,7 +73,8 @@ describe('TokenCarouselComponent', () => {
                 TestProviders.MockMatDialog(),
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockRaidenConfigProvider(),
-                SharedService
+                SharedService,
+                TestProviders.AddressBookStubProvider()
             ],
             imports: [
                 RaidenIconsModule,

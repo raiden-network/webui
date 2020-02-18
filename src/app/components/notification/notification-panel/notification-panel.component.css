@@ -1,29 +1,36 @@
-.notification-container {
-    overflow-wrap: break-word;
-    padding: 0 5px 5px 5px;
-    min-height: calc(100% - 40px);
+.panel {
+    color: #ffffff;
+    margin: 16px 32px;
+    font-size: 16px;
+    line-height: 19px;
+    min-height: calc(100% - 32px);
 }
 
-.notification-title {
-    padding-left: 16px;
-    color: rgba(0, 0, 0, 0.59);
+.no-items {
+    height: 100%;
 }
 
-.notification-title-text {
-    margin: 0;
+.notifications__label {
+    font-size: 11px;
+    letter-spacing: 0.91px;
+    line-height: 32px;
+    text-transform: uppercase;
+    opacity: 0.47;
 }
 
-.notification-header {
+.notifications__clear {
+    height: 32px;
+    width: 100px;
+}
+
+.close {
     position: sticky;
-    position: -web-kit-sticky;
+    position: -webkit-sticky;
     top: 0;
     right: 0;
-    z-index: 1;
-    width: 100%;
-    background-color: rgba(250, 250, 250, 1);
 }
 
-.notification-close {
-    margin-right: 21px;
-    color: rgba(0, 0, 0, 0.59);
+.close__icon {
+    width: 16px !important;
+    height: 16px !important;
 }

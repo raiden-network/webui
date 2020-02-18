@@ -10,7 +10,6 @@ import { Observable } from 'rxjs';
 import { ErrorHandlingInterceptor } from './error-handling.interceptor';
 import { TestProviders } from '../../testing/test-providers';
 import { NotificationService } from '../services/notification.service';
-import { UiMessage } from '../models/notification';
 import { RaidenService } from '../services/raiden.service';
 
 @Injectable()
@@ -47,7 +46,8 @@ describe('ErrorHandlingInterceptor', () => {
                 {
                     provide: NotificationService,
                     useValue: notificationService
-                }
+                },
+                TestProviders.AddressBookStubProvider()
             ]
         });
 
@@ -57,18 +57,18 @@ describe('ErrorHandlingInterceptor', () => {
     });
 
     it('should handle Raiden API errors', () => {
+        const errorMessage = 'An Raiden API error occured.';
         service.getData().subscribe(
             () => {
                 fail('On next should not be called');
             },
             error => {
-                expect(error).toBeTruthy('An error is expected');
+                expect(error).toBe(errorMessage);
             }
         );
 
         const request = httpMock.expectOne('localhost:5001/api');
 
-        const errorMessage = 'An Raiden API error occured.';
         const errorBody = {
             errors: errorMessage
         };
@@ -77,59 +77,41 @@ describe('ErrorHandlingInterceptor', () => {
             status: 400,
             statusText: ''
         });
-
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: errorMessage
-        };
-        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
-            1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     });
 
     it('should handle Raiden API errors with multiple messages', () => {
+        const errorMessage =
+            'An Raiden API error occurred.\nAnother error occurred.';
         service.getData().subscribe(
             () => {
                 fail('On next should not be called');
             },
             error => {
-                expect(error).toBeTruthy('An error is expected');
+                expect(error).toBe(errorMessage);
             }
         );
 
         const request = httpMock.expectOne('localhost:5001/api');
 
         const errorBody = {
-            errors: ['An Raiden API error occured.', 'Another error occured.']
+            errors: ['An Raiden API error occurred.', 'Another error occurred.']
         };
 
         request.flush(errorBody, {
             status: 400,
             statusText: ''
         });
-
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: 'An Raiden API error occured.\nAnother error occured.'
-        };
-        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
-            1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     });
 
     it('should handle Raiden API errors with no message', () => {
+        const errorMessage =
+            'Http failure response for localhost:5001/api: 400 ';
         service.getData().subscribe(
             () => {
                 fail('On next should not be called');
             },
             error => {
-                expect(error).toBeTruthy('An error is expected');
+                expect(error).toBe(errorMessage);
             }
         );
 
@@ -143,17 +125,6 @@ describe('ErrorHandlingInterceptor', () => {
             status: 400,
             statusText: ''
         });
-
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: 'Http failure response for localhost:5001/api: 400 '
-        };
-        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
-            1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     });
 
     it('should handle non-response Raiden API errors', () => {
@@ -176,15 +147,8 @@ describe('ErrorHandlingInterceptor', () => {
             }
         );
 
-        const notificationMessage: UiMessage = {
-            title: 'API not available',
-            description: 'Could not connect to the Raiden API'
-        };
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
         );
 
         service.getData().subscribe(

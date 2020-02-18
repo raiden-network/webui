@@ -34,6 +34,7 @@ import { SharedService } from './services/shared.service';
 import { ConnectionErrorType } from './models/connection-errors';
 import { MockMatDialog } from '../testing/mock-mat-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { ClipboardModule } from 'ngx-clipboard';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -88,14 +89,16 @@ describe('AppComponent', () => {
                 ChannelPollingService,
                 TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialog(),
-                SharedService
+                SharedService,
+                TestProviders.AddressBookStubProvider()
             ],
             imports: [
                 MaterialComponentsModule,
                 RouterTestingModule,
                 HttpClientTestingModule,
                 NoopAnimationsModule,
-                RaidenIconsModule
+                RaidenIconsModule,
+                ClipboardModule
             ]
         }).compileComponents();
     }));

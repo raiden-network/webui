@@ -30,6 +30,7 @@ import { Contact, Contacts } from '../../models/contact';
 import { stub } from '../../../testing/stub';
 import { ToastrModule } from 'ngx-toastr';
 import { UploadChecks } from '../../shared/upload-checks';
+import { UiMessage } from '../../models/notification';
 
 function createMockReader(result: {}) {
     return {
@@ -269,9 +270,10 @@ describe('ContactListComponent', () => {
         );
         component.filesSelected(fileList);
 
-        const errorMessage = {
-            title: 'Contact import failed',
-            description: 'The uploaded file is not in a valid format'
+        const errorMessage: UiMessage = {
+            title: 'Contacts import',
+            description: 'Invalid file format',
+            icon: 'error-mark'
         };
         expect(storeSpy).toHaveBeenCalledTimes(0);
         expect(notificationSpy).toHaveBeenCalledTimes(1);
@@ -302,9 +304,10 @@ describe('ContactListComponent', () => {
         );
         component.filesSelected(fileList);
 
-        const errorMessage = {
-            title: 'Contact import failed',
-            description: 'Only json files are allowed'
+        const errorMessage: UiMessage = {
+            title: 'Contacts import',
+            description: 'Only json files allowed',
+            icon: 'error-mark'
         };
         expect(storeSpy).toHaveBeenCalledTimes(0);
         expect(notificationSpy).toHaveBeenCalledTimes(1);
@@ -338,9 +341,10 @@ describe('ContactListComponent', () => {
         );
         component.filesSelected(fileList);
 
-        const errorMessage = {
-            title: 'Contact import failed',
-            description: 'Only a single file is supported'
+        const errorMessage: UiMessage = {
+            title: 'Contacts import',
+            description: 'Only single file supported',
+            icon: 'error-mark'
         };
         expect(storeSpy).toHaveBeenCalledTimes(0);
         expect(notificationSpy).toHaveBeenCalledTimes(1);
@@ -373,11 +377,12 @@ describe('ContactListComponent', () => {
         );
         component.filesSelected(fileList);
 
-        const errorMessage = {
-            title: 'Contact import failed',
-            description: `The file exceeds the max allowed size of ${
+        const errorMessage: UiMessage = {
+            title: 'Contacts import',
+            description: `Max allowed size of ${
                 UploadChecks.MAX_UPLOAD_SIZE
-            } bytes`
+            } bytes exceeded`,
+            icon: 'error-mark'
         };
         expect(storeSpy).toHaveBeenCalledTimes(0);
         expect(notificationSpy).toHaveBeenCalledTimes(1);
