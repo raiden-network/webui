@@ -206,6 +206,5 @@ input:focus {
 }
 
 .toast-container {
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
     min-width: 300px;
 }
