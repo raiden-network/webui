@@ -98,14 +98,14 @@ describe('RaidenService', () => {
             ]
         });
 
-        mockHttp = TestBed.get(HttpTestingController);
+        mockHttp = TestBed.inject(HttpTestingController);
 
-        endpoint = TestBed.get(RaidenConfig).api;
-        service = TestBed.get(RaidenService);
-        notificationService = TestBed.get(NotificationService);
+        endpoint = TestBed.inject(RaidenConfig).api;
+        service = TestBed.inject(RaidenService);
+        notificationService = TestBed.inject(NotificationService);
 
         retrieverSpy = spyOn(
-            TestBed.get(TokenInfoRetrieverService),
+            TestBed.inject(TokenInfoRetrieverService),
             'createBatch'
         );
         spyOn(service, 'getUserToken').and.returnValue(token);
@@ -312,7 +312,7 @@ describe('RaidenService', () => {
     }));
 
     it('should show an info message if attempted connection is successful', fakeAsync(function() {
-        const config: RaidenConfig = TestBed.get(RaidenConfig);
+        const config: RaidenConfig = TestBed.inject(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.returnValue(Promise.resolve(true));
 
@@ -324,7 +324,7 @@ describe('RaidenService', () => {
     }));
 
     it('should show an error message if attempted connection is unsuccessful', fakeAsync(function() {
-        const config: RaidenConfig = TestBed.get(RaidenConfig);
+        const config = TestBed.inject(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.returnValue(Promise.resolve(false));
 
@@ -336,7 +336,7 @@ describe('RaidenService', () => {
     }));
 
     it('should show an error message if attempted connection is load fails', fakeAsync(function() {
-        const config: RaidenConfig = TestBed.get(RaidenConfig);
+        const config = TestBed.inject(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.callFake(() => Promise.reject(new Error('failed')));
 
@@ -349,7 +349,7 @@ describe('RaidenService', () => {
 
     it('should periodically poll the balance', fakeAsync(function() {
         let count = 0;
-        const config: RaidenConfig = TestBed.get(RaidenConfig);
+        const config = TestBed.inject(RaidenConfig);
 
         const eth = config.web3.eth;
 

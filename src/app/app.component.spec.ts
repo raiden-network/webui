@@ -107,9 +107,9 @@ describe('AppComponent', () => {
         fixture = TestBed.createComponent(AppComponent);
         app = fixture.componentInstance;
 
-        notificationService = TestBed.get(NotificationService);
-        dialog = TestBed.get(MatDialog);
-        const channelPollingService = TestBed.get(ChannelPollingService);
+        notificationService = TestBed.inject(NotificationService);
+        dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const channelPollingService = TestBed.inject(ChannelPollingService);
         spyOn(channelPollingService, 'channels').and.returnValue(of([]));
     });
 

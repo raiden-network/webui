@@ -51,9 +51,9 @@ describe('ErrorHandlingInterceptor', () => {
             ]
         });
 
-        service = TestBed.get(MockRequestingService);
-        httpMock = TestBed.get(HttpTestingController);
-        notificationService = TestBed.get(NotificationService);
+        service = TestBed.inject(MockRequestingService);
+        httpMock = TestBed.inject(HttpTestingController);
+        notificationService = TestBed.inject(NotificationService);
     });
 
     it('should handle Raiden API errors', () => {
@@ -217,11 +217,8 @@ describe('ErrorHandlingInterceptor', () => {
     });
 
     it('should reset the error and refresh rpc connection when connection is back', () => {
-        const raidenService = TestBed.get(RaidenService);
-        const attemptSpy = spyOn(
-            raidenService,
-            'attemptRpcConnection'
-        ).and.callFake(() => {});
+        const raidenService = TestBed.inject(RaidenService);
+        const attemptSpy = spyOn(raidenService, 'attemptRpcConnection');
         const refreshSpy = spyOn(raidenService, 'refreshAddress').and.callFake(
             () => {}
         );

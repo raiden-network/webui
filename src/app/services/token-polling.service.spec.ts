@@ -33,7 +33,7 @@ describe('TokenPollingService', () => {
     );
 
     beforeEach(() => {
-        raidenService = TestBed.get(RaidenService);
+        raidenService = TestBed.inject(RaidenService);
         tokenSpy = spyOn(raidenService, 'getTokens').and.returnValue(
             of([token])
         );

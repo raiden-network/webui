@@ -101,7 +101,7 @@ describe('OpenDialogComponent', () => {
         fixture = TestBed.createComponent(OpenDialogComponent);
         component = fixture.componentInstance;
 
-        spyOn(TestBed.get(RaidenService), 'getUserToken').and.returnValue(
+        spyOn(TestBed.inject(RaidenService), 'getUserToken').and.returnValue(
             token
         );
 

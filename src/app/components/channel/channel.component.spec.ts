@@ -76,8 +76,8 @@ describe('ChannelComponent', () => {
         component = fixture.componentInstance;
 
         component.channel = channel;
-        dialog = TestBed.get(MatDialog);
-        raidenService = TestBed.get(RaidenService);
+        dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        raidenService = TestBed.inject(RaidenService);
         contacts = {};
 
         fixture.detectChanges();

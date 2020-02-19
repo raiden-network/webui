@@ -136,10 +136,10 @@ describe('PaymentDialogComponent', () => {
         fixture = TestBed.createComponent(PaymentDialogComponent);
         component = fixture.componentInstance;
 
-        pendingTransferPollingService = TestBed.get(
+        pendingTransferPollingService = TestBed.inject(
             PendingTransferPollingService
         );
-        spyOn(TestBed.get(RaidenService), 'getUserToken').and.returnValue(
+        spyOn(TestBed.inject(RaidenService), 'getUserToken').and.returnValue(
             token
         );
 
@@ -181,7 +181,7 @@ describe('PaymentDialogComponent', () => {
         pendingTransferPollingService.pendingTransfers$ = of([
             identicalPendingTransfer
         ]);
-        const dialog = TestBed.get(MatDialog) as MockMatDialog;
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         mockAllInputs();
@@ -210,7 +210,7 @@ describe('PaymentDialogComponent', () => {
     });
 
     it('should open the confirmation dialog with contact label', () => {
-        const addressBookService: AddressBookService = TestBed.get(
+        const addressBookService: AddressBookService = TestBed.inject(
             AddressBookService
         );
         const contacts: Contacts = { [addressInput]: 'Test account' };
@@ -219,7 +219,7 @@ describe('PaymentDialogComponent', () => {
         pendingTransferPollingService.pendingTransfers$ = of([
             identicalPendingTransfer
         ]);
-        const dialog = TestBed.get(MatDialog) as MockMatDialog;
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         mockAllInputs();
@@ -244,7 +244,7 @@ describe('PaymentDialogComponent', () => {
         pendingTransferPollingService.pendingTransfers$ = of([
             identicalPendingTransfer
         ]);
-        const dialog = TestBed.get(MatDialog) as MockMatDialog;
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         dialog.cancelled = true;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 

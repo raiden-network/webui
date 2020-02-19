@@ -43,8 +43,8 @@ describe('PendingTransferPollingService', () => {
     });
 
     beforeEach(() => {
-        raidenService = TestBed.get(RaidenService);
-        notificationService = TestBed.get(NotificationService);
+        raidenService = TestBed.inject(RaidenService);
+        notificationService = TestBed.inject(NotificationService);
 
         getPendingTransfersSpy = spyOn(raidenService, 'getPendingTransfers');
         spyOn(notificationService, 'addInfoNotification');
@@ -64,7 +64,7 @@ describe('PendingTransferPollingService', () => {
     it('should show a notification if new pending transfers are detected', inject(
         [PendingTransferPollingService],
         (service: PendingTransferPollingService) => {
-            const mockAddressBookService = TestBed.get(AddressBookService);
+            const mockAddressBookService = TestBed.inject(AddressBookService);
             mockAddressBookService.get = () => {
                 return {
                     [pendingTransfer1.target]: 'Test account 1',

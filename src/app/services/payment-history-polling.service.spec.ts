@@ -34,9 +34,9 @@ describe('PaymentHistoryPollingService', () => {
     });
 
     beforeEach(() => {
-        const raidenService = TestBed.get(RaidenService);
+        const raidenService = TestBed.inject(RaidenService);
         getPaymentHistorySpy = spyOn(raidenService, 'getPaymentHistory');
-        notificationService = TestBed.get(NotificationService);
+        notificationService = TestBed.inject(NotificationService);
         spyOn(notificationService, 'addInfoNotification');
         spyOn(raidenService, 'getUserToken').and.returnValue(token);
     });
@@ -65,7 +65,7 @@ describe('PaymentHistoryPollingService', () => {
     it('should show a notification if new payment events are detected', inject(
         [PaymentHistoryPollingService],
         (service: PaymentHistoryPollingService) => {
-            const mockAddressBookService = TestBed.get(AddressBookService);
+            const mockAddressBookService = TestBed.inject(AddressBookService);
             mockAddressBookService.get = () => {
                 return {
                     [paymentEvent2.initiator]: 'Test account'

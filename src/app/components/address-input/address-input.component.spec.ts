@@ -66,8 +66,8 @@ describe('AddressInputComponent', () => {
         fixture = TestBed.createComponent(AddressInputComponent);
         component = fixture.componentInstance;
 
-        mockConfig = TestBed.get(RaidenConfig);
-        mockAddressBookService = TestBed.get(AddressBookService);
+        mockConfig = TestBed.inject(RaidenConfig) as MockConfig;
+        mockAddressBookService = TestBed.inject(AddressBookService);
         const inputDebugElement = fixture.debugElement.query(By.css('input'));
         input = inputDebugElement.nativeElement as HTMLInputElement;
     });
@@ -168,7 +168,7 @@ describe('AddressInputComponent', () => {
         });
 
         it('should show an error if the address is own address', () => {
-            const raidenService: RaidenService = TestBed.get(RaidenService);
+            const raidenService = TestBed.inject(RaidenService);
             const address = createAddress();
             spyOnProperty(
                 raidenService,
@@ -181,7 +181,7 @@ describe('AddressInputComponent', () => {
         });
 
         it('should show an error if ENS resolve returns null', fakeAsync(() => {
-            const raidenService: RaidenService = TestBed.get(RaidenService);
+            const raidenService = TestBed.inject(RaidenService);
             spyOn(raidenService, 'resolveEnsName').and.returnValue(of(null));
 
             mockInput(fixture.debugElement, 'input', 'test.eth');
@@ -207,7 +207,7 @@ describe('AddressInputComponent', () => {
 
         it('should display the address as a hint on successful ENS resolve', fakeAsync(() => {
             const address = createAddress();
-            const raidenService: RaidenService = TestBed.get(RaidenService);
+            const raidenService = TestBed.inject(RaidenService);
             spyOn(raidenService, 'resolveEnsName').and.returnValue(of(address));
 
             mockInput(fixture.debugElement, 'input', 'test.eth');

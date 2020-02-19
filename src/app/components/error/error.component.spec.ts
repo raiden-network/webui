@@ -75,7 +75,7 @@ describe('ErrorComponent', () => {
     });
 
     it('should attempt to connect to the API when retry button clicked', () => {
-        const raidenService: RaidenService = TestBed.get(RaidenService);
+        const raidenService = TestBed.inject(RaidenService);
         const attemptApiConnectionSpy = spyOn(
             raidenService,
             'attemptApiConnection'
@@ -92,7 +92,7 @@ describe('ErrorComponent', () => {
         component.data = payload;
         fixture.detectChanges();
 
-        const raidenService: RaidenService = TestBed.get(RaidenService);
+        const raidenService = TestBed.inject(RaidenService);
         const attemptRpcConnectionSpy = spyOn(
             raidenService,
             'attemptRpcConnection'

@@ -30,7 +30,7 @@ describe('NotificationService', () => {
     });
 
     beforeEach(() => {
-        toastrService = TestBed.get(ToastrService);
+        toastrService = TestBed.inject(ToastrService);
     });
 
     it('should be created', inject(

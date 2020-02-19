@@ -49,7 +49,7 @@ describe('RaidenConfig', () => {
             providers: [RaidenConfig, NotificationService, Web3Factory]
         });
 
-        const web3Factory: Web3Factory = TestBed.get(Web3Factory);
+        const web3Factory = TestBed.inject(Web3Factory);
         const fake = async (method: string): Promise<object> => {
             if (method !== 'net_version') {
                 throw new Error('not mocked');
@@ -75,10 +75,10 @@ describe('RaidenConfig', () => {
             }
         );
 
-        testingController = TestBed.get(HttpTestingController);
-        raidenConfig = TestBed.get(RaidenConfig);
+        testingController = TestBed.inject(HttpTestingController);
+        raidenConfig = TestBed.inject(RaidenConfig);
 
-        notificationService = TestBed.get(NotificationService);
+        notificationService = TestBed.inject(NotificationService);
     });
 
     it('should be created', inject([RaidenConfig], (service: RaidenConfig) => {

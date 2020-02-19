@@ -95,9 +95,7 @@ describe('HistoryTableComponent', () => {
     });
 
     it('should filter the events by the selected token', () => {
-        const selectedTokenService: SelectedTokenService = TestBed.get(
-            SelectedTokenService
-        );
+        const selectedTokenService = TestBed.inject(SelectedTokenService);
         selectedTokenService.setToken(token1);
         fixture.detectChanges();
 
@@ -109,7 +107,7 @@ describe('HistoryTableComponent', () => {
     });
 
     it('should filter the events by a token symbol search filter', fakeAsync(() => {
-        const sharedService: SharedService = TestBed.get(SharedService);
+        const sharedService = TestBed.inject(SharedService);
         sharedService.setSearchValue(token2.symbol);
         tick(1000);
         fixture.detectChanges();
@@ -125,16 +123,14 @@ describe('HistoryTableComponent', () => {
     it('should filter the events by a contact label search filter', fakeAsync(() => {
         const event = createPaymentEvent('EventPaymentSentSuccess');
         historySubject.next([event].concat(history));
-        const addressBookService: AddressBookService = TestBed.get(
-            AddressBookService
-        );
+        const addressBookService = TestBed.inject(AddressBookService);
         addressBookService.get = () => {
             const contacts: Contacts = { [event.target]: 'The test target' };
             return contacts;
         };
         fixture.detectChanges();
 
-        const sharedService: SharedService = TestBed.get(SharedService);
+        const sharedService: SharedService = TestBed.inject(SharedService);
         sharedService.setSearchValue('The test target');
         tick(1000);
         fixture.detectChanges();
