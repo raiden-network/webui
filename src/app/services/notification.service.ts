@@ -76,10 +76,11 @@ export class NotificationService {
         const identifier = this.getNewIdentifier();
 
         this.pendingActions = [
-            Object.assign({}, message, {
+            {
+                ...message,
                 identifier: identifier,
                 timestamp: new Date().toISOString()
-            }),
+            },
             ...this.pendingActions
         ];
 
@@ -135,10 +136,11 @@ export class NotificationService {
         const identifier = this.getNewIdentifier();
 
         this.notifications = [
-            Object.assign({}, message, {
+            {
+                ...message,
                 identifier: identifier,
                 timestamp: new Date().toISOString()
-            }),
+            },
             ...this.notifications
         ];
 
