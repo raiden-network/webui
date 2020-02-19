@@ -76,16 +76,16 @@ describe('ContactActionsComponent', () => {
         fixture = TestBed.createComponent(ContactActionsComponent);
         component = fixture.componentInstance;
 
-        const channelPollingService: ChannelPollingService = TestBed.get(
+        const channelPollingService: ChannelPollingService = TestBed.inject(
             ChannelPollingService
         );
         channelsSubject = new BehaviorSubject(createTestChannels());
         spyOn(channelPollingService, 'channels').and.returnValue(
             channelsSubject.asObservable()
         );
-        selectedTokenService = TestBed.get(SelectedTokenService);
-        dialog = TestBed.get(MatDialog);
-        raidenService = TestBed.get(RaidenService);
+        selectedTokenService = TestBed.inject(SelectedTokenService);
+        dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        raidenService = TestBed.inject(RaidenService);
 
         component.contact = contact;
         fixture.detectChanges();
@@ -183,7 +183,7 @@ describe('ContactActionsComponent', () => {
     });
 
     it('should open edit contact dialog', () => {
-        const addressBookService = TestBed.get(AddressBookService);
+        const addressBookService = TestBed.inject(AddressBookService);
 
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const dialogResult: Contact = {
@@ -209,7 +209,7 @@ describe('ContactActionsComponent', () => {
     });
 
     it('should open delete contact dialog', () => {
-        const addressBookService = TestBed.get(AddressBookService);
+        const addressBookService = TestBed.inject(AddressBookService);
 
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const deleteSpy = spyOn(addressBookService, 'delete');

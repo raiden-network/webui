@@ -18,7 +18,7 @@ describe('SelectedTokenService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     beforeEach(() => {
-        service = TestBed.get(SelectedTokenService);
+        service = TestBed.inject(SelectedTokenService);
     });
 
     it('should be created', () => {

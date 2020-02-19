@@ -7,7 +7,7 @@ describe('SharedService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     beforeEach(() => {
-        service = TestBed.get(SharedService);
+        service = TestBed.inject(SharedService);
     });
 
     it('should be created', () => {

@@ -26,7 +26,7 @@ describe('TokenInfoRetriever', () => {
             ]
         });
 
-        const config = TestBed.get(RaidenConfig);
+        const config = TestBed.inject(RaidenConfig);
 
         function createMethod(name: string) {
             // noinspection JSUnusedLocalSymbols
@@ -41,7 +41,7 @@ describe('TokenInfoRetriever', () => {
             };
         }
 
-        // noinspection JSUnusedLocalSymbols
+        // @ts-ignore
         config.web3.eth.Contract = function(
             jsonInterface: AbiItem[] | AbiItem,
             address?: string,
@@ -63,7 +63,7 @@ describe('TokenInfoRetriever', () => {
 
         batchManager = config.batchManager;
         addSpy = spyOn(batchManager, 'add').and.callFake(() => count++);
-        service = TestBed.get(TokenInfoRetrieverService);
+        service = TestBed.inject(TokenInfoRetrieverService);
     });
 
     it('should be truthy', async(() => {

@@ -84,7 +84,7 @@ describe('ChannelListComponent', () => {
         fixture = TestBed.createComponent(ChannelListComponent);
         component = fixture.componentInstance;
 
-        const channelPollingService = TestBed.get(ChannelPollingService);
+        const channelPollingService = TestBed.inject(ChannelPollingService);
         const channelsSubject = new BehaviorSubject<Channel[]>([]);
         spyOn(channelPollingService, 'channels').and.returnValue(
             channelsSubject.asObservable()
@@ -124,9 +124,7 @@ describe('ChannelListComponent', () => {
     });
 
     it('should filter the channels by the selected token', () => {
-        const selectedTokenService: SelectedTokenService = TestBed.get(
-            SelectedTokenService
-        );
+        const selectedTokenService = TestBed.inject(SelectedTokenService);
         selectedTokenService.setToken(token1);
         clickElement(fixture.debugElement, '#show-all');
         fixture.detectChanges();
@@ -139,7 +137,7 @@ describe('ChannelListComponent', () => {
     });
 
     it('should filter the channels by a token symbol search filter', fakeAsync(() => {
-        const sharedService: SharedService = TestBed.get(SharedService);
+        const sharedService = TestBed.inject(SharedService);
         sharedService.setSearchValue(token2.symbol);
         tick(1000);
         fixture.detectChanges();
@@ -154,9 +152,7 @@ describe('ChannelListComponent', () => {
 
     it('should filter the channels by a contact label search filter', fakeAsync(() => {
         const channel = channels[0];
-        const addressBookService: AddressBookService = TestBed.get(
-            AddressBookService
-        );
+        const addressBookService = TestBed.inject(AddressBookService);
         addressBookService.get = () => {
             const contacts: Contacts = {
                 [channel.partner_address]: 'Test partner'
@@ -165,7 +161,7 @@ describe('ChannelListComponent', () => {
         };
         fixture.detectChanges();
 
-        const sharedService: SharedService = TestBed.get(SharedService);
+        const sharedService = TestBed.inject(SharedService);
         sharedService.setSearchValue('Test partner');
         tick(1000);
         fixture.detectChanges();
@@ -176,9 +172,9 @@ describe('ChannelListComponent', () => {
     }));
 
     it('should open open channel dialog', () => {
-        const dialog: MockMatDialog = TestBed.get(MatDialog);
-        const raidenService: RaidenService = TestBed.get(RaidenService);
-        const raidenConfig: RaidenConfig = TestBed.get(RaidenConfig);
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const raidenService = TestBed.inject(RaidenService);
+        const raidenConfig = TestBed.inject(RaidenConfig);
 
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const dialogResult: OpenDialogResult = {
@@ -213,8 +209,8 @@ describe('ChannelListComponent', () => {
     });
 
     it('should not open channel if dialog is cancelled', () => {
-        const dialog: MockMatDialog = TestBed.get(MatDialog);
-        const raidenService: RaidenService = TestBed.get(RaidenService);
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const raidenService = TestBed.inject(RaidenService);
 
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         dialog.returns = () => null;
@@ -228,9 +224,9 @@ describe('ChannelListComponent', () => {
     });
 
     it('should open open channel dialog with selected token', () => {
-        const dialog: MockMatDialog = TestBed.get(MatDialog);
-        const raidenConfig: RaidenConfig = TestBed.get(RaidenConfig);
-        const selectedTokenService: SelectedTokenService = TestBed.get(
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const raidenConfig = TestBed.inject(RaidenConfig);
+        const selectedTokenService: SelectedTokenService = TestBed.inject(
             SelectedTokenService
         );
         selectedTokenService.setToken(token1);

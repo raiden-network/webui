@@ -164,18 +164,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
             useClass: ShowOnDirtyErrorStateMatcher
         }
     ],
-    entryComponents: [
-        RegisterDialogComponent,
-        ConnectionManagerDialogComponent,
-        PaymentDialogComponent,
-        ConfirmationDialogComponent,
-        DepositWithdrawDialogComponent,
-        OpenDialogComponent,
-        RaidenToastComponent,
-        AddEditContactDialogComponent,
-        ErrorComponent,
-        QrCodeComponent
-    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -51,14 +51,12 @@ describe('ChannelPollingService', () => {
             ]
         });
 
-        raidenService = TestBed.get(RaidenService);
-        notificationService = TestBed.get(NotificationService);
-        pollingService = TestBed.get(ChannelPollingService);
+        raidenService = TestBed.inject(RaidenService);
+        notificationService = TestBed.inject(NotificationService);
+        pollingService = TestBed.inject(ChannelPollingService);
 
         raidenServiceSpy = spyOn(raidenService, 'getChannels');
-        spyOn(notificationService, 'addInfoNotification').and.callFake(
-            () => {}
-        );
+        spyOn(notificationService, 'addInfoNotification');
     });
 
     it('should be created', inject(
@@ -79,7 +77,7 @@ describe('ChannelPollingService', () => {
     }));
 
     it('should send a notification when user opens the first channel', fakeAsync(() => {
-        const mockAddressBookService = TestBed.get(AddressBookService);
+        const mockAddressBookService = TestBed.inject(AddressBookService);
         mockAddressBookService.get = () => {
             return {
                 [channel1.partner_address]: 'Test account'

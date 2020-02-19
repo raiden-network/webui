@@ -66,8 +66,8 @@ describe('TokenComponent', () => {
         component = fixture.componentInstance;
         component.selected = true;
 
-        dialog = TestBed.get(MatDialog);
-        raidenService = TestBed.get(RaidenService);
+        dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        raidenService = TestBed.inject(RaidenService);
     });
 
     describe('as all networks view', () => {

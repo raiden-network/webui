@@ -102,7 +102,7 @@ describe('ContactListComponent', () => {
         fixture = TestBed.createComponent(ContactListComponent);
         component = fixture.componentInstance;
 
-        addressBookService = TestBed.get(AddressBookService);
+        addressBookService = TestBed.inject(AddressBookService);
         addressBookService.getArray = () => contacts;
 
         fixture.detectChanges();
@@ -144,7 +144,7 @@ describe('ContactListComponent', () => {
     });
 
     it('should deselect the contact when clicked elsewhere', () => {
-        const sharedService: SharedService = TestBed.get(SharedService);
+        const sharedService = TestBed.inject(SharedService);
         const contactElement = fixture.debugElement.query(
             By.directive(ContactComponent)
         );
@@ -156,7 +156,7 @@ describe('ContactListComponent', () => {
     });
 
     it('should filter the contacts by the search value', fakeAsync(() => {
-        const sharedService: SharedService = TestBed.get(SharedService);
+        const sharedService = TestBed.inject(SharedService);
         sharedService.setSearchValue(contacts[1].label);
         tick(1000);
         fixture.detectChanges();
@@ -167,7 +167,7 @@ describe('ContactListComponent', () => {
     }));
 
     it('should open add contact dialog', () => {
-        const dialog: MockMatDialog = TestBed.get(MatDialog);
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const dialogResult: Contact = {
             address: createAddress(),
@@ -260,9 +260,7 @@ describe('ContactListComponent', () => {
         };
         const fileList = createMockFileList('address_book.json');
 
-        const notificationService: NotificationService = TestBed.get(
-            NotificationService
-        );
+        const notificationService = TestBed.inject(NotificationService);
         const storeSpy = spyOn(addressBookService, 'store');
         const notificationSpy = spyOn(
             notificationService,
@@ -294,9 +292,7 @@ describe('ContactListComponent', () => {
         };
         const fileList = createMockFileList('image.png');
 
-        const notificationService: NotificationService = TestBed.get(
-            NotificationService
-        );
+        const notificationService = TestBed.inject(NotificationService);
         const storeSpy = spyOn(addressBookService, 'store');
         const notificationSpy = spyOn(
             notificationService,
@@ -331,9 +327,7 @@ describe('ContactListComponent', () => {
             'more_address.json'
         );
 
-        const notificationService: NotificationService = TestBed.get(
-            NotificationService
-        );
+        const notificationService = TestBed.inject(NotificationService);
         const storeSpy = spyOn(addressBookService, 'store');
         const notificationSpy = spyOn(
             notificationService,
@@ -367,9 +361,7 @@ describe('ContactListComponent', () => {
         // @ts-ignore
         fileList.item(0).size = UploadChecks.MAX_UPLOAD_SIZE + 1;
 
-        const notificationService: NotificationService = TestBed.get(
-            NotificationService
-        );
+        const notificationService = TestBed.inject(NotificationService);
         const storeSpy = spyOn(addressBookService, 'store');
         const notificationSpy = spyOn(
             notificationService,

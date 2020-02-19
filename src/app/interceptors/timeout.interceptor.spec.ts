@@ -38,8 +38,8 @@ describe('TimeoutInterceptor', () => {
             ]
         });
 
-        service = TestBed.get(MockRequestingService);
-        httpMock = TestBed.get(HttpTestingController);
+        service = TestBed.inject(MockRequestingService);
+        httpMock = TestBed.inject(HttpTestingController);
     });
 
     it('should throw an error if a timeout occurs', fakeAsync(() => {

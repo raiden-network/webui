@@ -34,6 +34,7 @@ const default_config: RDNConfig = {
     environment_type: EnvironmentType.DEVELOPMENT
 };
 
+@Injectable()
 export class Web3Factory {
     // noinspection JSMethodCanBeStatic
     create(provider: HttpProvider): Web3 {

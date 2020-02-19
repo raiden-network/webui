@@ -127,7 +127,7 @@ describe('TokenNetworkSelectorComponent', () => {
     });
 
     it('should be able to set a value programmatically', () => {
-        const raidenService: RaidenService = TestBed.get(RaidenService);
+        const raidenService = TestBed.inject(RaidenService);
         spyOn(raidenService, 'getUserToken').and.returnValue(notOwnedToken);
         const address = notOwnedToken.address;
         component.writeValue(address);
@@ -137,7 +137,7 @@ describe('TokenNetworkSelectorComponent', () => {
     });
 
     it('should not to set an unregistered token programmatically', () => {
-        const raidenService: RaidenService = TestBed.get(RaidenService);
+        const raidenService = TestBed.inject(RaidenService);
         spyOn(raidenService, 'getUserToken').and.returnValue(undefined);
         component.writeValue(createAddress());
         fixture.detectChanges();

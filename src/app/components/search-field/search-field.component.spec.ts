@@ -59,16 +59,14 @@ describe('SearchFieldComponent', () => {
         fixture = TestBed.createComponent(SearchFieldComponent);
         component = fixture.componentInstance;
 
-        sharedService = TestBed.get(SharedService);
-        selectedTokenService = TestBed.get(SelectedTokenService);
+        sharedService = TestBed.inject(SharedService);
+        selectedTokenService = TestBed.inject(SelectedTokenService);
 
-        const raidenService: RaidenService = TestBed.get(RaidenService);
+        const raidenService = TestBed.inject(RaidenService);
         spyOn(raidenService, 'getUserToken').and.callFake(userToken => {
             return { [token.address]: token }[userToken];
         });
-        const addressBookService: AddressBookService = TestBed.get(
-            AddressBookService
-        );
+        const addressBookService = TestBed.inject(AddressBookService);
         addressBookService.getArray = () => contacts;
 
         fixture.detectChanges();

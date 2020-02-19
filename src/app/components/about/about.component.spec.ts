@@ -49,7 +49,7 @@ describe('AboutComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(AboutComponent);
         component = fixture.componentInstance;
-        raidenService = TestBed.get(RaidenService);
+        raidenService = TestBed.inject(RaidenService);
         fixture.detectChanges();
     });
 

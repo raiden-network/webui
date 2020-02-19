@@ -43,8 +43,8 @@ describe('LosslessJsonInterceptor', () => {
             ]
         });
 
-        service = TestBed.get(MockRequestingService);
-        httpMock = TestBed.get(HttpTestingController);
+        service = TestBed.inject(MockRequestingService);
+        httpMock = TestBed.inject(HttpTestingController);
     });
 
     it('should convert JSON response losslessly', () => {

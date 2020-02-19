@@ -7,7 +7,7 @@ export class MockMatDialog {
 
     constructor() {}
 
-    open() {
+    open(component, options) {
         return {
             componentInstance: {},
             afterClosed: () => {

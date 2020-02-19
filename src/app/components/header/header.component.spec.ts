@@ -82,8 +82,8 @@ describe('HeaderComponent', () => {
         fixture = TestBed.createComponent(HeaderComponent);
         component = fixture.componentInstance;
 
-        const channelPollingService = TestBed.get(ChannelPollingService);
-        notificationService = TestBed.get(NotificationService);
+        const channelPollingService = TestBed.inject(ChannelPollingService);
+        notificationService = TestBed.inject(NotificationService);
 
         spyOn(channelPollingService, 'channels').and.returnValue(of(channels));
         fixture.detectChanges();
@@ -128,7 +128,7 @@ describe('HeaderComponent', () => {
     });
 
     it('should show the qr code dialog for the raiden address', () => {
-        const dialog: MockMatDialog = TestBed.get(MatDialog);
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open');
 
         clickElement(fixture.debugElement, '.header__account-button');

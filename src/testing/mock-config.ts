@@ -8,6 +8,7 @@ import { stub } from './stub';
 import { NotificationService } from '../app/services/notification.service';
 import { Network } from '../app/utils/network-info';
 import { createNetworkMock } from './test-data';
+import { Injectable } from '@angular/core';
 
 class MockWeb3 extends Web3 {
     isChecksum = false;
@@ -47,6 +48,7 @@ const mockProvider = {
 
 const mockNetwork = createNetworkMock();
 
+@Injectable()
 export class MockConfig extends RaidenConfig {
     public web3: Web3 = mockProvider.web3;
     private testBatchManager: BatchManager = new BatchManager(this.web3);

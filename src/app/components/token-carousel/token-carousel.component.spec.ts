@@ -91,7 +91,7 @@ describe('TokenCarouselComponent', () => {
         fixture = TestBed.createComponent(TokenCarouselComponent);
         component = fixture.componentInstance;
 
-        const channelPollingService = TestBed.get(ChannelPollingService);
+        const channelPollingService = TestBed.inject(ChannelPollingService);
         spyOn(channelPollingService, 'channels').and.returnValue(of([]));
 
         fixture.detectChanges();
@@ -131,9 +131,7 @@ describe('TokenCarouselComponent', () => {
     });
 
     it('should be able to select a token', async(() => {
-        const selectedTokenService: SelectedTokenService = TestBed.get(
-            SelectedTokenService
-        );
+        const selectedTokenService = TestBed.inject(SelectedTokenService);
         const setTokenSpy = spyOn(
             selectedTokenService,
             'setToken'
@@ -146,9 +144,7 @@ describe('TokenCarouselComponent', () => {
     }));
 
     it('should be able to select the all networks view', () => {
-        const selectedTokenService: SelectedTokenService = TestBed.get(
-            SelectedTokenService
-        );
+        const selectedTokenService = TestBed.inject(SelectedTokenService);
         const token = tokens[1];
         component.select(token);
 
@@ -176,7 +172,7 @@ describe('TokenCarouselComponent', () => {
 
     it('should filter the tokens by a token symbol search filter', fakeAsync(() => {
         const token = tokens[3];
-        const sharedService: SharedService = TestBed.get(SharedService);
+        const sharedService = TestBed.inject(SharedService);
         sharedService.setSearchValue(token.symbol);
         tick(1000);
         fixture.detectChanges();
@@ -188,8 +184,8 @@ describe('TokenCarouselComponent', () => {
     }));
 
     it('should open register dialog', () => {
-        const dialog: MockMatDialog = TestBed.get(MatDialog);
-        const raidenService: RaidenService = TestBed.get(RaidenService);
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const raidenService = TestBed.inject(RaidenService);
 
         const tokenAddress = createAddress();
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
@@ -209,8 +205,8 @@ describe('TokenCarouselComponent', () => {
     });
 
     it('should not register token if dialog is cancelled', () => {
-        const dialog: MockMatDialog = TestBed.get(MatDialog);
-        const raidenService: RaidenService = TestBed.get(RaidenService);
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const raidenService = TestBed.inject(RaidenService);
 
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         dialog.returns = () => null;
