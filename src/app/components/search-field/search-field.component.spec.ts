@@ -40,7 +40,6 @@ describe('SearchFieldComponent', () => {
             declarations: [SearchFieldComponent, TokenPipe],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.HammerJSProvider(),
                 TestProviders.AddressBookStubProvider(),
                 SharedService,
                 { provide: TokenPollingService, useValue: tokenPollingMock },

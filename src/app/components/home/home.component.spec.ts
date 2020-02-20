@@ -43,7 +43,6 @@ describe('HomeComponent', () => {
                 TokenPipe
             ],
             providers: [
-                TestProviders.HammerJSProvider(),
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider()
             ],

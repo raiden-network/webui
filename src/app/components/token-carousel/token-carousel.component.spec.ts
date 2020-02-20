@@ -72,7 +72,6 @@ describe('TokenCarouselComponent', () => {
                 },
                 SelectedTokenService,
                 TestProviders.MockMatDialog(),
-                TestProviders.HammerJSProvider(),
                 TestProviders.MockRaidenConfigProvider(),
                 SharedService,
                 TestProviders.AddressBookStubProvider()

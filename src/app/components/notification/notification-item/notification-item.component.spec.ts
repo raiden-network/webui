@@ -30,7 +30,6 @@ describe('NotificationItemComponent', () => {
         TestBed.configureTestingModule({
             declarations: [NotificationItemComponent],
             providers: [
-                TestProviders.HammerJSProvider(),
                 NoopAnimationsModule,
                 TestProviders.AddressBookStubProvider(),
                 IdenticonCacheService

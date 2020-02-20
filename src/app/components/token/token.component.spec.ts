@@ -48,7 +48,6 @@ describe('TokenComponent', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 PendingTransferPollingService,
                 TestProviders.MockMatDialog(),
-                TestProviders.HammerJSProvider(),
                 TestProviders.AddressBookStubProvider()
             ],
             imports: [

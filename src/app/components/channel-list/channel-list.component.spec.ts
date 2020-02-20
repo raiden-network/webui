@@ -61,7 +61,6 @@ describe('ChannelListComponent', () => {
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.HammerJSProvider(),
                 RaidenService,
                 TokenPollingService,
                 TestProviders.MockMatDialog(),

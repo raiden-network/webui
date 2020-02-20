@@ -50,7 +50,6 @@ describe('ChannelComponent', () => {
             declarations: [ChannelComponent, DecimalPipe, DisplayDecimalsPipe],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.HammerJSProvider(),
                 RaidenService,
                 TokenPollingService,
                 TestProviders.MockMatDialog(),

@@ -47,7 +47,6 @@ describe('AddressInputComponent', () => {
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
-                TestProviders.HammerJSProvider(),
                 {
                     provide: ErrorStateMatcher,
                     useClass: ShowOnDirtyErrorStateMatcher

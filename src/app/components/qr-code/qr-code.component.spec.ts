@@ -27,8 +27,7 @@ describe('QrCodeComponent', () => {
             declarations: [QrCodeComponent],
             providers: [
                 TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
-                TestProviders.HammerJSProvider()
+                TestProviders.MockMatDialogRef({ close: () => {} })
             ],
             imports: [
                 ClipboardModule,

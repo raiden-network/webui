@@ -87,7 +87,6 @@ describe('AppComponent', () => {
                 },
                 NotificationService,
                 ChannelPollingService,
-                TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialog(),
                 SharedService,
                 TestProviders.AddressBookStubProvider()
