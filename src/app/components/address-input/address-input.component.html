@@ -19,7 +19,7 @@
         <div class="options">
             <mat-option
                 *ngFor="
-                    let option of (filteredOptions$ | async);
+                    let option of filteredOptions$ | async;
                     trackBy: trackByFn
                 "
                 [value]="option.address"

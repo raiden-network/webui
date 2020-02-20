@@ -143,9 +143,7 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
         const contact = this.contact;
         const payload: ConfirmationDialogPayload = {
             title: 'Delete Contact',
-            message: `Are you sure you want to delete the contact ${
-                contact.label
-            } for address ${contact.address}?`
+            message: `Are you sure you want to delete the contact ${contact.label} for address ${contact.address}?`
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {

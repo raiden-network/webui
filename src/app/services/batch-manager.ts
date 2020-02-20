@@ -22,9 +22,7 @@ export class Validator {
 
             if (payload && response.id !== payload['id']) {
                 return new Error(
-                    `Validation error: Invalid JSON-RPC response ID (request: ${
-                        payload['id']
-                    } / response: ${response.id})`
+                    `Validation error: Invalid JSON-RPC response ID (request: ${payload['id']} / response: ${response.id})`
                 );
             }
 

@@ -88,8 +88,8 @@
                 <span *ngIf="event.userToken">
                     <span
                         *ngIf="
-                            (event.amount
-                                | decimal: event.userToken.decimals) as amount
+                            event.amount
+                                | decimal: event.userToken.decimals as amount
                         "
                         [matTooltip]="amount"
                     >

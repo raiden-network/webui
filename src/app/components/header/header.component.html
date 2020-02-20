@@ -12,7 +12,7 @@
             ngClass="header__logo"
         />
     </a>
-    <div fxLayout="column" *ngIf="(balance$ | async) as balance">
+    <div fxLayout="column" *ngIf="balance$ | async as balance">
         <span class="header__number" [matTooltip]="balance"
             >{{ balance | displayDecimals: 3 }}
             {{ (network$ | async)?.shortName }}
@@ -23,7 +23,7 @@
     </div>
     <button
         mat-flat-button
-        *ngIf="(balance$ | async)"
+        *ngIf="balance$ | async"
         color="accent"
         class="header__account-button"
         (click)="showAddress = !showAddress"

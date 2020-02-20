@@ -80,9 +80,7 @@ export class PaymentHistoryPollingService {
         }
         const message: UiMessage = {
             title: 'Received transfer',
-            description: `${formattedAmount} ${
-                token.symbol
-            } from ${initiatorLabel} ${event.initiator}`,
+            description: `${formattedAmount} ${token.symbol} from ${initiatorLabel} ${event.initiator}`,
             icon: 'received',
             identiconAddress: initiatorAddress,
             userToken: token

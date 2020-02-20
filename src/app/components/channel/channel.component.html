@@ -47,8 +47,8 @@
             <ng-container *ngIf="!channel.depositPending">
                 <span
                     *ngIf="
-                        (channel.balance
-                            | decimal: channel.userToken.decimals) as balance
+                        channel.balance
+                            | decimal: channel.userToken.decimals as balance
                     "
                     [matTooltip]="balance"
                     >{{ balance | displayDecimals: 3 }}

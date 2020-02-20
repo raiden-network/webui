@@ -249,9 +249,7 @@ export class RaidenService {
     ): Observable<Channel> {
         return this.http
             .get<Channel>(
-                `${
-                    this.raidenConfig.api
-                }/channels/${tokenAddress}/${partnerAddress}`
+                `${this.raidenConfig.api}/channels/${tokenAddress}/${partnerAddress}`
             )
             .pipe(
                 map((channel: Channel) => {
@@ -290,9 +288,7 @@ export class RaidenService {
                 ).toFixed();
                 const message: UiMessage = {
                     title: 'Opening channel',
-                    description: `with ${partnerLabel} ${partnerAddress} and ${formattedBalance} ${
-                        token.symbol
-                    } deposit`,
+                    description: `with ${partnerLabel} ${partnerAddress} and ${formattedBalance} ${token.symbol} deposit`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
                     userToken: token
@@ -368,9 +364,7 @@ export class RaidenService {
 
         const request = new HttpRequest(
             'POST',
-            `${
-                this.raidenConfig.api
-            }/payments/${tokenAddress}/${targetAddress}`,
+            `${this.raidenConfig.api}/payments/${tokenAddress}/${targetAddress}`,
             { amount, identifier },
             { reportProgress: true }
         );
@@ -394,9 +388,7 @@ export class RaidenService {
                 ).toFixed();
                 const message: UiMessage = {
                     title: 'Sent transfer',
-                    description: `${formattedAmount} ${
-                        token.symbol
-                    } to ${targetLabel} ${targetAddress}`,
+                    description: `${formattedAmount} ${token.symbol} to ${targetLabel} ${targetAddress}`,
                     icon: 'sent',
                     identiconAddress: targetAddress,
                     userToken: token
@@ -480,9 +472,7 @@ export class RaidenService {
                 }
 
                 return this.http.patch<Channel>(
-                    `${
-                        this.raidenConfig.api
-                    }/channels/${tokenAddress}/${partnerAddress}`,
+                    `${this.raidenConfig.api}/channels/${tokenAddress}/${partnerAddress}`,
                     body
                 );
             }),
@@ -541,9 +531,7 @@ export class RaidenService {
                 const partnerLabel = this.getContactLabel(partnerAddress);
                 const message: UiMessage = {
                     title: 'Closing channel',
-                    description: `${
-                        token.symbol
-                    } with ${partnerLabel} ${partnerAddress}`,
+                    description: `${token.symbol} with ${partnerLabel} ${partnerAddress}`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
                     userToken: token
@@ -554,9 +542,7 @@ export class RaidenService {
             }),
             switchMap(() =>
                 this.http.patch<Channel>(
-                    `${
-                        this.raidenConfig.api
-                    }/channels/${tokenAddress}/${partnerAddress}`,
+                    `${this.raidenConfig.api}/channels/${tokenAddress}/${partnerAddress}`,
                     { state: 'closed' }
                 )
             ),
@@ -573,9 +559,7 @@ export class RaidenService {
                 const partnerLabel = this.getContactLabel(partnerAddress);
                 const message: UiMessage = {
                     title: 'Closed channel',
-                    description: `${
-                        token.symbol
-                    } with ${partnerLabel} ${partnerAddress}`,
+                    description: `${token.symbol} with ${partnerLabel} ${partnerAddress}`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
                     userToken: token
@@ -805,9 +789,7 @@ export class RaidenService {
             }),
             switchMap(() =>
                 this.http.post(
-                    `${this.raidenConfig.api}/_testing/tokens/${
-                        token.address
-                    }/mint`,
+                    `${this.raidenConfig.api}/_testing/tokens/${token.address}/mint`,
                     { to: targetAddress, value: amount }
                 )
             ),

@@ -9,7 +9,7 @@
     <div *ngIf="!funds.isZero()" class="allocated-funds">
         Allocated funds:
         <span
-            *ngIf="(funds | decimal: token.decimals) as allocatedFunds"
+            *ngIf="funds | decimal: token.decimals as allocatedFunds"
             [matTooltip]="allocatedFunds"
         >
             {{ allocatedFunds | displayDecimals: 3 }}

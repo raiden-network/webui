@@ -180,9 +180,7 @@ describe('ChannelComponent', () => {
 
         const payload: ConfirmationDialogPayload = {
             title: 'Close Channel',
-            message: `Are you sure you want to close the ${
-                token.symbol
-            } channel with ${channel.partner_address} in ${token.name} network?`
+            message: `Are you sure you want to close the ${token.symbol} channel with ${channel.partner_address} in ${token.name} network?`
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
@@ -222,11 +220,7 @@ describe('ChannelComponent', () => {
 
         const payload: ConfirmationDialogPayload = {
             title: 'Close Channel',
-            message: `Are you sure you want to close the ${
-                token.symbol
-            } channel with Test partner ${channel.partner_address} in ${
-                token.name
-            } network?`
+            message: `Are you sure you want to close the ${token.symbol} channel with Test partner ${channel.partner_address} in ${token.name} network?`
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {

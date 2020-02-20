@@ -319,9 +319,7 @@ describe('TokenComponent', () => {
 
             const payload: ConfirmationDialogPayload = {
                 title: 'Leave Token Network',
-                message: `Are you sure you want to close and settle all ${
-                    token.symbol
-                } channels in ${token.name} network?`
+                message: `Are you sure you want to close and settle all ${token.symbol} channels in ${token.name} network?`
             };
             expect(dialogSpy).toHaveBeenCalledTimes(1);
             expect(dialogSpy).toHaveBeenCalledWith(

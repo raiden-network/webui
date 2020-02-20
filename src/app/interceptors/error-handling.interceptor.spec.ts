@@ -219,9 +219,10 @@ describe('ErrorHandlingInterceptor', () => {
     it('should reset the error and refresh rpc connection when connection is back', () => {
         const raidenService = TestBed.inject(RaidenService);
         const attemptSpy = spyOn(raidenService, 'attemptRpcConnection');
-        const refreshSpy = spyOn(raidenService, 'refreshAddress').and.callFake(
-            () => {}
-        );
+        const refreshSpy = spyOn(
+            raidenService,
+            'refreshAddress'
+        ).and.callFake(() => {});
 
         service.getData().subscribe(
             () => {
