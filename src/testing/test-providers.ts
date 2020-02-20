@@ -1,5 +1,4 @@
 import { Provider } from '@angular/core';
-import { HAMMER_LOADER } from '@angular/platform-browser';
 import { AddressBookService } from '../app/services/address-book.service';
 import { stub } from './stub';
 import { RaidenConfig } from '../app/services/raiden.config';
@@ -12,13 +11,6 @@ import {
 import { MockMatDialog } from './mock-mat-dialog';
 
 export class TestProviders {
-    static HammerJSProvider(): Provider {
-        return {
-            provide: HAMMER_LOADER,
-            useValue: () => new Promise(() => {})
-        };
-    }
-
     static AddressBookStubProvider(): Provider {
         return {
             provide: AddressBookService,

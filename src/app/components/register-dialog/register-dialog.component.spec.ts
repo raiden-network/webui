@@ -28,8 +28,7 @@ describe('RegisterDialogComponent', () => {
                 TestProviders.MockMatDialogData(),
                 TestProviders.MockMatDialogRef({ close: () => {} }),
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-                TestProviders.HammerJSProvider()
+                TestProviders.AddressBookStubProvider()
             ],
             imports: [
                 MaterialComponentsModule,

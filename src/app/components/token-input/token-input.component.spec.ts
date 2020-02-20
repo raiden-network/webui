@@ -22,7 +22,6 @@ describe('TokenInputComponent', () => {
         TestBed.configureTestingModule({
             declarations: [TokenInputComponent],
             providers: [
-                TestProviders.HammerJSProvider(),
                 {
                     provide: ErrorStateMatcher,
                     useClass: ShowOnDirtyErrorStateMatcher

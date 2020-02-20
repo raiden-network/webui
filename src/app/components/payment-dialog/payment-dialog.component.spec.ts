@@ -115,7 +115,6 @@ describe('PaymentDialogComponent', () => {
                 TestProviders.MockMatDialogRef({ close: () => {} }),
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
-                TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialog(),
                 { provide: TokenPollingService, useValue: tokenPollingMock },
                 {

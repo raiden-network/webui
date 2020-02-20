@@ -32,7 +32,6 @@ describe('DepositWithdrawDialogComponent', () => {
                 RaidenDialogComponent
             ],
             providers: [
-                TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialogData(payload),
                 TestProviders.MockMatDialogRef({ close: () => {} })
             ],

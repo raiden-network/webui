@@ -82,7 +82,6 @@ describe('ContactListComponent', () => {
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.HammerJSProvider(),
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.MockMatDialog(),
                 NotificationService,

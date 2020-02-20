@@ -53,8 +53,7 @@ describe('AddEditContactDialogComponent', () => {
                 TestProviders.MockMatDialogData(payload),
                 TestProviders.MockMatDialogRef({ close: () => {} }),
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-                TestProviders.HammerJSProvider()
+                TestProviders.AddressBookStubProvider()
             ],
             imports: [
                 MaterialComponentsModule,

@@ -34,8 +34,7 @@ describe('AboutComponent', () => {
                 {
                     provide: RaidenService,
                     useValue: raidenServiceMock
-                },
-                TestProviders.HammerJSProvider()
+                }
             ],
             imports: [
                 MaterialComponentsModule,

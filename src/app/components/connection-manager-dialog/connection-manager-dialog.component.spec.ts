@@ -47,7 +47,6 @@ describe('ConnectionManagerDialogComponent', () => {
                 DisplayDecimalsPipe
             ],
             providers: [
-                TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialogData(payload),
                 TestProviders.MockMatDialogRef({ close: () => {} })
             ],

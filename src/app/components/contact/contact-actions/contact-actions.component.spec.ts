@@ -55,7 +55,6 @@ describe('ContactActionsComponent', () => {
             declarations: [ContactActionsComponent],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.HammerJSProvider(),
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.MockMatDialog(),
                 PendingTransferPollingService,

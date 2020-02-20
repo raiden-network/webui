@@ -54,7 +54,6 @@ describe('HistoryTableComponent', () => {
             ],
             providers: [
                 TestProviders.AddressBookStubProvider(),
-                TestProviders.HammerJSProvider(),
                 SelectedTokenService,
                 {
                     provide: PaymentHistoryPollingService,

@@ -65,7 +65,6 @@ describe('HeaderComponent', () => {
                 { provide: RaidenService, useValue: raidenServiceMock },
                 { provide: TokenPollingService, useValue: tokenPollingMock },
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.HammerJSProvider(),
                 TestProviders.MockMatDialog(),
                 TestProviders.AddressBookStubProvider()
             ],

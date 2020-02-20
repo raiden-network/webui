@@ -65,7 +65,6 @@ describe('NotificationPanelComponent', () => {
                     provide: NotificationService,
                     useValue: notificationService
                 },
-                TestProviders.HammerJSProvider(),
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider()
             ],

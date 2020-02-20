@@ -85,7 +85,6 @@ describe('OpenDialogComponent', () => {
                 TestProviders.MockMatDialogRef({ close: () => {} }),
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
-                TestProviders.HammerJSProvider(),
                 { provide: TokenPollingService, useValue: tokenPollingMock }
             ],
             imports: [
