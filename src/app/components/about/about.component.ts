@@ -37,11 +37,7 @@ export class AboutComponent implements OnInit, OnDestroy {
         const environment = this.raidenService.production
             ? 'production'
             : 'development';
-        return `## System\n- Raiden: v${this.raidenVersion}\n- WebUI: v${
-            this.webuiVersion
-        }\n- Environment: ${environment}\n- Network: ${
-            this.networkName
-        }\n- User agent: ${window.navigator.userAgent}`;
+        return `## System\n- Raiden: v${this.raidenVersion}\n- WebUI: v${this.webuiVersion}\n- Environment: ${environment}\n- Network: ${this.networkName}\n- User agent: ${window.navigator.userAgent}`;
     }
 
     currentYear(): string {

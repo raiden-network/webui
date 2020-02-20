@@ -216,9 +216,7 @@ describe('ContactActionsComponent', () => {
 
         const payload: ConfirmationDialogPayload = {
             title: 'Delete Contact',
-            message: `Are you sure you want to delete the contact ${
-                contact.label
-            } for address ${contact.address}?`
+            message: `Are you sure you want to delete the contact ${contact.label} for address ${contact.address}?`
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {

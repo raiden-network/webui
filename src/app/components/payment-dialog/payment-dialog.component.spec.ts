@@ -191,9 +191,7 @@ describe('PaymentDialogComponent', () => {
 
         const payload: ConfirmationDialogPayload = {
             title: 'Retrying Transfer',
-            message: `There is already a transfer of ${amountInput} ${
-                token.symbol
-            } being sent to ${addressInput}. Are you sure you want to send the same transfer again?`
+            message: `There is already a transfer of ${amountInput} ${token.symbol} being sent to ${addressInput}. Are you sure you want to send the same transfer again?`
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
@@ -227,9 +225,7 @@ describe('PaymentDialogComponent', () => {
 
         const payload: ConfirmationDialogPayload = {
             title: 'Retrying Transfer',
-            message: `There is already a transfer of ${amountInput} ${
-                token.symbol
-            } being sent to Test account ${addressInput}. Are you sure you want to send the same transfer again?`
+            message: `There is already a transfer of ${amountInput} ${token.symbol} being sent to Test account ${addressInput}. Are you sure you want to send the same transfer again?`
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {

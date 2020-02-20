@@ -6,7 +6,7 @@
     fxFlex="0 1 161px"
 >
     <mat-option
-        *ngFor="let option of (tokens$ | async); trackBy: trackByFn"
+        *ngFor="let option of tokens$ | async; trackBy: trackByFn"
         [value]="option"
     >
         {{ option | token }}

@@ -17,10 +17,9 @@ export class SharedService {
     readonly searchFilter$: Observable<string>;
 
     constructor() {
-        this.searchFilter$ = this.searchFilterSubject.asObservable().pipe(
-            debounceTime(400),
-            distinctUntilChanged()
-        );
+        this.searchFilter$ = this.searchFilterSubject
+            .asObservable()
+            .pipe(debounceTime(400), distinctUntilChanged());
     }
 
     newGlobalClick(target: HTMLElement) {

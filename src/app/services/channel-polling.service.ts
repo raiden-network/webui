@@ -126,9 +126,7 @@ export class ChannelPollingService {
         }
         const message: UiMessage = {
             title: 'New channel',
-            description: `${
-                token.symbol
-            } with ${partnerLabel} ${partnerAddress}`,
+            description: `${token.symbol} with ${partnerLabel} ${partnerAddress}`,
             icon: 'channel',
             identiconAddress: partnerAddress,
             userToken: token

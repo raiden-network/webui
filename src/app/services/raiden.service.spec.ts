@@ -1117,9 +1117,7 @@ describe('RaidenService', () => {
             });
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/channels/${token.address}/${
-                channel3.partner_address
-            }`,
+            url: `${endpoint}/channels/${token.address}/${channel3.partner_address}`,
             method: 'PATCH'
         });
 
@@ -1167,9 +1165,7 @@ describe('RaidenService', () => {
             });
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/channels/${token.address}/${
-                channel3.partner_address
-            }`,
+            url: `${endpoint}/channels/${token.address}/${channel3.partner_address}`,
             method: 'PATCH'
         });
 

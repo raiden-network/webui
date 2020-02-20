@@ -33,7 +33,7 @@
         <div class="options">
             <mat-option
                 *ngFor="
-                    let userToken of (filteredTokenOptions$ | async);
+                    let userToken of filteredTokenOptions$ | async;
                     trackBy: tokenTrackByFn
                 "
                 [value]="userToken.address"
@@ -42,7 +42,7 @@
             </mat-option>
             <mat-option
                 *ngFor="
-                    let contact of (filteredContactOptions$ | async);
+                    let contact of filteredContactOptions$ | async;
                     trackBy: contactTrackByFn
                 "
                 [value]="contact.address"

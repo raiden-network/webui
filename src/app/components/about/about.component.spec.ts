@@ -60,9 +60,7 @@ describe('AboutComponent', () => {
         const environment = component.environmentInformation();
         const expectedEnvironment =
             '## System\n- Raiden: v0.100.5a1.dev157+geb2af878d\n' +
-            `- WebUI: v${version}\n- Environment: production\n- Network: ${
-                network.name
-            }\n- User agent: ${window.navigator.userAgent}`;
+            `- WebUI: v${version}\n- Environment: production\n- Network: ${network.name}\n- User agent: ${window.navigator.userAgent}`;
         expect(environment).toBe(expectedEnvironment);
     });
 
@@ -72,9 +70,7 @@ describe('AboutComponent', () => {
         const environment = component.environmentInformation();
         const expectedEnvironment =
             '## System\n- Raiden: v0.100.5a1.dev157+geb2af878d\n' +
-            `- WebUI: v${version}\n- Environment: development\n- Network: ${
-                network.name
-            }\n- User agent: ${window.navigator.userAgent}`;
+            `- WebUI: v${version}\n- Environment: development\n- Network: ${network.name}\n- User agent: ${window.navigator.userAgent}`;
         expect(environment).toBe(expectedEnvironment);
     });
 

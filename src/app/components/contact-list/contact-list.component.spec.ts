@@ -370,9 +370,7 @@ describe('ContactListComponent', () => {
 
         const errorMessage: UiMessage = {
             title: 'Contacts import',
-            description: `Max allowed size of ${
-                UploadChecks.MAX_UPLOAD_SIZE
-            } bytes exceeded`,
+            description: `Max allowed size of ${UploadChecks.MAX_UPLOAD_SIZE} bytes exceeded`,
             icon: 'error-mark'
         };
         expect(storeSpy).toHaveBeenCalledTimes(0);

@@ -183,9 +183,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
         } else if (error.multiple) {
             message = 'Only single file supported';
         } else if (error.exceedsUploadLimit) {
-            message = `Max allowed size of ${
-                error.exceedsUploadLimit
-            } bytes exceeded`;
+            message = `Max allowed size of ${error.exceedsUploadLimit} bytes exceeded`;
         } else {
             message = 'Invalid file format';
         }

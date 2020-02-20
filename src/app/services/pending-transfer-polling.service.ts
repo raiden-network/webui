@@ -97,9 +97,7 @@ export class PendingTransferPollingService {
                 }
                 message = {
                     title: 'Transfer in flight',
-                    description: `${formattedAmount} ${
-                        token.symbol
-                    } to ${targetLabel} ${targetAddress}`,
+                    description: `${formattedAmount} ${token.symbol} to ${targetLabel} ${targetAddress}`,
                     icon: 'sent',
                     identiconAddress: targetAddress,
                     userToken: token
@@ -114,9 +112,7 @@ export class PendingTransferPollingService {
                 }
                 message = {
                     title: 'Transfer incoming',
-                    description: `${formattedAmount} ${
-                        token.symbol
-                    } from ${initiatorLabel} ${initiatorAddress}`,
+                    description: `${formattedAmount} ${token.symbol} from ${initiatorLabel} ${initiatorAddress}`,
                     icon: 'received',
                     identiconAddress: initiatorAddress,
                     userToken: token
