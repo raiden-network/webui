@@ -84,7 +84,6 @@ export class TokenComponent implements OnInit {
 
     openConnectionManager() {
         const token = this.token;
-        const join = !token.connected;
 
         const payload: ConnectionManagerDialogPayload = {
             token: token,
@@ -106,15 +105,10 @@ export class TokenComponent implements OnInit {
                     if (!result) {
                         return EMPTY;
                     }
-                    let funds = result.funds;
-                    if (!join) {
-                        funds = funds.plus(token.connected.funds);
-                    }
 
                     return this.raidenService.connectTokenNetwork(
-                        funds,
-                        result.token.address,
-                        join
+                        result.funds,
+                        result.token.address
                     );
                 })
             )

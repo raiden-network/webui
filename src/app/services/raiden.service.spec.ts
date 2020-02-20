@@ -684,41 +684,7 @@ describe('RaidenService', () => {
 
     it('should inform the user when quick connect was successful', fakeAsync(() => {
         service
-            .connectTokenNetwork(new BigNumber(1000), tokenAddress, true)
-            .subscribe(value => expect(value).toBeFalsy())
-            .add(() => {
-                expect(
-                    notificationService.removePendingAction
-                ).toHaveBeenCalledTimes(1);
-            });
-        tick();
-
-        const request = mockHttp.expectOne({
-            url: `${endpoint}/connections/${tokenAddress}`,
-            method: 'PUT'
-        });
-        expect(losslessParse(request.request.body)).toEqual({
-            funds: new BigNumber(1000)
-        });
-        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
-
-        request.flush(
-            {},
-            {
-                status: 204,
-                statusText: ''
-            }
-        );
-        flush();
-
-        expect(
-            notificationService.addSuccessNotification
-        ).toHaveBeenCalledTimes(1);
-    }));
-
-    it('should inform the user when adding funds to a token network was successful', fakeAsync(() => {
-        service
-            .connectTokenNetwork(new BigNumber(1000), tokenAddress, false)
+            .connectTokenNetwork(new BigNumber(1000), tokenAddress)
             .subscribe(value => expect(value).toBeFalsy())
             .add(() => {
                 expect(
@@ -752,7 +718,7 @@ describe('RaidenService', () => {
 
     it('should inform the user when quick connect was not successful', fakeAsync(() => {
         service
-            .connectTokenNetwork(new BigNumber(1000), tokenAddress, true)
+            .connectTokenNetwork(new BigNumber(1000), tokenAddress)
             .subscribe(
                 () => {
                     fail('On next should not be called');

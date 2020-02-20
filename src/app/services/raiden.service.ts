@@ -631,8 +631,7 @@ export class RaidenService {
 
     public connectTokenNetwork(
         funds: BigNumber,
-        tokenAddress: string,
-        join: boolean
+        tokenAddress: string
     ): Observable<void> {
         let notificationIdentifier: number;
         const token = this.getUserToken(tokenAddress);
@@ -644,9 +643,7 @@ export class RaidenService {
         return of(null).pipe(
             tap(() => {
                 const message: UiMessage = {
-                    title: join
-                        ? 'Quick connect'
-                        : 'Quick connect raising funds',
+                    title: 'Quick connect',
                     description: `${formattedAmount} ${token.symbol} funds`,
                     icon: 'thunderbolt',
                     userToken: token
@@ -666,9 +663,7 @@ export class RaidenService {
             map(() => null),
             tap(() => {
                 const message: UiMessage = {
-                    title: join
-                        ? 'Quick connect successful'
-                        : 'Quick connect raised funds',
+                    title: 'Quick connect successful',
                     description: `${formattedAmount} ${token.symbol} funds`,
                     icon: 'thunderbolt',
                     userToken: token

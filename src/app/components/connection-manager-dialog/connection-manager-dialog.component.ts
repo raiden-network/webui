@@ -23,18 +23,13 @@ export class ConnectionManagerDialogComponent implements OnInit {
         amount: ['', Validators.required]
     });
     token: UserToken;
-    funds = new BigNumber(0);
 
     constructor(
         @Inject(MAT_DIALOG_DATA) data: ConnectionManagerDialogPayload,
         private dialogRef: MatDialogRef<ConnectionManagerDialogComponent>,
         private fb: FormBuilder
     ) {
-        const token = data.token;
-        this.token = token;
-        if (token.connected) {
-            this.funds = token.connected.funds;
-        }
+        this.token = data.token;
     }
 
     ngOnInit(): void {

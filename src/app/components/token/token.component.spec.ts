@@ -207,8 +207,7 @@ describe('TokenComponent', () => {
             expect(connectSpy).toHaveBeenCalledTimes(1);
             expect(connectSpy).toHaveBeenCalledWith(
                 dialogResult.funds,
-                dialogResult.token.address,
-                true
+                dialogResult.token.address
             );
         });
 
@@ -223,49 +222,6 @@ describe('TokenComponent', () => {
 
             expect(dialogSpy).toHaveBeenCalledTimes(1);
             expect(connectSpy).toHaveBeenCalledTimes(0);
-        });
-
-        it('should add funds if token network is already connected', () => {
-            const connectedToken = createToken({
-                connected: {
-                    funds: new BigNumber(20),
-                    sum_deposits: new BigNumber(10),
-                    channels: 1
-                }
-            });
-            component.token = connectedToken;
-            fixture.detectChanges();
-
-            const dialogSpy = spyOn(dialog, 'open').and.callThrough();
-            const dialogResult: ConnectionManagerDialogPayload = {
-                token: connectedToken,
-                funds: new BigNumber(10)
-            };
-            dialog.returns = () => dialogResult;
-            const connectSpy = spyOn(
-                raidenService,
-                'connectTokenNetwork'
-            ).and.returnValue(of(null));
-            clickElement(fixture.debugElement, '#quick-connect');
-
-            const payload: ConnectionManagerDialogPayload = {
-                token: connectedToken,
-                funds: undefined
-            };
-            expect(dialogSpy).toHaveBeenCalledTimes(1);
-            expect(dialogSpy).toHaveBeenCalledWith(
-                ConnectionManagerDialogComponent,
-                {
-                    data: payload,
-                    width: '360px'
-                }
-            );
-            expect(connectSpy).toHaveBeenCalledTimes(1);
-            expect(connectSpy).toHaveBeenCalledWith(
-                new BigNumber(30),
-                dialogResult.token.address,
-                false
-            );
         });
 
         it('should mint 0.5 tokens when token has 18 decimals', () => {
