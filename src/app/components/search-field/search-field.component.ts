@@ -71,13 +71,13 @@ export class SearchFieldComponent implements OnInit {
             )
         );
 
-        this.filteredContactOptions$ = this.inputSubject.pipe(
-            map(filterValue => {
-                const contacts = this.addressBookService.getArray();
-                return contacts.filter(contact =>
-                    matchesContact(filterValue, contact)
-                );
-            })
+        this.filteredContactOptions$ = combineLatest([
+            this.inputSubject,
+            this.addressBookService.getObservableArray()
+        ]).pipe(
+            map(([filterValue, contacts]) =>
+                contacts.filter(contact => matchesContact(filterValue, contact))
+            )
         );
     }
 }

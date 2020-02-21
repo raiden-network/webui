@@ -29,12 +29,7 @@
         </div>
     </mat-autocomplete>
 
-    <div
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        class="icon-box"
-        *ngIf="displayIdenticon"
-    >
+    <div class="icon-box" *ngIf="displayIdenticon">
         <img
             class="icon-box__identicon"
             *ngIf="address; else placeholder"
@@ -55,7 +50,7 @@
     <span
         *ngIf="errors && touched && input.value.length > 0; else hint_text"
         [@fallDown]="'in'"
-        class="info-box__error"
+        class="info-box__text info-box__text--error"
     >
         <span *ngIf="errors['unableToResolveEns']">
             Could not resolve the address for {{ input.value }}
@@ -79,8 +74,58 @@
         </span>
     </span>
     <ng-template #hint_text>
-        <span *ngIf="hint()" class="info-box__hint">
+        <span
+            *ngIf="hint(); else add_contact"
+            class="info-box__text"
+            [@fallDown]="'in'"
+        >
             {{ hint() }}
         </span>
     </ng-template>
+    <ng-template #add_contact>
+        <span
+            *ngIf="!errors && userAccount && !showContactLabelInput"
+            [@fallDown]="'in'"
+        >
+            <span
+                class="info-box__text info-box__text--clickable"
+                (click)="activateContactLabelInput()"
+                id="add-contact"
+            >
+                Add address to contacts
+            </span>
+        </span>
+    </ng-template>
+
+    <div
+        *ngIf="showContactLabelInput"
+        class="input input--contact"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+    >
+        <mat-icon svgIcon="go" aria-hidden="true" class="icon"> </mat-icon>
+        <input
+            fxFlexOffset="10px"
+            placeholder="Contact name"
+            aria-label="Contact name input for address"
+            class="input__field"
+            [formControl]="contactLabelFc"
+            type="text"
+            fxFlex="0 1 196px"
+            (keyup.enter)="labelFieldOnEnter($event)"
+        />
+        <div class="icon-box">
+            <button
+                mat-icon-button
+                (click)="saveContact()"
+                [disabled]="contactLabelFc.invalid"
+                fxLayout="column"
+                fxLayoutAlign="center center"
+                id="save-contact"
+            >
+                <mat-icon class="icon" svgIcon="add" aria-label="Save contact">
+                </mat-icon>
+            </button>
+        </div>
+    </div>
 </div>

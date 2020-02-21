@@ -4,6 +4,7 @@ import { AddressBookService } from './address-book.service';
 import { Contact, Contacts } from '../models/contact';
 import { LocalStorageAdapter } from '../adapters/local-storage-adapter';
 import { storageMock } from '../../testing/mock-storage';
+import { first } from 'rxjs/operators';
 
 describe('AddressBookService', () => {
     beforeEach(() => {
@@ -32,7 +33,7 @@ describe('AddressBookService', () => {
         }
     ));
 
-    it('should be able to save and retrieve an address', inject(
+    it('should be able to save and retrieve a contact', inject(
         [AddressBookService],
         (service: AddressBookService) => {
             const contact: Contact = {
@@ -53,7 +54,7 @@ describe('AddressBookService', () => {
         }
     ));
 
-    it('should throw an error is the address is not an address', inject(
+    it('should throw an error if the address is not an address', inject(
         [AddressBookService],
         (service: AddressBookService) => {
             const contact: Contact = {
@@ -72,7 +73,7 @@ describe('AddressBookService', () => {
         }
     ));
 
-    it('should throw an error is the address is not in checksum format', inject(
+    it('should throw an error if the address is not in checksum format', inject(
         [AddressBookService],
         (service: AddressBookService) => {
             const contact: Contact = {
@@ -131,7 +132,7 @@ describe('AddressBookService', () => {
         }
     ));
 
-    it('should delete the address from the list', inject(
+    it('should delete the contact from the list', inject(
         [AddressBookService],
         (service: AddressBookService) => {
             const contact: Contact = {
@@ -164,7 +165,7 @@ describe('AddressBookService', () => {
         }
     ));
 
-    it('should delete all the addresses if deleteAll is called', inject(
+    it('should delete all the contacts if deleteAll is called', inject(
         [AddressBookService],
         (service: AddressBookService) => {
             const contact: Contact = {
@@ -211,7 +212,7 @@ describe('AddressBookService', () => {
         }
     ));
 
-    it('should return the addresses as an array', inject(
+    it('should return the contacts as an observable', inject(
         [AddressBookService],
         (service: AddressBookService) => {
             const contact: Contact = {
@@ -227,10 +228,11 @@ describe('AddressBookService', () => {
             service.save(contact);
             service.save(secondContact);
 
-            const array = service.getArray();
-            expect(array.length).toBe(2);
-            expect(array).toContain(contact);
-            expect(array).toContain(secondContact);
+            service.getObservableArray().subscribe(array => {
+                expect(array.length).toBe(2);
+                expect(array).toContain(contact);
+                expect(array).toContain(secondContact);
+            });
         }
     ));
 
@@ -245,39 +247,53 @@ describe('AddressBookService', () => {
     it('should merge and override if merge is specified', inject(
         [AddressBookService],
         (service: AddressBookService) => {
-            const first: Contact = {
+            const firstContact: Contact = {
                 label: 'Test Node 1',
                 address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
             };
 
-            const second: Contact = {
+            const secondContact: Contact = {
                 label: 'Test Node 2',
                 address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
             };
 
-            const third: Contact = {
+            const thirdContact: Contact = {
                 label: 'Test Node 3',
                 address: '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6'
             };
 
-            service.save(first);
-            service.save(second);
+            service.save(firstContact);
+            service.save(secondContact);
 
-            expect(service.getArray()).toEqual([first, second]);
+            service
+                .getObservableArray()
+                .pipe(first())
+                .subscribe(array => {
+                    expect(array).toEqual([firstContact, secondContact]);
+                });
 
             const modified: Contact = {
                 label: 'New Node Label',
-                address: first.address
+                address: firstContact.address
             };
 
             const imported: Contacts = {};
             imported[modified.address] = modified.label;
-            imported[second.address] = second.label;
-            imported[third.address] = third.label;
+            imported[secondContact.address] = secondContact.label;
+            imported[thirdContact.address] = thirdContact.label;
 
             service.store(imported, true);
 
-            expect(service.getArray()).toEqual([modified, second, third]);
+            service
+                .getObservableArray()
+                .pipe(first())
+                .subscribe(array => {
+                    expect(array).toEqual([
+                        modified,
+                        secondContact,
+                        thirdContact
+                    ]);
+                });
         }
     ));
 });

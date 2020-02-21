@@ -41,11 +41,7 @@
         </div>
     </div>
     <ng-template #actions>
-        <app-contact-actions
-            [contact]="contact"
-            (update)="this.update.emit($event)"
-            [@flyInOut]="'in'"
-        >
+        <app-contact-actions [contact]="contact" [@flyInOut]="'in'">
         </app-contact-actions>
     </ng-template>
 </div>

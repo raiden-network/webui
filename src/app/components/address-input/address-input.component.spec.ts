@@ -23,7 +23,8 @@ import { AddressBookService } from '../../services/address-book.service';
 import { Contact, Contacts } from '../../models/contact';
 import {
     mockInput,
-    mockMatSelectFirst
+    mockMatSelectFirst,
+    clickElement
 } from '../../../testing/interaction-helper';
 import { TestProviders } from '../../../testing/test-providers';
 import { of } from 'rxjs';
@@ -32,6 +33,9 @@ import {
     createNetworkMock,
     createTestContacts
 } from '../../../testing/test-data';
+import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
+import { ReactiveFormsModule } from '@angular/forms';
+import Spy = jasmine.Spy;
 
 describe('AddressInputComponent', () => {
     let component: AddressInputComponent;
@@ -56,7 +60,9 @@ describe('AddressInputComponent', () => {
             imports: [
                 MaterialComponentsModule,
                 HttpClientTestingModule,
-                NoopAnimationsModule
+                NoopAnimationsModule,
+                RaidenIconsModule,
+                ReactiveFormsModule
             ]
         }).compileComponents();
     }));
@@ -117,7 +123,7 @@ describe('AddressInputComponent', () => {
 
         it('should not show an error without a user input', () => {
             const errorElement = fixture.debugElement.query(
-                By.css('.info-box__error')
+                By.css('.info-box__text')
             );
             expect(errorElement).toBeFalsy();
         });
@@ -126,7 +132,7 @@ describe('AddressInputComponent', () => {
             mockInput(fixture.debugElement, 'input', '0x');
             fixture.detectChanges();
             const errorElement = fixture.debugElement.query(
-                By.css('.info-box__error')
+                By.css('.info-box__text')
             );
             expect(errorElement).toBeTruthy();
         });
@@ -140,7 +146,7 @@ describe('AddressInputComponent', () => {
             fixture.detectChanges();
 
             const errorElement = fixture.debugElement.query(
-                By.css('.info-box__error')
+                By.css('.info-box__text')
             );
             const errorMessage = errorElement.nativeElement.innerText.trim();
             expect(errorMessage).toBe(
@@ -154,7 +160,7 @@ describe('AddressInputComponent', () => {
             fixture.detectChanges();
 
             const errorElement = fixture.debugElement.query(
-                By.css('.info-box__error')
+                By.css('.info-box__text')
             );
             expect(errorElement).toBeFalsy();
             expect(component.errors['emptyAddress']).toBe(true);
@@ -217,7 +223,7 @@ describe('AddressInputComponent', () => {
             expect(component.address).toBe(address);
             expect(component.errors).toBeFalsy();
             const hintElement = fixture.debugElement.query(
-                By.css('.info-box__hint')
+                By.css('.info-box__text')
             );
             const hintMessage = hintElement.nativeElement.innerText.trim();
             expect(hintMessage).toBe(`Resolved address: ${address}`);
@@ -234,7 +240,7 @@ describe('AddressInputComponent', () => {
 
         beforeEach(() => {
             component.userAccount = true;
-            mockAddressBookService.getArray = () => contacts;
+            mockAddressBookService.getObservableArray = () => of(contacts);
             mockAddressBookService.get = () => contactsMap;
             fixture.detectChanges();
         });
@@ -262,7 +268,7 @@ describe('AddressInputComponent', () => {
             expect(component.address).toBe(contacts[0].address);
             expect(component.errors).toBeFalsy();
             const hintElement = fixture.debugElement.query(
-                By.css('.info-box__hint')
+                By.css('.info-box__text')
             );
             const hintMessage = hintElement.nativeElement.innerText.trim();
             expect(hintMessage).toBe(contacts[0].label);
@@ -300,6 +306,97 @@ describe('AddressInputComponent', () => {
             expect(options.length).toBe(1);
             const visibleOption = options[0].componentInstance as MatOption;
             expect(visibleOption.value).toBe(contact1.address);
+        });
+    });
+
+    describe('for adding a new contact', () => {
+        let addressBookSpy: Spy;
+        const address = createAddress();
+        const label = 'Test contact';
+
+        beforeEach(() => {
+            const addressBookService = TestBed.inject(AddressBookService);
+            addressBookSpy = spyOn(addressBookService, 'save');
+            component.userAccount = true;
+            fixture.detectChanges();
+        });
+
+        it('should be able to save a new address as contact', () => {
+            mockInput(fixture.debugElement, 'input', address);
+            fixture.detectChanges();
+
+            clickElement(fixture.debugElement, '#add-contact');
+            fixture.detectChanges();
+
+            mockInput(
+                fixture.debugElement,
+                'input[placeholder="Contact name"]',
+                label
+            );
+            fixture.detectChanges();
+
+            clickElement(fixture.debugElement, '#save-contact');
+            fixture.detectChanges();
+
+            expect(addressBookSpy).toHaveBeenCalledTimes(1);
+            expect(addressBookSpy).toHaveBeenCalledWith({
+                address: address,
+                label: label
+            });
+        });
+
+        it('should save the contact on enter', () => {
+            mockInput(fixture.debugElement, 'input', address);
+            fixture.detectChanges();
+
+            clickElement(fixture.debugElement, '#add-contact');
+            fixture.detectChanges();
+
+            mockInput(
+                fixture.debugElement,
+                'input[placeholder="Contact name"]',
+                label
+            );
+            fixture.detectChanges();
+
+            const labelInput = fixture.debugElement.query(
+                By.css('input[placeholder="Contact name"]')
+            );
+            labelInput.triggerEventHandler('keyup.enter', {
+                stopPropagation: () => {}
+            });
+            fixture.detectChanges();
+
+            expect(addressBookSpy).toHaveBeenCalledTimes(1);
+            expect(addressBookSpy).toHaveBeenCalledWith({
+                address: address,
+                label: label
+            });
+        });
+
+        it('should not save the contact on enter if the label input is empty', () => {
+            mockInput(fixture.debugElement, 'input', address);
+            fixture.detectChanges();
+
+            clickElement(fixture.debugElement, '#add-contact');
+            fixture.detectChanges();
+
+            mockInput(
+                fixture.debugElement,
+                'input[placeholder="Contact name"]',
+                ''
+            );
+            fixture.detectChanges();
+
+            const labelInput = fixture.debugElement.query(
+                By.css('input[placeholder="Contact name"]')
+            );
+            labelInput.triggerEventHandler('keyup.enter', {
+                stopPropagation: () => {}
+            });
+            fixture.detectChanges();
+
+            expect(addressBookSpy).toHaveBeenCalledTimes(0);
         });
     });
 

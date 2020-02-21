@@ -66,7 +66,7 @@ describe('SearchFieldComponent', () => {
             return { [token.address]: token }[userToken];
         });
         const addressBookService = TestBed.inject(AddressBookService);
-        addressBookService.getArray = () => contacts;
+        addressBookService.getObservableArray = () => of(contacts);
 
         fixture.detectChanges();
     });

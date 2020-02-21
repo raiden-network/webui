@@ -5,6 +5,8 @@ import * as Utils from 'web3-utils';
 import { contactsSchema } from '../models/contacts-schema';
 import * as Ajv from 'ajv';
 import { ValidateFunction } from 'ajv';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -14,12 +16,27 @@ export class AddressBookService {
 
     private storage: Storage;
     private readonly schema: ValidateFunction;
+    private addressBookUpdateSubject = new BehaviorSubject<void>(null);
 
     constructor(localStorageAdapter: LocalStorageAdapter) {
         this.storage = localStorageAdapter.localStorage;
 
         const validator = new Ajv({ allErrors: true });
         this.schema = validator.compile(contactsSchema);
+    }
+
+    getObservableArray(): Observable<Contact[]> {
+        return this.addressBookUpdateSubject.pipe(
+            map(() => {
+                const contacts = this.get();
+                return Object.keys(contacts).map(value => {
+                    return {
+                        address: value,
+                        label: contacts[value]
+                    };
+                });
+            })
+        );
     }
 
     save(contact: Contact) {
@@ -72,6 +89,7 @@ export class AddressBookService {
             AddressBookService.ADDRESS_BOOK_KEY,
             stringifiedContacts
         );
+        this.addressBookUpdateSubject.next();
     }
 
     delete(contact: Contact) {
@@ -93,16 +111,6 @@ export class AddressBookService {
         }
         const blob = new Blob([json], { type: 'application/json' });
         return URL.createObjectURL(blob);
-    }
-
-    getArray(): Array<Contact> {
-        const contacts = this.get();
-        return Object.keys(contacts).map(value => {
-            return {
-                address: value,
-                label: contacts[value]
-            };
-        });
     }
 
     deleteAll() {
