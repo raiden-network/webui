@@ -17,6 +17,10 @@ import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { createToken } from '../../../testing/test-data';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatSelect } from '@angular/material/select';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
+import { TokenPollingService } from '../../services/token-polling.service';
 
 describe('ConnectionManagerDialogComponent', () => {
     let component: ConnectionManagerDialogComponent;
@@ -34,7 +38,7 @@ describe('ConnectionManagerDialogComponent', () => {
 
     beforeEach(async(() => {
         const payload: ConnectionManagerDialogPayload = {
-            funds: new BigNumber(0),
+            funds: undefined,
             token: token
         };
 
@@ -44,11 +48,15 @@ describe('ConnectionManagerDialogComponent', () => {
                 TokenInputComponent,
                 RaidenDialogComponent,
                 DecimalPipe,
-                DisplayDecimalsPipe
+                DisplayDecimalsPipe,
+                TokenNetworkSelectorComponent
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} })
+                TestProviders.MockMatDialogRef({ close: () => {} }),
+                TestProviders.MockRaidenConfigProvider(),
+                TokenPollingService,
+                TestProviders.AddressBookStubProvider()
             ],
             imports: [
                 MaterialComponentsModule,
@@ -60,50 +68,73 @@ describe('ConnectionManagerDialogComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(ConnectionManagerDialogComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+    describe('with token payload', () => {
+        beforeEach(() => {
+            fixture = TestBed.createComponent(ConnectionManagerDialogComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
+        });
 
-    it('should be created', () => {
-        expect(component).toBeTruthy();
-    });
+        it('should be created', () => {
+            expect(component).toBeTruthy();
+        });
 
-    it('should close the dialog with the result when accept button is clicked', () => {
-        mockInput(
-            fixture.debugElement.query(By.directive(TokenInputComponent)),
-            'input',
-            amountInput
-        );
-        fixture.detectChanges();
+        it('should close the dialog with the result when accept button is clicked', () => {
+            mockInput(
+                fixture.debugElement.query(By.directive(TokenInputComponent)),
+                'input',
+                amountInput
+            );
+            fixture.detectChanges();
 
-        // @ts-ignore
-        const closeSpy = spyOn(component.dialogRef, 'close');
-        clickElement(fixture.debugElement, '#accept');
-        fixture.detectChanges();
+            // @ts-ignore
+            const closeSpy = spyOn(component.dialogRef, 'close');
+            clickElement(fixture.debugElement, '#accept');
+            fixture.detectChanges();
 
-        expect(closeSpy).toHaveBeenCalledTimes(1);
-        expect(closeSpy).toHaveBeenCalledWith({
-            token: token,
-            funds: new BigNumber(amountInput)
+            expect(closeSpy).toHaveBeenCalledTimes(1);
+            expect(closeSpy).toHaveBeenCalledWith({
+                token: token,
+                funds: new BigNumber(amountInput)
+            });
+        });
+
+        it('should close the dialog with no result when cancel button is clicked', () => {
+            mockInput(
+                fixture.debugElement.query(By.directive(TokenInputComponent)),
+                'input',
+                amountInput
+            );
+            fixture.detectChanges();
+
+            // @ts-ignore
+            const closeSpy = spyOn(component.dialogRef, 'close');
+            clickElement(fixture.debugElement, '#cancel');
+            fixture.detectChanges();
+
+            expect(closeSpy).toHaveBeenCalledTimes(1);
+            expect(closeSpy).toHaveBeenCalledWith();
         });
     });
 
-    it('should close the dialog with no result when cancel button is clicked', () => {
-        mockInput(
-            fixture.debugElement.query(By.directive(TokenInputComponent)),
-            'input',
-            amountInput
-        );
-        fixture.detectChanges();
+    describe('without token payload', () => {
+        beforeEach(() => {
+            const payload: ConnectionManagerDialogPayload = {
+                funds: undefined,
+                token: undefined
+            };
+            TestBed.overrideProvider(MAT_DIALOG_DATA, { useValue: payload });
+            fixture = TestBed.createComponent(ConnectionManagerDialogComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
+        });
 
-        // @ts-ignore
-        const closeSpy = spyOn(component.dialogRef, 'close');
-        clickElement(fixture.debugElement, '#cancel');
-        fixture.detectChanges();
-
-        expect(closeSpy).toHaveBeenCalledTimes(1);
-        expect(closeSpy).toHaveBeenCalledWith();
+        it('should show a token network selector', () => {
+            const selector = fixture.debugElement.query(
+                By.directive(MatSelect)
+            );
+            expect(selector).toBeTruthy();
+            expect(component.form.value.token).toBeFalsy();
+        });
     });
 });

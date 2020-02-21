@@ -13,7 +13,8 @@ import { RaidenService } from '../../services/raiden.service';
 import {
     createNetworkMock,
     createTestTokens,
-    createAddress
+    createAddress,
+    createTestChannels
 } from '../../../testing/test-data';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -91,7 +92,9 @@ describe('TokenCarouselComponent', () => {
         component = fixture.componentInstance;
 
         const channelPollingService = TestBed.inject(ChannelPollingService);
-        spyOn(channelPollingService, 'channels').and.returnValue(of([]));
+        spyOn(channelPollingService, 'channels').and.returnValue(
+            of(createTestChannels(1, tokens[0]))
+        );
 
         fixture.detectChanges();
     });
