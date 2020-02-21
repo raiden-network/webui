@@ -93,7 +93,8 @@ body {
     box-shadow: none !important;
 }
 
-.mat-flat-button:disabled {
+.mat-flat-button:disabled,
+.mat-icon-button:disabled {
     border: 2px solid #979797;
     color: #979797 !important;
     opacity: 0.32;

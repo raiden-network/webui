@@ -13,7 +13,9 @@ import {
     NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
     ValidationErrors,
-    Validator
+    Validator,
+    FormControl,
+    Validators
 } from '@angular/forms';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenService } from '../../services/raiden.service';
@@ -66,9 +68,12 @@ export class AddressInputComponent
     searching = false;
     filteredOptions$: Observable<Contact[]>;
     readonly network$: Observable<Network>;
+    showContactLabelInput = false;
+    contactLabelFc: FormControl;
 
     private ngUnsubscribe = new Subject();
     private inputSubject: BehaviorSubject<string> = new BehaviorSubject('');
+    private contactLabel: string | undefined;
     private propagateTouched = () => {};
     private propagateChange = (address: string) => {};
 
@@ -137,17 +142,41 @@ export class AddressInputComponent
     }
 
     hint(): string | null {
-        const label = this.addressBookService.get()[this.address];
         if (
             AddressUtils.isChecksum(this.address) &&
             AddressUtils.isDomain(this.inputElement.nativeElement.value)
         ) {
             return `Resolved address: ${this.address}`;
-        } else if (this.userAccount && label) {
-            return label;
-        } else {
-            return null;
         }
+
+        if (this.userAccount && this.contactLabel) {
+            return this.contactLabel;
+        }
+
+        return null;
+    }
+
+    activateContactLabelInput() {
+        this.showContactLabelInput = true;
+        this.contactLabelFc = new FormControl('', Validators.required);
+    }
+
+    labelFieldOnEnter(event: Event) {
+        event.stopPropagation();
+        if (this.contactLabelFc.invalid) {
+            return;
+        }
+        this.saveContact();
+    }
+
+    saveContact() {
+        this.showContactLabelInput = false;
+        const contact: Contact = {
+            address: this.address,
+            label: this.contactLabelFc.value
+        };
+        this.addressBookService.save(contact);
+        this.contactLabel = this.addressBookService.get()[this.address];
     }
 
     private setupValidation() {
@@ -208,6 +237,8 @@ export class AddressInputComponent
             .subscribe((result: InputResult) => {
                 this.address = result.value;
                 this.errors = result.errors;
+                this.contactLabel = this.addressBookService.get()[this.address];
+                this.showContactLabelInput = false;
                 this.propagateChange(this.address);
             });
     }

@@ -4,6 +4,10 @@
     height: 32px;
 }
 
+.input--contact {
+    margin-top: 20px;
+}
+
 .input__field {
     border-radius: 25px;
     background-color: #e7e7e7;
@@ -30,26 +34,39 @@
 }
 
 .info-box {
-    height: 32px;
+    min-height: 32px;
     font-size: 13px;
     line-height: 15px;
     letter-spacing: 0.35px;
-    padding-left: 18px;
 }
 
-.info-box__error {
+.info-box__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 18px;
+}
+
+.info-box__text--error {
     color: #f54b47;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
-.info-box__hint {
-    overflow: hidden;
-    text-overflow: ellipsis;
+.info-box__text--clickable {
+    color: #2c8f94;
+    cursor: pointer;
+}
+
+.info-box__text--clickable:hover {
+    color: #4aa7ab;
 }
 
 .options {
     height: 100%;
     overflow-y: auto;
     overflow-wrap: break-word;
+}
+
+.icon {
+    height: 20px;
+    width: 20px;
+    line-height: 20px;
 }
