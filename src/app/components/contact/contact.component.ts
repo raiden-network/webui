@@ -13,7 +13,6 @@ export class ContactComponent implements OnInit {
     @Input() contact: Contact;
     @Input() selected = false;
     @Output() select: EventEmitter<boolean> = new EventEmitter();
-    @Output() update: EventEmitter<boolean> = new EventEmitter();
 
     constructor(private identiconCache: IdenticonCacheService) {}
 

@@ -36,7 +36,6 @@ import { UserToken } from '../../../models/usertoken';
 })
 export class ContactActionsComponent implements OnInit, OnDestroy {
     @Input() contact: Contact;
-    @Output() update: EventEmitter<boolean> = new EventEmitter();
 
     selectedToken: UserToken;
     hasAnyConnection = false;
@@ -134,7 +133,6 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
         dialog.afterClosed().subscribe((result?: Contact) => {
             if (result) {
                 this.addressBookService.save(result);
-                this.update.emit(true);
             }
         });
     }
@@ -154,7 +152,6 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
         dialog.afterClosed().subscribe(result => {
             if (result) {
                 this.addressBookService.delete(contact);
-                this.update.emit(true);
             }
         });
     }

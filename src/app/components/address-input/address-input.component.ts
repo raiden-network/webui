@@ -244,14 +244,14 @@ export class AddressInputComponent
     }
 
     private setupFiltering() {
-        this.filteredOptions$ = this.inputSubject.pipe(
-            map(value => this.filter(value))
+        this.filteredOptions$ = combineLatest([
+            this.inputSubject,
+            this.addressBookService.getObservableArray()
+        ]).pipe(
+            map(([value, contacts]) =>
+                contacts.filter(contact => matchesContact(value, contact))
+            )
         );
-    }
-
-    private filter(value: string): Contact[] {
-        const contacts = this.addressBookService.getArray();
-        return contacts.filter(contact => matchesContact(value, contact));
     }
 }
 

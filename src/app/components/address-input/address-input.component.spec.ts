@@ -240,7 +240,7 @@ describe('AddressInputComponent', () => {
 
         beforeEach(() => {
             component.userAccount = true;
-            mockAddressBookService.getArray = () => contacts;
+            mockAddressBookService.getObservableArray = () => of(contacts);
             mockAddressBookService.get = () => contactsMap;
             fixture.detectChanges();
         });

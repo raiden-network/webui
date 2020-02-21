@@ -38,7 +38,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
     showAll = false;
     selectedContactAddress = '';
 
-    private filteredContacts: Contact[] = [];
+    private contacts: Contact[] = [];
     private readonly uploadChecks: UploadChecks = new UploadChecks();
     private readonly schema: ValidateFunction;
     private searchFilter = '';
@@ -55,6 +55,15 @@ export class ContactListComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.addressBookService
+            .getObservableArray()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(contacts => {
+                this.contacts = contacts;
+                this.totalContacts = contacts.length;
+                this.updateVisibleContacts();
+            });
+
         this.sharedService.globalClickTarget$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(target => {
@@ -70,10 +79,8 @@ export class ContactListComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(value => {
                 this.searchFilter = value;
-                this.updateContacts();
+                this.updateVisibleContacts();
             });
-
-        this.updateContacts();
     }
 
     ngOnDestroy() {
@@ -109,24 +116,8 @@ export class ContactListComponent implements OnInit, OnDestroy {
         dialog.afterClosed().subscribe((result?: Contact) => {
             if (result) {
                 this.addressBookService.save(result);
-                this.updateContacts();
             }
         });
-    }
-
-    updateContacts() {
-        const contacts = this.addressBookService.getArray();
-        this.totalContacts = contacts.length;
-
-        this.filteredContacts = contacts.filter(contact =>
-            matchesContact(this.searchFilter, contact)
-        );
-        this.numberOfFilteredContacts = this.filteredContacts.length;
-
-        this.filteredContacts.sort((a, b) =>
-            StringUtils.compare(true, a.label, b.label)
-        );
-        this.updateVisibleContacts();
     }
 
     downloadContacts() {
@@ -148,10 +139,19 @@ export class ContactListComponent implements OnInit, OnDestroy {
     }
 
     private updateVisibleContacts() {
+        const filteredContacts = this.contacts.filter(contact =>
+            matchesContact(this.searchFilter, contact)
+        );
+        this.numberOfFilteredContacts = filteredContacts.length;
+
+        filteredContacts.sort((a, b) =>
+            StringUtils.compare(true, a.label, b.label)
+        );
+
         if (this.showAll) {
-            this.visibleContacts = this.filteredContacts;
+            this.visibleContacts = filteredContacts;
         } else {
-            this.visibleContacts = this.filteredContacts.slice(0, 2);
+            this.visibleContacts = filteredContacts.slice(0, 2);
         }
     }
 
@@ -162,7 +162,6 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
             if (this.schema(result)) {
                 this.addressBookService.store(result, true);
-                this.updateContacts();
                 this.notificationService.addSuccessNotification({
                     title: 'Contacts import',
                     description: 'successful',

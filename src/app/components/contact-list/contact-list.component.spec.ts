@@ -31,6 +31,7 @@ import { stub } from '../../../testing/stub';
 import { ToastrModule } from 'ngx-toastr';
 import { UploadChecks } from '../../shared/upload-checks';
 import { UiMessage } from '../../models/notification';
+import { of } from 'rxjs';
 
 function createMockReader(result: {}) {
     return {
@@ -102,7 +103,7 @@ describe('ContactListComponent', () => {
         component = fixture.componentInstance;
 
         addressBookService = TestBed.inject(AddressBookService);
-        addressBookService.getArray = () => contacts;
+        addressBookService.getObservableArray = () => of(contacts);
 
         fixture.detectChanges();
     });

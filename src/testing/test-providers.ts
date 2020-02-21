@@ -9,6 +9,7 @@ import {
     MatDialogRef
 } from '@angular/material/dialog';
 import { MockMatDialog } from './mock-mat-dialog';
+import { of } from 'rxjs';
 
 export class TestProviders {
     static AddressBookStubProvider(): Provider {
@@ -16,7 +17,7 @@ export class TestProviders {
             provide: AddressBookService,
             useFactory: () => {
                 const addressBookStub = stub<AddressBookService>();
-                addressBookStub.getArray = () => [];
+                addressBookStub.getObservableArray = () => of([]);
                 addressBookStub.get = () => ({});
                 addressBookStub.save = () => {};
                 addressBookStub.delete = () => {};
