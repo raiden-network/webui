@@ -9,7 +9,7 @@ import {
     ConfirmationDialogComponent
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { flatMap } from 'rxjs/operators';
+import { flatMap, tap, finalize } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import {
     PaymentDialogPayload,
@@ -35,6 +35,8 @@ export class TokenComponent implements OnInit {
     @Input() onMainnet = true;
     @Output() select: EventEmitter<boolean> = new EventEmitter();
 
+    quickConnectPending = false;
+
     constructor(
         private raidenService: RaidenService,
         private tokenPollingService: TokenPollingService,
@@ -50,6 +52,11 @@ export class TokenComponent implements OnInit {
     }
 
     pay() {
+        if (this.openChannels === 0) {
+            this.askForQuickConnect();
+            return;
+        }
+
         const payload: PaymentDialogPayload = {
             tokenAddress: this.allNetworksView ? '' : this.token.address,
             targetAddress: '',
@@ -79,42 +86,6 @@ export class TokenComponent implements OnInit {
             .subscribe(() => {
                 this.channelPollingService.refresh();
                 this.pendingTransferPollingService.refresh();
-            });
-    }
-
-    openConnectionManager() {
-        const token = this.token;
-
-        const payload: ConnectionManagerDialogPayload = {
-            token: token,
-            funds: undefined
-        };
-
-        const joinDialogRef = this.dialog.open(
-            ConnectionManagerDialogComponent,
-            {
-                data: payload,
-                width: '360px'
-            }
-        );
-
-        joinDialogRef
-            .afterClosed()
-            .pipe(
-                flatMap((result: ConnectionManagerDialogPayload) => {
-                    if (!result) {
-                        return EMPTY;
-                    }
-
-                    return this.raidenService.connectTokenNetwork(
-                        result.funds,
-                        result.token.address
-                    );
-                })
-            )
-            .subscribe(() => {
-                this.tokenPollingService.refresh();
-                this.channelPollingService.refresh();
             });
     }
 
@@ -157,6 +128,60 @@ export class TokenComponent implements OnInit {
             )
             .subscribe(() => {
                 this.tokenPollingService.refresh();
+            });
+    }
+
+    private askForQuickConnect() {
+        const tokenSymbol = this.token?.symbol ?? '';
+        const payload: ConfirmationDialogPayload = {
+            title: `No open ${tokenSymbol} channels`,
+            message: `Do you want to use quick connect to automatically open ${tokenSymbol} channels?`
+        };
+
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+            data: payload,
+            width: '360px'
+        });
+
+        dialog.afterClosed().subscribe(result => {
+            if (result) {
+                this.openConnectionManager();
+            }
+        });
+    }
+
+    private openConnectionManager() {
+        const payload: ConnectionManagerDialogPayload = {
+            token: this.token,
+            funds: undefined
+        };
+
+        const dialog = this.dialog.open(ConnectionManagerDialogComponent, {
+            data: payload,
+            width: '360px'
+        });
+
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap((result: ConnectionManagerDialogPayload) => {
+                    if (!result) {
+                        return EMPTY;
+                    }
+                    this.quickConnectPending = true;
+
+                    return this.raidenService.connectTokenNetwork(
+                        result.funds,
+                        result.token.address
+                    );
+                }),
+                finalize(() => {
+                    this.quickConnectPending = false;
+                })
+            )
+            .subscribe(() => {
+                this.tokenPollingService.refresh();
+                this.channelPollingService.refresh();
             });
     }
 }

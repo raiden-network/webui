@@ -9,8 +9,8 @@
                     <g id="button-transfer" transform="translate(139.000000, 0.000000)">
                         <g id="Transfer-Icon" transform="translate(14.500000, 18.000000)">
                             <circle cx="16.75" cy="7.5" r="6.75"></circle>
-                            <line x1="6" y1="10.5" x2="2" y2="10.5" id="Line-Copy" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
-                            <line x1="6" y1="5.5" x2="2.14828155e-14" y2="5.5" id="Line-Copy" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                            <line x1="6" y1="10.5" x2="2" y2="10.5" id="Line-Copy" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                            <line x1="6" y1="5.5" x2="2.14828155e-14" y2="5.5" id="Line-Copy" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
                         </g>
                     </g>
                 </g>
