@@ -10,6 +10,7 @@
 - [#6] View for the transfer history and history per token.
 - [#239] Adds a QR code overlay for the user address.
 - [#238] Search functionality for filtering tokens, channels, contacts and transfer history.
+- [#270] Add a contact for a new address from the transfer and open channel dialogs.
 
 ### Fixed
 - [#138] Fixes the decimals of token amount inputs to not get cut off on Firefox.
@@ -149,6 +150,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#270]: https://github.com/raiden-network/webui/issues/270
 [#265]: https://github.com/raiden-network/webui/issues/265
 [#244]: https://github.com/raiden-network/webui/issues/244
 [#239]: https://github.com/raiden-network/webui/issues/239
