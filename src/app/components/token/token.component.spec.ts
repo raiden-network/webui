@@ -270,6 +270,19 @@ describe('TokenComponent', () => {
             );
         });
 
+        it('should not open quick connect dialog when user cancels confirmation', () => {
+            component.openChannels = 0;
+            fixture.detectChanges();
+
+            const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+            dialog.cancelled = true;
+
+            clickElement(fixture.debugElement, '#transfer');
+            fixture.detectChanges();
+
+            expect(dialogSpy).toHaveBeenCalledTimes(1);
+        });
+
         it('should not call the raiden service if quick connect is cancelled', () => {
             component.openChannels = 0;
             fixture.detectChanges();
