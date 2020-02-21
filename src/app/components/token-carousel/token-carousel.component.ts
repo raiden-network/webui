@@ -81,7 +81,16 @@ export class TokenCarouselComponent
 
         this.channelPollingService
             .channels()
-            .pipe(takeUntil(this.ngUnsubscribe))
+            .pipe(
+                map(channels =>
+                    channels.filter(
+                        channel =>
+                            channel.state === 'opened' ||
+                            channel.state === 'waiting_for_open'
+                    )
+                ),
+                takeUntil(this.ngUnsubscribe)
+            )
             .subscribe(channels => {
                 this.totalChannels = channels.length;
             });

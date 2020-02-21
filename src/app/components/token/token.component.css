@@ -73,17 +73,19 @@
 
 .action {
     padding: 0 15px !important;
+    width: 100%;
+    height: 52px;
 }
 
-.action--black {
-    color: #ffffff;
+.action--connect {
+    border-radius: 25px;
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 500;
+    background-color: #000000;
 }
 
 .action__icon {
     width: 24px;
     margin-right: 5px;
-}
-
-.action__icon--small {
-    width: 22px !important;
 }

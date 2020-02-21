@@ -121,6 +121,49 @@ describe('TokenComponent', () => {
             const button = fixture.debugElement.query(By.css('#options'));
             expect(button).toBeFalsy();
         });
+
+        it('should open quick connect dialog with token undefined when no channels are open', () => {
+            component.openChannels = 0;
+            fixture.detectChanges();
+
+            const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+            const dialogResult: ConnectionManagerDialogPayload = {
+                token: token,
+                funds: new BigNumber(10)
+            };
+            spyOn(dialog, 'returns').and.returnValues(true, dialogResult);
+            spyOn(raidenService, 'connectTokenNetwork').and.returnValue(
+                of(null)
+            );
+
+            clickElement(fixture.debugElement, '#transfer');
+            fixture.detectChanges();
+
+            const confirmationPayload: ConfirmationDialogPayload = {
+                title: 'No open  channels',
+                message:
+                    'Do you want to use quick connect to automatically open  channels?'
+            };
+            const connectionManagerPayload: ConnectionManagerDialogPayload = {
+                token: undefined,
+                funds: undefined
+            };
+            expect(dialogSpy).toHaveBeenCalledTimes(2);
+            expect(dialogSpy.calls.first().args).toEqual([
+                ConfirmationDialogComponent,
+                {
+                    data: confirmationPayload,
+                    width: '360px'
+                }
+            ]);
+            expect(dialogSpy.calls.mostRecent().args).toEqual([
+                ConnectionManagerDialogComponent,
+                {
+                    data: connectionManagerPayload,
+                    width: '360px'
+                }
+            ]);
+        });
     });
 
     describe('as token view', () => {
@@ -179,31 +222,47 @@ describe('TokenComponent', () => {
             expect(initiatePaymentSpy).toHaveBeenCalledTimes(0);
         });
 
-        it('should open quick connect dialog with token network selected', () => {
+        it('should open quick connect dialog when no channels are open', () => {
+            component.openChannels = 0;
+            fixture.detectChanges();
+
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             const dialogResult: ConnectionManagerDialogPayload = {
                 token: token,
                 funds: new BigNumber(10)
             };
-            dialog.returns = () => dialogResult;
+            spyOn(dialog, 'returns').and.returnValues(true, dialogResult);
             const connectSpy = spyOn(
                 raidenService,
                 'connectTokenNetwork'
             ).and.returnValue(of(null));
-            clickElement(fixture.debugElement, '#quick-connect');
 
-            const payload: ConnectionManagerDialogPayload = {
+            clickElement(fixture.debugElement, '#transfer');
+            fixture.detectChanges();
+
+            const confirmationPayload: ConfirmationDialogPayload = {
+                title: `No open ${token.symbol} channels`,
+                message: `Do you want to use quick connect to automatically open ${token.symbol} channels?`
+            };
+            const connectionManagerPayload: ConnectionManagerDialogPayload = {
                 token: token,
                 funds: undefined
             };
-            expect(dialogSpy).toHaveBeenCalledTimes(1);
-            expect(dialogSpy).toHaveBeenCalledWith(
-                ConnectionManagerDialogComponent,
+            expect(dialogSpy).toHaveBeenCalledTimes(2);
+            expect(dialogSpy.calls.first().args).toEqual([
+                ConfirmationDialogComponent,
                 {
-                    data: payload,
+                    data: confirmationPayload,
                     width: '360px'
                 }
-            );
+            ]);
+            expect(dialogSpy.calls.mostRecent().args).toEqual([
+                ConnectionManagerDialogComponent,
+                {
+                    data: connectionManagerPayload,
+                    width: '360px'
+                }
+            ]);
             expect(connectSpy).toHaveBeenCalledTimes(1);
             expect(connectSpy).toHaveBeenCalledWith(
                 dialogResult.funds,
@@ -212,15 +271,20 @@ describe('TokenComponent', () => {
         });
 
         it('should not call the raiden service if quick connect is cancelled', () => {
+            component.openChannels = 0;
+            fixture.detectChanges();
+
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
-            dialog.returns = () => null;
+            spyOn(dialog, 'returns').and.returnValues(true, null);
             const connectSpy = spyOn(
                 raidenService,
                 'connectTokenNetwork'
             ).and.returnValue(of(null));
-            clickElement(fixture.debugElement, '#quick-connect');
 
-            expect(dialogSpy).toHaveBeenCalledTimes(1);
+            clickElement(fixture.debugElement, '#transfer');
+            fixture.detectChanges();
+
+            expect(dialogSpy).toHaveBeenCalledTimes(2);
             expect(connectSpy).toHaveBeenCalledTimes(0);
         });
 

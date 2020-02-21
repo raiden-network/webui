@@ -1,19 +1,12 @@
 <div class="actions-section">
-    <span *ngIf="selected" fxLayout="row">
+    <ng-container *ngIf="selected">
         <button
+            *ngIf="openChannels !== 0 || !quickConnectPending; else connecting"
             class="action"
             id="transfer"
             mat-flat-button
             color="accent"
             (click)="pay()"
-            [disabled]="openChannels === 0"
-            [matTooltip]="
-                openChannels === 0
-                    ? 'You need open ' +
-                      getTokenSymbol() +
-                      ' channels to send a transfer'
-                    : ''
-            "
         >
             <mat-icon
                 class="action__icon"
@@ -22,29 +15,28 @@
             >
             </mat-icon>
             <span>
-                Transfer
+                Transfer tokens
             </span>
         </button>
-        <div fxFlex="1 1 auto"></div>
-        <button
-            *ngIf="!allNetworksView"
-            id="quick-connect"
-            class="action action--black"
-            mat-flat-button
-            color="primary"
-            (click)="openConnectionManager()"
-        >
-            <mat-icon
-                class="action__icon action__icon--small"
-                svgIcon="thunderbolt"
-                aria-label="Open quick connect dialog"
+        <ng-template #connecting>
+            <div
+                class="action action--connect"
+                color="accent"
+                fxLayout="row"
+                fxLayoutAlign="space-evenly center"
             >
-            </mat-icon>
-            <span>
-                Quick connect
-            </span>
-        </button>
-    </span>
+                <mat-icon svgIcon="thunderbolt" aria-hidden="true"> </mat-icon>
+                <span>
+                    Quick connect pending
+                </span>
+                <mat-progress-spinner
+                    diameter="24"
+                    mode="indeterminate"
+                    color="accent"
+                ></mat-progress-spinner>
+            </div>
+        </ng-template>
+    </ng-container>
 </div>
 
 <div

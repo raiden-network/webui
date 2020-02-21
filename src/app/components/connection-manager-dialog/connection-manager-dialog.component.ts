@@ -20,25 +20,33 @@ export class ConnectionManagerDialogComponent implements OnInit {
     private tokenInput: TokenInputComponent;
 
     form = this.fb.group({
-        amount: ['', Validators.required]
+        amount: ['', Validators.required],
+        token: [undefined, Validators.required]
     });
-    token: UserToken;
+    initiatedWithoutToken = false;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) data: ConnectionManagerDialogPayload,
+        @Inject(MAT_DIALOG_DATA) private data: ConnectionManagerDialogPayload,
         private dialogRef: MatDialogRef<ConnectionManagerDialogComponent>,
         private fb: FormBuilder
     ) {
-        this.token = data.token;
+        this.initiatedWithoutToken = !data.token;
     }
 
-    ngOnInit(): void {
-        this.tokenInput.selectedToken = this.token;
+    ngOnInit() {
+        if (this.data.token) {
+            this.tokenNetworkSelected(this.data.token);
+        }
+    }
+
+    tokenNetworkSelected(token: UserToken) {
+        this.form.get('token').setValue(token);
+        this.tokenInput.selectedToken = token;
     }
 
     accept() {
         const payload: ConnectionManagerDialogPayload = {
-            token: this.token,
+            token: this.form.value.token,
             funds: this.form.value.amount
         };
         this.dialogRef.close(payload);
