@@ -7,18 +7,18 @@ export const tokenabi: AbiItem[] = [
         name: 'name',
         outputs: [{ name: '', type: 'string' }],
         payable: false,
-        type: 'function'
+        type: 'function',
     },
     {
         constant: false,
         inputs: [
             { name: '_spender', type: 'address' },
-            { name: '_value', type: 'uint256' }
+            { name: '_value', type: 'uint256' },
         ],
         name: 'approve',
         outputs: [{ name: 'success', type: 'bool' }],
         payable: false,
-        type: 'function'
+        type: 'function',
     },
     {
         constant: true,
@@ -26,19 +26,19 @@ export const tokenabi: AbiItem[] = [
         name: 'totalSupply',
         outputs: [{ name: '', type: 'uint256' }],
         payable: false,
-        type: 'function'
+        type: 'function',
     },
     {
         constant: false,
         inputs: [
             { name: '_from', type: 'address' },
             { name: '_to', type: 'address' },
-            { name: '_value', type: 'uint256' }
+            { name: '_value', type: 'uint256' },
         ],
         name: 'transferFrom',
         outputs: [{ name: 'success', type: 'bool' }],
         payable: false,
-        type: 'function'
+        type: 'function',
     },
     {
         constant: true,
@@ -46,7 +46,7 @@ export const tokenabi: AbiItem[] = [
         name: 'decimals',
         outputs: [{ name: '', type: 'uint8' }],
         payable: false,
-        type: 'function'
+        type: 'function',
     },
     {
         constant: true,
@@ -54,7 +54,7 @@ export const tokenabi: AbiItem[] = [
         name: 'version',
         outputs: [{ name: '', type: 'string' }],
         payable: false,
-        type: 'function'
+        type: 'function',
     },
     {
         constant: true,
@@ -62,7 +62,7 @@ export const tokenabi: AbiItem[] = [
         name: 'balanceOf',
         outputs: [{ name: 'balance', type: 'uint256' }],
         payable: false,
-        type: 'function'
+        type: 'function',
     },
     {
         constant: true,
@@ -70,68 +70,68 @@ export const tokenabi: AbiItem[] = [
         name: 'symbol',
         outputs: [{ name: '', type: 'string' }],
         payable: false,
-        type: 'function'
+        type: 'function',
     },
     {
         constant: false,
         inputs: [
             { name: '_to', type: 'address' },
-            { name: '_value', type: 'uint256' }
+            { name: '_value', type: 'uint256' },
         ],
         name: 'transfer',
         outputs: [{ name: 'success', type: 'bool' }],
         payable: false,
-        type: 'function'
+        type: 'function',
     },
     {
         constant: false,
         inputs: [
             { name: '_spender', type: 'address' },
             { name: '_value', type: 'uint256' },
-            { name: '_extraData', type: 'bytes' }
+            { name: '_extraData', type: 'bytes' },
         ],
         name: 'approveAndCall',
         outputs: [{ name: 'success', type: 'bool' }],
         payable: false,
-        type: 'function'
+        type: 'function',
     },
     {
         constant: true,
         inputs: [
             { name: '_owner', type: 'address' },
-            { name: '_spender', type: 'address' }
+            { name: '_spender', type: 'address' },
         ],
         name: 'allowance',
         outputs: [{ name: 'remaining', type: 'uint256' }],
         payable: false,
-        type: 'function'
+        type: 'function',
     },
     {
         inputs: [
             { name: '_initialAmount', type: 'uint256' },
             { name: '_tokenName', type: 'string' },
             { name: '_decimalUnits', type: 'uint8' },
-            { name: '_tokenSymbol', type: 'string' }
+            { name: '_tokenSymbol', type: 'string' },
         ],
-        type: 'constructor'
+        type: 'constructor',
     },
     { payable: false, type: 'fallback' },
     {
         inputs: [
             { indexed: true, name: '_from', type: 'address' },
             { indexed: true, name: '_to', type: 'address' },
-            { indexed: false, name: '_value', type: 'uint256' }
+            { indexed: false, name: '_value', type: 'uint256' },
         ],
         name: 'Transfer',
-        type: 'event'
+        type: 'event',
     },
     {
         inputs: [
             { indexed: true, name: '_owner', type: 'address' },
             { indexed: true, name: '_spender', type: 'address' },
-            { indexed: false, name: '_value', type: 'uint256' }
+            { indexed: false, name: '_value', type: 'uint256' },
         ],
         name: 'Approval',
-        type: 'event'
-    }
+        type: 'event',
+    },
 ];

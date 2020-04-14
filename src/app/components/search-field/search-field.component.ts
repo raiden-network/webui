@@ -13,7 +13,7 @@ import { SelectedTokenService } from '../../services/selected-token.service';
 @Component({
     selector: 'app-search-field',
     templateUrl: './search-field.component.html',
-    styleUrls: ['./search-field.component.css']
+    styleUrls: ['./search-field.component.css'],
 })
 export class SearchFieldComponent implements OnInit {
     @ViewChild('search_input', { static: true })
@@ -64,19 +64,21 @@ export class SearchFieldComponent implements OnInit {
     private setupFiltering() {
         this.filteredTokenOptions$ = combineLatest([
             this.inputSubject,
-            this.tokenPollingService.tokens$
+            this.tokenPollingService.tokens$,
         ]).pipe(
             map(([filterValue, tokens]) =>
-                tokens.filter(token => matchesToken(filterValue, token))
+                tokens.filter((token) => matchesToken(filterValue, token))
             )
         );
 
         this.filteredContactOptions$ = combineLatest([
             this.inputSubject,
-            this.addressBookService.getObservableArray()
+            this.addressBookService.getObservableArray(),
         ]).pipe(
             map(([filterValue, contacts]) =>
-                contacts.filter(contact => matchesContact(filterValue, contact))
+                contacts.filter((contact) =>
+                    matchesContact(filterValue, contact)
+                )
             )
         );
     }

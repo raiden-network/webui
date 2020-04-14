@@ -73,7 +73,7 @@ export class BatchManager {
 
         for (let i = 0; i < batches.length; i++) {
             const batch = batches[i];
-            const rpcRequests = batch.map(value => value.request);
+            const rpcRequests = batch.map((value) => value.request);
             const batchResponses = (await this.sendBatch(rpcRequests)) || [];
 
             const allResponses = batch.map((request, index) => {

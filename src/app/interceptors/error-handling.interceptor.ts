@@ -4,7 +4,7 @@ import {
     HttpInterceptor,
     HttpRequest,
     HttpErrorResponse,
-    HttpResponse
+    HttpResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
@@ -25,7 +25,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
-            tap(event => {
+            tap((event) => {
                 if (
                     event instanceof HttpResponse &&
                     event.url.includes('/api') &&
@@ -36,7 +36,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
                     this.notificationService.apiError = undefined;
                 }
             }),
-            catchError(error => this.handleError(error))
+            catchError((error) => this.handleError(error))
         );
     }
 
@@ -57,7 +57,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
                 const notificationMessage: UiMessage = {
                     title: 'API',
                     description: 'connection failure',
-                    icon: 'error-mark'
+                    icon: 'error-mark',
                 };
                 this.notificationService.addErrorNotification(
                     notificationMessage

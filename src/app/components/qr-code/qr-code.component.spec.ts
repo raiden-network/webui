@@ -20,21 +20,21 @@ describe('QrCodeComponent', () => {
 
     beforeEach(async(() => {
         const payload: QrCodePayload = {
-            content: content
+            content: content,
         };
 
         TestBed.configureTestingModule({
             declarations: [QrCodeComponent],
             providers: [
                 TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} })
+                TestProviders.MockMatDialogRef({ close: () => {} }),
             ],
             imports: [
                 ClipboardModule,
                 RaidenIconsModule,
                 MaterialComponentsModule,
-                HttpClientTestingModule
-            ]
+                HttpClientTestingModule,
+            ],
         }).compileComponents();
     }));
 
@@ -54,7 +54,7 @@ describe('QrCodeComponent', () => {
         const canvas = fixture.debugElement.query(By.css('canvas'));
         expect(qrCodeSpy).toHaveBeenCalledTimes(1);
         expect(qrCodeSpy).toHaveBeenCalledWith(canvas.nativeElement, content, {
-            width: 188
+            width: 188,
         });
     });
 

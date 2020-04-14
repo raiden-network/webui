@@ -5,11 +5,11 @@ import { UiMessage, NotificationMessage } from '../models/notification';
 import { MatSidenav } from '@angular/material/sidenav';
 import {
     ConnectionErrors,
-    ApiErrorResponse
+    ApiErrorResponse,
 } from '../models/connection-errors';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class NotificationService {
     private notificationsSubject = new BehaviorSubject<NotificationMessage[]>(
@@ -79,9 +79,9 @@ export class NotificationService {
             {
                 ...message,
                 identifier: identifier,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             },
-            ...this.pendingActions
+            ...this.pendingActions,
         ];
 
         this.pendingActionsSubject.next(this.pendingActions);
@@ -96,14 +96,14 @@ export class NotificationService {
 
     public removeNotification(identifier: number) {
         this.notifications = this.notifications.filter(
-            notification => notification.identifier !== identifier
+            (notification) => notification.identifier !== identifier
         );
         this.notificationsSubject.next(this.notifications);
     }
 
     public removePendingAction(identifier: number) {
         this.pendingActions = this.pendingActions.filter(
-            pendingAction => pendingAction.identifier !== identifier
+            (pendingAction) => pendingAction.identifier !== identifier
         );
         this.pendingActionsSubject.next(this.pendingActions);
     }
@@ -139,9 +139,9 @@ export class NotificationService {
             {
                 ...message,
                 identifier: identifier,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             },
-            ...this.notifications
+            ...this.notifications,
         ];
 
         this.notificationsSubject.next(this.notifications);

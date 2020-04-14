@@ -11,7 +11,7 @@ import { amountToDecimal } from '../utils/amount.converter';
 import { AddressBookService } from './address-book.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class PaymentHistoryPollingService {
     readonly paymentHistory$: Observable<PaymentEvent[]>;
@@ -83,7 +83,7 @@ export class PaymentHistoryPollingService {
             description: `${formattedAmount} ${token.symbol} from ${initiatorLabel} ${event.initiator}`,
             icon: 'received',
             identiconAddress: initiatorAddress,
-            userToken: token
+            userToken: token,
         };
         this.notificationService.addInfoNotification(message);
     }

@@ -15,7 +15,7 @@ import { takeUntil } from 'rxjs/operators';
     selector: 'app-history-table',
     templateUrl: './history-table.component.html',
     styleUrls: ['./history-table.component.css'],
-    animations: Animations.flyInOut
+    animations: Animations.flyInOut,
 })
 export class HistoryTableComponent implements OnInit, OnDestroy {
     visibleHistory: PaymentEvent[] = [];
@@ -35,7 +35,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.paymentHistoryPollingService.paymentHistory$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(events => {
+            .subscribe((events) => {
                 this.history = events;
                 this.updateVisibleEvents();
             });
@@ -49,7 +49,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
 
         this.sharedService.searchFilter$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(value => {
+            .subscribe((value) => {
                 this.searchFilter = value;
                 this.updateVisibleEvents();
             });
@@ -116,7 +116,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
         if (partnerLabel) {
             const contact: Contact = {
                 address: paymentPartner,
-                label: partnerLabel
+                label: partnerLabel,
             };
             matchingContact = matchesContact(this.searchFilter, contact);
         }

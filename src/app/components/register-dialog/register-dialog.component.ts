@@ -5,11 +5,11 @@ import { MatDialogRef } from '@angular/material/dialog';
 @Component({
     selector: 'app-register-dialog',
     templateUrl: './register-dialog.component.html',
-    styleUrls: ['./register-dialog.component.css']
+    styleUrls: ['./register-dialog.component.css'],
 })
 export class RegisterDialogComponent {
     readonly form = this.fb.group({
-        token_address: ['', Validators.required]
+        token_address: ['', Validators.required],
     });
 
     constructor(

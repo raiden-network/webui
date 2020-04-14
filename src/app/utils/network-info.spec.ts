@@ -1,14 +1,14 @@
 import { NetworkInfo } from './network-info';
 
 describe('NetworkInfo', () => {
-    describe('getName', function() {
+    describe('getName', function () {
         it('should return Mainnet when chain id is 1', () => {
             expect(NetworkInfo.getNetwork(1)).toEqual({
                 name: 'Mainnet',
                 shortName: 'eth',
                 chainId: 1,
                 ensSupported: true,
-                faucet: undefined
+                faucet: undefined,
             });
         });
 
@@ -18,7 +18,7 @@ describe('NetworkInfo', () => {
                 shortName: 'rop',
                 chainId: 3,
                 ensSupported: true,
-                faucet: 'https://faucet.ropsten.be/?${ADDRESS}'
+                faucet: 'https://faucet.ropsten.be/?${ADDRESS}',
             });
         });
 
@@ -28,7 +28,7 @@ describe('NetworkInfo', () => {
                 shortName: 'rin',
                 chainId: 4,
                 ensSupported: true,
-                faucet: 'https://faucet.rinkeby.io/'
+                faucet: 'https://faucet.rinkeby.io/',
             });
         });
 
@@ -38,7 +38,7 @@ describe('NetworkInfo', () => {
                 shortName: 'gor',
                 chainId: 5,
                 ensSupported: false,
-                faucet: 'https://goerli-faucet.slock.it/?address=${ADDRESS}'
+                faucet: 'https://goerli-faucet.slock.it/?address=${ADDRESS}',
             });
         });
 
@@ -48,7 +48,7 @@ describe('NetworkInfo', () => {
                 shortName: 'kov',
                 chainId: 42,
                 ensSupported: false,
-                faucet: 'https://faucet.kovan.network/'
+                faucet: 'https://faucet.kovan.network/',
             });
         });
 
@@ -58,7 +58,7 @@ describe('NetworkInfo', () => {
                 shortName: 'eth',
                 chainId: 123,
                 ensSupported: false,
-                faucet: undefined
+                faucet: undefined,
             });
         });
     });

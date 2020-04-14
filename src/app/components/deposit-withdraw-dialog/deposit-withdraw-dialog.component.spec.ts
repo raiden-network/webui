@@ -5,7 +5,7 @@ import { MaterialComponentsModule } from '../../modules/material-components/mate
 import { TokenInputComponent } from '../token-input/token-input.component';
 import {
     DepositWithdrawDialogComponent,
-    DepositWithdrawDialogPayload
+    DepositWithdrawDialogPayload,
 } from './deposit-withdraw-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
 import { DepositMode } from '../../models/deposit-mode.enum';
@@ -23,23 +23,23 @@ describe('DepositWithdrawDialogComponent', () => {
     beforeEach(async(() => {
         const payload: DepositWithdrawDialogPayload = {
             token: undefined,
-            depositMode: DepositMode.DEPOSIT
+            depositMode: DepositMode.DEPOSIT,
         };
         TestBed.configureTestingModule({
             declarations: [
                 DepositWithdrawDialogComponent,
                 TokenInputComponent,
-                RaidenDialogComponent
+                RaidenDialogComponent,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} })
+                TestProviders.MockMatDialogRef({ close: () => {} }),
             ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
-                ReactiveFormsModule
-            ]
+                ReactiveFormsModule,
+            ],
         }).compileComponents();
     }));
 
@@ -68,7 +68,7 @@ describe('DepositWithdrawDialogComponent', () => {
 
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith({
-            tokenAmount: new BigNumber(amountInput)
+            tokenAmount: new BigNumber(amountInput),
         });
     });
 

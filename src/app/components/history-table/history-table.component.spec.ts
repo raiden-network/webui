@@ -4,7 +4,7 @@ import {
     TestBed,
     fakeAsync,
     tick,
-    flush
+    flush,
 } from '@angular/core/testing';
 import { HistoryTableComponent } from './history-table.component';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -17,7 +17,7 @@ import { PaymentHistoryPollingService } from '../../services/payment-history-pol
 import {
     createToken,
     createTestPaymentEvents,
-    createPaymentEvent
+    createPaymentEvent,
 } from '../../../testing/test-data';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
@@ -50,24 +50,24 @@ describe('HistoryTableComponent', () => {
             declarations: [
                 HistoryTableComponent,
                 DecimalPipe,
-                DisplayDecimalsPipe
+                DisplayDecimalsPipe,
             ],
             providers: [
                 TestProviders.AddressBookStubProvider(),
                 SelectedTokenService,
                 {
                     provide: PaymentHistoryPollingService,
-                    useValue: historyPollingMock
+                    useValue: historyPollingMock,
                 },
-                SharedService
+                SharedService,
             ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
                 RaidenIconsModule,
                 HttpClientTestingModule,
-                ClipboardModule
-            ]
+                ClipboardModule,
+            ],
         }).compileComponents();
     }));
 

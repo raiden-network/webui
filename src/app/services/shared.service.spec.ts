@@ -16,14 +16,14 @@ describe('SharedService', () => {
 
     it('should register a new global click with target', () => {
         const element = document.createElement('div');
-        service.globalClickTarget$.subscribe(target => {
+        service.globalClickTarget$.subscribe((target) => {
             expect(target).toEqual(element);
         });
         service.newGlobalClick(element);
     });
 
     it('should set a new search filter', () => {
-        service.searchFilter$.subscribe(value => {
+        service.searchFilter$.subscribe((value) => {
             expect(value).toEqual('TestToken');
         });
         service.setSearchValue('TestToken');

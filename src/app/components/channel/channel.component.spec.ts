@@ -23,13 +23,13 @@ import { of } from 'rxjs';
 import {
     DepositWithdrawDialogPayload,
     DepositWithdrawDialogComponent,
-    DepositWithdrawDialogResult
+    DepositWithdrawDialogResult,
 } from '../deposit-withdraw-dialog/deposit-withdraw-dialog.component';
 import { DepositMode } from '../../models/deposit-mode.enum';
 import { MatDialog } from '@angular/material/dialog';
 import {
     ConfirmationDialogPayload,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
 
 describe('ChannelComponent', () => {
@@ -57,16 +57,16 @@ describe('ChannelComponent', () => {
                 IdenticonCacheService,
                 {
                     provide: AddressBookService,
-                    useValue: addressBookMock
-                }
+                    useValue: addressBookMock,
+                },
             ],
             imports: [
                 MaterialComponentsModule,
                 ClipboardModule,
                 HttpClientTestingModule,
                 NoopAnimationsModule,
-                RaidenIconsModule
-            ]
+                RaidenIconsModule,
+            ],
         }).compileComponents();
     }));
 
@@ -92,7 +92,7 @@ describe('ChannelComponent', () => {
 
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const dialogResult: DepositWithdrawDialogResult = {
-            tokenAmount: new BigNumber(50)
+            tokenAmount: new BigNumber(50),
         };
         dialog.returns = () => dialogResult;
         const depositSpy = spyOn(
@@ -103,12 +103,12 @@ describe('ChannelComponent', () => {
 
         const payload: DepositWithdrawDialogPayload = {
             token: token,
-            depositMode: DepositMode.DEPOSIT
+            depositMode: DepositMode.DEPOSIT,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(DepositWithdrawDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
         expect(depositSpy).toHaveBeenCalledTimes(1);
         expect(depositSpy).toHaveBeenCalledWith(
@@ -125,7 +125,7 @@ describe('ChannelComponent', () => {
 
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const dialogResult: DepositWithdrawDialogResult = {
-            tokenAmount: new BigNumber(225)
+            tokenAmount: new BigNumber(225),
         };
         dialog.returns = () => dialogResult;
         const depositSpy = spyOn(
@@ -136,12 +136,12 @@ describe('ChannelComponent', () => {
 
         const payload: DepositWithdrawDialogPayload = {
             token: token,
-            depositMode: DepositMode.WITHDRAW
+            depositMode: DepositMode.WITHDRAW,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(DepositWithdrawDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
         expect(depositSpy).toHaveBeenCalledTimes(1);
         expect(depositSpy).toHaveBeenCalledWith(
@@ -180,12 +180,12 @@ describe('ChannelComponent', () => {
 
         const payload: ConfirmationDialogPayload = {
             title: 'Close Channel',
-            message: `Are you sure you want to close the ${token.symbol} channel with ${channel.partner_address} in ${token.name} network?`
+            message: `Are you sure you want to close the ${token.symbol} channel with ${channel.partner_address} in ${token.name} network?`,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith(
@@ -220,12 +220,12 @@ describe('ChannelComponent', () => {
 
         const payload: ConfirmationDialogPayload = {
             title: 'Close Channel',
-            message: `Are you sure you want to close the ${token.symbol} channel with Test partner ${channel.partner_address} in ${token.name} network?`
+            message: `Are you sure you want to close the ${token.symbol} channel with Test partner ${channel.partner_address} in ${token.name} network?`,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
     });
 });

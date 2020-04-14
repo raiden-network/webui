@@ -3,7 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import {
     ConfirmationDialogComponent,
-    ConfirmationDialogPayload
+    ConfirmationDialogPayload,
 } from './confirmation-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
 import { clickElement } from '../../../testing/interaction-helper';
@@ -16,16 +16,16 @@ describe('ConfirmationDialogComponent', () => {
     beforeEach(async(() => {
         const payload: ConfirmationDialogPayload = {
             title: 'Test confirm',
-            message: 'Do you want to confirm this test?'
+            message: 'Do you want to confirm this test?',
         };
 
         TestBed.configureTestingModule({
             declarations: [ConfirmationDialogComponent, RaidenDialogComponent],
             providers: [
                 TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} })
+                TestProviders.MockMatDialogRef({ close: () => {} }),
             ],
-            imports: [MaterialComponentsModule, ReactiveFormsModule]
+            imports: [MaterialComponentsModule, ReactiveFormsModule],
         }).compileComponents();
     }));
 
@@ -39,7 +39,7 @@ describe('ConfirmationDialogComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should close the dialog with true when confirmed', function() {
+    it('should close the dialog with true when confirmed', function () {
         // @ts-ignore
         const closeSpy = spyOn(component.dialogRef, 'close');
         clickElement(fixture.debugElement, '#accept');

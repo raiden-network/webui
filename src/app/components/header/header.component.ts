@@ -16,7 +16,7 @@ import { QrCodeComponent, QrCodePayload } from '../qr-code/qr-code.component';
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.css'],
-    animations: Animations.easeInOut
+    animations: Animations.easeInOut,
 })
 export class HeaderComponent implements OnInit, OnDestroy {
     raidenAddress: string;
@@ -51,13 +51,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.raidenService.raidenAddress$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(address => (this.raidenAddress = address));
+            .subscribe((address) => (this.raidenAddress = address));
 
         this.channelPollingService
             .channels()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((channels: Channel[]) => {
-                const openChannels = channels.filter(channel => {
+                const openChannels = channels.filter((channel) => {
                     return channel.state === 'opened';
                 });
                 this.openChannels = openChannels.length;
@@ -84,11 +84,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     showOwnAddressQrCode() {
         const payload: QrCodePayload = {
-            content: this.raidenAddress
+            content: this.raidenAddress,
         };
         this.dialog.open(QrCodeComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
     }
 }

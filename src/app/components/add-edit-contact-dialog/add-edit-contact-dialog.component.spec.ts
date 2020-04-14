@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
     AddEditContactDialogComponent,
-    AddEditContactDialogPayload
+    AddEditContactDialogPayload,
 } from './add-edit-contact-dialog.component';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component';
@@ -40,27 +40,27 @@ describe('AddEditContactDialogComponent', () => {
         const payload: AddEditContactDialogPayload = {
             address: '',
             label: '',
-            edit: false
+            edit: false,
         };
 
         TestBed.configureTestingModule({
             declarations: [
                 AddEditContactDialogComponent,
                 AddressInputComponent,
-                RaidenDialogComponent
+                RaidenDialogComponent,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
                 TestProviders.MockMatDialogRef({ close: () => {} }),
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
             ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
                 ReactiveFormsModule,
-                HttpClientTestingModule
-            ]
+                HttpClientTestingModule,
+            ],
         }).compileComponents();
     }));
 
@@ -84,7 +84,7 @@ describe('AddEditContactDialogComponent', () => {
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith({
             address: addressInput,
-            label: labelInput
+            label: labelInput,
         });
     });
 

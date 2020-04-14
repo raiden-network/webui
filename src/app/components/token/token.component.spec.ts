@@ -16,18 +16,18 @@ import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import {
     PaymentDialogComponent,
-    PaymentDialogPayload
+    PaymentDialogPayload,
 } from '../payment-dialog/payment-dialog.component';
 import BigNumber from 'bignumber.js';
 import { of } from 'rxjs';
 import {
     ConnectionManagerDialogPayload,
-    ConnectionManagerDialogComponent
+    ConnectionManagerDialogComponent,
 } from '../connection-manager-dialog/connection-manager-dialog.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
     ConfirmationDialogPayload,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { ClipboardModule } from 'ngx-clipboard';
 
@@ -48,15 +48,15 @@ describe('TokenComponent', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 PendingTransferPollingService,
                 TestProviders.MockMatDialog(),
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
             ],
             imports: [
                 RaidenIconsModule,
                 MaterialComponentsModule,
                 HttpClientTestingModule,
                 NoopAnimationsModule,
-                ClipboardModule
-            ]
+                ClipboardModule,
+            ],
         }).compileComponents();
     }));
 
@@ -85,7 +85,7 @@ describe('TokenComponent', () => {
             const dialogResult: PaymentDialogPayload = {
                 tokenAddress: token.address,
                 targetAddress: createAddress(),
-                amount: new BigNumber(10)
+                amount: new BigNumber(10),
             };
             dialog.returns = () => dialogResult;
             const initiatePaymentSpy = spyOn(
@@ -97,12 +97,12 @@ describe('TokenComponent', () => {
             const payload: PaymentDialogPayload = {
                 tokenAddress: '',
                 targetAddress: '',
-                amount: undefined
+                amount: undefined,
             };
             expect(dialogSpy).toHaveBeenCalledTimes(1);
             expect(dialogSpy).toHaveBeenCalledWith(PaymentDialogComponent, {
                 data: payload,
-                width: '360px'
+                width: '360px',
             });
             expect(initiatePaymentSpy).toHaveBeenCalledTimes(1);
             expect(initiatePaymentSpy).toHaveBeenCalledWith(
@@ -129,7 +129,7 @@ describe('TokenComponent', () => {
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             const dialogResult: ConnectionManagerDialogPayload = {
                 token: token,
-                funds: new BigNumber(10)
+                funds: new BigNumber(10),
             };
             spyOn(dialog, 'returns').and.returnValues(true, dialogResult);
             spyOn(raidenService, 'connectTokenNetwork').and.returnValue(
@@ -142,26 +142,26 @@ describe('TokenComponent', () => {
             const confirmationPayload: ConfirmationDialogPayload = {
                 title: 'No open  channels',
                 message:
-                    'Do you want to use quick connect to automatically open  channels?'
+                    'Do you want to use quick connect to automatically open  channels?',
             };
             const connectionManagerPayload: ConnectionManagerDialogPayload = {
                 token: undefined,
-                funds: undefined
+                funds: undefined,
             };
             expect(dialogSpy).toHaveBeenCalledTimes(2);
             expect(dialogSpy.calls.first().args).toEqual([
                 ConfirmationDialogComponent,
                 {
                     data: confirmationPayload,
-                    width: '360px'
-                }
+                    width: '360px',
+                },
             ]);
             expect(dialogSpy.calls.mostRecent().args).toEqual([
                 ConnectionManagerDialogComponent,
                 {
                     data: connectionManagerPayload,
-                    width: '360px'
-                }
+                    width: '360px',
+                },
             ]);
         });
     });
@@ -182,7 +182,7 @@ describe('TokenComponent', () => {
             const dialogResult: PaymentDialogPayload = {
                 tokenAddress: token.address,
                 targetAddress: createAddress(),
-                amount: new BigNumber(10)
+                amount: new BigNumber(10),
             };
             dialog.returns = () => dialogResult;
             const initiatePaymentSpy = spyOn(
@@ -194,12 +194,12 @@ describe('TokenComponent', () => {
             const payload: PaymentDialogPayload = {
                 tokenAddress: token.address,
                 targetAddress: '',
-                amount: undefined
+                amount: undefined,
             };
             expect(dialogSpy).toHaveBeenCalledTimes(1);
             expect(dialogSpy).toHaveBeenCalledWith(PaymentDialogComponent, {
                 data: payload,
-                width: '360px'
+                width: '360px',
             });
             expect(initiatePaymentSpy).toHaveBeenCalledTimes(1);
             expect(initiatePaymentSpy).toHaveBeenCalledWith(
@@ -229,7 +229,7 @@ describe('TokenComponent', () => {
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             const dialogResult: ConnectionManagerDialogPayload = {
                 token: token,
-                funds: new BigNumber(10)
+                funds: new BigNumber(10),
             };
             spyOn(dialog, 'returns').and.returnValues(true, dialogResult);
             const connectSpy = spyOn(
@@ -242,26 +242,26 @@ describe('TokenComponent', () => {
 
             const confirmationPayload: ConfirmationDialogPayload = {
                 title: `No open ${token.symbol} channels`,
-                message: `Do you want to use quick connect to automatically open ${token.symbol} channels?`
+                message: `Do you want to use quick connect to automatically open ${token.symbol} channels?`,
             };
             const connectionManagerPayload: ConnectionManagerDialogPayload = {
                 token: token,
-                funds: undefined
+                funds: undefined,
             };
             expect(dialogSpy).toHaveBeenCalledTimes(2);
             expect(dialogSpy.calls.first().args).toEqual([
                 ConfirmationDialogComponent,
                 {
                     data: confirmationPayload,
-                    width: '360px'
-                }
+                    width: '360px',
+                },
             ]);
             expect(dialogSpy.calls.mostRecent().args).toEqual([
                 ConnectionManagerDialogComponent,
                 {
                     data: connectionManagerPayload,
-                    width: '360px'
-                }
+                    width: '360px',
+                },
             ]);
             expect(connectSpy).toHaveBeenCalledTimes(1);
             expect(connectSpy).toHaveBeenCalledWith(
@@ -352,14 +352,14 @@ describe('TokenComponent', () => {
 
             const payload: ConfirmationDialogPayload = {
                 title: 'Leave Token Network',
-                message: `Are you sure you want to close and settle all ${token.symbol} channels in ${token.name} network?`
+                message: `Are you sure you want to close and settle all ${token.symbol} channels in ${token.name} network?`,
             };
             expect(dialogSpy).toHaveBeenCalledTimes(1);
             expect(dialogSpy).toHaveBeenCalledWith(
                 ConfirmationDialogComponent,
                 {
                     data: payload,
-                    width: '360px'
+                    width: '360px',
                 }
             );
             expect(leaveSpy).toHaveBeenCalledTimes(1);

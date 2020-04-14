@@ -4,7 +4,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import {
     ErrorStateMatcher,
-    ShowOnDirtyErrorStateMatcher
+    ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
 import { TokenInputComponent } from './token-input.component';
 import { TestProviders } from '../../../testing/test-providers';
@@ -24,10 +24,10 @@ describe('TokenInputComponent', () => {
             providers: [
                 {
                     provide: ErrorStateMatcher,
-                    useClass: ShowOnDirtyErrorStateMatcher
-                }
+                    useClass: ShowOnDirtyErrorStateMatcher,
+                },
             ],
-            imports: [MaterialComponentsModule, NoopAnimationsModule]
+            imports: [MaterialComponentsModule, NoopAnimationsModule],
         }).compileComponents();
     }));
 

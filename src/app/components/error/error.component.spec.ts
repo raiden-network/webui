@@ -16,7 +16,7 @@ describe('ErrorComponent', () => {
     beforeEach(async(() => {
         const payload: ErrorPayload = {
             type: ConnectionErrorType.ApiError,
-            errorContent: 'API error!'
+            errorContent: 'API error!',
         };
 
         TestBed.configureTestingModule({
@@ -25,13 +25,13 @@ describe('ErrorComponent', () => {
                 TestProviders.MockMatDialogData(payload),
                 RaidenService,
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
             ],
             imports: [
                 RaidenIconsModule,
                 MaterialComponentsModule,
-                HttpClientTestingModule
-            ]
+                HttpClientTestingModule,
+            ],
         }).compileComponents();
     }));
 
@@ -59,7 +59,7 @@ describe('ErrorComponent', () => {
     it('should show a RPC error', () => {
         const payload: ErrorPayload = {
             type: ConnectionErrorType.RpcError,
-            errorContent: 'RPC error!'
+            errorContent: 'RPC error!',
         };
         component.data = payload;
         fixture.detectChanges();
@@ -87,7 +87,7 @@ describe('ErrorComponent', () => {
     it('should attempt to connect to the RPC when retry button clicked', () => {
         const payload: ErrorPayload = {
             type: ConnectionErrorType.RpcError,
-            errorContent: 'RPC error!'
+            errorContent: 'RPC error!',
         };
         component.data = payload;
         fixture.detectChanges();

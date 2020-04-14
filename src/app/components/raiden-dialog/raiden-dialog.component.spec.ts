@@ -4,7 +4,7 @@ import {
     TestBed,
     fakeAsync,
     tick,
-    flush
+    flush,
 } from '@angular/core/testing';
 import { RaidenDialogComponent } from './raiden-dialog.component';
 import { By } from '@angular/platform-browser';
@@ -15,7 +15,7 @@ describe('RaidenDialogComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [RaidenDialogComponent]
+            declarations: [RaidenDialogComponent],
         }).compileComponents();
     }));
 

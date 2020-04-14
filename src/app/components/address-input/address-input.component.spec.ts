@@ -5,14 +5,14 @@ import {
     fakeAsync,
     flush,
     TestBed,
-    tick
+    tick,
 } from '@angular/core/testing';
 import { MatOption } from '@angular/material/core';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
     ErrorStateMatcher,
-    ShowOnDirtyErrorStateMatcher
+    ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { RaidenConfig } from '../../services/raiden.config';
@@ -24,14 +24,14 @@ import { Contact, Contacts } from '../../models/contact';
 import {
     mockInput,
     mockMatSelectFirst,
-    clickElement
+    clickElement,
 } from '../../../testing/interaction-helper';
 import { TestProviders } from '../../../testing/test-providers';
 import { of } from 'rxjs';
 import {
     createAddress,
     createNetworkMock,
-    createTestContacts
+    createTestContacts,
 } from '../../../testing/test-data';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -53,17 +53,17 @@ describe('AddressInputComponent', () => {
                 TestProviders.AddressBookStubProvider(),
                 {
                     provide: ErrorStateMatcher,
-                    useClass: ShowOnDirtyErrorStateMatcher
+                    useClass: ShowOnDirtyErrorStateMatcher,
                 },
-                RaidenService
+                RaidenService,
             ],
             imports: [
                 MaterialComponentsModule,
                 HttpClientTestingModule,
                 NoopAnimationsModule,
                 RaidenIconsModule,
-                ReactiveFormsModule
-            ]
+                ReactiveFormsModule,
+            ],
         }).compileComponents();
     }));
 
@@ -234,7 +234,7 @@ describe('AddressInputComponent', () => {
     describe('as an autocomplete', () => {
         const contacts: Contact[] = createTestContacts(2);
         const contactsMap: Contacts = {};
-        contacts.forEach(contact => {
+        contacts.forEach((contact) => {
             contactsMap[contact.address] = contact.label;
         });
 
@@ -341,7 +341,7 @@ describe('AddressInputComponent', () => {
             expect(addressBookSpy).toHaveBeenCalledTimes(1);
             expect(addressBookSpy).toHaveBeenCalledWith({
                 address: address,
-                label: label
+                label: label,
             });
         });
 
@@ -363,14 +363,14 @@ describe('AddressInputComponent', () => {
                 By.css('input[placeholder="Contact name"]')
             );
             labelInput.triggerEventHandler('keyup.enter', {
-                stopPropagation: () => {}
+                stopPropagation: () => {},
             });
             fixture.detectChanges();
 
             expect(addressBookSpy).toHaveBeenCalledTimes(1);
             expect(addressBookSpy).toHaveBeenCalledWith({
                 address: address,
-                label: label
+                label: label,
             });
         });
 
@@ -392,7 +392,7 @@ describe('AddressInputComponent', () => {
                 By.css('input[placeholder="Contact name"]')
             );
             labelInput.triggerEventHandler('keyup.enter', {
-                stopPropagation: () => {}
+                stopPropagation: () => {},
             });
             fixture.detectChanges();
 

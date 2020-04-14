@@ -4,13 +4,13 @@ import {
     TestBed,
     tick,
     fakeAsync,
-    flush
+    flush,
 } from '@angular/core/testing';
 import { ChannelListComponent } from './channel-list.component';
 import {
     createToken,
     createTestChannels,
-    createAddress
+    createAddress,
 } from '../../../testing/test-data';
 import { ChannelComponent } from '../channel/channel.component';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
@@ -33,7 +33,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {
     OpenDialogPayload,
     OpenDialogComponent,
-    OpenDialogResult
+    OpenDialogResult,
 } from '../open-dialog/open-dialog.component';
 import { RaidenConfig } from '../../services/raiden.config';
 import BigNumber from 'bignumber.js';
@@ -57,7 +57,7 @@ describe('ChannelListComponent', () => {
                 ChannelListComponent,
                 ChannelComponent,
                 DecimalPipe,
-                DisplayDecimalsPipe
+                DisplayDecimalsPipe,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
@@ -67,15 +67,15 @@ describe('ChannelListComponent', () => {
                 ChannelPollingService,
                 SelectedTokenService,
                 TestProviders.AddressBookStubProvider(),
-                SharedService
+                SharedService,
             ],
             imports: [
                 MaterialComponentsModule,
                 ClipboardModule,
                 HttpClientTestingModule,
                 NoopAnimationsModule,
-                RaidenIconsModule
-            ]
+                RaidenIconsModule,
+            ],
         }).compileComponents();
     }));
 
@@ -154,7 +154,7 @@ describe('ChannelListComponent', () => {
         const addressBookService = TestBed.inject(AddressBookService);
         addressBookService.get = () => {
             const contacts: Contacts = {
-                [channel.partner_address]: 'Test partner'
+                [channel.partner_address]: 'Test partner',
             };
             return contacts;
         };
@@ -180,7 +180,7 @@ describe('ChannelListComponent', () => {
             tokenAddress: token1.address,
             partnerAddress: createAddress(),
             balance: new BigNumber(1000),
-            settleTimeout: raidenConfig.config.settle_timeout
+            settleTimeout: raidenConfig.config.settle_timeout,
         };
         dialog.returns = () => dialogResult;
         const openSpy = spyOn(raidenService, 'openChannel').and.returnValue(
@@ -191,12 +191,12 @@ describe('ChannelListComponent', () => {
         const payload: OpenDialogPayload = {
             tokenAddress: '',
             defaultSettleTimeout: raidenConfig.config.settle_timeout,
-            revealTimeout: raidenConfig.config.reveal_timeout
+            revealTimeout: raidenConfig.config.reveal_timeout,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(OpenDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
         expect(openSpy).toHaveBeenCalledTimes(1);
         expect(openSpy).toHaveBeenCalledWith(
@@ -238,12 +238,12 @@ describe('ChannelListComponent', () => {
         const payload: OpenDialogPayload = {
             tokenAddress: token1.address,
             defaultSettleTimeout: raidenConfig.config.settle_timeout,
-            revealTimeout: raidenConfig.config.reveal_timeout
+            revealTimeout: raidenConfig.config.reveal_timeout,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(OpenDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
     });
 });

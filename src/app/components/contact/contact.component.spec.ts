@@ -14,7 +14,7 @@ describe('ContactComponent', () => {
 
     const contact: Contact = {
         address: createAddress(),
-        label: 'Test account'
+        label: 'Test account',
     };
 
     beforeEach(async(() => {
@@ -24,8 +24,8 @@ describe('ContactComponent', () => {
                 MaterialComponentsModule,
                 NoopAnimationsModule,
                 RaidenIconsModule,
-                HttpClientTestingModule
-            ]
+                HttpClientTestingModule,
+            ],
         }).compileComponents();
     }));
 

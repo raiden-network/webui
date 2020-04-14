@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class AddressBookService {
     private static ADDRESS_BOOK_KEY = 'raiden__address_book';
@@ -29,10 +29,10 @@ export class AddressBookService {
         return this.addressBookUpdateSubject.pipe(
             map(() => {
                 const contacts = this.get();
-                return Object.keys(contacts).map(value => {
+                return Object.keys(contacts).map((value) => {
                     return {
                         address: value,
-                        label: contacts[value]
+                        label: contacts[value],
                     };
                 });
             })
@@ -73,7 +73,7 @@ export class AddressBookService {
 
         if (!isValid) {
             throw Error(
-                this.schema.errors.map(value => value.message).join(', ')
+                this.schema.errors.map((value) => value.message).join(', ')
             );
         }
 

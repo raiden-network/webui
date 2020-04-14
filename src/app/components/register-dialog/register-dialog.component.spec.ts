@@ -22,20 +22,20 @@ describe('RegisterDialogComponent', () => {
             declarations: [
                 RegisterDialogComponent,
                 AddressInputComponent,
-                RaidenDialogComponent
+                RaidenDialogComponent,
             ],
             providers: [
                 TestProviders.MockMatDialogData(),
                 TestProviders.MockMatDialogRef({ close: () => {} }),
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
             ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
                 ReactiveFormsModule,
-                HttpClientTestingModule
-            ]
+                HttpClientTestingModule,
+            ],
         }).compileComponents();
     }));
 

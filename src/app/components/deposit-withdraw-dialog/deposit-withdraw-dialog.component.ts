@@ -18,14 +18,14 @@ export interface DepositWithdrawDialogResult {
 @Component({
     selector: 'app-deposit-dialog',
     templateUrl: './deposit-withdraw-dialog.component.html',
-    styleUrls: ['./deposit-withdraw-dialog.component.css']
+    styleUrls: ['./deposit-withdraw-dialog.component.css'],
 })
 export class DepositWithdrawDialogComponent implements OnInit {
     @ViewChild(TokenInputComponent, { static: true })
     private tokenInput: TokenInputComponent;
 
     form = this.fb.group({
-        amount: ['', Validators.required]
+        amount: ['', Validators.required],
     });
     token: UserToken;
     withdraw = false;

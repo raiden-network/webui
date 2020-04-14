@@ -4,7 +4,7 @@ import {
     TestBed,
     fakeAsync,
     tick,
-    async
+    async,
 } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -16,7 +16,7 @@ import { RaidenConfig } from './services/raiden.config';
 import { RaidenService } from './services/raiden.service';
 import {
     ErrorComponent,
-    ErrorPayload
+    ErrorPayload,
 } from './components/error/error.component';
 import { BehaviorSubject, of, NEVER } from 'rxjs';
 import { TestProviders } from '../testing/test-providers';
@@ -66,30 +66,30 @@ describe('AppComponent', () => {
             declarations: [
                 AppComponent,
                 NotificationPanelComponent,
-                NotificationItemComponent
+                NotificationItemComponent,
             ],
             providers: [
                 {
                     provide: RaidenConfig,
-                    useClass: MockConfig
+                    useClass: MockConfig,
                 },
                 {
                     provide: RaidenService,
-                    useValue: raidenServiceMock
+                    useValue: raidenServiceMock,
                 },
                 {
                     provide: PendingTransferPollingService,
-                    useValue: pendingTransferPollingMock
+                    useValue: pendingTransferPollingMock,
                 },
                 {
                     provide: PaymentHistoryPollingService,
-                    useValue: paymentHistoryPollingMock
+                    useValue: paymentHistoryPollingMock,
                 },
                 NotificationService,
                 ChannelPollingService,
                 TestProviders.MockMatDialog(),
                 SharedService,
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
             ],
             imports: [
                 MaterialComponentsModule,
@@ -97,8 +97,8 @@ describe('AppComponent', () => {
                 HttpClientTestingModule,
                 NoopAnimationsModule,
                 RaidenIconsModule,
-                ClipboardModule
-            ]
+                ClipboardModule,
+            ],
         }).compileComponents();
     }));
 
@@ -141,14 +141,14 @@ describe('AppComponent', () => {
 
         const payload: ErrorPayload = {
             type: ConnectionErrorType.ApiError,
-            errorContent: error.message
+            errorContent: error.message,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ErrorComponent, {
             data: payload,
             width: '500px',
             disableClose: true,
-            panelClass: 'grey-dialog'
+            panelClass: 'grey-dialog',
         });
     });
 
@@ -160,14 +160,14 @@ describe('AppComponent', () => {
 
         const payload: ErrorPayload = {
             type: ConnectionErrorType.RpcError,
-            errorContent: error.stack
+            errorContent: error.stack,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ErrorComponent, {
             data: payload,
             width: '500px',
             disableClose: true,
-            panelClass: 'grey-dialog'
+            panelClass: 'grey-dialog',
         });
     });
 
@@ -188,7 +188,7 @@ describe('AppComponent', () => {
         expect(app.errorDialog).toBe(undefined);
     });
 
-    it('should show the API error screen when there is an API and a RPC error', function() {
+    it('should show the API error screen when there is an API and a RPC error', function () {
         notificationService.rpcError = new Error('RPC error occurred.');
         fixture.detectChanges();
 
@@ -200,7 +200,7 @@ describe('AppComponent', () => {
 
         const payload: ErrorPayload = {
             type: ConnectionErrorType.ApiError,
-            errorContent: error.message
+            errorContent: error.message,
         };
         // @ts-ignore
         expect(app.errorDialog.componentInstance.data).toEqual(payload);

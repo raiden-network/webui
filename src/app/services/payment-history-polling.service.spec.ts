@@ -28,8 +28,8 @@ describe('PaymentHistoryPollingService', () => {
                 RaidenService,
                 TestProviders.MockRaidenConfigProvider(),
                 NotificationService,
-                TestProviders.AddressBookStubProvider()
-            ]
+                TestProviders.AddressBookStubProvider(),
+            ],
         });
     });
 
@@ -52,7 +52,7 @@ describe('PaymentHistoryPollingService', () => {
         [PaymentHistoryPollingService],
         fakeAsync((service: PaymentHistoryPollingService) => {
             getPaymentHistorySpy.and.returnValue(of([paymentEvent]));
-            service.paymentHistory$.subscribe(value =>
+            service.paymentHistory$.subscribe((value) =>
                 expect(value).toEqual([paymentEvent])
             );
             const refreshSpy = spyOn(service, 'refresh');
@@ -68,7 +68,7 @@ describe('PaymentHistoryPollingService', () => {
             const mockAddressBookService = TestBed.inject(AddressBookService);
             mockAddressBookService.get = () => {
                 return {
-                    [paymentEvent2.initiator]: 'Test account'
+                    [paymentEvent2.initiator]: 'Test account',
                 };
             };
             getPaymentHistorySpy.and.returnValues(

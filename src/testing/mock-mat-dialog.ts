@@ -13,7 +13,7 @@ export class MockMatDialog {
             afterClosed: () => {
                 return of(this.cancelled ? null : this.returns());
             },
-            close() {}
+            close() {},
         };
     }
 }

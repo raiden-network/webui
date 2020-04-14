@@ -40,19 +40,19 @@ describe('HomeComponent', () => {
                 ContactComponent,
                 ContactActionsComponent,
                 SearchFieldComponent,
-                TokenPipe
+                TokenPipe,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
             ],
             imports: [
                 MaterialComponentsModule,
                 ClipboardModule,
                 HttpClientTestingModule,
                 RaidenIconsModule,
-                NoopAnimationsModule
-            ]
+                NoopAnimationsModule,
+            ],
         }).compileComponents();
     }));
 

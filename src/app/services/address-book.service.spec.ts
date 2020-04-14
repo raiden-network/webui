@@ -18,11 +18,11 @@ describe('AddressBookService', () => {
                         return {
                             get localStorage(): Storage {
                                 return storage;
-                            }
+                            },
                         };
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         });
     });
 
@@ -38,7 +38,7 @@ describe('AddressBookService', () => {
         (service: AddressBookService) => {
             const contact: Contact = {
                 label: 'Mah Address',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
             let contacts = service.get();
@@ -59,7 +59,7 @@ describe('AddressBookService', () => {
         (service: AddressBookService) => {
             const contact: Contact = {
                 label: 'Mah Address',
-                address: '112231'
+                address: '112231',
             };
 
             try {
@@ -78,7 +78,7 @@ describe('AddressBookService', () => {
         (service: AddressBookService) => {
             const contact: Contact = {
                 label: 'Mah Address',
-                address: '0x504300c525cbe91adb3fe0944fe1f56f5162c75c'
+                address: '0x504300c525cbe91adb3fe0944fe1f56f5162c75c',
             };
 
             try {
@@ -97,12 +97,12 @@ describe('AddressBookService', () => {
         (service: AddressBookService) => {
             const contact: Contact = {
                 label: 'Mah Address',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
             const addressUpdate: Contact = {
                 label: 'Test Node',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
             service.save(contact);
@@ -137,12 +137,12 @@ describe('AddressBookService', () => {
         (service: AddressBookService) => {
             const contact: Contact = {
                 label: 'Test Node 1',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
             const secondContact: Contact = {
                 label: 'Test Node 2',
-                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
+                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A',
             };
 
             service.save(contact);
@@ -170,12 +170,12 @@ describe('AddressBookService', () => {
         (service: AddressBookService) => {
             const contact: Contact = {
                 label: 'Test Node 1',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
             const secondContact: Contact = {
                 label: 'Test Node 2',
-                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
+                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A',
             };
 
             service.save(contact);
@@ -217,18 +217,18 @@ describe('AddressBookService', () => {
         (service: AddressBookService) => {
             const contact: Contact = {
                 label: 'Test Node 1',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
             const secondContact: Contact = {
                 label: 'Test Node 2',
-                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
+                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A',
             };
 
             service.save(contact);
             service.save(secondContact);
 
-            service.getObservableArray().subscribe(array => {
+            service.getObservableArray().subscribe((array) => {
                 expect(array.length).toBe(2);
                 expect(array).toContain(contact);
                 expect(array).toContain(secondContact);
@@ -249,17 +249,17 @@ describe('AddressBookService', () => {
         (service: AddressBookService) => {
             const firstContact: Contact = {
                 label: 'Test Node 1',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
             const secondContact: Contact = {
                 label: 'Test Node 2',
-                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
+                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A',
             };
 
             const thirdContact: Contact = {
                 label: 'Test Node 3',
-                address: '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6'
+                address: '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6',
             };
 
             service.save(firstContact);
@@ -268,13 +268,13 @@ describe('AddressBookService', () => {
             service
                 .getObservableArray()
                 .pipe(first())
-                .subscribe(array => {
+                .subscribe((array) => {
                     expect(array).toEqual([firstContact, secondContact]);
                 });
 
             const modified: Contact = {
                 label: 'New Node Label',
-                address: firstContact.address
+                address: firstContact.address,
             };
 
             const imported: Contacts = {};
@@ -287,11 +287,11 @@ describe('AddressBookService', () => {
             service
                 .getObservableArray()
                 .pipe(first())
-                .subscribe(array => {
+                .subscribe((array) => {
                     expect(array).toEqual([
                         modified,
                         secondContact,
-                        thirdContact
+                        thirdContact,
                     ]);
                 });
         }

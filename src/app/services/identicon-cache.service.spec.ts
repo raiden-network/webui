@@ -5,7 +5,7 @@ import { IdenticonCacheService } from './identicon-cache.service';
 describe('IdenticonCacheService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [IdenticonCacheService]
+            providers: [IdenticonCacheService],
         });
     });
 

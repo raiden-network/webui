@@ -22,11 +22,11 @@ describe('PendingTransferPollingService', () => {
 
     const pendingTransfer1 = createPendingTransfer({
         role: 'initiator',
-        userToken: token
+        userToken: token,
     });
     const pendingTransfer2 = createPendingTransfer({
         role: 'target',
-        userToken: token
+        userToken: token,
     });
 
     beforeEach(() => {
@@ -37,8 +37,8 @@ describe('PendingTransferPollingService', () => {
                 RaidenService,
                 NotificationService,
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider()
-            ]
+                TestProviders.AddressBookStubProvider(),
+            ],
         });
     });
 
@@ -68,14 +68,14 @@ describe('PendingTransferPollingService', () => {
             mockAddressBookService.get = () => {
                 return {
                     [pendingTransfer1.target]: 'Test account 1',
-                    [pendingTransfer2.initiator]: 'Test account 2'
+                    [pendingTransfer2.initiator]: 'Test account 2',
                 };
             };
             getPendingTransfersSpy.and.returnValues(
                 from([
                     [],
                     [pendingTransfer1],
-                    [pendingTransfer1, pendingTransfer2]
+                    [pendingTransfer1, pendingTransfer2],
                 ])
             );
             service.pendingTransfers$.subscribe();

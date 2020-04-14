@@ -20,8 +20,8 @@ describe('BackoffOperator', () => {
         });
     });
 
-    it('should retry after 100 ms have passed', function() {
-        scheduler.run(helpers => {
+    it('should retry after 100 ms have passed', function () {
+        scheduler.run((helpers) => {
             const { cold, expectObservable } = helpers;
             const source$ = createRetriableStream(
                 cold('--a--#'),
@@ -36,8 +36,8 @@ describe('BackoffOperator', () => {
         });
     });
 
-    it('should do nothing if no error occurs', function() {
-        scheduler.run(helpers => {
+    it('should do nothing if no error occurs', function () {
+        scheduler.run((helpers) => {
             const { cold, expectObservable } = helpers;
             const source$ = cold('--a--b--c|');
             const expectedMarbles = '--a--b--c|';

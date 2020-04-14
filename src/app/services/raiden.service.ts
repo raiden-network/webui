@@ -2,7 +2,7 @@ import {
     HttpClient,
     HttpRequest,
     HttpEventType,
-    HttpEvent
+    HttpEvent,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
@@ -13,7 +13,7 @@ import {
     zip,
     BehaviorSubject,
     Subject,
-    throwError
+    throwError,
 } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
@@ -28,7 +28,7 @@ import {
     finalize,
     filter,
     delay,
-    catchError
+    catchError,
 } from 'rxjs/operators';
 import { Channel } from '../models/channel';
 import { Connections } from '../models/connection';
@@ -54,7 +54,7 @@ interface PendingChannelsMap {
 }
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class RaidenService {
     private paymentInitiatedSubject: BehaviorSubject<
@@ -94,14 +94,14 @@ export class RaidenService {
                     `${this.raidenConfig.api}/address`
                 )
             ),
-            map(data => (this._raidenAddress = data.our_address)),
+            map((data) => (this._raidenAddress = data.our_address)),
             backoff(this.raidenConfig.config.error_poll_interval),
             shareReplay(1)
         );
 
         const fetch: () => Observable<string> = () => {
             return this.raidenAddress$.pipe(
-                flatMap(address =>
+                flatMap((address) =>
                     fromPromise(this.raidenConfig.web3.eth.getBalance(address))
                 )
             );
@@ -110,7 +110,7 @@ export class RaidenService {
         this.balance$ = interval(15000).pipe(
             startWith(fetch),
             flatMap(fetch),
-            map(value => fromWei(value, 'ether')),
+            map((value) => fromWei(value, 'ether')),
             share()
         );
 
@@ -145,7 +145,7 @@ export class RaidenService {
     public getVersion(): Observable<string> {
         return this.http
             .get<{ version: string }>(`${this.raidenConfig.api}/version`)
-            .pipe(map(response => response.version));
+            .pipe(map((response) => response.version));
     }
 
     public getChannels(): Observable<Array<Channel>> {
@@ -213,7 +213,7 @@ export class RaidenService {
 
         return zip(tokens$, connections$).pipe(
             map(([userTokens, connections]) => {
-                Object.keys(userTokens).forEach(address => {
+                Object.keys(userTokens).forEach((address) => {
                     const token = userTokens[address];
                     if (connections) {
                         if (
@@ -274,7 +274,7 @@ export class RaidenService {
             token_address: tokenAddress,
             partner_address: partnerAddress,
             settle_timeout: settleTimeout,
-            total_deposit: balance
+            total_deposit: balance,
         };
         const token = this.getUserToken(tokenAddress);
         const partnerLabel = this.getContactLabel(partnerAddress);
@@ -291,7 +291,7 @@ export class RaidenService {
                     description: `with ${partnerLabel} ${partnerAddress} and ${formattedBalance} ${token.symbol} deposit`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
-                    userToken: token
+                    userToken: token,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -311,7 +311,7 @@ export class RaidenService {
                     token_address: tokenAddress,
                     partner_address: partnerAddress,
                     depositPending: true,
-                    userToken: token
+                    userToken: token,
                 };
                 this.pendingChannelsSubject.next(this.pendingChannels);
             }),
@@ -330,13 +330,13 @@ export class RaidenService {
                 )).toNumber();
                 return channel;
             }),
-            catchError(error => {
+            catchError((error) => {
                 this.notificationService.addErrorNotification({
                     title: 'Open channel failed',
                     description: error,
                     icon: 'error-mark',
                     identiconAddress: partnerAddress,
-                    userToken: token
+                    userToken: token,
                 });
                 return throwError(error);
             }),
@@ -391,18 +391,18 @@ export class RaidenService {
                     description: `${formattedAmount} ${token.symbol} to ${targetLabel} ${targetAddress}`,
                     icon: 'sent',
                     identiconAddress: targetAddress,
-                    userToken: token
+                    userToken: token,
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
             map(() => null),
-            catchError(error => {
+            catchError((error) => {
                 this.notificationService.addErrorNotification({
                     title: 'Send transfer failed',
                     description: error,
                     icon: 'error-mark',
                     identiconAddress: targetAddress,
-                    userToken: token
+                    userToken: token,
                 });
                 return throwError(error);
             })
@@ -445,7 +445,7 @@ export class RaidenService {
         ).toFixed();
 
         return this.getChannel(tokenAddress, partnerAddress).pipe(
-            tap(channel => {
+            tap((channel) => {
                 const message: UiMessage = {
                     title:
                         mode === DepositMode.WITHDRAW
@@ -454,13 +454,13 @@ export class RaidenService {
                     description: `${formattedAmount} ${token.symbol}`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
-                    userToken: token
+                    userToken: token,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
                 );
             }),
-            switchMap(channel => {
+            switchMap((channel) => {
                 const body: {
                     total_deposit?: BigNumber;
                     total_withdraw?: BigNumber;
@@ -485,7 +485,7 @@ export class RaidenService {
                 )).toNumber();
                 return channel;
             }),
-            tap(response => {
+            tap((response) => {
                 const message: UiMessage = {
                     title:
                         mode === DepositMode.WITHDRAW
@@ -494,11 +494,11 @@ export class RaidenService {
                     description: `${formattedAmount} ${token.symbol}`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
-                    userToken: token
+                    userToken: token,
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
-            catchError(error => {
+            catchError((error) => {
                 this.notificationService.addErrorNotification({
                     title:
                         mode === DepositMode.WITHDRAW
@@ -507,7 +507,7 @@ export class RaidenService {
                     description: error,
                     icon: 'error-mark',
                     identiconAddress: partnerAddress,
-                    userToken: token
+                    userToken: token,
                 });
                 return throwError(error);
             }),
@@ -527,14 +527,14 @@ export class RaidenService {
         const token = this.getUserToken(tokenAddress);
 
         return this.getChannel(tokenAddress, partnerAddress).pipe(
-            tap(channel => {
+            tap((channel) => {
                 const partnerLabel = this.getContactLabel(partnerAddress);
                 const message: UiMessage = {
                     title: 'Closing channel',
                     description: `${token.symbol} with ${partnerLabel} ${partnerAddress}`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
-                    userToken: token
+                    userToken: token,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -555,24 +555,24 @@ export class RaidenService {
                 )).toNumber();
                 return channel;
             }),
-            tap(response => {
+            tap((response) => {
                 const partnerLabel = this.getContactLabel(partnerAddress);
                 const message: UiMessage = {
                     title: 'Closed channel',
                     description: `${token.symbol} with ${partnerLabel} ${partnerAddress}`,
                     icon: 'channel',
                     identiconAddress: partnerAddress,
-                    userToken: token
+                    userToken: token,
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
-            catchError(error => {
+            catchError((error) => {
                 this.notificationService.addErrorNotification({
                     title: 'Close channel failed',
                     description: error,
                     icon: 'error-mark',
                     identiconAddress: partnerAddress,
-                    userToken: token
+                    userToken: token,
                 });
                 return throwError(error);
             }),
@@ -592,7 +592,7 @@ export class RaidenService {
                 const message: UiMessage = {
                     title: 'Registering token',
                     description: tokenAddress,
-                    icon: 'add'
+                    icon: 'add',
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -609,15 +609,15 @@ export class RaidenService {
                 const message: UiMessage = {
                     title: 'Registered token',
                     description: tokenAddress,
-                    icon: 'add'
+                    icon: 'add',
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
-            catchError(error => {
+            catchError((error) => {
                 this.notificationService.addErrorNotification({
                     title: 'Register token failed',
                     description: error,
-                    icon: 'error-mark'
+                    icon: 'error-mark',
                 });
                 return throwError(error);
             }),
@@ -646,7 +646,7 @@ export class RaidenService {
                     title: 'Quick connect',
                     description: `${formattedAmount} ${token.symbol} funds`,
                     icon: 'thunderbolt',
-                    userToken: token
+                    userToken: token,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -656,7 +656,7 @@ export class RaidenService {
                 this.http.put(
                     `${this.raidenConfig.api}/connections/${tokenAddress}`,
                     {
-                        funds
+                        funds,
                     }
                 )
             ),
@@ -666,16 +666,16 @@ export class RaidenService {
                     title: 'Quick connect successful',
                     description: `${formattedAmount} ${token.symbol} funds`,
                     icon: 'thunderbolt',
-                    userToken: token
+                    userToken: token,
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
-            catchError(error => {
+            catchError((error) => {
                 this.notificationService.addErrorNotification({
                     title: 'Quick connect failed',
                     description: error,
                     icon: 'error-mark',
-                    userToken: token
+                    userToken: token,
                 });
                 return throwError(error);
             }),
@@ -696,7 +696,7 @@ export class RaidenService {
                     title: 'Leaving token network',
                     description: `${userToken.symbol}`,
                     icon: 'close',
-                    userToken: userToken
+                    userToken: userToken,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -713,16 +713,16 @@ export class RaidenService {
                     title: 'Left token network',
                     description: `${userToken.symbol}`,
                     icon: 'close',
-                    userToken: userToken
+                    userToken: userToken,
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
-            catchError(error => {
+            catchError((error) => {
                 this.notificationService.addErrorNotification({
                     title: 'Leave token network failed',
                     description: error,
                     icon: 'error-mark',
-                    userToken: userToken
+                    userToken: userToken,
                 });
                 return throwError(error);
             }),
@@ -776,7 +776,7 @@ export class RaidenService {
                     title: 'Minting',
                     description: `${formattedAmount} ${token.symbol} `,
                     icon: 'token',
-                    userToken: token
+                    userToken: token,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -794,17 +794,17 @@ export class RaidenService {
                     title: 'Minted',
                     description: `${formattedAmount} ${token.symbol}`,
                     icon: 'token',
-                    userToken: token
+                    userToken: token,
                 };
 
                 this.notificationService.addSuccessNotification(message);
             }),
-            catchError(error => {
+            catchError((error) => {
                 this.notificationService.addErrorNotification({
                     title: 'Mint failed',
                     description: error,
                     icon: 'error-mark',
-                    userToken: token
+                    userToken: token,
                 });
                 return throwError(error);
             }),
@@ -820,7 +820,7 @@ export class RaidenService {
         return this.pendingChannelsSubject.pipe(
             map((pendingChannelsMap: PendingChannelsMap) => {
                 let pendingChannels: Channel[] = [];
-                Object.values(pendingChannelsMap).forEach(partnerMap => {
+                Object.values(pendingChannelsMap).forEach((partnerMap) => {
                     pendingChannels = pendingChannels.concat(
                         Object.values(partnerMap)
                     );
@@ -840,13 +840,13 @@ export class RaidenService {
                 this.notificationService.addInfoNotification({
                     title: 'JSON RPC',
                     description: 'connection successful',
-                    icon: 'info'
+                    icon: 'info',
                 });
             } else {
                 this.notificationService.addErrorNotification({
                     title: 'JSON RPC',
                     description: 'connection failure',
-                    icon: 'error-mark'
+                    icon: 'error-mark',
                 });
             }
         };

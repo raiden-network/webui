@@ -1,11 +1,11 @@
 import {
     HttpClientModule,
     HTTP_INTERCEPTORS,
-    HttpErrorResponse
+    HttpErrorResponse,
 } from '@angular/common/http';
 import {
     HttpClientTestingModule,
-    HttpTestingController
+    HttpTestingController,
 } from '@angular/common/http/testing';
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
@@ -19,14 +19,14 @@ import { DepositMode } from '../models/deposit-mode.enum';
 import {
     createChannel,
     createPaymentEvent,
-    createToken
+    createToken,
 } from '../../testing/test-data';
 import Spy = jasmine.Spy;
 import { Connection } from '../models/connection';
 import { LosslessJsonInterceptor } from '../interceptors/lossless-json.interceptor';
 import {
     losslessParse,
-    losslessStringify
+    losslessStringify,
 } from '../utils/lossless-json.converter';
 import { NotificationService } from './notification.service';
 import { PendingTransfer } from '../models/pending-transfer';
@@ -50,14 +50,14 @@ describe('RaidenService', () => {
         channel_identifier: new BigNumber(1),
         balance: new BigNumber(0),
         total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10)
+        total_withdraw: new BigNumber(10),
     });
 
     const channel2: Channel = createChannel({
         channel_identifier: new BigNumber(2),
         balance: new BigNumber(0),
         total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10)
+        total_withdraw: new BigNumber(10),
     });
 
     const paymentEvent = createPaymentEvent('EventPaymentReceivedSuccess');
@@ -68,7 +68,7 @@ describe('RaidenService', () => {
             'removePendingAction',
             'addSuccessNotification',
             'addInfoNotification',
-            'addErrorNotification'
+            'addErrorNotification',
         ]);
         notificationService.apiError = null;
 
@@ -79,7 +79,7 @@ describe('RaidenService', () => {
                 RaidenService,
                 {
                     provide: NotificationService,
-                    useValue: notificationService
+                    useValue: notificationService,
                 },
                 TokenInfoRetrieverService,
                 Web3Factory,
@@ -87,15 +87,15 @@ describe('RaidenService', () => {
                     provide: HTTP_INTERCEPTORS,
                     useClass: ErrorHandlingInterceptor,
                     deps: [NotificationService, RaidenService],
-                    multi: true
+                    multi: true,
                 },
                 {
                     provide: HTTP_INTERCEPTORS,
                     useClass: LosslessJsonInterceptor,
-                    multi: true
+                    multi: true,
                 },
-                TestProviders.AddressBookStubProvider()
-            ]
+                TestProviders.AddressBookStubProvider(),
+            ],
         });
 
         mockHttp = TestBed.inject(HttpTestingController);
@@ -120,20 +120,20 @@ describe('RaidenService', () => {
 
     it('should return the raiden version', () => {
         const version = '0.100.5a1.dev157+geb2af878d';
-        service.getVersion().subscribe(value => expect(value).toBe(version));
+        service.getVersion().subscribe((value) => expect(value).toBe(version));
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/version`,
-            method: 'GET'
+            method: 'GET',
         });
 
         request.flush(
             {
-                version: version
+                version: version,
             },
             {
                 status: 200,
-                statusText: ''
+                statusText: '',
             }
         );
     });
@@ -141,7 +141,7 @@ describe('RaidenService', () => {
     it('should inform the user when token network creation was completed successfully', () => {
         service
             .registerToken(tokenAddress)
-            .subscribe(value => expect(value).toBeFalsy())
+            .subscribe((value) => expect(value).toBeFalsy())
             .add(() => {
                 expect(
                     notificationService.removePendingAction
@@ -150,7 +150,7 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/tokens/${tokenAddress}`,
-            method: 'PUT'
+            method: 'PUT',
         });
         expect(losslessParse(request.request.body)).toEqual({});
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
@@ -158,11 +158,11 @@ describe('RaidenService', () => {
         request.flush(
             {
                 token_network_address:
-                    '0xc52952ebad56f2c5e5b42bb881481ae27d036475'
+                    '0xc52952ebad56f2c5e5b42bb881481ae27d036475',
             },
             {
                 status: 201,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -178,7 +178,7 @@ describe('RaidenService', () => {
                 () => {
                     fail('On next should not be called');
                 },
-                error => {
+                (error) => {
                     expect(error).toBeTruthy('An error is expected');
                 }
             )
@@ -190,18 +190,18 @@ describe('RaidenService', () => {
 
         const registerRequest = mockHttp.expectOne({
             url: `${endpoint}/tokens/${tokenAddress}`,
-            method: 'PUT'
+            method: 'PUT',
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         const errorMessage = 'Token already registered';
         const errorBody = {
-            errors: errorMessage
+            errors: errorMessage,
         };
 
         registerRequest.flush(errorBody, {
             status: 409,
-            statusText: ''
+            statusText: '',
         });
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
@@ -223,20 +223,20 @@ describe('RaidenService', () => {
 
         const openChannelRequest = mockHttp.expectOne({
             url: `${endpoint}/channels`,
-            method: 'PUT'
+            method: 'PUT',
         });
 
         expect(losslessParse(openChannelRequest.request.body)).toEqual({
             token_address: tokenAddress,
             partner_address: partnerAddress,
             settle_timeout: new BigNumber(500),
-            total_deposit: new BigNumber(10)
+            total_deposit: new BigNumber(10),
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         openChannelRequest.flush(losslessStringify(channel1), {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
     });
 
@@ -249,7 +249,7 @@ describe('RaidenService', () => {
                 () => {
                     fail('On next should not be called');
                 },
-                error => {
+                (error) => {
                     expect(error).toBeTruthy('An error was expected');
                 }
             )
@@ -261,18 +261,18 @@ describe('RaidenService', () => {
 
         const openChannelRequest = mockHttp.expectOne({
             url: `${endpoint}/channels`,
-            method: 'PUT'
+            method: 'PUT',
         });
 
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         const errorBody = {
-            errors: { partner_address: ['Not a valid EIP55 encoded address'] }
+            errors: { partner_address: ['Not a valid EIP55 encoded address'] },
         };
 
         openChannelRequest.flush(errorBody, {
             status: 409,
-            statusText: ''
+            statusText: '',
         });
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
@@ -285,33 +285,33 @@ describe('RaidenService', () => {
 
         service.getChannels().subscribe(
             (channels: Array<Channel>) => {
-                channels.forEach(value => {
+                channels.forEach((value) => {
                     expect(value.userToken).toBeTruthy(
                         'UserToken should not be null'
                     );
                     expect(value.userToken.address).toBe(token.address);
                 });
             },
-            error => {
+            (error) => {
                 fail(error);
             }
         );
 
         const getChannelsRequest = mockHttp.expectOne({
             url: `${endpoint}/channels`,
-            method: 'GET'
+            method: 'GET',
         });
 
         getChannelsRequest.flush(losslessStringify([channel1, channel2]), {
             status: 200,
-            statusText: 'All good'
+            statusText: 'All good',
         });
 
         tick();
         flush();
     }));
 
-    it('should show an info message if attempted connection is successful', fakeAsync(function() {
+    it('should show an info message if attempted connection is successful', fakeAsync(function () {
         const config: RaidenConfig = TestBed.inject(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.returnValue(Promise.resolve(true));
@@ -323,7 +323,7 @@ describe('RaidenService', () => {
         );
     }));
 
-    it('should show an error message if attempted connection is unsuccessful', fakeAsync(function() {
+    it('should show an error message if attempted connection is unsuccessful', fakeAsync(function () {
         const config = TestBed.inject(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.returnValue(Promise.resolve(false));
@@ -335,7 +335,7 @@ describe('RaidenService', () => {
         );
     }));
 
-    it('should show an error message if attempted connection is load fails', fakeAsync(function() {
+    it('should show an error message if attempted connection is load fails', fakeAsync(function () {
         const config = TestBed.inject(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.callFake(() => Promise.reject(new Error('failed')));
@@ -347,7 +347,7 @@ describe('RaidenService', () => {
         );
     }));
 
-    it('should periodically poll the balance', fakeAsync(function() {
+    it('should periodically poll the balance', fakeAsync(function () {
         let count = 0;
         const config = TestBed.inject(RaidenConfig);
 
@@ -359,28 +359,28 @@ describe('RaidenService', () => {
                 return Promise.resolve(
                     new BigNumber('2000000000000000000').toString()
                 );
-            }
+            },
         };
 
         tick(15000);
 
-        const subscription = service.balance$.subscribe(value => {
+        const subscription = service.balance$.subscribe((value) => {
             expect(value).toEqual('2');
             count++;
         });
 
         const addressRequest = mockHttp.expectOne({
             url: `${endpoint}/address`,
-            method: 'GET'
+            method: 'GET',
         });
 
         const body = {
-            our_address: raidenAddress
+            our_address: raidenAddress,
         };
 
         addressRequest.flush(body, {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
 
         flush();
@@ -395,7 +395,7 @@ describe('RaidenService', () => {
             total_deposit: new BigNumber(1000000),
             balance: new BigNumber(10),
             total_withdraw: new BigNumber(0),
-            token_address: token.address
+            token_address: token.address,
         });
         spyOn(service, 'getChannel').and.returnValue(of(channel));
 
@@ -406,7 +406,7 @@ describe('RaidenService', () => {
                 new BigNumber(100000000000),
                 DepositMode.DEPOSIT
             )
-            .subscribe(value => {
+            .subscribe((value) => {
                 expect(value).toEqual(
                     createChannel({
                         channel_identifier: new BigNumber(1),
@@ -414,7 +414,7 @@ describe('RaidenService', () => {
                         total_deposit: new BigNumber(100001000000),
                         balance: new BigNumber(100000000010),
                         partner_address: channel.partner_address,
-                        token_address: token.address
+                        token_address: token.address,
                     })
                 );
             })
@@ -427,22 +427,22 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/channels/0xtkn/0xpartn`,
-            method: 'PATCH'
+            method: 'PATCH',
         });
 
         const body = Object.assign({}, channel, {
             total_deposit: 100001000000,
-            balance: 100000000010
+            balance: 100000000010,
         });
 
         expect(losslessParse(request.request.body)).toEqual({
-            total_deposit: new BigNumber(100001000000)
+            total_deposit: new BigNumber(100001000000),
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         request.flush(losslessStringify(body), {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
 
         flush();
@@ -458,7 +458,7 @@ describe('RaidenService', () => {
             total_deposit: new BigNumber(10),
             balance: new BigNumber(1000000000000),
             total_withdraw: new BigNumber(1000000),
-            token_address: token.address
+            token_address: token.address,
         });
         spyOn(service, 'getChannel').and.returnValue(of(channel));
 
@@ -469,7 +469,7 @@ describe('RaidenService', () => {
                 new BigNumber(1000000000000),
                 DepositMode.WITHDRAW
             )
-            .subscribe(value => {
+            .subscribe((value) => {
                 expect(value).toEqual(
                     createChannel({
                         channel_identifier: new BigNumber(1),
@@ -477,7 +477,7 @@ describe('RaidenService', () => {
                         total_deposit: new BigNumber(10),
                         balance: new BigNumber(0),
                         partner_address: channel.partner_address,
-                        token_address: token.address
+                        token_address: token.address,
                     })
                 );
             })
@@ -490,22 +490,22 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/channels/0xtkn/0xpartn`,
-            method: 'PATCH'
+            method: 'PATCH',
         });
 
         const body = Object.assign({}, channel, {
             total_withdraw: 1000001000000,
-            balance: 0
+            balance: 0,
         });
 
         expect(losslessParse(request.request.body)).toEqual({
-            total_withdraw: new BigNumber(1000001000000)
+            total_withdraw: new BigNumber(1000001000000),
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         request.flush(losslessStringify(body), {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
 
         flush();
@@ -521,7 +521,7 @@ describe('RaidenService', () => {
             total_deposit: new BigNumber(1000000),
             balance: new BigNumber(10),
             total_withdraw: new BigNumber(0),
-            token_address: token.address
+            token_address: token.address,
         });
         spyOn(service, 'getChannel').and.returnValue(of(channel));
 
@@ -536,7 +536,7 @@ describe('RaidenService', () => {
                 () => {
                     fail('On next should not be called');
                 },
-                error => {
+                (error) => {
                     expect(error).toBeTruthy('An error was expected');
                 }
             )
@@ -548,16 +548,16 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/channels/0xtkn/0xpartn`,
-            method: 'PATCH'
+            method: 'PATCH',
         });
 
         const errorMessage = 'Not enough funds';
         const errorBody = {
-            errors: errorMessage
+            errors: errorMessage,
         };
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
@@ -569,7 +569,7 @@ describe('RaidenService', () => {
             channel_identifier: new BigNumber(1),
             total_deposit: new BigNumber(10),
             balance: new BigNumber(1000000000000),
-            total_withdraw: new BigNumber(1000000)
+            total_withdraw: new BigNumber(1000000),
         });
         spyOn(service, 'getChannel').and.returnValue(of(channel));
 
@@ -584,7 +584,7 @@ describe('RaidenService', () => {
                 () => {
                     fail('On next should not be called');
                 },
-                error => {
+                (error) => {
                     expect(error).toBeTruthy('An error was expected');
                 }
             )
@@ -596,16 +596,16 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/channels/0xtkn/0xpartn`,
-            method: 'PATCH'
+            method: 'PATCH',
         });
 
         const errorMessage = 'Withdraw failed';
         const errorBody = {
-            errors: errorMessage
+            errors: errorMessage,
         };
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
@@ -615,7 +615,7 @@ describe('RaidenService', () => {
     it('should inform the user when minting was completed successfully', () => {
         service
             .mintToken(token, '0xto', new BigNumber(1000))
-            .subscribe(value => expect(value).toBeFalsy())
+            .subscribe((value) => expect(value).toBeFalsy())
             .add(() => {
                 expect(
                     notificationService.removePendingAction
@@ -623,11 +623,11 @@ describe('RaidenService', () => {
             });
         const request = mockHttp.expectOne({
             url: `${endpoint}/_testing/tokens/${token.address}/mint`,
-            method: 'POST'
+            method: 'POST',
         });
         expect(losslessParse(request.request.body)).toEqual({
             to: '0xto',
-            value: new BigNumber(1000)
+            value: new BigNumber(1000),
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
@@ -635,7 +635,7 @@ describe('RaidenService', () => {
             { transaction_hash: '0xabc' },
             {
                 status: 200,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -651,7 +651,7 @@ describe('RaidenService', () => {
                 () => {
                     fail('On next should not be called');
                 },
-                error => {
+                (error) => {
                     expect(error).toBeTruthy('An error was expected');
                 }
             )
@@ -663,18 +663,18 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/_testing/tokens/${token.address}/mint`,
-            method: 'POST'
+            method: 'POST',
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         const errorMessage = 'Token does not have a mint method';
         const errorBody = {
-            errors: errorMessage
+            errors: errorMessage,
         };
 
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
@@ -685,7 +685,7 @@ describe('RaidenService', () => {
     it('should inform the user when quick connect was successful', fakeAsync(() => {
         service
             .connectTokenNetwork(new BigNumber(1000), tokenAddress)
-            .subscribe(value => expect(value).toBeFalsy())
+            .subscribe((value) => expect(value).toBeFalsy())
             .add(() => {
                 expect(
                     notificationService.removePendingAction
@@ -695,10 +695,10 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/connections/${tokenAddress}`,
-            method: 'PUT'
+            method: 'PUT',
         });
         expect(losslessParse(request.request.body)).toEqual({
-            funds: new BigNumber(1000)
+            funds: new BigNumber(1000),
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
@@ -706,7 +706,7 @@ describe('RaidenService', () => {
             {},
             {
                 status: 204,
-                statusText: ''
+                statusText: '',
             }
         );
         flush();
@@ -723,7 +723,7 @@ describe('RaidenService', () => {
                 () => {
                     fail('On next should not be called');
                 },
-                error => {
+                (error) => {
                     expect(error).toBeTruthy('An error was expected');
                 }
             )
@@ -736,18 +736,18 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/connections/${tokenAddress}`,
-            method: 'PUT'
+            method: 'PUT',
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         const errorMessage = 'Insufficient balance';
         const errorBody = {
-            errors: errorMessage
+            errors: errorMessage,
         };
 
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
         flush();
 
@@ -759,7 +759,7 @@ describe('RaidenService', () => {
     it('should inform the user when leaving a token network was successful', fakeAsync(() => {
         service
             .leaveTokenNetwork(token)
-            .subscribe(value => expect(value).toBeFalsy())
+            .subscribe((value) => expect(value).toBeFalsy())
             .add(() => {
                 expect(
                     notificationService.removePendingAction
@@ -769,7 +769,7 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/connections/${token.address}`,
-            method: 'DELETE'
+            method: 'DELETE',
         });
         expect(losslessParse(request.request.body)).toBe(null);
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
@@ -778,7 +778,7 @@ describe('RaidenService', () => {
             {},
             {
                 status: 200,
-                statusText: ''
+                statusText: '',
             }
         );
         flush();
@@ -795,7 +795,7 @@ describe('RaidenService', () => {
                 () => {
                     fail('On next should not be called');
                 },
-                error => {
+                (error) => {
                     expect(error).toBeTruthy('An error was expected');
                 }
             )
@@ -808,18 +808,18 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/connections/${token.address}`,
-            method: 'DELETE'
+            method: 'DELETE',
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         const errorMessage = 'Not a valid token network address';
         const errorBody = {
-            errors: errorMessage
+            errors: errorMessage,
         };
 
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
         flush();
 
@@ -839,26 +839,26 @@ describe('RaidenService', () => {
                 amount,
                 paymentIdentifier
             )
-            .subscribe(value => expect(value).toBeFalsy());
+            .subscribe((value) => expect(value).toBeFalsy());
         tick(500);
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
-            method: 'POST'
+            method: 'POST',
         });
         expect(losslessParse(request.request.body)).toEqual({
             amount,
-            identifier: paymentIdentifier
+            identifier: paymentIdentifier,
         });
 
         const body = {
             target_address: targetAddress,
-            identifier: paymentIdentifier
+            identifier: paymentIdentifier,
         };
 
         request.flush(body, {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
         flush();
 
@@ -878,11 +878,11 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
-            method: 'POST'
+            method: 'POST',
         });
         expect(losslessParse(request.request.body)).toEqual({
             amount,
-            identifier: new BigNumber(50)
+            identifier: new BigNumber(50),
         });
         flush();
     }));
@@ -902,7 +902,7 @@ describe('RaidenService', () => {
                 () => {
                     fail('On next should not be called');
                 },
-                error => {
+                (error) => {
                     expect(error).toBeTruthy('An error was expected');
                 }
             );
@@ -910,17 +910,17 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
-            method: 'POST'
+            method: 'POST',
         });
 
         const errorMessage = 'Payment was not successful';
         const errorBody = {
-            errors: errorMessage
+            errors: errorMessage,
         };
 
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
         flush();
 
@@ -944,26 +944,26 @@ describe('RaidenService', () => {
                 amount,
                 paymentIdentifier
             )
-            .subscribe(value => expect(value).toBeFalsy());
+            .subscribe((value) => expect(value).toBeFalsy());
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
-            method: 'POST'
+            method: 'POST',
         });
         expect(losslessParse(request.request.body)).toEqual({
             amount,
-            identifier: paymentIdentifier
+            identifier: paymentIdentifier,
         });
         tick(500);
         expect(emitted).toBe(true);
 
         const body = {
             target_address: targetAddress,
-            identifier: paymentIdentifier
+            identifier: paymentIdentifier,
         };
         request.flush(body, {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
         flush();
     }));
@@ -972,52 +972,52 @@ describe('RaidenService', () => {
         const connection: Connection = {
             funds: new BigNumber(100),
             sum_deposits: new BigNumber(67),
-            channels: 3
+            channels: 3,
         };
         const tokens = [Object.assign({}, token, { connected: connection })];
         retrieverSpy.and.returnValue(
-            new Promise(resolve => resolve({ [token.address]: token }))
+            new Promise((resolve) => resolve({ [token.address]: token }))
         );
 
         service
             .getTokens(true)
-            .subscribe(value => expect(value).toEqual(tokens));
+            .subscribe((value) => expect(value).toEqual(tokens));
         tick(2000);
 
         const addressRequest = mockHttp.expectOne({
             url: `${endpoint}/address`,
-            method: 'GET'
+            method: 'GET',
         });
         expect(losslessParse(addressRequest.request.body)).toBe(null);
         addressRequest.flush(
             { our_address: raidenAddress },
             {
                 status: 200,
-                statusText: ''
+                statusText: '',
             }
         );
 
         const requestTokens = mockHttp.expectOne({
             url: `${endpoint}/tokens`,
-            method: 'GET'
+            method: 'GET',
         });
         expect(losslessParse(requestTokens.request.body)).toBe(null);
         requestTokens.flush([token.address], {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
 
         const requestConnections = mockHttp.expectOne({
             url: `${endpoint}/connections`,
-            method: 'GET'
+            method: 'GET',
         });
         expect(losslessParse(requestConnections.request.body)).toBe(null);
         const requestConnectionsBody = {
-            [token.address]: connection
+            [token.address]: connection,
         };
         requestConnections.flush(losslessStringify(requestConnectionsBody), {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
 
         flush();
@@ -1038,19 +1038,19 @@ describe('RaidenService', () => {
             (channel: Channel) => {
                 expect(channel).toEqual(channel1);
             },
-            error => {
+            (error) => {
                 fail(error);
             }
         );
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/channels/${token.address}/${partnerAddress}`,
-            method: 'GET'
+            method: 'GET',
         });
 
         request.flush(losslessStringify(channel1), {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
     });
 
@@ -1059,7 +1059,7 @@ describe('RaidenService', () => {
             channel_identifier: new BigNumber(2),
             balance: new BigNumber(0),
             total_deposit: new BigNumber(10),
-            total_withdraw: new BigNumber(10)
+            total_withdraw: new BigNumber(10),
         });
         spyOn(service, 'getChannel').and.returnValue(
             of(Object.assign({}, channel3))
@@ -1072,7 +1072,7 @@ describe('RaidenService', () => {
                 (channel: Channel) => {
                     expect(channel).toEqual(channel3);
                 },
-                error => {
+                (error) => {
                     fail(error);
                 }
             )
@@ -1084,17 +1084,17 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/channels/${token.address}/${channel3.partner_address}`,
-            method: 'PATCH'
+            method: 'PATCH',
         });
 
         expect(losslessParse(request.request.body)).toEqual({
-            state: 'closed'
+            state: 'closed',
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
 
         request.flush(losslessStringify(channel3), {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
 
         expect(
@@ -1107,7 +1107,7 @@ describe('RaidenService', () => {
             channel_identifier: new BigNumber(2),
             balance: new BigNumber(0),
             total_deposit: new BigNumber(10),
-            total_withdraw: new BigNumber(10)
+            total_withdraw: new BigNumber(10),
         });
         spyOn(service, 'getChannel').and.returnValue(
             of(Object.assign({}, channel3))
@@ -1120,7 +1120,7 @@ describe('RaidenService', () => {
                 () => {
                     fail('On next should not be called');
                 },
-                error => {
+                (error) => {
                     expect(error).toBeTruthy('An error was expected');
                 }
             )
@@ -1132,16 +1132,16 @@ describe('RaidenService', () => {
 
         const request = mockHttp.expectOne({
             url: `${endpoint}/channels/${token.address}/${channel3.partner_address}`,
-            method: 'PATCH'
+            method: 'PATCH',
         });
 
         const errorMessage = 'Channel is already closed';
         const errorBody = {
-            errors: errorMessage
+            errors: errorMessage,
         };
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
@@ -1158,29 +1158,29 @@ describe('RaidenService', () => {
             target: '0x00AF5cBfc8dC76cd599aF623E60F763228906F3E',
             token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
             token_network_address: '0x111157460c0F41EfD9107239B7864c062aA8B978',
-            transferred_amount: new BigNumber(331)
+            transferred_amount: new BigNumber(331),
         };
         spyOn(service, 'getTokens').and.returnValue(of([token]));
 
         service.getPendingTransfers().subscribe(
             (pendingTransfers: Array<PendingTransfer>) => {
                 expect(pendingTransfers).toEqual([
-                    Object.assign({}, pendingTransfer, { userToken: token })
+                    Object.assign({}, pendingTransfer, { userToken: token }),
                 ]);
             },
-            error => {
+            (error) => {
                 fail(error);
             }
         );
 
         const getPendingTransfersRequest = mockHttp.expectOne({
             url: `${endpoint}/pending_transfers`,
-            method: 'GET'
+            method: 'GET',
         });
 
         getPendingTransfersRequest.flush(losslessStringify([pendingTransfer]), {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
     });
 
@@ -1192,7 +1192,7 @@ describe('RaidenService', () => {
             total_deposit: new BigNumber(10),
             total_withdraw: new BigNumber(10),
             partner_address: '0xc52952ebad56f2c5e5b42bb881481ae27d036475',
-            userToken: token
+            userToken: token,
         });
 
         service
@@ -1205,11 +1205,11 @@ describe('RaidenService', () => {
             .subscribe();
         const openChannelRequest = mockHttp.expectOne({
             url: `${endpoint}/channels`,
-            method: 'PUT'
+            method: 'PUT',
         });
 
         service.getChannels().subscribe((channels: Array<Channel>) => {
-            channels.forEach(channel => {
+            channels.forEach((channel) => {
                 if (
                     channel.channel_identifier.isEqualTo(
                         channel1.channel_identifier
@@ -1223,18 +1223,18 @@ describe('RaidenService', () => {
         });
         const getChannelsRequest = mockHttp.expectOne({
             url: `${endpoint}/channels`,
-            method: 'GET'
+            method: 'GET',
         });
 
         getChannelsRequest.flush(losslessStringify([channel1, channel3]), {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
         tick();
 
         openChannelRequest.flush(losslessStringify(channel1), {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
         flush();
     }));
@@ -1243,7 +1243,7 @@ describe('RaidenService', () => {
         const newAddress = '0x5E1a3601538f94c9e6D2B40F7589030ac5885FE7';
         let emittedTimes = 0;
         service.raidenAddress$.subscribe(
-            value => {
+            (value) => {
                 if (emittedTimes === 0) {
                     expect(value).toBe(raidenAddress);
                 } else if (emittedTimes === 1) {
@@ -1251,22 +1251,22 @@ describe('RaidenService', () => {
                 }
                 emittedTimes++;
             },
-            error => {
+            (error) => {
                 fail(error);
             }
         );
 
         let request = mockHttp.expectOne({
             url: `${endpoint}/address`,
-            method: 'GET'
+            method: 'GET',
         });
         request.flush(
             {
-                our_address: raidenAddress
+                our_address: raidenAddress,
             },
             {
                 status: 200,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -1274,15 +1274,15 @@ describe('RaidenService', () => {
 
         request = mockHttp.expectOne({
             url: `${endpoint}/address`,
-            method: 'GET'
+            method: 'GET',
         });
         request.flush(
             {
-                our_address: newAddress
+                our_address: newAddress,
             },
             {
                 status: 200,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -1296,7 +1296,7 @@ describe('RaidenService', () => {
             () => {
                 emitted = true;
             },
-            error => {
+            (error) => {
                 fail(error);
             }
         );
@@ -1311,11 +1311,11 @@ describe('RaidenService', () => {
             .subscribe();
         const openChannelRequest = mockHttp.expectOne({
             url: `${endpoint}/channels`,
-            method: 'PUT'
+            method: 'PUT',
         });
         let emittedTimes = 0;
 
-        service.getPendingChannels().subscribe(value => {
+        service.getPendingChannels().subscribe((value) => {
             if (emittedTimes === 0) {
                 expect(value).toEqual([
                     {
@@ -1329,8 +1329,8 @@ describe('RaidenService', () => {
                         token_address: tokenAddress,
                         partner_address: partnerAddress,
                         depositPending: true,
-                        userToken: token
-                    }
+                        userToken: token,
+                    },
                 ]);
             }
             if (emittedTimes === 1) {
@@ -1342,7 +1342,7 @@ describe('RaidenService', () => {
 
         openChannelRequest.flush(losslessStringify(channel1), {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
         flush();
     }));
@@ -1350,25 +1350,25 @@ describe('RaidenService', () => {
     it('should query the payment history with UserTokens added', () => {
         const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
         const eventWithToken = Object.assign({}, paymentEvent, {
-            userToken: token
+            userToken: token,
         });
         service.getPaymentHistory(tokenAddress, partnerAddress).subscribe(
             (history: PaymentEvent[]) => {
                 expect(history).toEqual([eventWithToken]);
             },
-            error => {
+            (error) => {
                 fail(error);
             }
         );
 
         const getPendingTransfersRequest = mockHttp.expectOne({
             url: `${endpoint}/payments/${tokenAddress}/${partnerAddress}`,
-            method: 'GET'
+            method: 'GET',
         });
 
         getPendingTransfersRequest.flush(losslessStringify([paymentEvent]), {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
     });
 });

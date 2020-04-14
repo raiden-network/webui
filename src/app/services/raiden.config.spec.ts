@@ -3,7 +3,7 @@ import { RaidenConfig, Web3Factory } from './raiden.config';
 import { HttpClientModule } from '@angular/common/http';
 import {
     HttpClientTestingModule,
-    HttpTestingController
+    HttpTestingController,
 } from '@angular/common/http/testing';
 import { NotificationService } from './notification.service';
 import { EnvironmentType } from '../models/enviroment-type.enum';
@@ -36,17 +36,17 @@ describe('RaidenConfig', () => {
             reveal_timeout: 20,
             settle_timeout: 600,
             web3: 'http://localhost:8485',
-            environment_type: 'production'
+            environment_type: 'production',
         };
 
         tracking = {
             failed: [],
-            current: 0
+            current: 0,
         };
 
         TestBed.configureTestingModule({
             imports: [HttpClientModule, HttpClientTestingModule],
-            providers: [RaidenConfig, NotificationService, Web3Factory]
+            providers: [RaidenConfig, NotificationService, Web3Factory],
         });
 
         const web3Factory = TestBed.inject(Web3Factory);
@@ -58,7 +58,7 @@ describe('RaidenConfig', () => {
             const failed = tracking.failed;
             const current = tracking.current;
 
-            if (failed.findIndex(value => value === current) >= 0) {
+            if (failed.findIndex((value) => value === current) >= 0) {
                 throw new Error(`Connection error: Timeout exceeded`);
             } else {
                 // @ts-ignore
@@ -85,14 +85,14 @@ describe('RaidenConfig', () => {
         expect(service).toBeTruthy();
     }));
 
-    it('should translate a relative path url to absolute path', fakeAsync(function() {
+    it('should translate a relative path url to absolute path', fakeAsync(function () {
         configuration.web3 = '/web3';
         raidenConfig
             .load(url)
-            .then(value => {
+            .then((value) => {
                 expect(value).toBe(true);
             })
-            .catch(e => {
+            .catch((e) => {
                 console.error(e);
                 fail('it should not fail');
             });
@@ -100,11 +100,11 @@ describe('RaidenConfig', () => {
         testingController
             .expectOne({
                 url: url,
-                method: 'GET'
+                method: 'GET',
             })
             .flush(configuration, {
                 status: 200,
-                statusText: ''
+                statusText: '',
             });
 
         tick();
@@ -114,13 +114,13 @@ describe('RaidenConfig', () => {
         flush();
     }));
 
-    it('should use the default configuration if loading fails', fakeAsync(function() {
+    it('should use the default configuration if loading fails', fakeAsync(function () {
         raidenConfig
             .load(url)
-            .then(value => {
+            .then((value) => {
                 expect(value).toBe(true);
             })
-            .catch(e => {
+            .catch((e) => {
                 console.error(e);
                 fail('it should not fail');
             });
@@ -128,13 +128,13 @@ describe('RaidenConfig', () => {
         testingController
             .expectOne({
                 url: url,
-                method: 'GET'
+                method: 'GET',
             })
             .flush(
                 {},
                 {
                     status: 404,
-                    statusText: ''
+                    statusText: '',
                 }
             );
 
@@ -150,7 +150,7 @@ describe('RaidenConfig', () => {
             http_timeout: 600000,
             settle_timeout: 500,
             reveal_timeout: 10,
-            environment_type: EnvironmentType.DEVELOPMENT
+            environment_type: EnvironmentType.DEVELOPMENT,
         });
 
         expect(notificationService.rpcError).toBe(undefined);
@@ -158,13 +158,13 @@ describe('RaidenConfig', () => {
         flush();
     }));
 
-    it('should merge the loaded configuration with the defaults', fakeAsync(function() {
+    it('should merge the loaded configuration with the defaults', fakeAsync(function () {
         raidenConfig
             .load(url)
-            .then(value => {
+            .then((value) => {
                 expect(value).toBe(true);
             })
-            .catch(e => {
+            .catch((e) => {
                 console.error(e);
                 fail('it should not fail');
             });
@@ -172,11 +172,11 @@ describe('RaidenConfig', () => {
         testingController
             .expectOne({
                 url: url,
-                method: 'GET'
+                method: 'GET',
             })
             .flush(configuration, {
                 status: 200,
-                statusText: ''
+                statusText: '',
             });
 
         tick();
@@ -191,22 +191,22 @@ describe('RaidenConfig', () => {
             http_timeout: 600000,
             settle_timeout: 600,
             reveal_timeout: 20,
-            environment_type: EnvironmentType.PRODUCTION
+            environment_type: EnvironmentType.PRODUCTION,
         });
 
         expect(notificationService.rpcError).toBe(undefined);
         expect(tracking.current).toBe(1);
     }));
 
-    it('should fallback if the primary web3 endpoint fails', fakeAsync(function() {
+    it('should fallback if the primary web3 endpoint fails', fakeAsync(function () {
         tracking.failed.push(1);
 
         raidenConfig
             .load(url)
-            .then(value => {
+            .then((value) => {
                 expect(value).toBe(true);
             })
-            .catch(e => {
+            .catch((e) => {
                 console.error(e);
                 fail('it should not fail');
             });
@@ -214,11 +214,11 @@ describe('RaidenConfig', () => {
         testingController
             .expectOne({
                 url: url,
-                method: 'GET'
+                method: 'GET',
             })
             .flush(configuration, {
                 status: 200,
-                statusText: ''
+                statusText: '',
             });
 
         tick(2000);
@@ -231,14 +231,14 @@ describe('RaidenConfig', () => {
         flush();
     }));
 
-    it('should return false and set error on the promise if both web3 endpoints fail', fakeAsync(function() {
+    it('should return false and set error on the promise if both web3 endpoints fail', fakeAsync(function () {
         tracking.failed.push(1, 2);
         raidenConfig
             .load(url)
-            .then(value => {
+            .then((value) => {
                 expect(value).toBe(false);
             })
-            .catch(e => {
+            .catch((e) => {
                 console.error(e);
                 fail('it should not fail');
             });
@@ -246,11 +246,11 @@ describe('RaidenConfig', () => {
         testingController
             .expectOne({
                 url: url,
-                method: 'GET'
+                method: 'GET',
             })
             .flush(configuration, {
                 status: 200,
-                statusText: ''
+                statusText: '',
             });
 
         tick(2000);

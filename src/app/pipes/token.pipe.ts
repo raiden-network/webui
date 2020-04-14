@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { UserToken } from '../models/usertoken';
 
 @Pipe({
-    name: 'token'
+    name: 'token',
 })
 export class TokenPipe implements PipeTransform {
     transform(token?: UserToken): string {

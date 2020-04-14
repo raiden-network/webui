@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
     MAT_DIALOG_DATA,
     MatDialogRef,
-    MatDialog
+    MatDialog,
 } from '@angular/material/dialog';
 import { UserToken } from '../../models/usertoken';
 import BigNumber from 'bignumber.js';
@@ -12,7 +12,7 @@ import { first, switchMap, map } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 import {
     ConfirmationDialogComponent,
-    ConfirmationDialogPayload
+    ConfirmationDialogPayload,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { amountToDecimal } from '../../utils/amount.converter';
 import { AddressBookService } from '../../services/address-book.service';
@@ -27,7 +27,7 @@ export interface PaymentDialogPayload {
 @Component({
     selector: 'app-payment-dialog',
     templateUrl: './payment-dialog.component.html',
-    styleUrls: ['./payment-dialog.component.css']
+    styleUrls: ['./payment-dialog.component.css'],
 })
 export class PaymentDialogComponent implements OnInit {
     @ViewChild(TokenInputComponent, { static: true })
@@ -47,7 +47,7 @@ export class PaymentDialogComponent implements OnInit {
         this.form = this.fb.group({
             target_address: [data.targetAddress, Validators.required],
             amount: ['', Validators.required],
-            token: [data.tokenAddress, Validators.required]
+            token: [data.tokenAddress, Validators.required],
         });
     }
 
@@ -59,7 +59,7 @@ export class PaymentDialogComponent implements OnInit {
         const payload: PaymentDialogPayload = {
             tokenAddress: value['token'],
             targetAddress: value['target_address'],
-            amount: value['amount']
+            amount: value['amount'],
         };
 
         this.checkPendingPayments(payload).subscribe(
@@ -85,9 +85,9 @@ export class PaymentDialogComponent implements OnInit {
     ): Observable<PaymentDialogPayload> {
         return this.pendingTransferPollingService.pendingTransfers$.pipe(
             first(),
-            switchMap(pendingTransfers => {
+            switchMap((pendingTransfers) => {
                 const samePendingPayment = pendingTransfers.find(
-                    pendingTransfer =>
+                    (pendingTransfer) =>
                         pendingTransfer.token_address ===
                             payload.tokenAddress &&
                         pendingTransfer.role === 'initiator' &&
@@ -122,15 +122,15 @@ export class PaymentDialogComponent implements OnInit {
                 token.symbol
             } being sent to ${partner ? partner + ' ' : ''}${
                 payload.targetAddress
-            }. Are you sure you want to send the same transfer again?`
+            }. Are you sure you want to send the same transfer again?`,
         };
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: confirmationPayload,
-            width: '360px'
+            width: '360px',
         });
 
         return dialog.afterClosed().pipe(
-            map(result => {
+            map((result) => {
                 if (!result) {
                     return null;
                 }

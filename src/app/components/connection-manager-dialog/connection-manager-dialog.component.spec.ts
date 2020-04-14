@@ -5,7 +5,7 @@ import { MaterialComponentsModule } from '../../modules/material-components/mate
 import { TokenInputComponent } from '../token-input/token-input.component';
 import {
     ConnectionManagerDialogComponent,
-    ConnectionManagerDialogPayload
+    ConnectionManagerDialogPayload,
 } from './connection-manager-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
 import BigNumber from 'bignumber.js';
@@ -32,14 +32,14 @@ describe('ConnectionManagerDialogComponent', () => {
         connected: {
             channels: 5,
             funds: new BigNumber(10),
-            sum_deposits: new BigNumber(50)
-        }
+            sum_deposits: new BigNumber(50),
+        },
     });
 
     beforeEach(async(() => {
         const payload: ConnectionManagerDialogPayload = {
             funds: undefined,
-            token: token
+            token: token,
         };
 
         TestBed.configureTestingModule({
@@ -49,22 +49,22 @@ describe('ConnectionManagerDialogComponent', () => {
                 RaidenDialogComponent,
                 DecimalPipe,
                 DisplayDecimalsPipe,
-                TokenNetworkSelectorComponent
+                TokenNetworkSelectorComponent,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
                 TestProviders.MockMatDialogRef({ close: () => {} }),
                 TestProviders.MockRaidenConfigProvider(),
                 TokenPollingService,
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
             ],
             imports: [
                 MaterialComponentsModule,
                 ReactiveFormsModule,
                 NoopAnimationsModule,
                 RaidenIconsModule,
-                HttpClientTestingModule
-            ]
+                HttpClientTestingModule,
+            ],
         }).compileComponents();
     }));
 
@@ -95,7 +95,7 @@ describe('ConnectionManagerDialogComponent', () => {
             expect(closeSpy).toHaveBeenCalledTimes(1);
             expect(closeSpy).toHaveBeenCalledWith({
                 token: token,
-                funds: new BigNumber(amountInput)
+                funds: new BigNumber(amountInput),
             });
         });
 
@@ -121,7 +121,7 @@ describe('ConnectionManagerDialogComponent', () => {
         beforeEach(() => {
             const payload: ConnectionManagerDialogPayload = {
                 funds: undefined,
-                token: undefined
+                token: undefined,
             };
             TestBed.overrideProvider(MAT_DIALOG_DATA, { useValue: payload });
             fixture = TestBed.createComponent(ConnectionManagerDialogComponent);

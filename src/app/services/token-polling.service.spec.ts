@@ -17,7 +17,7 @@ describe('TokenPollingService', () => {
         symbol: 'TST',
         name: 'Test Suite Token',
         decimals: 18,
-        balance: new BigNumber(20)
+        balance: new BigNumber(20),
     };
 
     beforeEach(() =>
@@ -27,8 +27,8 @@ describe('TokenPollingService', () => {
                 TokenPollingService,
                 RaidenService,
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider()
-            ]
+                TestProviders.AddressBookStubProvider(),
+            ],
         })
     );
 

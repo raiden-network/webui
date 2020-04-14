@@ -3,7 +3,7 @@ import {
     EventEmitter,
     forwardRef,
     Output,
-    Input
+    Input,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -21,9 +21,9 @@ import { TokenPollingService } from '../../services/token-polling.service';
         {
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => TokenNetworkSelectorComponent),
-            multi: true
-        }
-    ]
+            multi: true,
+        },
+    ],
 })
 export class TokenNetworkSelectorComponent implements ControlValueAccessor {
     @Input() onlyConnectedTokens = false;
@@ -40,12 +40,12 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
         private raidenService: RaidenService
     ) {
         this.tokens$ = this.tokenPollingService.tokens$.pipe(
-            map(value =>
+            map((value) =>
                 this.onlyConnectedTokens
-                    ? value.filter(token => !!token.connected)
+                    ? value.filter((token) => !!token.connected)
                     : value
             ),
-            map(value => value.sort(TokenUtils.compareTokens)),
+            map((value) => value.sort(TokenUtils.compareTokens)),
             share()
         );
     }

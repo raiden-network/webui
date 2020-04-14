@@ -35,8 +35,8 @@ $webui-palette: (
         A100: #000000,
         A200: #000000,
         A400: #000000,
-        A700: #000000
-    )
+        A700: #000000,
+    ),
 );
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
@@ -61,13 +61,13 @@ $background: map-get($webui-app-theme, background);
 $background: map_merge(
     $background,
     (
-        background: $background-color
+        background: $background-color,
     )
 );
 $webui-app-theme: map_merge(
     $webui-app-theme,
     (
-        background: $background
+        background: $background,
     )
 );
 

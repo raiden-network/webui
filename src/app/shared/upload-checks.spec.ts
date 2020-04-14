@@ -6,7 +6,7 @@ describe('UploadChecks', () => {
         expect(new UploadChecks()).toBeTruthy();
     });
 
-    it('should emit an error if more than one file is passed', function() {
+    it('should emit an error if more than one file is passed', function () {
         const fileList = stub<FileList>();
         // @ts-ignore
         fileList.length = 5;
@@ -19,7 +19,7 @@ describe('UploadChecks', () => {
         }
     });
 
-    it('should do nothing if no files are passed', function() {
+    it('should do nothing if no files are passed', function () {
         const fileList = stub<FileList>();
         // @ts-ignore
         fileList.length = 0;
@@ -28,12 +28,12 @@ describe('UploadChecks', () => {
         expect(file).toBeNull();
     });
 
-    it('should emit an error if an invalid extension is passed', function() {
+    it('should emit an error if an invalid extension is passed', function () {
         const fileList: FileList = stub<FileList>();
         // @ts-ignore
         fileList.length = 1;
         // @ts-ignore
-        fileList.item = function() {
+        fileList.item = function () {
             const file = stub<File>();
             // @ts-ignore
             file.name = 'photo.png';
@@ -48,12 +48,12 @@ describe('UploadChecks', () => {
         }
     });
 
-    it('should emit an error if file is too large', function() {
+    it('should emit an error if file is too large', function () {
         const fileList: FileList = stub<FileList>();
         // @ts-ignore
         fileList.length = 1;
         // @ts-ignore
-        fileList.item = function() {
+        fileList.item = function () {
             const file = stub<File>();
             // @ts-ignore
             file.name = 'address.json';
@@ -70,12 +70,12 @@ describe('UploadChecks', () => {
         }
     });
 
-    it('should emit the file if no errors exists', function() {
+    it('should emit the file if no errors exists', function () {
         const fileList: FileList = stub<FileList>();
         // @ts-ignore
         fileList.length = 1;
         // @ts-ignore
-        fileList.item = function() {
+        fileList.item = function () {
             const file = stub<File>();
             // @ts-ignore
             file.name = 'address.json';

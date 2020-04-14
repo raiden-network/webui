@@ -5,14 +5,14 @@ import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { DepositMode } from '../../models/deposit-mode.enum';
 import {
     ConfirmationDialogPayload,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { flatMap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import {
     DepositWithdrawDialogPayload,
     DepositWithdrawDialogComponent,
-    DepositWithdrawDialogResult
+    DepositWithdrawDialogResult,
 } from '../deposit-withdraw-dialog/deposit-withdraw-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ChannelPollingService } from '../../services/channel-polling.service';
@@ -22,7 +22,7 @@ import { RaidenService } from '../../services/raiden.service';
 @Component({
     selector: 'app-channel',
     templateUrl: './channel.component.html',
-    styleUrls: ['./channel.component.css']
+    styleUrls: ['./channel.component.css'],
 })
 export class ChannelComponent implements OnInit {
     @Input() channel: Channel;
@@ -65,18 +65,18 @@ export class ChannelComponent implements OnInit {
                 this.channel.userToken.symbol
             } channel with ${partner ? partner + ' ' : ''}${
                 this.channel.partner_address
-            } in ${this.channel.userToken.name} network?`
+            } in ${this.channel.userToken.name} network?`,
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
 
         dialog
             .afterClosed()
             .pipe(
-                flatMap(result => {
+                flatMap((result) => {
                     if (!result) {
                         return EMPTY;
                     }
@@ -96,12 +96,12 @@ export class ChannelComponent implements OnInit {
     private openDeposit(depositMode: DepositMode) {
         const payload: DepositWithdrawDialogPayload = {
             token: this.channel.userToken,
-            depositMode: depositMode
+            depositMode: depositMode,
         };
 
         const dialog = this.dialog.open(DepositWithdrawDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
 
         dialog

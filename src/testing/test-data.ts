@@ -20,7 +20,7 @@ export function createTestContacts(count: number = 15): Contact[] {
         const address = createAddress();
         contacts.push({
             address: address,
-            label: `Random Account ${i + 1}`
+            label: `Random Account ${i + 1}`,
         });
     }
 
@@ -33,7 +33,7 @@ export function createToken(obj: any = {}): UserToken {
         symbol: 'TST',
         name: 'Test Suite Token',
         decimals: 18,
-        balance: new BigNumber(100)
+        balance: new BigNumber(100),
     };
     return Object.assign(token, obj);
 }
@@ -46,7 +46,7 @@ export function createTestTokens(count: number = 3): UserToken[] {
             connected = {
                 channels: 1,
                 funds: new BigNumber(0),
-                sum_deposits: new BigNumber(0)
+                sum_deposits: new BigNumber(0),
             };
         }
         tokens.push(
@@ -54,7 +54,7 @@ export function createTestTokens(count: number = 3): UserToken[] {
                 address: createAddress(),
                 symbol: `TST ${i + 1}`,
                 name: `Test Suite Token ${i + 1}`,
-                connected: connected
+                connected: connected,
             })
         );
     }
@@ -71,7 +71,7 @@ export function createChannel(obj: any = {}): Channel {
         balance: new BigNumber(0),
         total_deposit: new BigNumber(0),
         total_withdraw: new BigNumber(0),
-        settle_timeout: 500
+        settle_timeout: 500,
     };
     return Object.assign(channel, obj);
 }
@@ -86,7 +86,7 @@ export function createTestChannels(
         channels.push(
             createChannel({
                 userToken: userToken,
-                balance: BigNumber.random(3).times(1000)
+                balance: BigNumber.random(3).times(1000),
             })
         );
     }
@@ -99,7 +99,7 @@ export function createNetworkMock(obj: any = {}): Network {
         shortName: 'tst',
         chainId: 9001,
         ensSupported: true,
-        faucet: 'http://faucet.test/?${ADDRESS}'
+        faucet: 'http://faucet.test/?${ADDRESS}',
     };
     return Object.assign(network, obj);
 }
@@ -114,24 +114,24 @@ export function createPaymentEvent(
     const event: PaymentEvent = {
         event: eventType,
         log_time: new Date().toISOString().slice(0, -1),
-        token_address: obj.userToken ? obj.userToken.address : createAddress()
+        token_address: obj.userToken ? obj.userToken.address : createAddress(),
     };
     if (eventType === 'EventPaymentSentSuccess') {
         Object.assign(event, {
             amount: BigNumber.random(3).times(1000),
             identifier: BigNumber.random(3).times(1000),
-            target: createAddress()
+            target: createAddress(),
         });
     } else if (eventType === 'EventPaymentReceivedSuccess') {
         Object.assign(event, {
             amount: BigNumber.random(3).times(1000),
             identifier: BigNumber.random(3).times(1000),
-            initiator: createAddress()
+            initiator: createAddress(),
         });
     } else {
         Object.assign(event, {
             reason: 'there is no route available',
-            target: createAddress()
+            target: createAddress(),
         });
     }
 
@@ -151,7 +151,7 @@ export function createTestPaymentEvents(
                 : 'EventPaymentReceivedSuccess';
         events.push(
             createPaymentEvent(type, {
-                userToken: userToken
+                userToken: userToken,
             })
         );
     }
@@ -168,7 +168,7 @@ export function createPendingTransfer(obj: any = {}): PendingTransfer {
         target: createAddress(),
         token_address: createAddress(),
         token_network_address: createAddress(),
-        transferred_amount: new BigNumber(0)
+        transferred_amount: new BigNumber(0),
     };
     return Object.assign(pendingTransfer, obj);
 }

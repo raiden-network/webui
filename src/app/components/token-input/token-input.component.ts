@@ -3,7 +3,7 @@ import {
     forwardRef,
     Input,
     ViewChild,
-    ElementRef
+    ElementRef,
 } from '@angular/core';
 import {
     AbstractControl,
@@ -11,7 +11,7 @@ import {
     NG_VALUE_ACCESSOR,
     Validator,
     ValidationErrors,
-    NG_VALIDATORS
+    NG_VALIDATORS,
 } from '@angular/forms';
 import { BigNumber } from 'bignumber.js';
 import { amountFromDecimal } from '../../utils/amount.converter';
@@ -27,14 +27,14 @@ import { Animations } from '../../animations/animations';
         {
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => TokenInputComponent),
-            multi: true
+            multi: true,
         },
         {
             provide: NG_VALIDATORS,
             useExisting: forwardRef(() => TokenInputComponent),
-            multi: true
-        }
-    ]
+            multi: true,
+        },
+    ],
 })
 export class TokenInputComponent implements ControlValueAccessor, Validator {
     @Input() allowZero = false;
@@ -94,15 +94,15 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         const amount = new BigNumber(this.inputElement.nativeElement.value);
         if (!BigNumber.isBigNumber(amount) || amount.isNaN()) {
             this.errors = {
-                notANumber: true
+                notANumber: true,
             };
         } else if (!this.allowZero && amount.isZero()) {
             this.errors = {
-                zeroAmount: true
+                zeroAmount: true,
             };
         } else if (amount.decimalPlaces() > this.decimals) {
             this.errors = {
-                tooManyDecimals: true
+                tooManyDecimals: true,
             };
         } else {
             this.errors = undefined;

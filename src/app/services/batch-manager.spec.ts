@@ -19,7 +19,7 @@ describe('BatchManager', () => {
         return {
             jsonrpc: '2.0',
             id: countId,
-            result: undefined
+            result: undefined,
         };
     }
 
@@ -30,7 +30,7 @@ describe('BatchManager', () => {
 
         abstractMethod = jasmine.createSpyObj('AbstractMethod', [
             'afterExecution',
-            'callback'
+            'callback',
         ]);
 
         abstractMethod.rpcMethod = 'rpc_method';
@@ -137,7 +137,7 @@ describe('BatchManager', () => {
     it('should fail on an invalid response', async () => {
         batchManager.add({ request: abstractMethod });
         const response = {
-            jsonrpc: '2.0'
+            jsonrpc: '2.0',
         };
         sendBatch.and.returnValue(Promise.resolve(response));
         afterExecution.and.callFake(() => {
@@ -152,15 +152,15 @@ describe('BatchManager', () => {
         }
     });
 
-    it('should not fail the whole batch if there is an error response but the request has a default value', async function() {
+    it('should not fail the whole batch if there is an error response but the request has a default value', async function () {
         batchManager.add({
             request: abstractMethod,
-            defaultValue: ''
+            defaultValue: '',
         });
 
         batchManager.add({
             request: abstractMethod,
-            defaultValue: ''
+            defaultValue: '',
         });
 
         afterExecution.and.returnValues('test', '');
@@ -175,15 +175,15 @@ describe('BatchManager', () => {
         expect(result[1]).toBe('');
     });
 
-    it('should not fail the whole batch if there is an invalid response but the request has a default value', async function() {
+    it('should not fail the whole batch if there is an invalid response but the request has a default value', async function () {
         batchManager.add({
             request: abstractMethod,
-            defaultValue: ''
+            defaultValue: '',
         });
 
         batchManager.add({
             request: abstractMethod,
-            defaultValue: ''
+            defaultValue: '',
         });
 
         const stub1 = getResponseStub();
@@ -207,28 +207,28 @@ describe('BatchManager', () => {
         expect(result[1]).toBe('');
     });
 
-    it('should return a validation error if the response contains an error', function() {
+    it('should return a validation error if the response contains an error', function () {
         const validationResult = Validator.validate({
-            error: new Error('test error')
+            error: new Error('test error'),
         });
 
         expect(validationResult instanceof Error).toBe(true);
         expect((validationResult as Error).message).toContain('Node error');
     });
 
-    it('should return a validation error if the response contains an error message', function() {
+    it('should return a validation error if the response contains an error message', function () {
         const validationResult = Validator.validate({
-            error: 'test error'
+            error: 'test error',
         });
 
         expect(validationResult instanceof Error).toBe(true);
         expect((validationResult as Error).message).toContain('Node error');
     });
 
-    it('should return a validation error if the response and payload ids mismatch', function() {
+    it('should return a validation error if the response and payload ids mismatch', function () {
         const validationResult = Validator.validate(
             {
-                id: 1
+                id: 1,
             },
             { id: 2 }
         );
@@ -239,7 +239,7 @@ describe('BatchManager', () => {
         );
     });
 
-    it('should return a validation error if the response is not an object', function() {
+    it('should return a validation error if the response is not an object', function () {
         const validationResult = Validator.validate(1);
         expect(validationResult instanceof Error).toBe(true);
         expect((validationResult as Error).message).toContain(
@@ -247,7 +247,7 @@ describe('BatchManager', () => {
         );
     });
 
-    it('should return true if the response is valid', function() {
+    it('should return true if the response is valid', function () {
         const validationResult = Validator.validate(
             { id: 1, result: '1' },
             { id: 1 }

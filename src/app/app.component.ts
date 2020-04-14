@@ -4,7 +4,7 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
-    HostListener
+    HostListener,
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { MatSidenav } from '@angular/material/sidenav';
@@ -19,11 +19,11 @@ import { SharedService } from './services/shared.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
     ConnectionErrors,
-    ConnectionErrorType
+    ConnectionErrorType,
 } from './models/connection-errors';
 import {
     ErrorComponent,
-    ErrorPayload
+    ErrorPayload,
 } from './components/error/error.component';
 import { takeUntil } from 'rxjs/operators';
 
@@ -31,7 +31,7 @@ import { takeUntil } from 'rxjs/operators';
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
-    animations: Animations.easeInOut
+    animations: Animations.easeInOut,
 })
 export class AppComponent implements OnInit, OnDestroy {
     @HostBinding('@.disabled') animationsDisabled = false;
@@ -62,14 +62,16 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.network$.pipe(takeUntil(this.ngUnsubscribe)).subscribe(network => {
-            if (network.chainId !== 1) {
-                this.showNetworkInfo = true;
-                setTimeout(() => {
-                    this.hideNetworkInfo();
-                }, 5000);
-            }
-        });
+        this.network$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((network) => {
+                if (network.chainId !== 1) {
+                    this.showNetworkInfo = true;
+                    setTimeout(() => {
+                        this.hideNetworkInfo();
+                    }, 5000);
+                }
+            });
 
         this.channelPollingService
             .channels()
@@ -86,7 +88,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
         this.notificationService.connectionErrors$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(errors => {
+            .subscribe((errors) => {
                 this.handleConnectionErrors(errors);
             });
 
@@ -110,12 +112,12 @@ export class AppComponent implements OnInit, OnDestroy {
         if (errors.apiError) {
             errorPayload = {
                 type: ConnectionErrorType.ApiError,
-                errorContent: errors.apiError.message
+                errorContent: errors.apiError.message,
             };
         } else if (errors.rpcError) {
             errorPayload = {
                 type: ConnectionErrorType.RpcError,
-                errorContent: errors.rpcError.stack
+                errorContent: errors.rpcError.stack,
             };
         }
         this.updateErrorDialog(errorPayload);
@@ -137,7 +139,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 data: payload,
                 width: '500px',
                 disableClose: true,
-                panelClass: 'grey-dialog'
+                panelClass: 'grey-dialog',
             });
         }
     }

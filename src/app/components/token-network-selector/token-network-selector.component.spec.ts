@@ -14,7 +14,7 @@ import { TokenPollingService } from '../../services/token-polling.service';
 import { stub } from '../../../testing/stub';
 import {
     mockMatSelectFirst,
-    mockOpenMatSelect
+    mockOpenMatSelect,
 } from '../../../testing/interaction-helper';
 
 describe('TokenNetworkSelectorComponent', () => {
@@ -25,17 +25,17 @@ describe('TokenNetworkSelectorComponent', () => {
         connected: {
             channels: 5,
             funds: new BigNumber(10),
-            sum_deposits: new BigNumber(50)
-        }
+            sum_deposits: new BigNumber(50),
+        },
     });
     const ownedToken = createToken({
         symbol: 'ATT',
-        name: 'Another Test Token'
+        name: 'Another Test Token',
     });
     const notOwnedToken = createToken({
         symbol: 'ATT2',
         name: 'Another Test Token2',
-        balance: new BigNumber(0)
+        balance: new BigNumber(0),
     });
     const tokens = [notOwnedToken, connectedToken, ownedToken];
 
@@ -50,14 +50,14 @@ describe('TokenNetworkSelectorComponent', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 { provide: TokenPollingService, useValue: tokenPollingMock },
                 RaidenService,
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
             ],
             imports: [
                 MaterialComponentsModule,
                 HttpClientTestingModule,
-                NoopAnimationsModule
+                NoopAnimationsModule,
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA]
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     }));
 
@@ -71,8 +71,8 @@ describe('TokenNetworkSelectorComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should sort tokens first by connection, then owned and last not owned', done => {
-        component.tokens$.subscribe(value => {
+    it('should sort tokens first by connection, then owned and last not owned', (done) => {
+        component.tokens$.subscribe((value) => {
             expect(value[0].address).toBe(
                 connectedToken.address,
                 'connection token should go first'
@@ -89,10 +89,10 @@ describe('TokenNetworkSelectorComponent', () => {
         });
     });
 
-    it('should be able to only show connected tokens', done => {
+    it('should be able to only show connected tokens', (done) => {
         component.onlyConnectedTokens = true;
         fixture.detectChanges();
-        component.tokens$.subscribe(value => {
+        component.tokens$.subscribe((value) => {
             expect(value[0].address).toBe(
                 connectedToken.address,
                 'connection token should go first'

@@ -15,14 +15,14 @@ describe('RaidenToastComponent', () => {
         config: { toastClass: 'custom-toast' },
         message: 'test message',
         title: 'test title',
-        toastRef: new ToastRef(null)
+        toastRef: new ToastRef(null),
     };
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [RaidenToastComponent],
             providers: [{ provide: ToastPackage, useValue: toastPackageMock }],
-            imports: [NoopAnimationsModule, ToastrModule.forRoot()]
+            imports: [NoopAnimationsModule, ToastrModule.forRoot()],
         }).compileComponents();
     }));
 

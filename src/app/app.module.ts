@@ -31,11 +31,11 @@ import { LocalStorageAdapter } from './adapters/local-storage-adapter';
 import { ErrorComponent } from './components/error/error.component';
 import {
     ErrorStateMatcher,
-    ShowOnDirtyErrorStateMatcher
+    ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
 import {
     MAT_DIALOG_DEFAULT_OPTIONS,
-    MatDialogConfig
+    MatDialogConfig,
 } from '@angular/material/dialog';
 import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
 import { NotificationPanelComponent } from './components/notification/notification-panel/notification-panel.component';
@@ -61,7 +61,7 @@ import { SearchFieldComponent } from './components/search-field/search-field.com
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
-    { path: 'about', component: AboutComponent }
+    { path: 'about', component: AboutComponent },
 ];
 
 export function ConfigLoader(raidenConfig: RaidenConfig) {
@@ -103,7 +103,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         RaidenDialogComponent,
         AddEditContactDialogComponent,
         QrCodeComponent,
-        SearchFieldComponent
+        SearchFieldComponent,
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
@@ -117,43 +117,43 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
             timeOut: 5000,
             extendedTimeOut: 10000,
             preventDuplicates: false,
-            toastComponent: RaidenToastComponent
+            toastComponent: RaidenToastComponent,
         }),
         ClipboardModule,
-        RaidenIconsModule
+        RaidenIconsModule,
     ],
     providers: [
         {
             provide: HTTP_INTERCEPTORS,
             useClass: ErrorHandlingInterceptor,
             deps: [NotificationService, RaidenService],
-            multi: true
+            multi: true,
         },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: LosslessJsonInterceptor,
-            multi: true
+            multi: true,
         },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: TimeoutInterceptor,
             deps: [RaidenConfig],
-            multi: true
+            multi: true,
         },
         RaidenConfig,
         {
             provide: APP_INITIALIZER,
             useFactory: ConfigLoader,
             deps: [RaidenConfig],
-            multi: true
+            multi: true,
         },
         {
             provide: MAT_DIALOG_DEFAULT_OPTIONS,
             useValue: Object.assign(new MatDialogConfig(), <MatDialogConfig>{
                 maxWidth: '90vw',
                 width: '500px',
-                autoFocus: false
-            })
+                autoFocus: false,
+            }),
         },
         RaidenService,
         TokenPipe,
@@ -161,9 +161,9 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         Web3Factory,
         {
             provide: ErrorStateMatcher,
-            useClass: ShowOnDirtyErrorStateMatcher
-        }
+            useClass: ShowOnDirtyErrorStateMatcher,
+        },
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
 })
 export class AppModule {}
