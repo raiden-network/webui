@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import {
     HttpClientTestingModule,
-    HttpTestingController
+    HttpTestingController,
 } from '@angular/common/http/testing';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -38,9 +38,9 @@ describe('LosslessJsonInterceptor', () => {
                 {
                     provide: HTTP_INTERCEPTORS,
                     useClass: LosslessJsonInterceptor,
-                    multi: true
-                }
-            ]
+                    multi: true,
+                },
+            ],
         });
 
         service = TestBed.inject(MockRequestingService);
@@ -48,17 +48,17 @@ describe('LosslessJsonInterceptor', () => {
     });
 
     it('should convert JSON response losslessly', () => {
-        service.getJsonData().subscribe(response => {
+        service.getJsonData().subscribe((response) => {
             expect(response).toEqual({
                 big: new BigNumber('18446744073709551616'),
-                text: 'Hello'
+                text: 'Hello',
             });
         });
 
         const request = httpMock.expectOne('someurl.com/data');
         request.flush('{"big":"18446744073709551616","text":"Hello"}', {
             status: 200,
-            statusText: ''
+            statusText: '',
         });
     });
 
@@ -72,7 +72,7 @@ describe('LosslessJsonInterceptor', () => {
     });
 
     it('should do nothing for non JSON responses', () => {
-        service.getTextData().subscribe(response => {
+        service.getTextData().subscribe((response) => {
             expect(response).toBe('Hello');
         });
 
@@ -85,7 +85,7 @@ describe('LosslessJsonInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
@@ -99,7 +99,7 @@ describe('LosslessJsonInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error.error.errors).toEqual('An error occured.');
             }
         );
@@ -109,7 +109,7 @@ describe('LosslessJsonInterceptor', () => {
             { errors: 'An error occured.' },
             {
                 status: 400,
-                statusText: ''
+                statusText: '',
             }
         );
     });

@@ -6,18 +6,18 @@ import BigNumber from 'bignumber.js';
 import { TokenPollingService } from '../../services/token-polling.service';
 import {
     ConfirmationDialogPayload,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { flatMap, tap, finalize } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import {
     PaymentDialogPayload,
-    PaymentDialogComponent
+    PaymentDialogComponent,
 } from '../payment-dialog/payment-dialog.component';
 import {
     ConnectionManagerDialogPayload,
-    ConnectionManagerDialogComponent
+    ConnectionManagerDialogComponent,
 } from '../connection-manager-dialog/connection-manager-dialog.component';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { ChannelPollingService } from '../../services/channel-polling.service';
@@ -25,7 +25,7 @@ import { ChannelPollingService } from '../../services/channel-polling.service';
 @Component({
     selector: 'app-token',
     templateUrl: './token.component.html',
-    styleUrls: ['./token.component.css']
+    styleUrls: ['./token.component.css'],
 })
 export class TokenComponent implements OnInit {
     @Input() token: UserToken;
@@ -60,12 +60,12 @@ export class TokenComponent implements OnInit {
         const payload: PaymentDialogPayload = {
             tokenAddress: this.allNetworksView ? '' : this.token.address,
             targetAddress: '',
-            amount: undefined
+            amount: undefined,
         };
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
 
         dialog
@@ -108,17 +108,17 @@ export class TokenComponent implements OnInit {
     leaveNetwork() {
         const payload: ConfirmationDialogPayload = {
             title: 'Leave Token Network',
-            message: `Are you sure you want to close and settle all ${this.token.symbol} channels in ${this.token.name} network?`
+            message: `Are you sure you want to close and settle all ${this.token.symbol} channels in ${this.token.name} network?`,
         };
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
 
         dialog
             .afterClosed()
             .pipe(
-                flatMap(result => {
+                flatMap((result) => {
                     if (!result) {
                         return EMPTY;
                     }
@@ -135,15 +135,15 @@ export class TokenComponent implements OnInit {
         const tokenSymbol = this.token?.symbol ?? '';
         const payload: ConfirmationDialogPayload = {
             title: `No open ${tokenSymbol} channels`,
-            message: `Do you want to use quick connect to automatically open ${tokenSymbol} channels?`
+            message: `Do you want to use quick connect to automatically open ${tokenSymbol} channels?`,
         };
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
 
-        dialog.afterClosed().subscribe(result => {
+        dialog.afterClosed().subscribe((result) => {
             if (result) {
                 this.openConnectionManager();
             }
@@ -153,12 +153,12 @@ export class TokenComponent implements OnInit {
     private openConnectionManager() {
         const payload: ConnectionManagerDialogPayload = {
             token: this.token,
-            funds: undefined
+            funds: undefined,
         };
 
         const dialog = this.dialog.open(ConnectionManagerDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
 
         dialog

@@ -5,7 +5,7 @@ import {
     ViewChild,
     ElementRef,
     HostListener,
-    AfterViewInit
+    AfterViewInit,
 } from '@angular/core';
 import { UserToken } from '../../models/usertoken';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -29,7 +29,7 @@ interface AllNetworksView {
 @Component({
     selector: 'app-token-carousel',
     templateUrl: './token-carousel.component.html',
-    styleUrls: ['./token-carousel.component.css']
+    styleUrls: ['./token-carousel.component.css'],
 })
 export class TokenCarouselComponent
     implements OnInit, OnDestroy, AfterViewInit {
@@ -69,7 +69,7 @@ export class TokenCarouselComponent
     ngOnInit() {
         this.tokenPollingService.tokens$
             .pipe(
-                map(tokens =>
+                map((tokens) =>
                     tokens.sort((a, b) => TokenUtils.compareTokens(a, b))
                 ),
                 takeUntil(this.ngUnsubscribe)
@@ -82,22 +82,22 @@ export class TokenCarouselComponent
         this.channelPollingService
             .channels()
             .pipe(
-                map(channels =>
+                map((channels) =>
                     channels.filter(
-                        channel =>
+                        (channel) =>
                             channel.state === 'opened' ||
                             channel.state === 'waiting_for_open'
                     )
                 ),
                 takeUntil(this.ngUnsubscribe)
             )
-            .subscribe(channels => {
+            .subscribe((channels) => {
                 this.totalChannels = channels.length;
             });
 
         this.selectedTokenService.selectedToken$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(token => {
+            .subscribe((token) => {
                 this.currentSelection = token
                     ? token
                     : { allNetworksView: true };
@@ -107,7 +107,7 @@ export class TokenCarouselComponent
 
         this.sharedService.searchFilter$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(value => {
+            .subscribe((value) => {
                 this.searchFilter = value;
                 this.updateVisibleTokens();
                 this.moveSelectionIntoView();
@@ -189,7 +189,7 @@ export class TokenCarouselComponent
 
     register() {
         const dialog = this.dialog.open(RegisterDialogComponent, {
-            width: '360px'
+            width: '360px',
         });
 
         dialog
@@ -215,13 +215,13 @@ export class TokenCarouselComponent
             animate(
                 '250ms ease-in',
                 style({ transform: `translateX(-${offset}px)` })
-            )
+            ),
         ]);
         animation.create(this.carousel.nativeElement).play();
     }
 
     private updateVisibleTokens() {
-        const filteredTokens = this.tokens.filter(item =>
+        const filteredTokens = this.tokens.filter((item) =>
             matchesToken(this.searchFilter, item)
         );
         this.visibleItems = [{ allNetworksView: true }, ...filteredTokens];
@@ -254,7 +254,7 @@ export class TokenCarouselComponent
             const currentSelection = this.currentSelection;
             const visibleTokens = this.visibleItems.slice(1) as UserToken[];
             selectionIndex = visibleTokens.findIndex(
-                token => token.address === currentSelection.address
+                (token) => token.address === currentSelection.address
             );
             selectionIndex++;
         }

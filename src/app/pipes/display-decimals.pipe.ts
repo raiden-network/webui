@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import BigNumber from 'bignumber.js';
 
 @Pipe({
-    name: 'displayDecimals'
+    name: 'displayDecimals',
 })
 export class DisplayDecimalsPipe implements PipeTransform {
     transform(

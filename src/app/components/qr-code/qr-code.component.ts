@@ -4,7 +4,7 @@ import {
     Inject,
     ViewChild,
     ElementRef,
-    AfterViewInit
+    AfterViewInit,
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import * as QRCode from 'qrcode';
@@ -16,7 +16,7 @@ export interface QrCodePayload {
 @Component({
     selector: 'app-qr-code',
     templateUrl: './qr-code.component.html',
-    styleUrls: ['./qr-code.component.css']
+    styleUrls: ['./qr-code.component.css'],
 })
 export class QrCodeComponent implements OnInit, AfterViewInit {
     @ViewChild('canvas', { static: true }) private canvas: ElementRef;
@@ -42,7 +42,7 @@ export class QrCodeComponent implements OnInit, AfterViewInit {
     private async displayQrCode() {
         try {
             await QRCode.toCanvas(this.canvas.nativeElement, this.content, {
-                width: 188
+                width: 188,
             });
         } catch (e) {
             console.error(`Error displaying QR code: ${e.message}`);

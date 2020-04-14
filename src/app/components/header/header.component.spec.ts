@@ -17,7 +17,7 @@ import {
     createNetworkMock,
     createTestChannels,
     createTestTokens,
-    createAddress
+    createAddress,
 } from '../../../testing/test-data';
 import { stub } from '../../../testing/stub';
 import { Network } from '../../utils/network-info';
@@ -57,7 +57,7 @@ describe('HeaderComponent', () => {
                 HeaderComponent,
                 DisplayDecimalsPipe,
                 SearchFieldComponent,
-                TokenPipe
+                TokenPipe,
             ],
             providers: [
                 NotificationService,
@@ -66,14 +66,14 @@ describe('HeaderComponent', () => {
                 { provide: TokenPollingService, useValue: tokenPollingMock },
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.MockMatDialog(),
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
             ],
             imports: [
                 MaterialComponentsModule,
                 ClipboardModule,
                 HttpClientTestingModule,
-                RaidenIconsModule
-            ]
+                RaidenIconsModule,
+            ],
         }).compileComponents();
     }));
 
@@ -136,12 +136,12 @@ describe('HeaderComponent', () => {
         fixture.detectChanges();
 
         const payload: QrCodePayload = {
-            content: raidenAddress
+            content: raidenAddress,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(QrCodeComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
     });
 });

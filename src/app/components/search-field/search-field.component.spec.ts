@@ -12,7 +12,7 @@ import { SelectedTokenService } from '../../services/selected-token.service';
 import {
     mockInput,
     clickElement,
-    mockMatSelectFirst
+    mockMatSelectFirst,
 } from '../../../testing/interaction-helper';
 import { createToken, createTestContacts } from '../../../testing/test-data';
 import { Contact } from '../../models/contact';
@@ -44,13 +44,13 @@ describe('SearchFieldComponent', () => {
                 SharedService,
                 { provide: TokenPollingService, useValue: tokenPollingMock },
                 RaidenService,
-                SelectedTokenService
+                SelectedTokenService,
             ],
             imports: [
                 MaterialComponentsModule,
                 HttpClientTestingModule,
-                RaidenIconsModule
-            ]
+                RaidenIconsModule,
+            ],
         }).compileComponents();
     }));
 
@@ -62,7 +62,7 @@ describe('SearchFieldComponent', () => {
         selectedTokenService = TestBed.inject(SelectedTokenService);
 
         const raidenService = TestBed.inject(RaidenService);
-        spyOn(raidenService, 'getUserToken').and.callFake(userToken => {
+        spyOn(raidenService, 'getUserToken').and.callFake((userToken) => {
             return { [token.address]: token }[userToken];
         });
         const addressBookService = TestBed.inject(AddressBookService);

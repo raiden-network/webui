@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @NgModule({
-    imports: [CommonModule, MatIconModule]
+    imports: [CommonModule, MatIconModule],
 })
 export class RaidenIconsModule {
     icon_names = [
@@ -28,7 +28,7 @@ export class RaidenIconsModule {
         'info',
         'close',
         'error',
-        'error-mark'
+        'error-mark',
     ];
 
     constructor(
@@ -39,7 +39,7 @@ export class RaidenIconsModule {
     }
 
     private registerIcons() {
-        this.icon_names.forEach(icon => {
+        this.icon_names.forEach((icon) => {
             this.matIconRegistry.addSvgIcon(
                 icon,
                 this.domSanitizer.bypassSecurityTrustResourceUrl(

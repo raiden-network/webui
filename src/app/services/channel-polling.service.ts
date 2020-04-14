@@ -10,7 +10,7 @@ import { UiMessage } from '../models/notification';
 import { AddressBookService } from './address-book.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ChannelPollingService {
     private channelsSubject: BehaviorSubject<void> = new BehaviorSubject(null);
@@ -59,13 +59,13 @@ export class ChannelPollingService {
     public channels(): Observable<Channel[]> {
         return combineLatest([
             this.channels$,
-            this.raidenService.getPendingChannels()
+            this.raidenService.getPendingChannels(),
         ]).pipe(
             map(([channels, pendingChannels]) => {
                 const uniquePendingChannels = pendingChannels.filter(
-                    pendingChannel =>
+                    (pendingChannel) =>
                         !channels.find(
-                            channel =>
+                            (channel) =>
                                 channel.partner_address ===
                                     pendingChannel.partner_address &&
                                 channel.token_address ===
@@ -87,8 +87,8 @@ export class ChannelPollingService {
         newChannels: Channel[]
     ) {
         if (oldChannels.length > 0) {
-            const channels = newChannels.filter(newChannel => {
-                return !oldChannels.find(oldChannel =>
+            const channels = newChannels.filter((newChannel) => {
+                return !oldChannels.find((oldChannel) =>
                     this.isTheSameChannel(oldChannel, newChannel)
                 );
             });
@@ -129,7 +129,7 @@ export class ChannelPollingService {
             description: `${token.symbol} with ${partnerLabel} ${partnerAddress}`,
             icon: 'channel',
             identiconAddress: partnerAddress,
-            userToken: token
+            userToken: token,
         };
 
         this.notificationService.addInfoNotification(message);

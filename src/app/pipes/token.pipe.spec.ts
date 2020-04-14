@@ -14,7 +14,7 @@ describe('TokenPipe', () => {
             symbol: 'TST',
             name: 'Test Suite Token',
             balance: new BigNumber(20),
-            decimals: 8
+            decimals: 8,
         };
     });
 

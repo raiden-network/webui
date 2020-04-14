@@ -2,7 +2,7 @@ import { amountFromDecimal, amountToDecimal } from './amount.converter';
 import BigNumber from 'bignumber.js';
 
 describe('AmountConverter', () => {
-    it('should convert from decimal to int', function() {
+    it('should convert from decimal to int', function () {
         expect(amountFromDecimal(new BigNumber(0.00000001), 8)).toEqual(
             new BigNumber(1)
         );
@@ -20,7 +20,7 @@ describe('AmountConverter', () => {
         ).toEqual(new BigNumber(3111));
     });
 
-    it('should convert from int to decimal', function() {
+    it('should convert from int to decimal', function () {
         expect(amountToDecimal(new BigNumber(1), 8)).toEqual(
             new BigNumber(0.00000001)
         );

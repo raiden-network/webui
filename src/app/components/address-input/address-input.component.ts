@@ -5,7 +5,7 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
-    ElementRef
+    ElementRef,
 } from '@angular/core';
 import {
     AbstractControl,
@@ -15,7 +15,7 @@ import {
     ValidationErrors,
     Validator,
     FormControl,
-    Validators
+    Validators,
 } from '@angular/forms';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenService } from '../../services/raiden.service';
@@ -29,7 +29,7 @@ import {
     partition,
     combineLatest,
     BehaviorSubject,
-    Subject
+    Subject,
 } from 'rxjs';
 import AddressUtils from '../../utils/address-utils';
 import { isAddressValid } from '../../shared/address.validator';
@@ -46,14 +46,14 @@ import { matchesContact } from '../../shared/keyword-matcher';
         {
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => AddressInputComponent),
-            multi: true
+            multi: true,
         },
         {
             provide: NG_VALIDATORS,
             useExisting: forwardRef(() => AddressInputComponent),
-            multi: true
-        }
-    ]
+            multi: true,
+        },
+    ],
 })
 export class AddressInputComponent
     implements ControlValueAccessor, Validator, OnInit, OnDestroy {
@@ -173,7 +173,7 @@ export class AddressInputComponent
         this.showContactLabelInput = false;
         const contact: Contact = {
             address: this.address,
-            label: this.contactLabelFc.value
+            label: this.contactLabelFc.value,
         };
         this.addressBookService.save(contact);
         this.contactLabel = this.addressBookService.get()[this.address];
@@ -187,28 +187,30 @@ export class AddressInputComponent
 
         const resolveOnEns = combineLatest([
             ens.pipe(debounceTime(800)),
-            this.network$
+            this.network$,
         ]).pipe(
             switchMap(([value, network]) => {
                 if (!network.ensSupported) {
                     return of({
                         value: '',
-                        errors: { ensUnsupported: true }
+                        errors: { ensUnsupported: true },
                     });
                 }
                 return of(value).pipe(
                     tap(() => (this.searching = true)),
-                    switchMap(name => this.raidenService.resolveEnsName(name)),
+                    switchMap((name) =>
+                        this.raidenService.resolveEnsName(name)
+                    ),
                     tap(() => (this.searching = false)),
-                    map(resolvedAddress => {
+                    map((resolvedAddress) => {
                         if (resolvedAddress) {
                             return { value: resolvedAddress };
                         } else {
                             return {
                                 value: '',
                                 errors: {
-                                    unableToResolveEns: true
-                                }
+                                    unableToResolveEns: true,
+                                },
                             };
                         }
                     })
@@ -227,7 +229,7 @@ export class AddressInputComponent
                 }
                 return {
                     value: value,
-                    errors: errors
+                    errors: errors,
                 };
             })
         );
@@ -246,10 +248,10 @@ export class AddressInputComponent
     private setupFiltering() {
         this.filteredOptions$ = combineLatest([
             this.inputSubject,
-            this.addressBookService.getObservableArray()
+            this.addressBookService.getObservableArray(),
         ]).pipe(
             map(([value, contacts]) =>
-                contacts.filter(contact => matchesContact(value, contact))
+                contacts.filter((contact) => matchesContact(value, contact))
             )
         );
     }

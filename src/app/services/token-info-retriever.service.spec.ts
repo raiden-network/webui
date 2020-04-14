@@ -22,8 +22,8 @@ describe('TokenInfoRetriever', () => {
             imports: [HttpClientModule, HttpClientTestingModule],
             providers: [
                 TokenInfoRetrieverService,
-                TestProviders.MockRaidenConfigProvider()
-            ]
+                TestProviders.MockRaidenConfigProvider(),
+            ],
         });
 
         const config = TestBed.inject(RaidenConfig);
@@ -35,14 +35,14 @@ describe('TokenInfoRetriever', () => {
                     call: {
                         request: () => {
                             return name;
-                        }
-                    }
+                        },
+                    },
                 };
             };
         }
 
         // @ts-ignore
-        config.web3.eth.Contract = function(
+        config.web3.eth.Contract = function (
             jsonInterface: AbiItem[] | AbiItem,
             address?: string,
             options?: ContractOptions
@@ -54,8 +54,8 @@ describe('TokenInfoRetriever', () => {
                     name: createMethod('name'),
                     decimals: createMethod('decimals'),
                     symbol: createMethod('symbol'),
-                    balanceOf: createMethod('balanceOf')
-                }
+                    balanceOf: createMethod('balanceOf'),
+                },
             };
         };
 
@@ -93,7 +93,7 @@ describe('TokenInfoRetriever', () => {
 
     it('should have add 4 requests the first time', async () => {
         spyOn(batchManager, 'execute').and.returnValue(
-            new Promise(resolve => {
+            new Promise((resolve) => {
                 resolve(['TEST', 'TST', 18, 50]);
             })
         );
@@ -130,7 +130,7 @@ describe('TokenInfoRetriever', () => {
 
     it('should have only on request if token is already cached', async () => {
         spyOn(batchManager, 'execute').and.returnValue(
-            new Promise(resolve => {
+            new Promise((resolve) => {
                 resolve([150]);
             })
         );
@@ -141,8 +141,8 @@ describe('TokenInfoRetriever', () => {
                 symbol: 'TST',
                 decimals: 18,
                 address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-                balance: new BigNumber(10)
-            }
+                balance: new BigNumber(10),
+            },
         };
         const tokens = await service.createBatch(
             ['0x0f114A1E9Db192502E7856309cc899952b3db1ED'],

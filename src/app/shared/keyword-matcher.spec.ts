@@ -1,12 +1,12 @@
 import {
     createToken,
     createChannel,
-    createAddress
+    createAddress,
 } from '../../testing/test-data';
 import {
     matchesToken,
     matchesChannel,
-    matchesContact
+    matchesContact,
 } from './keyword-matcher';
 import { Contact } from '../models/contact';
 
@@ -35,7 +35,7 @@ describe('KeywordMatcher', () => {
 
     it('should match a channel with a token', () => {
         const channel = createChannel({
-            userToken: createToken({ symbol: 'TST' })
+            userToken: createToken({ symbol: 'TST' }),
         });
         expect(matchesChannel('TST', channel)).toBe(true);
     });
@@ -43,7 +43,7 @@ describe('KeywordMatcher', () => {
     it('should match a contact', () => {
         const contact: Contact = {
             label: 'Test contact',
-            address: createAddress()
+            address: createAddress(),
         };
         expect(matchesContact('contact', contact)).toBe(true);
     });
@@ -51,7 +51,7 @@ describe('KeywordMatcher', () => {
     it('should not match a contact for a non matching keyword', () => {
         const contact: Contact = {
             label: 'Test contact',
-            address: createAddress()
+            address: createAddress(),
         };
         expect(matchesContact('Raiden', contact)).toBe(false);
     });

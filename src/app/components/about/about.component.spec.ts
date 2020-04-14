@@ -33,15 +33,15 @@ describe('AboutComponent', () => {
             providers: [
                 {
                     provide: RaidenService,
-                    useValue: raidenServiceMock
-                }
+                    useValue: raidenServiceMock,
+                },
             ],
             imports: [
                 MaterialComponentsModule,
                 ClipboardModule,
                 HttpClientTestingModule,
-                RaidenIconsModule
-            ]
+                RaidenIconsModule,
+            ],
         }).compileComponents();
     }));
 

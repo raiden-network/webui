@@ -5,7 +5,7 @@ import {
     style,
     state,
     transition,
-    animate
+    animate,
 } from '@angular/animations';
 
 @Component({
@@ -22,7 +22,7 @@ import {
                     opacity: 1,
                     width: 0,
                     height: 0,
-                    transform: 'translateX(+300px)'
+                    transform: 'translateX(+300px)',
                 })
             ),
             transition(
@@ -32,10 +32,10 @@ import {
             transition(
                 'active => removed',
                 animate('{{ easeTime }}ms ease-out')
-            )
-        ])
+            ),
+        ]),
     ],
-    preserveWhitespaces: false
+    preserveWhitespaces: false,
 })
 export class RaidenToastComponent extends Toast {
     constructor(

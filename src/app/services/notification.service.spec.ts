@@ -11,12 +11,12 @@ describe('NotificationService', () => {
     const testMessage: UiMessage = {
         title: 'Testing',
         description: 'Currently testing the application.',
-        icon: ''
+        icon: '',
     };
     const testMessage2: UiMessage = {
         title: 'Further testing',
         description: 'Still testing the application.',
-        icon: ''
+        icon: '',
     };
 
     beforeEach(() => {
@@ -24,8 +24,8 @@ describe('NotificationService', () => {
             providers: [NotificationService],
             imports: [
                 ToastrModule.forRoot({ timeOut: 50, easeTime: 0 }),
-                NoopAnimationsModule
-            ]
+                NoopAnimationsModule,
+            ],
         });
     });
 
@@ -50,7 +50,7 @@ describe('NotificationService', () => {
                 { identifier: 0, timestamp: new Date().toISOString() },
                 testMessage
             );
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([expectedNotification])
             );
             expect(toastrSpy).toHaveBeenCalledTimes(1);
@@ -72,7 +72,7 @@ describe('NotificationService', () => {
                 { identifier: 0, timestamp: new Date().toISOString() },
                 testMessage
             );
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([expectedNotification])
             );
             expect(toastrSpy).toHaveBeenCalledTimes(1);
@@ -94,7 +94,7 @@ describe('NotificationService', () => {
                 { identifier: 0, timestamp: new Date().toISOString() },
                 testMessage
             );
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([expectedNotification])
             );
             expect(toastrSpy).toHaveBeenCalledTimes(1);
@@ -116,7 +116,7 @@ describe('NotificationService', () => {
                 { identifier: 0, timestamp: new Date().toISOString() },
                 testMessage2
             );
-            service.pendingActions$.subscribe(pendingActions =>
+            service.pendingActions$.subscribe((pendingActions) =>
                 expect(pendingActions).toEqual([expectedPendingAction])
             );
             expect(toastrSpy).toHaveBeenCalledTimes(1);
@@ -142,7 +142,7 @@ describe('NotificationService', () => {
                 { identifier: 1, timestamp: new Date().toISOString() },
                 testMessage2
             );
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([notification2, notification1])
             );
 
@@ -157,7 +157,7 @@ describe('NotificationService', () => {
                 { identifier: 3, timestamp: new Date().toISOString() },
                 testMessage2
             );
-            service.pendingActions$.subscribe(pendingActions =>
+            service.pendingActions$.subscribe((pendingActions) =>
                 expect(pendingActions).toEqual([pendingAction2, pendingAction1])
             );
             flush();
@@ -175,7 +175,7 @@ describe('NotificationService', () => {
                 { identifier: 0, timestamp: new Date().toISOString() },
                 testMessage
             );
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([expectedNotification])
             );
             flush();
@@ -193,7 +193,7 @@ describe('NotificationService', () => {
                 { identifier: 1, timestamp: new Date().toISOString() },
                 testMessage2
             );
-            service.pendingActions$.subscribe(pendingActions =>
+            service.pendingActions$.subscribe((pendingActions) =>
                 expect(pendingActions).toEqual([expectedPendingAction])
             );
             flush();
@@ -207,7 +207,7 @@ describe('NotificationService', () => {
             service.addErrorNotification(testMessage2);
             service.clearNotifications();
 
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([])
             );
         }

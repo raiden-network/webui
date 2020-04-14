@@ -13,7 +13,7 @@ export interface ConnectionManagerDialogPayload {
 @Component({
     selector: 'app-join-dialog',
     templateUrl: './connection-manager-dialog.component.html',
-    styleUrls: ['./connection-manager-dialog.component.css']
+    styleUrls: ['./connection-manager-dialog.component.css'],
 })
 export class ConnectionManagerDialogComponent implements OnInit {
     @ViewChild(TokenInputComponent, { static: true })
@@ -21,7 +21,7 @@ export class ConnectionManagerDialogComponent implements OnInit {
 
     form = this.fb.group({
         amount: ['', Validators.required],
-        token: [undefined, Validators.required]
+        token: [undefined, Validators.required],
     });
     initiatedWithoutToken = false;
 
@@ -47,7 +47,7 @@ export class ConnectionManagerDialogComponent implements OnInit {
     accept() {
         const payload: ConnectionManagerDialogPayload = {
             token: this.form.value.token,
-            funds: this.form.value.amount
+            funds: this.form.value.amount,
         };
         this.dialogRef.close(payload);
     }

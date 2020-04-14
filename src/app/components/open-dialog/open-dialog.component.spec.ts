@@ -9,14 +9,14 @@ import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 import {
     OpenDialogComponent,
-    OpenDialogPayload
+    OpenDialogPayload,
 } from './open-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
 import {
     mockInput,
     mockOpenMatSelect,
     mockMatSelectFirst,
-    clickElement
+    clickElement,
 } from '../../../testing/interaction-helper';
 import { By } from '@angular/platform-browser';
 import BigNumber from 'bignumber.js';
@@ -32,7 +32,7 @@ describe('OpenDialogComponent', () => {
     let fixture: ComponentFixture<OpenDialogComponent>;
 
     const token = createToken({
-        decimals: 0
+        decimals: 0,
     });
     const addressInput = createAddress();
     const amountInput = '500';
@@ -64,7 +64,7 @@ describe('OpenDialogComponent', () => {
         const payload: OpenDialogPayload = {
             tokenAddress: token.address,
             defaultSettleTimeout: defaultSettleTimeout,
-            revealTimeout: revealTimeout
+            revealTimeout: revealTimeout,
         };
 
         const tokenPollingMock = stub<TokenPollingService>();
@@ -78,21 +78,21 @@ describe('OpenDialogComponent', () => {
                 TokenInputComponent,
                 AddressInputComponent,
                 TokenNetworkSelectorComponent,
-                RaidenDialogComponent
+                RaidenDialogComponent,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
                 TestProviders.MockMatDialogRef({ close: () => {} }),
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
-                { provide: TokenPollingService, useValue: tokenPollingMock }
+                { provide: TokenPollingService, useValue: tokenPollingMock },
             ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
                 ReactiveFormsModule,
-                HttpClientTestingModule
-            ]
+                HttpClientTestingModule,
+            ],
         }).compileComponents();
     }));
 
@@ -123,7 +123,7 @@ describe('OpenDialogComponent', () => {
             tokenAddress: token.address,
             partnerAddress: addressInput,
             settleTimeout: defaultSettleTimeout,
-            balance: new BigNumber(amountInput)
+            balance: new BigNumber(amountInput),
         });
     });
 
@@ -179,8 +179,9 @@ describe('OpenDialogComponent', () => {
             );
             const errorMessage = errorElement.nativeElement.innerText.trim();
             expect(errorMessage).toBe(
-                `Reveal timeout is ${revealTimeout}, settle timeout should be at least ${revealTimeout *
-                    2}`
+                `Reveal timeout is ${revealTimeout}, settle timeout should be at least ${
+                    revealTimeout * 2
+                }`
             );
             expect(
                 component.form.get('settle_timeout').errors['min']

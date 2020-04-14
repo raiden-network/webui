@@ -31,7 +31,7 @@ const default_config: RDNConfig = {
     http_timeout: 600000,
     settle_timeout: 500,
     reveal_timeout: 10,
-    environment_type: EnvironmentType.DEVELOPMENT
+    environment_type: EnvironmentType.DEVELOPMENT,
 };
 
 @Injectable()

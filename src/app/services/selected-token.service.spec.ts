@@ -12,7 +12,7 @@ describe('SelectedTokenService', () => {
         symbol: 'TST',
         name: 'Test Suite Token',
         decimals: 8,
-        balance: new BigNumber(20)
+        balance: new BigNumber(20),
     };
 
     beforeEach(() => TestBed.configureTestingModule({}));
@@ -26,14 +26,14 @@ describe('SelectedTokenService', () => {
     });
 
     it('should have undefined as the default value for the token network', () => {
-        service.selectedToken$.subscribe(tokenNetwork => {
+        service.selectedToken$.subscribe((tokenNetwork) => {
             expect(tokenNetwork).toBe(undefined);
         });
     });
 
     it('should be possible to set and retrieve the token network', () => {
         service.setToken(token);
-        service.selectedToken$.subscribe(tokenNetwork => {
+        service.selectedToken$.subscribe((tokenNetwork) => {
             expect(tokenNetwork).toEqual(token);
         });
     });

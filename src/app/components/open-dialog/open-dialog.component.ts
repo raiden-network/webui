@@ -5,7 +5,7 @@ import {
     FormGroup,
     Validators,
     ValidatorFn,
-    ValidationErrors
+    ValidationErrors,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserToken } from '../../models/usertoken';
@@ -30,7 +30,7 @@ export interface OpenDialogResult {
     selector: 'app-open-dialog',
     templateUrl: './open-dialog.component.html',
     styleUrls: ['./open-dialog.component.css'],
-    animations: Animations.fallDown
+    animations: Animations.fallDown,
 })
 export class OpenDialogComponent {
     @ViewChild(TokenInputComponent, { static: true })
@@ -54,9 +54,9 @@ export class OpenDialogComponent {
                 [
                     this.settleTimeoutValidator(),
                     Validators.min(data.revealTimeout * 2),
-                    Validators.required
-                ]
-            ]
+                    Validators.required,
+                ],
+            ],
         });
     }
 
@@ -66,7 +66,7 @@ export class OpenDialogComponent {
             tokenAddress: value.token,
             partnerAddress: value.address,
             settleTimeout: value.settle_timeout,
-            balance: value.amount
+            balance: value.amount,
         };
 
         this.dialogRef.close(result);

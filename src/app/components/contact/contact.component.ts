@@ -7,7 +7,7 @@ import { IdenticonCacheService } from '../../services/identicon-cache.service';
     selector: 'app-contact',
     templateUrl: './contact.component.html',
     styleUrls: ['./contact.component.css'],
-    animations: Animations.flyInOut
+    animations: Animations.flyInOut,
 })
 export class ContactComponent implements OnInit {
     @Input() contact: Contact;

@@ -6,7 +6,7 @@ import { AddressBookService } from '../../../services/address-book.service';
 @Component({
     selector: 'app-notification-item',
     templateUrl: './notification-item.component.html',
-    styleUrls: ['./notification-item.component.css']
+    styleUrls: ['./notification-item.component.css'],
 })
 export class NotificationItemComponent implements OnInit {
     @Input() notification: NotificationMessage;

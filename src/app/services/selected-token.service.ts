@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { UserToken } from '../models/usertoken';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class SelectedTokenService {
     private selectedTokenSubject: BehaviorSubject<

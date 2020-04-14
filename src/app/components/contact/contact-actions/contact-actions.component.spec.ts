@@ -13,7 +13,7 @@ import { Contact } from '../../../models/contact';
 import {
     createAddress,
     createTestChannels,
-    createToken
+    createToken,
 } from '../../../../testing/test-data';
 import { BehaviorSubject, of } from 'rxjs';
 import { Channel } from '../../../models/channel';
@@ -22,18 +22,18 @@ import { MockMatDialog } from '../../../../testing/mock-mat-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import {
     PaymentDialogPayload,
-    PaymentDialogComponent
+    PaymentDialogComponent,
 } from '../../payment-dialog/payment-dialog.component';
 import BigNumber from 'bignumber.js';
 import { clickElement } from '../../../../testing/interaction-helper';
 import { AddressBookService } from '../../../services/address-book.service';
 import {
     AddEditContactDialogPayload,
-    AddEditContactDialogComponent
+    AddEditContactDialogComponent,
 } from '../../add-edit-contact-dialog/add-edit-contact-dialog.component';
 import {
     ConfirmationDialogPayload,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
 } from '../../confirmation-dialog/confirmation-dialog.component';
 
 describe('ContactActionsComponent', () => {
@@ -46,7 +46,7 @@ describe('ContactActionsComponent', () => {
     let channelsSubject: BehaviorSubject<Channel[]>;
     const contact: Contact = {
         address: createAddress(),
-        label: 'Test account'
+        label: 'Test account',
     };
     const token = createToken();
 
@@ -60,14 +60,14 @@ describe('ContactActionsComponent', () => {
                 PendingTransferPollingService,
                 RaidenService,
                 SelectedTokenService,
-                ChannelPollingService
+                ChannelPollingService,
             ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
                 RaidenIconsModule,
-                HttpClientTestingModule
-            ]
+                HttpClientTestingModule,
+            ],
         }).compileComponents();
     }));
 
@@ -114,7 +114,7 @@ describe('ContactActionsComponent', () => {
         const dialogResult: PaymentDialogPayload = {
             tokenAddress: token.address,
             targetAddress: contact.address,
-            amount: new BigNumber(10)
+            amount: new BigNumber(10),
         };
         dialog.returns = () => dialogResult;
         const initiatePaymentSpy = spyOn(
@@ -126,12 +126,12 @@ describe('ContactActionsComponent', () => {
         const payload: PaymentDialogPayload = {
             tokenAddress: '',
             targetAddress: contact.address,
-            amount: undefined
+            amount: undefined,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(PaymentDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
         expect(initiatePaymentSpy).toHaveBeenCalledTimes(1);
         expect(initiatePaymentSpy).toHaveBeenCalledWith(
@@ -159,8 +159,8 @@ describe('ContactActionsComponent', () => {
             connected: {
                 channels: 1,
                 funds: new BigNumber(0),
-                sum_deposits: new BigNumber(0)
-            }
+                sum_deposits: new BigNumber(0),
+            },
         });
         selectedTokenService.setToken(connectedToken);
         fixture.detectChanges();
@@ -172,12 +172,12 @@ describe('ContactActionsComponent', () => {
         const payload: PaymentDialogPayload = {
             tokenAddress: connectedToken.address,
             targetAddress: contact.address,
-            amount: undefined
+            amount: undefined,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(PaymentDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
     });
 
@@ -187,7 +187,7 @@ describe('ContactActionsComponent', () => {
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const dialogResult: Contact = {
             address: contact.address,
-            label: 'New label'
+            label: 'New label',
         };
         dialog.returns = () => dialogResult;
         const saveSpy = spyOn(addressBookService, 'save');
@@ -196,12 +196,12 @@ describe('ContactActionsComponent', () => {
         const payload: AddEditContactDialogPayload = {
             address: contact.address,
             label: contact.label,
-            edit: true
+            edit: true,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(AddEditContactDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
         expect(saveSpy).toHaveBeenCalledTimes(1);
         expect(saveSpy).toHaveBeenCalledWith(dialogResult);
@@ -216,12 +216,12 @@ describe('ContactActionsComponent', () => {
 
         const payload: ConfirmationDialogPayload = {
             title: 'Delete Contact',
-            message: `Are you sure you want to delete the contact ${contact.label} for address ${contact.address}?`
+            message: `Are you sure you want to delete the contact ${contact.label} for address ${contact.address}?`,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
         expect(deleteSpy).toHaveBeenCalledTimes(1);
         expect(deleteSpy).toHaveBeenCalledWith(contact);

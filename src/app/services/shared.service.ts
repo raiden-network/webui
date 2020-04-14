@@ -3,7 +3,7 @@ import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class SharedService {
     private globalClickTargetSubject: Subject<HTMLElement> = new Subject();

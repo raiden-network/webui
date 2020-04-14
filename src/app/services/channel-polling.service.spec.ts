@@ -19,8 +19,8 @@ describe('ChannelPollingService', () => {
                 ChannelPollingService,
                 NotificationService,
                 TestProviders.MockRaidenConfigProvider(),
-                RaidenService
-            ]
+                RaidenService,
+            ],
         });
     });
 
@@ -32,12 +32,12 @@ describe('ChannelPollingService', () => {
     const token = createToken();
     const token2 = createToken({
         symbol: 'TST2',
-        name: 'Test Suite Token 2'
+        name: 'Test Suite Token 2',
     });
     const channel1 = createChannel({ userToken: token });
     const channel1Network2 = Object.assign({}, channel1, { userToken: token2 });
     const channel1Updated = Object.assign({}, channel1, {
-        balance: channel1.balance.plus(10)
+        balance: channel1.balance.plus(10),
     });
     const channel2 = createChannel({ userToken: token });
 
@@ -47,8 +47,8 @@ describe('ChannelPollingService', () => {
                 ChannelPollingService,
                 RaidenService,
                 NotificationService,
-                TestProviders.AddressBookStubProvider()
-            ]
+                TestProviders.AddressBookStubProvider(),
+            ],
         });
 
         raidenService = TestBed.inject(RaidenService);
@@ -80,7 +80,7 @@ describe('ChannelPollingService', () => {
         const mockAddressBookService = TestBed.inject(AddressBookService);
         mockAddressBookService.get = () => {
             return {
-                [channel1.partner_address]: 'Test account'
+                [channel1.partner_address]: 'Test account',
             };
         };
         raidenServiceSpy.and.returnValues(

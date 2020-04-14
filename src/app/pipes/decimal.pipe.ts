@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { amountToDecimal } from '../utils/amount.converter';
 
 @Pipe({
-    name: 'decimal'
+    name: 'decimal',
 })
 export class DecimalPipe implements PipeTransform {
     transform(value: BigNumber, decimals: number): string {

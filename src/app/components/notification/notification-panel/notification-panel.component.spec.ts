@@ -31,7 +31,7 @@ describe('NotificationPanelComponent', () => {
         description: 'Currently testing the application.',
         identifier: 1,
         icon: '',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
     };
 
     const pendingAction: NotificationMessage = {
@@ -39,7 +39,7 @@ describe('NotificationPanelComponent', () => {
         description: 'Test is pending.',
         identifier: 2,
         icon: '',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
     };
 
     beforeEach(async(() => {
@@ -49,7 +49,7 @@ describe('NotificationPanelComponent', () => {
             notifications$: notificationsSubject.asObservable(),
             pendingActions$: pendingActionsSubject.asObservable(),
             clearNotifications: () => {},
-            removeNotification: () => {}
+            removeNotification: () => {},
         };
         removeSpy = spyOn(notificationService, 'removeNotification');
         clearSpy = spyOn(notificationService, 'clearNotifications');
@@ -57,16 +57,16 @@ describe('NotificationPanelComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 NotificationPanelComponent,
-                NotificationItemComponent
+                NotificationItemComponent,
             ],
             providers: [
                 PendingTransferPollingService,
                 {
                     provide: NotificationService,
-                    useValue: notificationService
+                    useValue: notificationService,
                 },
                 TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
             ],
             imports: [
                 MaterialComponentsModule,
@@ -74,8 +74,8 @@ describe('NotificationPanelComponent', () => {
                 NoopAnimationsModule,
                 ClipboardModule,
                 RaidenIconsModule,
-                NoopAnimationsModule
-            ]
+                NoopAnimationsModule,
+            ],
         }).compileComponents();
     }));
 

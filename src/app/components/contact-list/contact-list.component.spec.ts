@@ -4,7 +4,7 @@ import {
     TestBed,
     fakeAsync,
     tick,
-    flush
+    flush,
 } from '@angular/core/testing';
 import { ContactListComponent } from './contact-list.component';
 import { ContactComponent } from '../contact/contact.component';
@@ -24,7 +24,7 @@ import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import {
     AddEditContactDialogPayload,
-    AddEditContactDialogComponent
+    AddEditContactDialogComponent,
 } from '../add-edit-contact-dialog/add-edit-contact-dialog.component';
 import { Contact, Contacts } from '../../models/contact';
 import { stub } from '../../../testing/stub';
@@ -36,18 +36,18 @@ import { of } from 'rxjs';
 function createMockReader(result: {}) {
     return {
         result: JSON.stringify(result),
-        readAsText: function() {
+        readAsText: function () {
             this.onprogress();
             this.onload();
         },
         onload: () => {},
-        onprogress: () => {}
+        onprogress: () => {},
     };
 }
 
 function createMockFileList(...filenames: string[]): FileList {
     const files: File[] = [];
-    filenames.forEach(filename => {
+    filenames.forEach((filename) => {
         const file = stub<File>();
         // @ts-ignore
         file.name = filename;
@@ -60,7 +60,7 @@ function createMockFileList(...filenames: string[]): FileList {
     // @ts-ignore
     fileList.length = files.length;
     // @ts-ignore
-    fileList.item = function(index: number) {
+    fileList.item = function (index: number) {
         return files[index];
     };
 
@@ -79,22 +79,22 @@ describe('ContactListComponent', () => {
             declarations: [
                 ContactListComponent,
                 ContactComponent,
-                ContactActionsComponent
+                ContactActionsComponent,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
                 TestProviders.MockMatDialog(),
                 NotificationService,
-                SharedService
+                SharedService,
             ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
                 RaidenIconsModule,
                 HttpClientTestingModule,
-                ToastrModule.forRoot()
-            ]
+                ToastrModule.forRoot(),
+            ],
         }).compileComponents();
     }));
 
@@ -171,7 +171,7 @@ describe('ContactListComponent', () => {
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const dialogResult: Contact = {
             address: createAddress(),
-            label: 'New test account'
+            label: 'New test account',
         };
         dialog.returns = () => dialogResult;
         const saveSpy = spyOn(addressBookService, 'save');
@@ -180,12 +180,12 @@ describe('ContactListComponent', () => {
         const payload: AddEditContactDialogPayload = {
             address: '',
             label: '',
-            edit: false
+            edit: false,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(AddEditContactDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
         expect(saveSpy).toHaveBeenCalledTimes(1);
         expect(saveSpy).toHaveBeenCalledWith(dialogResult);
@@ -197,9 +197,9 @@ describe('ContactListComponent', () => {
 
         const elementSpy = jasmine.createSpyObj('a', [
             'dispatchEvent',
-            'setAttribute'
+            'setAttribute',
         ]);
-        elementSpy.setAttribute = function(attr, value) {
+        elementSpy.setAttribute = function (attr, value) {
             this[attr] = value;
         };
         const createElementSpy = spyOn(
@@ -228,7 +228,7 @@ describe('ContactListComponent', () => {
 
         const result: Contacts = {};
         const data = createTestContacts(2);
-        data.forEach(contact => {
+        data.forEach((contact) => {
             result[contact.address] = contact.label;
         });
         // @ts-ignore
@@ -271,7 +271,7 @@ describe('ContactListComponent', () => {
         const errorMessage: UiMessage = {
             title: 'Contacts import',
             description: 'Invalid file format',
-            icon: 'error-mark'
+            icon: 'error-mark',
         };
         expect(storeSpy).toHaveBeenCalledTimes(0);
         expect(notificationSpy).toHaveBeenCalledTimes(1);
@@ -303,7 +303,7 @@ describe('ContactListComponent', () => {
         const errorMessage: UiMessage = {
             title: 'Contacts import',
             description: 'Only json files allowed',
-            icon: 'error-mark'
+            icon: 'error-mark',
         };
         expect(storeSpy).toHaveBeenCalledTimes(0);
         expect(notificationSpy).toHaveBeenCalledTimes(1);
@@ -338,7 +338,7 @@ describe('ContactListComponent', () => {
         const errorMessage: UiMessage = {
             title: 'Contacts import',
             description: 'Only single file supported',
-            icon: 'error-mark'
+            icon: 'error-mark',
         };
         expect(storeSpy).toHaveBeenCalledTimes(0);
         expect(notificationSpy).toHaveBeenCalledTimes(1);
@@ -372,7 +372,7 @@ describe('ContactListComponent', () => {
         const errorMessage: UiMessage = {
             title: 'Contacts import',
             description: `Max allowed size of ${UploadChecks.MAX_UPLOAD_SIZE} bytes exceeded`,
-            icon: 'error-mark'
+            icon: 'error-mark',
         };
         expect(storeSpy).toHaveBeenCalledTimes(0);
         expect(notificationSpy).toHaveBeenCalledTimes(1);

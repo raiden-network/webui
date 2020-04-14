@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import {
     HttpClientTestingModule,
-    HttpTestingController
+    HttpTestingController,
 } from '@angular/common/http/testing';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -28,7 +28,7 @@ describe('ErrorHandlingInterceptor', () => {
 
     beforeEach(() => {
         notificationService = jasmine.createSpyObj('NotificationService', [
-            'addErrorNotification'
+            'addErrorNotification',
         ]);
         notificationService.apiError = undefined;
 
@@ -40,15 +40,15 @@ describe('ErrorHandlingInterceptor', () => {
                     provide: HTTP_INTERCEPTORS,
                     useClass: ErrorHandlingInterceptor,
                     deps: [NotificationService, RaidenService],
-                    multi: true
+                    multi: true,
                 },
                 TestProviders.MockRaidenConfigProvider(),
                 {
                     provide: NotificationService,
-                    useValue: notificationService
+                    useValue: notificationService,
                 },
-                TestProviders.AddressBookStubProvider()
-            ]
+                TestProviders.AddressBookStubProvider(),
+            ],
         });
 
         service = TestBed.inject(MockRequestingService);
@@ -62,7 +62,7 @@ describe('ErrorHandlingInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBe(errorMessage);
             }
         );
@@ -70,12 +70,12 @@ describe('ErrorHandlingInterceptor', () => {
         const request = httpMock.expectOne('localhost:5001/api');
 
         const errorBody = {
-            errors: errorMessage
+            errors: errorMessage,
         };
 
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
     });
 
@@ -86,7 +86,7 @@ describe('ErrorHandlingInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBe(errorMessage);
             }
         );
@@ -94,12 +94,15 @@ describe('ErrorHandlingInterceptor', () => {
         const request = httpMock.expectOne('localhost:5001/api');
 
         const errorBody = {
-            errors: ['An Raiden API error occurred.', 'Another error occurred.']
+            errors: [
+                'An Raiden API error occurred.',
+                'Another error occurred.',
+            ],
         };
 
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
     });
 
@@ -110,7 +113,7 @@ describe('ErrorHandlingInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBe(errorMessage);
             }
         );
@@ -118,12 +121,12 @@ describe('ErrorHandlingInterceptor', () => {
         const request = httpMock.expectOne('localhost:5001/api');
 
         const errorBody = {
-            errors: ''
+            errors: '',
         };
 
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
     });
 
@@ -132,7 +135,7 @@ describe('ErrorHandlingInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
@@ -143,7 +146,7 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 504,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -155,7 +158,7 @@ describe('ErrorHandlingInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
@@ -164,7 +167,7 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 0,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -178,7 +181,7 @@ describe('ErrorHandlingInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
@@ -189,7 +192,7 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 504,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -198,7 +201,7 @@ describe('ErrorHandlingInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
@@ -207,7 +210,7 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 504,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -228,7 +231,7 @@ describe('ErrorHandlingInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
@@ -239,7 +242,7 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 504,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -249,7 +252,7 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 200,
-                statusText: ''
+                statusText: '',
             }
         );
 

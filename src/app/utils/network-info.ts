@@ -5,41 +5,41 @@ export class NetworkInfo {
             shortName: 'eth',
             chainId: 1,
             ensSupported: true,
-            faucet: undefined
+            faucet: undefined,
         },
         {
             name: 'Ropsten',
             shortName: 'rop',
             chainId: 3,
             ensSupported: true,
-            faucet: 'https://faucet.ropsten.be/?${ADDRESS}'
+            faucet: 'https://faucet.ropsten.be/?${ADDRESS}',
         },
         {
             name: 'Rinkeby',
             shortName: 'rin',
             chainId: 4,
             ensSupported: true,
-            faucet: 'https://faucet.rinkeby.io/'
+            faucet: 'https://faucet.rinkeby.io/',
         },
         {
             name: 'Görli',
             shortName: 'gor',
             chainId: 5,
             ensSupported: false,
-            faucet: 'https://goerli-faucet.slock.it/?address=${ADDRESS}'
+            faucet: 'https://goerli-faucet.slock.it/?address=${ADDRESS}',
         },
         {
             name: 'Kovan',
             shortName: 'kov',
             chainId: 42,
             ensSupported: false,
-            faucet: 'https://faucet.kovan.network/'
-        }
+            faucet: 'https://faucet.kovan.network/',
+        },
     ];
 
     public static getNetwork(chainId: number): Network {
         const matches = NetworkInfo.known.filter(
-            value => value.chainId === chainId
+            (value) => value.chainId === chainId
         );
         if (matches.length === 0) {
             return {
@@ -47,7 +47,7 @@ export class NetworkInfo {
                 shortName: 'eth',
                 chainId: chainId,
                 ensSupported: false,
-                faucet: undefined
+                faucet: undefined,
             };
         } else {
             return matches[0];

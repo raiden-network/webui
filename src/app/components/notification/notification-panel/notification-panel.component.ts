@@ -3,7 +3,7 @@ import {
     OnInit,
     OnDestroy,
     Output,
-    EventEmitter
+    EventEmitter,
 } from '@angular/core';
 import { NotificationService } from '../../../services/notification.service';
 import { Subject } from 'rxjs';
@@ -15,7 +15,7 @@ import { takeUntil } from 'rxjs/operators';
     selector: 'app-notification-panel',
     templateUrl: './notification-panel.component.html',
     styleUrls: ['./notification-panel.component.css'],
-    animations: Animations.flyInOut
+    animations: Animations.flyInOut,
 })
 export class NotificationPanelComponent implements OnInit, OnDestroy {
     @Output() close: EventEmitter<boolean> = new EventEmitter();

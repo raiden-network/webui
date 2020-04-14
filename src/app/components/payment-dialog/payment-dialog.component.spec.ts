@@ -11,14 +11,14 @@ import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 import {
     PaymentDialogComponent,
-    PaymentDialogPayload
+    PaymentDialogPayload,
 } from './payment-dialog.component';
 import { TestProviders } from '../../../testing/test-providers';
 import {
     mockInput,
     mockOpenMatSelect,
     mockMatSelectFirst,
-    clickElement
+    clickElement,
 } from '../../../testing/interaction-helper';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { of } from 'rxjs';
@@ -26,14 +26,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import {
     ConfirmationDialogComponent,
-    ConfirmationDialogPayload
+    ConfirmationDialogPayload,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { RaidenService } from '../../services/raiden.service';
 import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component';
 import {
     createToken,
     createAddress,
-    createPendingTransfer
+    createPendingTransfer,
 } from '../../../testing/test-data';
 import { stub } from '../../../testing/stub';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -51,8 +51,8 @@ describe('PaymentDialogComponent', () => {
         connected: {
             channels: 5,
             funds: new BigNumber(10),
-            sum_deposits: new BigNumber(50)
-        }
+            sum_deposits: new BigNumber(50),
+        },
     });
     const addressInput = createAddress();
     const amountInput = '10';
@@ -60,7 +60,7 @@ describe('PaymentDialogComponent', () => {
     const identicalPendingTransfer = createPendingTransfer({
         target: addressInput,
         token_address: token.address,
-        locked_amount: new BigNumber(amountInput)
+        locked_amount: new BigNumber(amountInput),
     });
 
     function mockAllInputs() {
@@ -88,7 +88,7 @@ describe('PaymentDialogComponent', () => {
         const payload: PaymentDialogPayload = {
             tokenAddress: '',
             amount: undefined,
-            targetAddress: ''
+            targetAddress: '',
         };
 
         const tokenPollingMock = stub<TokenPollingService>();
@@ -108,7 +108,7 @@ describe('PaymentDialogComponent', () => {
                 TokenInputComponent,
                 AddressInputComponent,
                 TokenNetworkSelectorComponent,
-                RaidenDialogComponent
+                RaidenDialogComponent,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
@@ -119,15 +119,15 @@ describe('PaymentDialogComponent', () => {
                 { provide: TokenPollingService, useValue: tokenPollingMock },
                 {
                     provide: PendingTransferPollingService,
-                    useValue: pendingTransferPollingMock
-                }
+                    useValue: pendingTransferPollingMock,
+                },
             ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
                 ReactiveFormsModule,
-                HttpClientTestingModule
-            ]
+                HttpClientTestingModule,
+            ],
         }).compileComponents();
     }));
 
@@ -160,7 +160,7 @@ describe('PaymentDialogComponent', () => {
         expect(closeSpy).toHaveBeenCalledWith({
             tokenAddress: token.address,
             targetAddress: addressInput,
-            amount: new BigNumber(amountInput)
+            amount: new BigNumber(amountInput),
         });
     });
 
@@ -178,7 +178,7 @@ describe('PaymentDialogComponent', () => {
     it('should open the confirmation dialog if there is an identical payment pending', () => {
         // @ts-ignore
         pendingTransferPollingService.pendingTransfers$ = of([
-            identicalPendingTransfer
+            identicalPendingTransfer,
         ]);
         const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
@@ -191,18 +191,18 @@ describe('PaymentDialogComponent', () => {
 
         const payload: ConfirmationDialogPayload = {
             title: 'Retrying Transfer',
-            message: `There is already a transfer of ${amountInput} ${token.symbol} being sent to ${addressInput}. Are you sure you want to send the same transfer again?`
+            message: `There is already a transfer of ${amountInput} ${token.symbol} being sent to ${addressInput}. Are you sure you want to send the same transfer again?`,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
         expect(close).toHaveBeenCalledTimes(1);
         expect(close).toHaveBeenCalledWith({
             tokenAddress: token.address,
             targetAddress: addressInput,
-            amount: new BigNumber(amountInput)
+            amount: new BigNumber(amountInput),
         });
     });
 
@@ -214,7 +214,7 @@ describe('PaymentDialogComponent', () => {
         addressBookService.get = () => contacts;
         // @ts-ignore
         pendingTransferPollingService.pendingTransfers$ = of([
-            identicalPendingTransfer
+            identicalPendingTransfer,
         ]);
         const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
@@ -225,19 +225,19 @@ describe('PaymentDialogComponent', () => {
 
         const payload: ConfirmationDialogPayload = {
             title: 'Retrying Transfer',
-            message: `There is already a transfer of ${amountInput} ${token.symbol} being sent to Test account ${addressInput}. Are you sure you want to send the same transfer again?`
+            message: `There is already a transfer of ${amountInput} ${token.symbol} being sent to Test account ${addressInput}. Are you sure you want to send the same transfer again?`,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
     });
 
     it('should not close the dialog if confirmation is denied', () => {
         // @ts-ignore
         pendingTransferPollingService.pendingTransfers$ = of([
-            identicalPendingTransfer
+            identicalPendingTransfer,
         ]);
         const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         dialog.cancelled = true;

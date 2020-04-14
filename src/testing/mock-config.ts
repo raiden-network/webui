@@ -18,17 +18,17 @@ class MockWeb3 extends Web3 {
         super(new HttpProvider('http://localhost:8485'));
 
         const mockWeb3 = this;
-        this.eth.getBlockNumber = function() {
+        this.eth.getBlockNumber = function () {
             return Promise.resolve(3694423);
         };
 
         const mockUtils = {
-            checkAddressChecksum: function() {
+            checkAddressChecksum: function () {
                 return mockWeb3.isChecksum;
             },
-            toChecksumAddress: function() {
+            toChecksumAddress: function () {
                 return mockWeb3.checksumAddress;
-            }
+            },
         };
 
         // @ts-ignore
@@ -43,7 +43,7 @@ const mockProvider = {
     web3: new MockWeb3(),
     create(provider: HttpProvider): Web3 {
         return this.web3;
-    }
+    },
 };
 
 const mockNetwork = createNetworkMock();

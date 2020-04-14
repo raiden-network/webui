@@ -11,5 +11,5 @@ export interface ConnectionErrors {
 
 export enum ConnectionErrorType {
     RpcError,
-    ApiError
+    ApiError,
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import makeBlockie from 'ethereum-blockies-base64';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class IdenticonCacheService {
     private cache: { [id: string]: string } = {};

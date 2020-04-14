@@ -4,7 +4,7 @@ import {
     TestBed,
     fakeAsync,
     tick,
-    flush
+    flush,
 } from '@angular/core/testing';
 import { TokenCarouselComponent } from './token-carousel.component';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -14,7 +14,7 @@ import {
     createNetworkMock,
     createTestTokens,
     createAddress,
-    createTestChannels
+    createTestChannels,
 } from '../../../testing/test-data';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -59,31 +59,31 @@ describe('TokenCarouselComponent', () => {
                 TokenCarouselComponent,
                 TokenComponent,
                 DecimalPipe,
-                DisplayDecimalsPipe
+                DisplayDecimalsPipe,
             ],
             providers: [
                 {
                     provide: RaidenService,
-                    useValue: raidenServiceMock
+                    useValue: raidenServiceMock,
                 },
                 ChannelPollingService,
                 {
                     provide: TokenPollingService,
-                    useValue: tokenPollingMock
+                    useValue: tokenPollingMock,
                 },
                 SelectedTokenService,
                 TestProviders.MockMatDialog(),
                 TestProviders.MockRaidenConfigProvider(),
                 SharedService,
-                TestProviders.AddressBookStubProvider()
+                TestProviders.AddressBookStubProvider(),
             ],
             imports: [
                 RaidenIconsModule,
                 MaterialComponentsModule,
                 HttpClientTestingModule,
                 NoopAnimationsModule,
-                ClipboardModule
-            ]
+                ClipboardModule,
+            ],
         }).compileComponents();
     }));
 
@@ -200,7 +200,7 @@ describe('TokenCarouselComponent', () => {
 
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(RegisterDialogComponent, {
-            width: '360px'
+            width: '360px',
         });
         expect(registerSpy).toHaveBeenCalledTimes(1);
         expect(registerSpy).toHaveBeenCalledWith(tokenAddress);

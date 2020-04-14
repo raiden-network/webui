@@ -11,7 +11,7 @@ import { amountToDecimal } from '../utils/amount.converter';
 import { AddressBookService } from './address-book.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class PendingTransferPollingService {
     public readonly pendingTransfers$: Observable<PendingTransfer[]>;
@@ -72,8 +72,8 @@ export class PendingTransferPollingService {
         newPendingTransfers: PendingTransfer[]
     ) {
         const pendingTransfers = newPendingTransfers.filter(
-            newPendingTransfer => {
-                return !oldPendingTransfers.find(oldPendingTransfer =>
+            (newPendingTransfer) => {
+                return !oldPendingTransfers.find((oldPendingTransfer) =>
                     this.isTheSamePendingTransfer(
                         oldPendingTransfer,
                         newPendingTransfer
@@ -100,7 +100,7 @@ export class PendingTransferPollingService {
                     description: `${formattedAmount} ${token.symbol} to ${targetLabel} ${targetAddress}`,
                     icon: 'sent',
                     identiconAddress: targetAddress,
-                    userToken: token
+                    userToken: token,
                 };
             } else {
                 const initiatorAddress = pendingTransfer.initiator;
@@ -115,7 +115,7 @@ export class PendingTransferPollingService {
                     description: `${formattedAmount} ${token.symbol} from ${initiatorLabel} ${initiatorAddress}`,
                     icon: 'received',
                     identiconAddress: initiatorAddress,
-                    userToken: token
+                    userToken: token,
                 };
             }
 
@@ -130,8 +130,8 @@ export class PendingTransferPollingService {
         newPendingTransfers: PendingTransfer[]
     ) {
         const pendingTransfers = oldPendingTransfers.filter(
-            oldPendingTransfer => {
-                return !newPendingTransfers.find(newPendingTransfer => {
+            (oldPendingTransfer) => {
+                return !newPendingTransfers.find((newPendingTransfer) => {
                     const isTheSame = this.isTheSamePendingTransfer(
                         oldPendingTransfer,
                         newPendingTransfer

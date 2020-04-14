@@ -10,7 +10,7 @@ export function backoff(
         refresh$ = EMPTY;
     }
     return pipe(
-        retryWhen(errors =>
+        retryWhen((errors) =>
             errors.pipe(
                 switchMap(() =>
                     merge(timer(milliseconds), refresh$).pipe(first())

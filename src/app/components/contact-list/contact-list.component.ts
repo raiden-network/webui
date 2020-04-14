@@ -3,7 +3,7 @@ import {
     OnInit,
     OnDestroy,
     ViewChild,
-    ElementRef
+    ElementRef,
 } from '@angular/core';
 import { Contact } from '../../models/contact';
 import { AddressBookService } from '../../services/address-book.service';
@@ -26,7 +26,7 @@ import { takeUntil } from 'rxjs/operators';
     selector: 'app-contact-list',
     templateUrl: './contact-list.component.html',
     styleUrls: ['./contact-list.component.css'],
-    animations: Animations.flyInOut
+    animations: Animations.flyInOut,
 })
 export class ContactListComponent implements OnInit, OnDestroy {
     @ViewChild('contact_list', { static: true })
@@ -58,7 +58,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
         this.addressBookService
             .getObservableArray()
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(contacts => {
+            .subscribe((contacts) => {
                 this.contacts = contacts;
                 this.totalContacts = contacts.length;
                 this.updateVisibleContacts();
@@ -66,7 +66,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
         this.sharedService.globalClickTarget$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(target => {
+            .subscribe((target) => {
                 if (
                     !this.contactsElement.nativeElement.contains(target) &&
                     this.dialog.openDialogs.length === 0
@@ -77,7 +77,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
         this.sharedService.searchFilter$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(value => {
+            .subscribe((value) => {
                 this.searchFilter = value;
                 this.updateVisibleContacts();
             });
@@ -110,7 +110,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
     addContact() {
         const dialog = this.dialog.open(AddEditContactDialogComponent, {
             data: { address: '', label: '', edit: false },
-            width: '360px'
+            width: '360px',
         });
 
         dialog.afterClosed().subscribe((result?: Contact) => {
@@ -139,7 +139,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
     }
 
     private updateVisibleContacts() {
-        const filteredContacts = this.contacts.filter(contact =>
+        const filteredContacts = this.contacts.filter((contact) =>
             matchesContact(this.searchFilter, contact)
         );
         this.numberOfFilteredContacts = filteredContacts.length;
@@ -165,7 +165,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
                 this.notificationService.addSuccessNotification({
                     title: 'Contacts import',
                     description: 'successful',
-                    icon: 'info'
+                    icon: 'info',
                 });
             } else {
                 this.showImportError({ invalidFormat: true });
@@ -191,7 +191,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
         this.notificationService.addErrorNotification({
             title: title,
             description: message,
-            icon: 'error-mark'
+            icon: 'error-mark',
         });
     }
 }

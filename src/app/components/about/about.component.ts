@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
     selector: 'app-about',
     templateUrl: './about.component.html',
-    styleUrls: ['./about.component.css']
+    styleUrls: ['./about.component.css'],
 })
 export class AboutComponent implements OnInit, OnDestroy {
     readonly webuiVersion = version;
@@ -22,10 +22,10 @@ export class AboutComponent implements OnInit, OnDestroy {
         this.raidenService
             .getVersion()
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(raidenVersion => (this.raidenVersion = raidenVersion));
+            .subscribe((raidenVersion) => (this.raidenVersion = raidenVersion));
         this.raidenService.network$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(network => (this.networkName = network.name));
+            .subscribe((network) => (this.networkName = network.name));
     }
 
     ngOnDestroy() {

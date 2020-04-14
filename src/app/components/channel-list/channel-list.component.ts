@@ -5,7 +5,7 @@ import {
     ViewChild,
     ElementRef,
     AfterViewInit,
-    HostListener
+    HostListener,
 } from '@angular/core';
 import { Channel } from '../../models/channel';
 import { Subscription, EMPTY, Subject } from 'rxjs';
@@ -15,7 +15,7 @@ import { UserToken } from '../../models/usertoken';
 import {
     OpenDialogPayload,
     OpenDialogResult,
-    OpenDialogComponent
+    OpenDialogComponent,
 } from '../open-dialog/open-dialog.component';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
@@ -33,7 +33,7 @@ import { Contact } from '../../models/contact';
     selector: 'app-channel-list',
     templateUrl: './channel-list.component.html',
     styleUrls: ['./channel-list.component.css'],
-    animations: Animations.stretchInOut
+    animations: Animations.stretchInOut,
 })
 export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('channel_list', { static: true })
@@ -65,9 +65,9 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.channelPollingService
             .channels()
             .pipe(
-                map(channels =>
+                map((channels) =>
                     channels.filter(
-                        channel =>
+                        (channel) =>
                             channel.state === 'opened' ||
                             channel.state === 'waiting_for_open'
                     )
@@ -90,7 +90,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.sharedService.searchFilter$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(value => {
+            .subscribe((value) => {
                 this.searchFilter = value;
                 this.updateVisibleChannels();
             });
@@ -127,12 +127,12 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
         const payload: OpenDialogPayload = {
             tokenAddress: this.selectedToken ? this.selectedToken.address : '',
             revealTimeout: rdnConfig.reveal_timeout,
-            defaultSettleTimeout: rdnConfig.settle_timeout
+            defaultSettleTimeout: rdnConfig.settle_timeout,
         };
 
         const dialog = this.dialog.open(OpenDialogComponent, {
             data: payload,
-            width: '360px'
+            width: '360px',
         });
 
         dialog
@@ -158,7 +158,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private getFilteredChannels(): Channel[] {
-        return this.channels.filter(channel => {
+        return this.channels.filter((channel) => {
             let matchesToken = true;
             if (this.selectedToken) {
                 matchesToken =
@@ -172,7 +172,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
             if (partnerLabel) {
                 const contact: Contact = {
                     address: channel.partner_address,
-                    label: partnerLabel
+                    label: partnerLabel,
                 };
                 contactMatchesSearchFilter = matchesContact(
                     this.searchFilter,

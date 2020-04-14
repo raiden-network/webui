@@ -7,7 +7,7 @@ import { backoff } from '../shared/backoff.operator';
 import { RaidenConfig } from './raiden.config';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class TokenPollingService {
     public readonly tokens$: Observable<UserToken[]>;

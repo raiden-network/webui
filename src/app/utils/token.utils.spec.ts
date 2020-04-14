@@ -12,8 +12,8 @@ describe('TokenUtils', () => {
         connected: {
             funds: new BigNumber(100),
             sum_deposits: new BigNumber(100),
-            channels: 1
-        }
+            channels: 1,
+        },
     };
 
     const connectedToken2: UserToken = {
@@ -25,8 +25,8 @@ describe('TokenUtils', () => {
         connected: {
             funds: new BigNumber(40),
             sum_deposits: new BigNumber(20),
-            channels: 2
-        }
+            channels: 2,
+        },
     };
 
     const unconnectedToken: UserToken = {
@@ -34,7 +34,7 @@ describe('TokenUtils', () => {
         symbol: 'ATT3',
         name: 'Another Test Token3',
         decimals: 0,
-        balance: new BigNumber(0)
+        balance: new BigNumber(0),
     };
 
     it('should give connected token a lower index', () => {

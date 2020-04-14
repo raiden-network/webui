@@ -12,7 +12,7 @@ export interface AddEditContactDialogPayload {
 @Component({
     selector: 'app-add-edit-contact-dialog',
     templateUrl: './add-edit-contact-dialog.component.html',
-    styleUrls: ['./add-edit-contact-dialog.component.css']
+    styleUrls: ['./add-edit-contact-dialog.component.css'],
 })
 export class AddEditContactDialogComponent implements OnInit {
     readonly form: FormGroup;
@@ -26,7 +26,7 @@ export class AddEditContactDialogComponent implements OnInit {
         this.editing = data.edit;
         this.form = this.fb.group({
             address: [data.address, Validators.required],
-            label: [data.label, Validators.required]
+            label: [data.label, Validators.required],
         });
     }
 
@@ -35,7 +35,7 @@ export class AddEditContactDialogComponent implements OnInit {
     accept() {
         const result: Contact = {
             address: this.form.value.address,
-            label: this.form.value.label
+            label: this.form.value.label,
         };
         this.dialogRef.close(result);
     }

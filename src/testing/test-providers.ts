@@ -6,7 +6,7 @@ import { MockConfig } from './mock-config';
 import {
     MAT_DIALOG_DATA,
     MatDialog,
-    MatDialogRef
+    MatDialogRef,
 } from '@angular/material/dialog';
 import { MockMatDialog } from './mock-mat-dialog';
 import { of } from 'rxjs';
@@ -23,35 +23,35 @@ export class TestProviders {
                 addressBookStub.delete = () => {};
                 addressBookStub.store = () => {};
                 return addressBookStub;
-            }
+            },
         };
     }
 
     static MockRaidenConfigProvider(): Provider {
         return {
             provide: RaidenConfig,
-            useClass: MockConfig
+            useClass: MockConfig,
         };
     }
 
     static MockMatDialogData(payload: any = {}): Provider {
         return {
             provide: MAT_DIALOG_DATA,
-            useValue: payload
+            useValue: payload,
         };
     }
 
     static MockMatDialogRef(obj = {}): Provider {
         return {
             provide: MatDialogRef,
-            useValue: obj
+            useValue: obj,
         };
     }
 
     static MockMatDialog() {
         return {
             provide: MatDialog,
-            useClass: MockMatDialog
+            useClass: MockMatDialog,
         };
     }
 }

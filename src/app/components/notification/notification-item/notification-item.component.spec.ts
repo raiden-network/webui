@@ -23,7 +23,7 @@ describe('NotificationItemComponent', () => {
         icon: '',
         timestamp: new Date().toISOString(),
         identiconAddress: createAddress(),
-        userToken: createToken()
+        userToken: createToken(),
     };
 
     beforeEach(async(() => {
@@ -32,14 +32,14 @@ describe('NotificationItemComponent', () => {
             providers: [
                 NoopAnimationsModule,
                 TestProviders.AddressBookStubProvider(),
-                IdenticonCacheService
+                IdenticonCacheService,
             ],
             imports: [
                 MaterialComponentsModule,
                 RaidenIconsModule,
                 ClipboardModule,
-                HttpClientTestingModule
-            ]
+                HttpClientTestingModule,
+            ],
         }).compileComponents();
     }));
 
