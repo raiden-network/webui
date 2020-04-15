@@ -79,9 +79,8 @@ describe('ContactActionsComponent', () => {
             ChannelPollingService
         );
         channelsSubject = new BehaviorSubject(createTestChannels());
-        spyOn(channelPollingService, 'channels').and.returnValue(
-            channelsSubject.asObservable()
-        );
+        // @ts-ignore
+        channelPollingService.channels$ = channelsSubject.asObservable();
         selectedTokenService = TestBed.inject(SelectedTokenService);
         dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         raidenService = TestBed.inject(RaidenService);

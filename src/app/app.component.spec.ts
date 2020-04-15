@@ -62,6 +62,10 @@ describe('AppComponent', () => {
         // @ts-ignore
         paymentHistoryPollingMock.paymentHistory$ = of([]);
 
+        const channelPollingMock = stub<ChannelPollingService>();
+        // @ts-ignore
+        channelPollingMock.channels$ = of([]);
+
         TestBed.configureTestingModule({
             declarations: [
                 AppComponent,
@@ -87,6 +91,10 @@ describe('AppComponent', () => {
                 },
                 NotificationService,
                 ChannelPollingService,
+                {
+                    provide: ChannelPollingService,
+                    useValue: channelPollingMock,
+                },
                 TestProviders.MockMatDialog(),
                 SharedService,
                 TestProviders.AddressBookStubProvider(),
@@ -108,8 +116,6 @@ describe('AppComponent', () => {
 
         notificationService = TestBed.inject(NotificationService);
         dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
-        const channelPollingService = TestBed.inject(ChannelPollingService);
-        spyOn(channelPollingService, 'channels').and.returnValue(of([]));
     });
 
     it('should create the app', () => {

@@ -13,11 +13,12 @@ import { AddressBookService } from './address-book.service';
     providedIn: 'root',
 })
 export class ChannelPollingService {
+    public readonly channels$: Observable<Channel[]>;
+
     private channelsSubject: BehaviorSubject<void> = new BehaviorSubject(null);
     private refreshingSubject: BehaviorSubject<boolean> = new BehaviorSubject<
         boolean
     >(false);
-    private readonly channels$: Observable<Channel[]>;
     private loaded = false;
 
     constructor(
@@ -27,7 +28,7 @@ export class ChannelPollingService {
         private addressBookService: AddressBookService
     ) {
         let timeout;
-        this.channels$ = this.channelsSubject.pipe(
+        const channels$ = this.channelsSubject.pipe(
             tap(() => {
                 clearTimeout(timeout);
                 this.refreshingSubject.next(true);
@@ -47,18 +48,11 @@ export class ChannelPollingService {
             backoff(
                 this.raidenConfig.config.error_poll_interval,
                 this.raidenService.globalRetry$
-            ),
-            shareReplay({ refCount: true, bufferSize: 1 })
+            )
         );
-    }
 
-    public refreshing(): Observable<boolean> {
-        return this.refreshingSubject;
-    }
-
-    public channels(): Observable<Channel[]> {
-        return combineLatest([
-            this.channels$,
+        this.channels$ = combineLatest([
+            channels$,
             this.raidenService.getPendingChannels(),
         ]).pipe(
             map(([channels, pendingChannels]) => {
@@ -78,12 +72,16 @@ export class ChannelPollingService {
         );
     }
 
+    public refreshing(): Observable<boolean> {
+        return this.refreshingSubject;
+    }
+
     public refresh() {
         this.channelsSubject.next(null);
     }
 
     public getChannelUpdates(channel: Channel): Observable<Channel> {
-        return this.channels().pipe(
+        return this.channels$.pipe(
             map((channels) => {
                 const updatedChannel = channels.find((newChannel) =>
                     this.isTheSameChannel(channel, newChannel)

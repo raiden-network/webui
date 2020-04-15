@@ -73,8 +73,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 }
             });
 
-        this.channelPollingService
-            .channels()
+        this.channelPollingService.channels$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe();
 

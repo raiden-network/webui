@@ -79,8 +79,7 @@ export class TokenCarouselComponent
                 this.updateVisibleTokens();
             });
 
-        this.channelPollingService
-            .channels()
+        this.channelPollingService.channels$
             .pipe(
                 map((channels) =>
                     channels.filter(
