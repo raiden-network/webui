@@ -102,7 +102,7 @@ describe('ChannelComponent', () => {
         clickElement(fixture.debugElement, '#deposit');
 
         const payload: DepositWithdrawDialogPayload = {
-            token: token,
+            channel: channel,
             depositMode: DepositMode.DEPOSIT,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
@@ -135,7 +135,7 @@ describe('ChannelComponent', () => {
         clickElement(fixture.debugElement, '#withdraw');
 
         const payload: DepositWithdrawDialogPayload = {
-            token: token,
+            channel: channel,
             depositMode: DepositMode.WITHDRAW,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);

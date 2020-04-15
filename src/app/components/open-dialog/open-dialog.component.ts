@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import { Component, Inject, ViewChild, OnDestroy } from '@angular/core';
 import {
     AbstractControl,
     FormBuilder,
@@ -12,6 +12,9 @@ import { UserToken } from '../../models/usertoken';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import BigNumber from 'bignumber.js';
 import { Animations } from '../../animations/animations';
+import { TokenPollingService } from '../../services/token-polling.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 export interface OpenDialogPayload {
     readonly tokenAddress: string;
@@ -32,17 +35,20 @@ export interface OpenDialogResult {
     styleUrls: ['./open-dialog.component.css'],
     animations: Animations.fallDown,
 })
-export class OpenDialogComponent {
+export class OpenDialogComponent implements OnDestroy {
     @ViewChild(TokenInputComponent, { static: true })
     private tokenInput: TokenInputComponent;
 
     form: FormGroup;
     revealTimeout: number;
 
+    private ngUnsubscribe = new Subject();
+
     constructor(
         @Inject(MAT_DIALOG_DATA) data: OpenDialogPayload,
         private dialogRef: MatDialogRef<OpenDialogComponent>,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private tokenPollingService: TokenPollingService
     ) {
         this.revealTimeout = data.revealTimeout;
         this.form = this.fb.group({
@@ -58,6 +64,11 @@ export class OpenDialogComponent {
                 ],
             ],
         });
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     accept() {
@@ -78,6 +89,17 @@ export class OpenDialogComponent {
 
     tokenNetworkSelected(token: UserToken) {
         this.tokenInput.selectedToken = token;
+        this.subscribeToTokenUpdates(token.address);
+    }
+
+    subscribeToTokenUpdates(tokenAddress: string) {
+        this.ngUnsubscribe.next();
+        this.tokenPollingService
+            .getTokenUpdates(tokenAddress)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((updatedToken: UserToken) => {
+                this.tokenInput.maxAmount = updatedToken.balance;
+            });
     }
 
     private settleTimeoutValidator(): ValidatorFn {

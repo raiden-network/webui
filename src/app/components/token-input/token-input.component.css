@@ -24,11 +24,28 @@
     letter-spacing: 0.35px;
 }
 
-.error {
+.info-box {
     height: 32px;
-    color: #f54b47;
     font-size: 13px;
     line-height: 15px;
     letter-spacing: 0.35px;
-    padding-left: 18px;
+}
+
+.info-box__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 18px;
+}
+
+.info-box__text--error {
+    color: #f54b47;
+}
+
+.info-box__max-button {
+    color: #2c8f94;
+    cursor: pointer;
+}
+
+.info-box__max-button:hover {
+    color: #4aa7ab;
 }

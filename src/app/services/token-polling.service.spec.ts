@@ -5,20 +5,18 @@ import { RaidenService } from './raiden.service';
 import { TestProviders } from '../../testing/test-providers';
 import Spy = jasmine.Spy;
 import { UserToken } from '../models/usertoken';
-import BigNumber from 'bignumber.js';
 import { of } from 'rxjs';
+import { createToken } from '../../testing/test-data';
+import BigNumber from 'bignumber.js';
 
 describe('TokenPollingService', () => {
     let raidenService: RaidenService;
     let tokenSpy: Spy;
 
-    const token: UserToken = {
-        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        symbol: 'TST',
-        name: 'Test Suite Token',
-        decimals: 18,
-        balance: new BigNumber(20),
-    };
+    const token = createToken();
+    const updatedToken = Object.assign({}, token, {
+        balance: new BigNumber(50),
+    });
 
     beforeEach(() =>
         TestBed.configureTestingModule({
@@ -34,8 +32,10 @@ describe('TokenPollingService', () => {
 
     beforeEach(() => {
         raidenService = TestBed.inject(RaidenService);
-        tokenSpy = spyOn(raidenService, 'getTokens').and.returnValue(
-            of([token])
+        tokenSpy = spyOn(raidenService, 'getTokens').and.returnValues(
+            of([token]),
+            of([token]),
+            of([updatedToken])
         );
     });
 
@@ -49,9 +49,11 @@ describe('TokenPollingService', () => {
     it('should refresh the tokens every polling interval', inject(
         [TokenPollingService],
         fakeAsync((service: TokenPollingService) => {
-            const sub = service.tokens$.subscribe((tokens: UserToken[]) => {
-                expect(tokens).toEqual([token]);
-            });
+            const subscription = service.tokens$.subscribe(
+                (tokens: UserToken[]) => {
+                    expect(tokens).toEqual([token]);
+                }
+            );
             expect(tokenSpy).toHaveBeenCalledTimes(1);
             expect(tokenSpy).toHaveBeenCalledWith(true);
 
@@ -60,7 +62,28 @@ describe('TokenPollingService', () => {
             expect(refreshSpy).toHaveBeenCalledTimes(1);
             expect(tokenSpy).toHaveBeenCalledTimes(2);
             expect(tokenSpy).toHaveBeenCalledWith(true);
-            sub.unsubscribe();
+            subscription.unsubscribe();
+            flush();
+        })
+    ));
+
+    it('should get updates for a token', inject(
+        [TokenPollingService],
+        fakeAsync((service: TokenPollingService) => {
+            let emittedTimes = 0;
+            const subscription = service
+                .getTokenUpdates(token.address)
+                .subscribe((newToken) => {
+                    if (emittedTimes < 2) {
+                        expect(newToken).toEqual(token);
+                    } else {
+                        expect(newToken).toEqual(updatedToken);
+                    }
+                    emittedTimes++;
+                });
+
+            tick(10000);
+            subscription.unsubscribe();
             flush();
         })
     ));

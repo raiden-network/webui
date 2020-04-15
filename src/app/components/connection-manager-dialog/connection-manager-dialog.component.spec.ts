@@ -10,7 +10,12 @@ import {
 import { TestProviders } from '../../../testing/test-providers';
 import BigNumber from 'bignumber.js';
 import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component';
-import { mockInput, clickElement } from '../../../testing/interaction-helper';
+import {
+    mockInput,
+    clickElement,
+    mockOpenMatSelect,
+    mockMatSelectFirst,
+} from '../../../testing/interaction-helper';
 import { By } from '@angular/platform-browser';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
@@ -21,6 +26,9 @@ import { MatSelect } from '@angular/material/select';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 import { TokenPollingService } from '../../services/token-polling.service';
+import { of } from 'rxjs';
+import { TokenPipe } from '../../pipes/token.pipe';
+import { stub } from '../../../testing/stub';
 
 describe('ConnectionManagerDialogComponent', () => {
     let component: ConnectionManagerDialogComponent;
@@ -29,6 +37,7 @@ describe('ConnectionManagerDialogComponent', () => {
     const amountInput = '70';
     const token = createToken({
         decimals: 0,
+        balance: new BigNumber(1000),
         connected: {
             channels: 5,
             funds: new BigNumber(10),
@@ -42,6 +51,11 @@ describe('ConnectionManagerDialogComponent', () => {
             token: token,
         };
 
+        const tokenPollingMock = stub<TokenPollingService>();
+        // @ts-ignore
+        tokenPollingMock.tokens$ = of([token]);
+        tokenPollingMock.getTokenUpdates = () => of(token);
+
         TestBed.configureTestingModule({
             declarations: [
                 ConnectionManagerDialogComponent,
@@ -50,12 +64,13 @@ describe('ConnectionManagerDialogComponent', () => {
                 DecimalPipe,
                 DisplayDecimalsPipe,
                 TokenNetworkSelectorComponent,
+                TokenPipe,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
                 TestProviders.MockMatDialogRef({ close: () => {} }),
                 TestProviders.MockRaidenConfigProvider(),
-                TokenPollingService,
+                { provide: TokenPollingService, useValue: tokenPollingMock },
                 TestProviders.AddressBookStubProvider(),
             ],
             imports: [
@@ -72,11 +87,13 @@ describe('ConnectionManagerDialogComponent', () => {
         beforeEach(() => {
             fixture = TestBed.createComponent(ConnectionManagerDialogComponent);
             component = fixture.componentInstance;
+
             fixture.detectChanges();
         });
 
         it('should be created', () => {
             expect(component).toBeTruthy();
+            fixture.destroy();
         });
 
         it('should close the dialog with the result when accept button is clicked', () => {
@@ -115,6 +132,15 @@ describe('ConnectionManagerDialogComponent', () => {
             expect(closeSpy).toHaveBeenCalledTimes(1);
             expect(closeSpy).toHaveBeenCalledWith();
         });
+
+        it('should set the maximum token amount to the balance', () => {
+            const tokenInputComponent: TokenInputComponent = fixture.debugElement.query(
+                By.directive(TokenInputComponent)
+            ).componentInstance;
+            expect(tokenInputComponent.maxAmount.isEqualTo(token.balance)).toBe(
+                true
+            );
+        });
     });
 
     describe('without token payload', () => {
@@ -135,6 +161,28 @@ describe('ConnectionManagerDialogComponent', () => {
             );
             expect(selector).toBeTruthy();
             expect(component.form.value.token).toBeFalsy();
+        });
+
+        it('should not set the maximum token amount by default', () => {
+            const tokenInputComponent: TokenInputComponent = fixture.debugElement.query(
+                By.directive(TokenInputComponent)
+            ).componentInstance;
+            expect(tokenInputComponent.maxAmount).toBeUndefined();
+        });
+
+        it('should set the maximum token amount after token selection', () => {
+            const networkSelectorElement = fixture.debugElement.query(
+                By.directive(TokenNetworkSelectorComponent)
+            );
+            mockOpenMatSelect(networkSelectorElement);
+            fixture.detectChanges();
+            mockMatSelectFirst(fixture.debugElement);
+            fixture.detectChanges();
+
+            const tokenInputComponent: TokenInputComponent = fixture.debugElement.query(
+                By.directive(TokenInputComponent)
+            ).componentInstance;
+            expect(tokenInputComponent.maxAmount.isEqualTo(1000)).toBe(true);
         });
     });
 });

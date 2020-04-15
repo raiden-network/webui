@@ -26,6 +26,8 @@ import { TokenPollingService } from '../../services/token-polling.service';
 import { stub } from '../../../testing/stub';
 import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component';
 import { of } from 'rxjs';
+import { DecimalPipe } from '../../pipes/decimal.pipe';
+import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 
 describe('OpenDialogComponent', () => {
     let component: OpenDialogComponent;
@@ -33,6 +35,7 @@ describe('OpenDialogComponent', () => {
 
     const token = createToken({
         decimals: 0,
+        balance: new BigNumber(1000),
     });
     const addressInput = createAddress();
     const amountInput = '500';
@@ -70,6 +73,7 @@ describe('OpenDialogComponent', () => {
         const tokenPollingMock = stub<TokenPollingService>();
         // @ts-ignore
         tokenPollingMock.tokens$ = of([token]);
+        tokenPollingMock.getTokenUpdates = () => of(token);
 
         TestBed.configureTestingModule({
             declarations: [
@@ -79,6 +83,8 @@ describe('OpenDialogComponent', () => {
                 AddressInputComponent,
                 TokenNetworkSelectorComponent,
                 RaidenDialogComponent,
+                DecimalPipe,
+                DisplayDecimalsPipe,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
@@ -109,6 +115,7 @@ describe('OpenDialogComponent', () => {
 
     it('should be created', () => {
         expect(component).toBeTruthy();
+        fixture.destroy();
     });
 
     it('should close the dialog with the result when accept button is clicked', () => {
@@ -136,6 +143,15 @@ describe('OpenDialogComponent', () => {
 
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith();
+    });
+
+    it('should set the maximum token amount to the balance', () => {
+        const tokenInputComponent: TokenInputComponent = fixture.debugElement.query(
+            By.directive(TokenInputComponent)
+        ).componentInstance;
+        expect(tokenInputComponent.maxAmount.isEqualTo(token.balance)).toBe(
+            true
+        );
     });
 
     describe('settle timeout input', () => {

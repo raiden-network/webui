@@ -82,6 +82,17 @@ export class ChannelPollingService {
         this.channelsSubject.next(null);
     }
 
+    public getChannelUpdates(channel: Channel): Observable<Channel> {
+        return this.channels().pipe(
+            map((channels) => {
+                const updatedChannel = channels.find((newChannel) =>
+                    this.isTheSameChannel(channel, newChannel)
+                );
+                return updatedChannel;
+            })
+        );
+    }
+
     private checkForNewChannels(
         oldChannels: Channel[],
         newChannels: Channel[]

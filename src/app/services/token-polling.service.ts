@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { RaidenService } from './raiden.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserToken } from '../models/usertoken';
-import { tap, switchMap, shareReplay, startWith } from 'rxjs/operators';
+import { tap, switchMap, shareReplay, startWith, map } from 'rxjs/operators';
 import { backoff } from '../shared/backoff.operator';
 import { RaidenConfig } from './raiden.config';
 
@@ -50,5 +50,16 @@ export class TokenPollingService {
 
     public refresh() {
         this.tokensSubject.next(null);
+    }
+
+    public getTokenUpdates(tokenAddress: string): Observable<UserToken> {
+        return this.tokens$.pipe(
+            map((tokens) => {
+                const updatedToken = tokens.find(
+                    (newToken) => tokenAddress === newToken.address
+                );
+                return updatedToken;
+            })
+        );
     }
 }

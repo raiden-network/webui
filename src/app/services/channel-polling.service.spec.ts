@@ -156,4 +156,26 @@ describe('ChannelPollingService', () => {
             expect(channels).toEqual([channel1Updated, channel2]);
         });
     });
+
+    it('should get updates for a channel', fakeAsync(() => {
+        raidenServiceSpy.and.returnValues(
+            of([channel1]),
+            of([channel1Updated])
+        );
+        let emittedTimes = 0;
+        const subscription = pollingService
+            .getChannelUpdates(channel1)
+            .subscribe((newChannel) => {
+                if (emittedTimes < 1) {
+                    expect(newChannel).toEqual(channel1);
+                } else {
+                    expect(newChannel).toEqual(channel1Updated);
+                }
+                emittedTimes++;
+            });
+
+        tick(5000);
+        subscription.unsubscribe();
+        flush();
+    }));
 });
