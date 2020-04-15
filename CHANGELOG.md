@@ -11,6 +11,7 @@
 - [#239] Adds a QR code overlay for the user address.
 - [#238] Search functionality for filtering tokens, channels, contacts and transfer history.
 - [#270] Add a contact for a new address from the transfer and open channel dialogs.
+- [#186] Shows the available tokens in the deposit/withdraw, open channel and quick connect dialogs.
 
 ### Fixed
 - [#138] Fixes the decimals of token amount inputs to not get cut off on Firefox.
@@ -166,6 +167,7 @@ token network.
 [#194]: https://github.com/raiden-network/webui/issues/194
 [#190]: https://github.com/raiden-network/webui/issues/190
 [#189]: https://github.com/raiden-network/webui/issues/189
+[#186]: https://github.com/raiden-network/webui/issues/186
 [#184]: https://github.com/raiden-network/webui/issues/184
 [#181]: https://github.com/raiden-network/webui/issues/181
 [#179]: https://github.com/raiden-network/webui/issues/179
