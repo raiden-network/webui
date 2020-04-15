@@ -54,6 +54,10 @@ describe('TokenCarouselComponent', () => {
         tokenPollingMock.tokens$ = of(tokens);
         tokenPollingMock.refresh = () => {};
 
+        const channelPollingMock = stub<ChannelPollingService>();
+        // @ts-ignore
+        channelPollingMock.channels$ = of(createTestChannels(1, tokens[0]));
+
         TestBed.configureTestingModule({
             declarations: [
                 TokenCarouselComponent,
@@ -66,7 +70,10 @@ describe('TokenCarouselComponent', () => {
                     provide: RaidenService,
                     useValue: raidenServiceMock,
                 },
-                ChannelPollingService,
+                {
+                    provide: ChannelPollingService,
+                    useValue: channelPollingMock,
+                },
                 {
                     provide: TokenPollingService,
                     useValue: tokenPollingMock,
@@ -90,12 +97,6 @@ describe('TokenCarouselComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(TokenCarouselComponent);
         component = fixture.componentInstance;
-
-        const channelPollingService = TestBed.inject(ChannelPollingService);
-        spyOn(channelPollingService, 'channels').and.returnValue(
-            of(createTestChannels(1, tokens[0]))
-        );
-
         fixture.detectChanges();
     });
 

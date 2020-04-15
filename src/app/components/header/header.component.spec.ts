@@ -52,6 +52,10 @@ describe('HeaderComponent', () => {
         // @ts-ignore
         tokenPollingMock.tokens$ = of(tokens);
 
+        const channelPollingMock = stub<ChannelPollingService>();
+        // @ts-ignore
+        channelPollingMock.channels$ = of(channels);
+
         TestBed.configureTestingModule({
             declarations: [
                 HeaderComponent,
@@ -61,7 +65,10 @@ describe('HeaderComponent', () => {
             ],
             providers: [
                 NotificationService,
-                ChannelPollingService,
+                {
+                    provide: ChannelPollingService,
+                    useValue: channelPollingMock,
+                },
                 { provide: RaidenService, useValue: raidenServiceMock },
                 { provide: TokenPollingService, useValue: tokenPollingMock },
                 TestProviders.MockRaidenConfigProvider(),
@@ -80,11 +87,7 @@ describe('HeaderComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(HeaderComponent);
         component = fixture.componentInstance;
-
-        const channelPollingService = TestBed.inject(ChannelPollingService);
         notificationService = TestBed.inject(NotificationService);
-
-        spyOn(channelPollingService, 'channels').and.returnValue(of(channels));
         fixture.detectChanges();
     });
 

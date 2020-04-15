@@ -62,8 +62,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {}
 
     ngOnInit() {
-        this.channelPollingService
-            .channels()
+        this.channelPollingService.channels$
             .pipe(
                 map((channels) =>
                     channels.filter(

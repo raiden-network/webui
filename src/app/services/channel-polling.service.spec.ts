@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
-import { from, of } from 'rxjs';
+import { from, of, BehaviorSubject } from 'rxjs';
 import { Channel } from '../models/channel';
 import { ChannelPollingService } from './channel-polling.service';
 import { RaidenService } from './raiden.service';
@@ -28,6 +28,7 @@ describe('ChannelPollingService', () => {
     let notificationService: NotificationService;
     let raidenService: RaidenService;
     let raidenServiceSpy: Spy;
+    const pendingChannelsSubject = new BehaviorSubject<Channel[]>([]);
 
     const token = createToken();
     const token2 = createToken({
@@ -52,6 +53,10 @@ describe('ChannelPollingService', () => {
         });
 
         raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'getPendingChannels').and.returnValue(
+            pendingChannelsSubject.asObservable()
+        );
+
         notificationService = TestBed.inject(NotificationService);
         pollingService = TestBed.inject(ChannelPollingService);
 
@@ -68,7 +73,7 @@ describe('ChannelPollingService', () => {
 
     it('should not send notification about channel the first time loading the channels', fakeAsync(() => {
         raidenServiceSpy.and.returnValues(from([[channel1], [channel1]]));
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             0
         );
@@ -86,7 +91,7 @@ describe('ChannelPollingService', () => {
         raidenServiceSpy.and.returnValues(
             from([[], [], [channel1], [channel1]])
         );
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
         tick();
 
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
@@ -100,7 +105,7 @@ describe('ChannelPollingService', () => {
         raidenServiceSpy.and.returnValues(
             from([[], [channel1], [channel1, channel2]])
         );
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
 
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             2
@@ -115,7 +120,7 @@ describe('ChannelPollingService', () => {
 
     it('should not show a notification if no new channels are detected', fakeAsync(() => {
         raidenServiceSpy.and.returnValues(from([[channel1], [channel1]]));
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             0
         );
@@ -127,7 +132,7 @@ describe('ChannelPollingService', () => {
         raidenServiceSpy.and.returnValues(
             from([[channel1, channel2], [channel1]])
         );
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             0
         );
@@ -139,7 +144,7 @@ describe('ChannelPollingService', () => {
         raidenServiceSpy.and.returnValues(
             from([[channel1, channel1Network2], [channel1Network2]])
         );
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             0
         );
@@ -149,10 +154,8 @@ describe('ChannelPollingService', () => {
 
     it('should respond with pending channels', () => {
         raidenServiceSpy.and.returnValue(of([channel1Updated]));
-        spyOn(raidenService, 'getPendingChannels').and.returnValue(
-            of([channel1, channel2])
-        );
-        pollingService.channels().subscribe((channels: Channel[]) => {
+        pendingChannelsSubject.next([channel1, channel2]);
+        pollingService.channels$.subscribe((channels: Channel[]) => {
             expect(channels).toEqual([channel1Updated, channel2]);
         });
     });

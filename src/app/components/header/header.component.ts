@@ -53,8 +53,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((address) => (this.raidenAddress = address));
 
-        this.channelPollingService
-            .channels()
+        this.channelPollingService.channels$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((channels: Channel[]) => {
                 const openChannels = channels.filter((channel) => {

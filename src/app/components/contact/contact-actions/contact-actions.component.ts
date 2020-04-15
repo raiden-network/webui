@@ -58,8 +58,7 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
                 this.selectedToken = token;
             });
 
-        this.channelPollingService
-            .channels()
+        this.channelPollingService.channels$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((channels) => {
                 const openChannels = channels.filter(
