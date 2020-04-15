@@ -7,9 +7,11 @@ import {
     ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
 import { TokenInputComponent } from './token-input.component';
-import { TestProviders } from '../../../testing/test-providers';
-import { mockInput } from '../../../testing/interaction-helper';
+import { mockInput, clickElement } from '../../../testing/interaction-helper';
 import { createToken } from '../../../testing/test-data';
+import BigNumber from 'bignumber.js';
+import { DecimalPipe } from '../../pipes/decimal.pipe';
+import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 
 describe('TokenInputComponent', () => {
     let component: TokenInputComponent;
@@ -20,7 +22,11 @@ describe('TokenInputComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [TokenInputComponent],
+            declarations: [
+                TokenInputComponent,
+                DecimalPipe,
+                DisplayDecimalsPipe,
+            ],
             providers: [
                 {
                     provide: ErrorStateMatcher,
@@ -128,5 +134,31 @@ describe('TokenInputComponent', () => {
 
         expect(input.value).toBe('');
         expect(component.amount.isNaN()).toBe(true);
+    });
+
+    it('should show the available token amount', () => {
+        component.maxAmount = new BigNumber(7000000000000000);
+        fixture.detectChanges();
+        const maxAmountText = fixture.debugElement.query(By.css('#max-amount'));
+        expect(maxAmountText.nativeElement.innerText.trim()).toBe('0.007');
+    });
+
+    it('should show error when input value is greater than max amount', () => {
+        component.maxAmount = new BigNumber(7000000000000000);
+        mockInput(fixture.debugElement, 'input', '0.008');
+        fixture.detectChanges();
+
+        expect(component.errors['insufficientFunds']).toBe(true);
+    });
+
+    it('should set the input value to the max amount', () => {
+        component.maxAmount = new BigNumber(7000000000000000);
+        fixture.detectChanges();
+        clickElement(fixture.debugElement, '.info-box__max-button');
+        fixture.detectChanges();
+
+        expect(input.value).toBe('0.007');
+        expect(component.amount.isEqualTo(7000000000000000)).toBe(true);
+        expect(component.errors).toBeFalsy();
     });
 });

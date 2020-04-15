@@ -95,7 +95,7 @@ export class ChannelComponent implements OnInit {
 
     private openDeposit(depositMode: DepositMode) {
         const payload: DepositWithdrawDialogPayload = {
-            token: this.channel.userToken,
+            channel: this.channel,
             depositMode: depositMode,
         };
 

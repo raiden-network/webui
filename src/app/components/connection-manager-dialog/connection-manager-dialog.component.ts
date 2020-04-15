@@ -1,9 +1,12 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import BigNumber from 'bignumber.js';
 import { UserToken } from '../../models/usertoken';
+import { Subject } from 'rxjs';
+import { takeUntil, map } from 'rxjs/operators';
+import { TokenPollingService } from '../../services/token-polling.service';
 
 export interface ConnectionManagerDialogPayload {
     token: UserToken;
@@ -15,7 +18,7 @@ export interface ConnectionManagerDialogPayload {
     templateUrl: './connection-manager-dialog.component.html',
     styleUrls: ['./connection-manager-dialog.component.css'],
 })
-export class ConnectionManagerDialogComponent implements OnInit {
+export class ConnectionManagerDialogComponent implements OnInit, OnDestroy {
     @ViewChild(TokenInputComponent, { static: true })
     private tokenInput: TokenInputComponent;
 
@@ -25,10 +28,13 @@ export class ConnectionManagerDialogComponent implements OnInit {
     });
     initiatedWithoutToken = false;
 
+    private ngUnsubscribe = new Subject();
+
     constructor(
         @Inject(MAT_DIALOG_DATA) private data: ConnectionManagerDialogPayload,
         private dialogRef: MatDialogRef<ConnectionManagerDialogComponent>,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private tokenPollingService: TokenPollingService
     ) {
         this.initiatedWithoutToken = !data.token;
     }
@@ -39,9 +45,25 @@ export class ConnectionManagerDialogComponent implements OnInit {
         }
     }
 
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
+
     tokenNetworkSelected(token: UserToken) {
         this.form.get('token').setValue(token);
         this.tokenInput.selectedToken = token;
+        this.subscribeToTokenUpdates(token.address);
+    }
+
+    subscribeToTokenUpdates(tokenAddress: string) {
+        this.ngUnsubscribe.next();
+        this.tokenPollingService
+            .getTokenUpdates(tokenAddress)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((updatedToken: UserToken) => {
+                this.tokenInput.maxAmount = updatedToken.balance;
+            });
     }
 
     accept() {

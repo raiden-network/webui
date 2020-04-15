@@ -11,7 +11,7 @@
     />
 
     <div class="input__symbol">
-        {{ token?.symbol }}
+        {{ selectedToken?.symbol }}
     </div>
 
     <mat-icon
@@ -23,21 +23,57 @@
     </mat-icon>
 </div>
 
-<div class="error" fxLayout="column" fxLayoutAlign="center">
-    <span
-        *ngIf="errors && touched && input.value.length > 0"
-        [@fallDown]="'in'"
-        id="errors"
+<div class="info-box" fxLayout="row" fxLayoutAlign="start center">
+    <div fxFlex="1 0 226px">
+        <div
+            *ngIf="errors && touched && input.value.length > 0; else hint_text"
+            [@fallDown]="'in'"
+            id="errors"
+            class="info-box__text info-box__text--error"
+        >
+            <span *ngIf="errors['zeroAmount']">
+                The amount should be greater than 0
+            </span>
+            <span *ngIf="errors['tooManyDecimals'] && selectedToken">
+                The selected token network only supports up to
+                {{ decimals }} decimals
+            </span>
+            <span *ngIf="errors['notANumber']">
+                The amount should be a valid number
+            </span>
+            <span *ngIf="errors['insufficientFunds']">
+                There are only
+                <span
+                    *ngIf="maxAmount | decimal: selectedToken.decimals as max"
+                >
+                    <span [matTooltip]="max">
+                        {{ max | displayDecimals: 3 }}
+                    </span>
+                    {{ selectedToken?.symbol }} available
+                </span>
+            </span>
+        </div>
+        <ng-template #hint_text>
+            <div *ngIf="maxAmount && selectedToken" class="info-box__text">
+                <span
+                    *ngIf="maxAmount | decimal: selectedToken.decimals as max"
+                    [matTooltip]="max"
+                    id="max-amount"
+                >
+                    {{ max | displayDecimals: 3 }}
+                </span>
+                {{ selectedToken?.symbol }} available
+            </div>
+        </ng-template>
+    </div>
+
+    <div
+        *ngIf="maxAmount && selectedToken"
+        fxFlex="0 0 80px"
+        fxLayoutAlign="center"
     >
-        <span *ngIf="errors['zeroAmount']">
-            The amount should be greater than 0
+        <span class="info-box__max-button" (click)="setAmountToMax()">
+            Max
         </span>
-        <span *ngIf="errors['tooManyDecimals'] && token">
-            The selected token network only supports up to
-            {{ decimals }} decimals
-        </span>
-        <span *ngIf="errors['notANumber']">
-            The amount should be a valid number
-        </span>
-    </span>
+    </div>
 </div>

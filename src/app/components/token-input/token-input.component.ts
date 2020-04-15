@@ -14,7 +14,10 @@ import {
     NG_VALIDATORS,
 } from '@angular/forms';
 import { BigNumber } from 'bignumber.js';
-import { amountFromDecimal } from '../../utils/amount.converter';
+import {
+    amountFromDecimal,
+    amountToDecimal,
+} from '../../utils/amount.converter';
 import { UserToken } from '../../models/usertoken';
 import { Animations } from '../../animations/animations';
 
@@ -42,22 +45,36 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     @Input() placeholder = 'Amount';
     @ViewChild('input', { static: true }) private inputElement: ElementRef;
 
-    token: UserToken;
     amount: BigNumber;
     errors: ValidationErrors = { empty: true };
     touched = false;
 
+    private _selectedToken: UserToken;
+    private _maxAmount: BigNumber;
     private propagateTouched = () => {};
     private propagateChange = (amount: BigNumber) => {};
 
     constructor() {}
 
     get decimals(): number {
-        return this.token ? this.token.decimals : 0;
+        return this._selectedToken ? this._selectedToken.decimals : 0;
+    }
+
+    get selectedToken(): UserToken {
+        return this._selectedToken;
+    }
+
+    get maxAmount(): BigNumber {
+        return this._maxAmount;
     }
 
     set selectedToken(value: UserToken) {
-        this.token = value;
+        this._selectedToken = value;
+        this.setAmount();
+    }
+
+    set maxAmount(value: BigNumber) {
+        this._maxAmount = value;
         this.setAmount();
     }
 
@@ -90,25 +107,40 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         this.propagateTouched();
     }
 
+    setAmountToMax() {
+        const max = amountToDecimal(this.maxAmount, this.decimals).toFixed();
+        this.inputElement.nativeElement.value = max;
+        this.onTouched();
+        this.onChange();
+    }
+
     private setAmount() {
-        const amount = new BigNumber(this.inputElement.nativeElement.value);
-        if (!BigNumber.isBigNumber(amount) || amount.isNaN()) {
+        const decimalAmount = new BigNumber(
+            this.inputElement.nativeElement.value
+        );
+        const amount = amountFromDecimal(decimalAmount, this.decimals);
+
+        if (!BigNumber.isBigNumber(decimalAmount) || decimalAmount.isNaN()) {
             this.errors = {
                 notANumber: true,
             };
-        } else if (!this.allowZero && amount.isZero()) {
+        } else if (!this.allowZero && decimalAmount.isZero()) {
             this.errors = {
                 zeroAmount: true,
             };
-        } else if (amount.decimalPlaces() > this.decimals) {
+        } else if (decimalAmount.decimalPlaces() > this.decimals) {
             this.errors = {
                 tooManyDecimals: true,
+            };
+        } else if (this.maxAmount && amount.isGreaterThan(this.maxAmount)) {
+            this.errors = {
+                insufficientFunds: true,
             };
         } else {
             this.errors = undefined;
         }
 
-        this.amount = amountFromDecimal(amount, this.decimals);
+        this.amount = amount;
         this.propagateChange(this.amount);
     }
 }
