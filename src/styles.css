@@ -116,8 +116,11 @@ body {
     font-size: 13px !important;
     line-height: 15px !important;
     font-weight: 400 !important;
-    border-radius: 20px !important;
+    border-radius: 5px !important;
     padding: 10px 15px !important;
+    background-color: #363636 !important;
+    max-width: 350px !important;
+    white-space: pre-line !important;
 }
 
 .mat-menu-panel {
@@ -208,4 +211,8 @@ input:focus {
 
 .toast-container {
     min-width: 300px;
+}
+
+a {
+    outline: none;
 }

@@ -1,57 +1,57 @@
 .header {
-    height: 53px;
+    min-height: 64px;
     color: #b8b8b8;
-    font-size: 41px;
-    line-height: 32px;
-    font-weight: 300;
-    padding: 0;
-    margin-bottom: 16px;
-}
-
-.header--secondary {
-    height: 66px !important;
-    border-top: 1px solid rgba(151, 151, 151, 0.11);
+    font-size: 11px;
+    line-height: 19px;
+    letter-spacing: 0.91px;
+    margin-bottom: 121px;
 }
 
 .header__logo {
-    height: 44px;
+    height: 52px;
+    margin-right: 32px;
 }
 
 .header__logo-mobile {
-    height: 25px;
-}
-
-.header__number {
-    text-transform: uppercase;
-    margin-bottom: 8px;
+    height: 26px;
 }
 
 .header__label {
     text-transform: uppercase;
-    letter-spacing: 0.91px;
-    font-size: 11px;
-    opacity: 0.5;
-    line-height: 13px;
-    font-weight: 400;
 }
 
-.header__account-button {
-    height: 38px;
-    width: 118px;
+.header__label--secondary {
+    opacity: 0.5;
+}
+
+.header__alert-box {
+    background-color: #4e4e4e;
+    border-radius: 7.24px;
+    height: 19px;
+    width: 104.5px;
+    text-align: center;
 }
 
 .header__address {
+    width: 164px;
     font-size: 13px;
     letter-spacing: 1.07px;
-    line-height: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header__icon-button {
+    border: 1px solid #b8b8b8;
 }
 
 .header__icon {
-    height: 20px;
-    width: 20px;
-    line-height: 20px;
+    height: 18px !important;
+    width: 18px !important;
 }
 
-.header__link {
-    outline: none;
+.header__notification-icon {
+    height: 22px !important;
+    width: 22px !important;
+    color: #4e4e4e;
 }

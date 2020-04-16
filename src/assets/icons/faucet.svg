@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="18px" height="15px" viewBox="0 0 18 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
-    <desc>Created with Sketch.</desc>
-    <g id="UI" stroke="none" stroke-width="1" fill-rule="evenodd">
-        <g id="191219-WebUI-Skeleton-SSS" transform="translate(-717.000000, -213.000000)">
-            <g id="eth-balance" transform="translate(101.000000, 95.000000)">
-                <g id="hide-top-up-view" transform="translate(62.000000, 5.000000)">
-                    <g id="icon-faucet" transform="translate(563.000000, 120.263889) scale(1, -1) translate(-563.000000, -120.263889) translate(554.000000, 112.763889)">
-                        <circle id="Oval" cx="1.41092621" cy="3.22819917" r="1.41092621"></circle>
-                        <circle id="Oval" cx="2.00915893" cy="9.5378612" r="1.41092621"></circle>
-                        <circle id="Oval" cx="15.9039603" cy="3.22819917" r="1.41092621"></circle>
-                        <circle id="Oval" cx="14.7413571" cy="9.5378612" r="1.41092621"></circle>
-                        <g id=",iddle" transform="translate(6.964332, -0.000000)">
-                            <circle id="Oval" cx="1.41092621" cy="1.41092621" r="1.41092621"></circle>
-                            <circle id="Oval" cx="1.41092621" cy="6.96433179" r="1.41092621"></circle>
-                            <circle id="Oval" cx="1.41092621" cy="12.6531863" r="1.41092621"></circle>
-                        </g>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 64 (101010) - https://sketch.com -->
+    <desc>Created with sketchtool.</desc>
+    <g id="Skeleton" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="dashboard-new-header" transform="translate(-817.000000, -90.000000)">
+            <g id="faucet" transform="translate(810.000000, 83.000000)">
+                <g id="icon-faucet" transform="translate(15.250000, 14.763889) scale(1, -1) translate(-15.250000, -14.763889) translate(7.750000, 6.763889)">
+                    <circle id="Oval" cx="1.42801202" cy="3.22819917" r="1.41092621"></circle>
+                    <circle id="Oval" cx="2.83893824" cy="9.5378612" r="1.41092621"></circle>
+                    <circle id="Oval" cx="13.2523285" cy="3.22819917" r="1.41092621"></circle>
+                    <circle id="Oval" cx="12.0897253" cy="9.5378612" r="1.41092621"></circle>
+                    <g id=",iddle" transform="translate(5.964332, 0.000000)">
+                        <circle id="Oval" cx="1.41092621" cy="1.41092621" r="1.41092621"></circle>
+                        <circle id="Oval" cx="1.41092621" cy="6.96433179" r="1.41092621"></circle>
+                        <circle id="Oval" cx="1.41092621" cy="13.6531863" r="1.41092621"></circle>
                     </g>
                 </g>
             </g>
