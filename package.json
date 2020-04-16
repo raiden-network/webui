@@ -64,7 +64,7 @@
     "node-sass": "^4.13.1",
     "prettier": "2.0.4",
     "protractor": "^5.4.3",
-    "rxjs-tslint": "^0.1.7",
+    "rxjs-tslint": "^0.1.8",
     "ts-node": "~8.8.2",
     "tslint": "^5.20.1",
     "tslint-plugin-prettier": "^2.3.0",
