@@ -33,8 +33,8 @@ describe('HeaderComponent', () => {
 
     let notificationService: NotificationService;
     let networkSubject: BehaviorSubject<Network>;
+    let balanceSubject: BehaviorSubject<string>;
     const raidenAddress = createAddress();
-    const balance = '10.123456789';
     const channels = createTestChannels();
     const tokens = createTestTokens();
 
@@ -45,8 +45,9 @@ describe('HeaderComponent', () => {
         raidenServiceMock.network$ = networkSubject.asObservable();
         // @ts-ignore
         raidenServiceMock.raidenAddress$ = of(raidenAddress);
+        balanceSubject = new BehaviorSubject('10.123456789');
         // @ts-ignore
-        raidenServiceMock.balance$ = of(balance);
+        raidenServiceMock.balance$ = balanceSubject.asObservable();
 
         const tokenPollingMock = stub<TokenPollingService>();
         // @ts-ignore
@@ -97,35 +98,29 @@ describe('HeaderComponent', () => {
     });
 
     it('should have a faucet button when network has a faucet', () => {
-        clickElement(fixture.debugElement, '.header__account-button');
-        fixture.detectChanges();
         expect(
-            fixture.debugElement.query(By.css('.header__faucet'))
+            fixture.debugElement.query(By.css('#faucet-button'))
         ).toBeTruthy();
     });
 
     it('should not have a faucet button when network does not have a faucet', () => {
         networkSubject.next(createNetworkMock({ faucet: null }));
         fixture.detectChanges();
-        clickElement(fixture.debugElement, '.header__account-button');
-        fixture.detectChanges();
         expect(
-            fixture.debugElement.query(By.css('.header__faucet'))
+            fixture.debugElement.query(By.css('#faucet-button'))
         ).toBeFalsy();
     });
 
     it('should insert the address correctly into the href attribute of the faucet button', () => {
-        clickElement(fixture.debugElement, '.header__account-button');
-        fixture.detectChanges();
         const href = fixture.debugElement
-            .query(By.css('.header__faucet'))
+            .query(By.css('#faucet-button'))
             .nativeElement.getAttribute('href');
         expect(href).toBe(`http://faucet.test/?${raidenAddress}`);
     });
 
     it('should toggle the notification panel', () => {
         const toggleSpy = spyOn(notificationService, 'toggleSidenav');
-        clickElement(fixture.debugElement, '#notification_button');
+        clickElement(fixture.debugElement, '#notification-button');
         expect(toggleSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -133,9 +128,7 @@ describe('HeaderComponent', () => {
         const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open');
 
-        clickElement(fixture.debugElement, '.header__account-button');
-        fixture.detectChanges();
-        clickElement(fixture.debugElement, '.header__qr-code');
+        clickElement(fixture.debugElement, '#qr-button');
         fixture.detectChanges();
 
         const payload: QrCodePayload = {
@@ -146,5 +139,19 @@ describe('HeaderComponent', () => {
             data: payload,
             width: '360px',
         });
+    });
+
+    it('should show a warning if balance is zero', () => {
+        balanceSubject.next('0');
+        fixture.detectChanges();
+        expect(
+            fixture.debugElement.query(By.css('.header__alert-box'))
+        ).toBeTruthy();
+    });
+
+    it('should not show a warning if balance is greater than zero', () => {
+        expect(
+            fixture.debugElement.query(By.css('.header__alert-box'))
+        ).toBeFalsy();
     });
 });

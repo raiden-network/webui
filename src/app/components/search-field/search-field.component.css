@@ -14,7 +14,6 @@
     width: 17px;
     line-height: 17px;
     font-size: 17px;
-    opacity: 0.5;
 }
 
 .reset-button {
@@ -28,12 +27,11 @@
     width: 14px !important;
     line-height: 14px !important;
     font-size: 14px !important;
-    opacity: 0.5;
 }
 
 .search__input {
     width: 106px;
-    height: 32px;
+    height: 30px;
     padding-left: 53px;
     padding-right: 46px;
     background: none;
