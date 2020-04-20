@@ -205,6 +205,16 @@ body {
     height: 32px !important;
 }
 
+.mat-badge-content {
+    background-color: #2c8f94 !important;
+    font-weight: 500 !important;
+    color: #ffffff !important;
+    font-size: 13px !important;
+    line-height: 19px !important;
+    height: 19px !important;
+    width: 19px !important;
+}
+
 input:focus {
     outline: none;
 }

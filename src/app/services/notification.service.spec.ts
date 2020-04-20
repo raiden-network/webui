@@ -213,6 +213,30 @@ describe('NotificationService', () => {
         }
     ));
 
+    it('should emit the number of notifications', inject(
+        [NotificationService],
+        (service: NotificationService) => {
+            let expectatedValue = 0;
+            service.numberOfNotifications$.subscribe((numberOfNotifications) =>
+                expect(numberOfNotifications).toBe(expectatedValue)
+            );
+
+            expectatedValue++;
+            service.addPendingAction(testMessage);
+
+            expectatedValue++;
+            service.addSuccessNotification(testMessage);
+            expectatedValue++;
+            service.addInfoNotification(testMessage2);
+
+            expectatedValue--;
+            service.removePendingAction(0);
+
+            expectatedValue = 0;
+            service.clearNotifications();
+        }
+    ));
+
     it('should have null status for the errors by default', inject(
         [NotificationService],
         (service: NotificationService) => {

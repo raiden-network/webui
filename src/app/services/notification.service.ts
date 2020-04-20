@@ -7,11 +7,13 @@ import {
     ConnectionErrors,
     ApiErrorResponse,
 } from '../models/connection-errors';
+import { scan } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
 })
 export class NotificationService {
+    private numberOfNotificationsSubject = new BehaviorSubject<number>(0);
     private notificationsSubject = new BehaviorSubject<NotificationMessage[]>(
         []
     );
@@ -20,6 +22,11 @@ export class NotificationService {
     );
     private connectionErrorsSubject = new BehaviorSubject<ConnectionErrors>({});
 
+    public readonly numberOfNotifications$: Observable<
+        number
+    > = this.numberOfNotificationsSubject
+        .asObservable()
+        .pipe(scan((acc, value) => Math.max(acc + value, 0), 0));
     public readonly notifications$: Observable<
         NotificationMessage[]
     > = this.notificationsSubject.asObservable();
@@ -85,26 +92,36 @@ export class NotificationService {
         ];
 
         this.pendingActionsSubject.next(this.pendingActions);
+        this.numberOfNotificationsSubject.next(+1);
         return identifier;
     }
 
     public clearNotifications() {
+        this.numberOfNotificationsSubject.next(-this.notifications.length);
         this.notifications = [];
 
         this.notificationsSubject.next(this.notifications);
     }
 
     public removeNotification(identifier: number) {
-        this.notifications = this.notifications.filter(
-            (notification) => notification.identifier !== identifier
-        );
+        this.notifications = this.notifications.filter((notification) => {
+            if (notification.identifier === identifier) {
+                this.numberOfNotificationsSubject.next(-1);
+                return false;
+            }
+            return true;
+        });
         this.notificationsSubject.next(this.notifications);
     }
 
     public removePendingAction(identifier: number) {
-        this.pendingActions = this.pendingActions.filter(
-            (pendingAction) => pendingAction.identifier !== identifier
-        );
+        this.pendingActions = this.pendingActions.filter((pendingAction) => {
+            if (pendingAction.identifier === identifier) {
+                this.numberOfNotificationsSubject.next(-1);
+                return false;
+            }
+            return true;
+        });
         this.pendingActionsSubject.next(this.pendingActions);
     }
 
@@ -145,6 +162,7 @@ export class NotificationService {
         ];
 
         this.notificationsSubject.next(this.notifications);
+        this.numberOfNotificationsSubject.next(+1);
         return identifier;
     }
 
