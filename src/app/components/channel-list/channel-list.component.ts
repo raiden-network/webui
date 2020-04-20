@@ -8,7 +8,7 @@ import {
     HostListener,
 } from '@angular/core';
 import { Channel } from '../../models/channel';
-import { Subscription, EMPTY, Subject } from 'rxjs';
+import { EMPTY, Subject } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { amountToDecimal } from '../../utils/amount.converter';
 import { UserToken } from '../../models/usertoken';
@@ -102,7 +102,6 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit() {
         this.calculateItemsPerRow();
-        this.updateVisibleChannels();
     }
 
     @HostListener('window:resize', ['$event'])
