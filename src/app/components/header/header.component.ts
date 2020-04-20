@@ -21,6 +21,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     readonly balance$: Observable<string>;
     readonly faucetLink$: Observable<string>;
     readonly zeroBalance$: Observable<boolean>;
+    readonly numberOfNotifications$: Observable<string>;
 
     private ngUnsubscribe = new Subject();
 
@@ -43,6 +44,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
             map((balance) => {
                 return new BigNumber(balance).isZero();
             })
+        );
+        this.numberOfNotifications$ = this.notificationService.numberOfNotifications$.pipe(
+            map((value) => value.toString())
         );
     }
 

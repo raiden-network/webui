@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatBadgeModule } from '@angular/material/badge';
 import { CdkTableModule } from '@angular/cdk/table';
 
 @NgModule({
@@ -26,6 +27,7 @@ import { CdkTableModule } from '@angular/cdk/table';
         MatProgressSpinnerModule,
         MatAutocompleteModule,
         MatSidenavModule,
+        MatBadgeModule,
         CdkTableModule,
     ],
     imports: [CommonModule],

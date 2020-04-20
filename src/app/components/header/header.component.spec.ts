@@ -26,6 +26,8 @@ import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { QrCodePayload, QrCodeComponent } from '../qr-code/qr-code.component';
 import { SearchFieldComponent } from '../search-field/search-field.component';
 import { TokenPipe } from '../../pipes/token.pipe';
+import { ToastrModule } from 'ngx-toastr';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -81,6 +83,8 @@ describe('HeaderComponent', () => {
                 ClipboardModule,
                 HttpClientTestingModule,
                 RaidenIconsModule,
+                ToastrModule.forRoot({ timeOut: 50, easeTime: 0 }),
+                NoopAnimationsModule,
             ],
         }).compileComponents();
     }));
@@ -153,5 +157,23 @@ describe('HeaderComponent', () => {
         expect(
             fixture.debugElement.query(By.css('.header__alert-box'))
         ).toBeFalsy();
+    });
+
+    it('should not show a notifications badge by default', () => {
+        expect(
+            fixture.debugElement.query(By.css('.mat-badge-hidden'))
+        ).toBeTruthy();
+    });
+
+    it('should display the number of notifications in a badge', () => {
+        notificationService.addInfoNotification({
+            title: 'Testing',
+            description: 'Currently testing the application.',
+            icon: '',
+        }),
+            fixture.detectChanges();
+        const badge = fixture.debugElement.query(By.css('.mat-badge-content'));
+        expect(badge).toBeTruthy();
+        expect(badge.nativeElement.innerText.trim()).toBe('1');
     });
 });

@@ -95,6 +95,10 @@
                     class="header__notification-icon"
                     svgIcon="notification"
                     aria-label="Open notification panel"
+                    [matBadge]="numberOfNotifications$ | async"
+                    matBadgeOverlap="true"
+                    matBadgePosition="above after"
+                    [matBadgeHidden]="(numberOfNotifications$ | async) === '0'"
                 >
                 </mat-icon>
             </button>
