@@ -216,23 +216,23 @@ describe('NotificationService', () => {
     it('should emit the number of notifications', inject(
         [NotificationService],
         (service: NotificationService) => {
-            let expectatedValue = 0;
+            let expectedValue = 0;
             service.numberOfNotifications$.subscribe((numberOfNotifications) =>
-                expect(numberOfNotifications).toBe(expectatedValue)
+                expect(numberOfNotifications).toBe(expectedValue)
             );
 
-            expectatedValue++;
+            expectedValue++;
             service.addPendingAction(testMessage);
 
-            expectatedValue++;
+            expectedValue++;
             service.addSuccessNotification(testMessage);
-            expectatedValue++;
+            expectedValue++;
             service.addInfoNotification(testMessage2);
 
-            expectatedValue--;
+            expectedValue--;
             service.removePendingAction(0);
 
-            expectatedValue = 0;
+            expectedValue = 0;
             service.clearNotifications();
         }
     ));
