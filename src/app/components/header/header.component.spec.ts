@@ -170,8 +170,8 @@ describe('HeaderComponent', () => {
             title: 'Testing',
             description: 'Currently testing the application.',
             icon: '',
-        }),
-            fixture.detectChanges();
+        });
+        fixture.detectChanges();
         const badge = fixture.debugElement.query(By.css('.mat-badge-content'));
         expect(badge).toBeTruthy();
         expect(badge.nativeElement.innerText.trim()).toBe('1');
