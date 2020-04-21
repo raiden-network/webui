@@ -2,7 +2,7 @@ import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentType } from '../models/enviroment-type.enum';
 import { BatchManager } from './batch-manager';
-import { HttpProvider } from 'web3-providers/types';
+import { HttpProvider, provider } from 'web3-core';
 import Web3 from 'web3';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Network, NetworkInfo } from '../utils/network-info';
@@ -36,9 +36,8 @@ const default_config: RDNConfig = {
 
 @Injectable()
 export class Web3Factory {
-    // noinspection JSMethodCanBeStatic
-    create(provider: HttpProvider): Web3 {
-        return new Web3(provider);
+    create(web3Provider: provider): Web3 {
+        return new Web3(web3Provider);
     }
 }
 
@@ -148,6 +147,6 @@ export class RaidenConfig {
     }
 
     private createBatchManager() {
-        this._batchManager = new BatchManager(this.web3);
+        this._batchManager = new BatchManager(this.web3.currentProvider);
     }
 }
