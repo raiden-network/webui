@@ -23,7 +23,7 @@ import { TokenComponent } from '../token/token.component';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { ChannelPollingService } from '../../services/channel-polling.service';
-import { of, NEVER } from 'rxjs';
+import { of, NEVER, BehaviorSubject } from 'rxjs';
 import { SelectedTokenService } from '../../services/selected-token.service';
 import { TestProviders } from '../../../testing/test-providers';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
@@ -33,12 +33,15 @@ import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { SharedService } from '../../services/shared.service';
 import { ClipboardModule } from 'ngx-clipboard';
+import { UserToken } from '../../models/usertoken';
+import { By } from '@angular/platform-browser';
 
 describe('TokenCarouselComponent', () => {
     let component: TokenCarouselComponent;
     let fixture: ComponentFixture<TokenCarouselComponent>;
 
     const tokens = createTestTokens(6);
+    let tokensSubject: BehaviorSubject<UserToken[]>;
 
     beforeEach(async(() => {
         const raidenServiceMock = stub<RaidenService>();
@@ -50,8 +53,9 @@ describe('TokenCarouselComponent', () => {
         raidenServiceMock.registerToken = () => {};
 
         const tokenPollingMock = stub<TokenPollingService>();
+        tokensSubject = new BehaviorSubject(tokens);
         // @ts-ignore
-        tokenPollingMock.tokens$ = of(tokens);
+        tokenPollingMock.tokens$ = tokensSubject.asObservable();
         tokenPollingMock.refresh = () => {};
 
         const channelPollingMock = stub<ChannelPollingService>();
@@ -221,5 +225,11 @@ describe('TokenCarouselComponent', () => {
 
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(registerSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('should have no navigation buttons if tokens fit on page', () => {
+        tokensSubject.next([]);
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('.navigation'))).toBeFalsy();
     });
 });
