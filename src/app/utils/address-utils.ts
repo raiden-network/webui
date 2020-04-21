@@ -8,7 +8,7 @@ export default class AddressUtils {
     }
 
     static isChecksum(address: string): boolean {
-        return checkAddressChecksum(address);
+        return isAddress(address) && checkAddressChecksum(address);
     }
 
     static isAddress(address: string): boolean {

@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { Utils } from 'web3-utils';
-import { HttpProvider } from 'web3-providers';
+import { HttpProvider } from 'web3-core';
 import { RaidenConfig } from '../app/services/raiden.config';
 import { BatchManager } from '../app/services/batch-manager';
 import { HttpBackend } from '@angular/common/http';
@@ -15,7 +15,7 @@ class MockWeb3 extends Web3 {
     checksumAddress = '';
 
     constructor() {
-        super(new HttpProvider('http://localhost:8485'));
+        super('http://localhost:8485');
 
         const mockWeb3 = this;
         this.eth.getBlockNumber = function () {
@@ -51,7 +51,9 @@ const mockNetwork = createNetworkMock();
 @Injectable()
 export class MockConfig extends RaidenConfig {
     public web3: Web3 = mockProvider.web3;
-    private testBatchManager: BatchManager = new BatchManager(this.web3);
+    private testBatchManager: BatchManager = new BatchManager(
+        this.web3.currentProvider
+    );
 
     constructor() {
         super(stub<HttpBackend>(), stub<NotificationService>(), mockProvider);

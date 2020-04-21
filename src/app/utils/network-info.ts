@@ -25,7 +25,7 @@ export class NetworkInfo {
             name: 'Görli',
             shortName: 'gor',
             chainId: 5,
-            ensSupported: false,
+            ensSupported: true,
             faucet: 'https://goerli-faucet.slock.it/?address=${ADDRESS}',
         },
         {

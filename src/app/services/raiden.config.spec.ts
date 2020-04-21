@@ -8,7 +8,7 @@ import {
 import { NotificationService } from './notification.service';
 import { EnvironmentType } from '../models/enviroment-type.enum';
 import Web3 from 'web3';
-import { HttpProvider } from 'web3-providers/types';
+import { HttpProvider } from 'web3-core';
 import Spy = jasmine.Spy;
 
 describe('RaidenConfig', () => {
@@ -17,7 +17,6 @@ describe('RaidenConfig', () => {
     let notificationService: NotificationService;
     let tracking: { current: number; failed: number[] };
     let httpProvider: HttpProvider;
-    let send: Spy;
     let create: Spy;
 
     const url = 'http://localhost:5001/assets/config/config.production.json';
@@ -50,18 +49,13 @@ describe('RaidenConfig', () => {
         });
 
         const web3Factory = TestBed.inject(Web3Factory);
-        const fake = async (method: string): Promise<object> => {
-            if (method !== 'net_version') {
-                throw new Error('not mocked');
-            }
-
+        const fake = async (): Promise<number> => {
             const failed = tracking.failed;
             const current = tracking.current;
 
             if (failed.findIndex((value) => value === current) >= 0) {
                 throw new Error(`Connection error: Timeout exceeded`);
             } else {
-                // @ts-ignore
                 return 1;
             }
         };
@@ -70,8 +64,12 @@ describe('RaidenConfig', () => {
             (provider: HttpProvider) => {
                 httpProvider = provider;
                 tracking.current++;
-                send = spyOn(provider, 'send').and.callFake(fake);
-                return new Web3(provider);
+                spyOn(provider, 'send').and.callFake(() => {
+                    throw new Error('not mocked');
+                });
+                const web3 = new Web3(provider);
+                spyOn(web3.eth.net, 'getId').and.callFake(fake);
+                return web3;
             }
         );
 
