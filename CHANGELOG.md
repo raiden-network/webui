@@ -12,6 +12,7 @@
 - [#238] Search functionality for filtering tokens, channels, contacts and transfer history.
 - [#270] Add a contact for a new address from the transfer and open channel dialogs.
 - [#186] Shows the available tokens in the deposit/withdraw, open channel and quick connect dialogs.
+- [#297] ENS support on Goerli test network.
 
 ### Fixed
 - [#138] Fixes the decimals of token amount inputs to not get cut off on Firefox.
@@ -153,6 +154,7 @@ token network.
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
 [#339]: https://github.com/raiden-network/webui/issues/339
+[#297]: https://github.com/raiden-network/webui/issues/297
 [#270]: https://github.com/raiden-network/webui/issues/270
 [#265]: https://github.com/raiden-network/webui/issues/265
 [#244]: https://github.com/raiden-network/webui/issues/244
