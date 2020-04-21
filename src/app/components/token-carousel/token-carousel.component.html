@@ -1,5 +1,10 @@
-<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between start">
-    <div class="navigation-block" fxLayout="column" fxLayoutAlign="center">
+<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start start">
+    <div
+        *ngIf="totalItems > visibleSectionItems"
+        class="navigation-block"
+        fxLayout="column"
+        fxLayoutAlign="center"
+    >
         <button
             class="navigation"
             mat-flat-button
@@ -43,7 +48,12 @@
             </div>
         </div>
     </div>
-    <div class="navigation-block" fxLayout="column" fxLayoutAlign="center">
+    <div
+        *ngIf="totalItems > visibleSectionItems"
+        class="navigation-block"
+        fxLayout="column"
+        fxLayoutAlign="center"
+    >
         <button
             class="navigation"
             mat-flat-button

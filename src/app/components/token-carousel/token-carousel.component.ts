@@ -43,6 +43,7 @@ export class TokenCarouselComponent
     currentItem = 0;
     visibleSectionItems = 1;
     currentSelection: UserToken | AllNetworksView = { allNetworksView: true };
+    totalItems = 1;
     totalChannels = 0;
     readonly network$: Observable<Network>;
 
@@ -76,6 +77,7 @@ export class TokenCarouselComponent
             )
             .subscribe((tokens: UserToken[]) => {
                 this.tokens = tokens;
+                this.totalItems = tokens.length + 1;
                 this.updateVisibleTokens();
             });
 
