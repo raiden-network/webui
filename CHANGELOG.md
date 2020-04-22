@@ -15,6 +15,7 @@
 
 ### Fixed
 - [#138] Fixes the decimals of token amount inputs to not get cut off on Firefox.
+- [#339] Disallows negative token amounts in dialogs.
 
 ### Removed
 - [#227] Removes non-decimal input for token amounts.
@@ -151,6 +152,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#339]: https://github.com/raiden-network/webui/issues/339
 [#270]: https://github.com/raiden-network/webui/issues/270
 [#265]: https://github.com/raiden-network/webui/issues/265
 [#244]: https://github.com/raiden-network/webui/issues/244
