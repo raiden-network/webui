@@ -261,3 +261,29 @@ describe('RaidenConfig', () => {
         flush();
     }));
 });
+
+describe('Web3Factory', () => {
+    let web3Factory: Web3Factory;
+
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+            providers: [Web3Factory],
+        });
+
+        web3Factory = TestBed.inject(Web3Factory);
+    });
+
+    it('should be created', inject([Web3Factory], (service: Web3Factory) => {
+        expect(service).toBeTruthy();
+    }));
+
+    it('should create a new web3 instance', fakeAsync(() => {
+        const web3 = web3Factory.create(
+            new Web3.providers.HttpProvider('http://localhost:8485')
+        );
+        expect((<HttpProvider>web3.currentProvider).host).toBe(
+            'http://localhost:8485'
+        );
+    }));
+});

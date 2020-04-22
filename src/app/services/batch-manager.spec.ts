@@ -120,6 +120,15 @@ export class FakeHttpProvider implements Provider {
         this.response.push(response);
     }
 
+    public injectResultArray(result: string[]) {
+        const responses = result.map((value) => {
+            const response = this.getResponseStub();
+            response.result = value;
+            return response;
+        });
+        this.response.push([responses]);
+    }
+
     public injectInvalidResponse(response: object) {
         this.response.push(response);
     }
@@ -286,6 +295,19 @@ describe('BatchManager', () => {
             fail('there should be no result');
         } catch (e) {
             expect(e).toMatch('Invalid JSON RPC response');
+        }
+    });
+
+    it('should fail on an array response', async () => {
+        const ethCallStub = getEthCallStub();
+        batchManager.add({ request: ethCallStub });
+        httpProvider.injectResultArray(['test', '']);
+
+        try {
+            await batchManager.execute();
+            fail('there should be no result');
+        } catch (e) {
+            expect(e).toBeTruthy();
         }
     });
 
