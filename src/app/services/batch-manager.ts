@@ -121,19 +121,14 @@ export class BatchManager {
     }
 
     private isValidResponse(response: any) {
-        return Array.isArray(response)
-            ? response.every(validateSingleMessage)
-            : validateSingleMessage(response);
-
-        function validateSingleMessage(message) {
-            return (
-                !!message &&
-                !message.error &&
-                message.jsonrpc === '2.0' &&
-                (typeof message.id === 'number' ||
-                    typeof message.id === 'string') &&
-                message.result !== undefined
-            ); // only undefined is not valid json object
-        }
+        return (
+            !!response &&
+            !Array.isArray(response) &&
+            !response.error &&
+            response.jsonrpc === '2.0' &&
+            (typeof response.id === 'number' ||
+                typeof response.id === 'string') &&
+            response.result !== undefined
+        );
     }
 }
