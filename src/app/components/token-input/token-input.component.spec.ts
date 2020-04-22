@@ -94,6 +94,12 @@ describe('TokenInputComponent', () => {
         expect(component.errors['notANumber']).toBe(true);
     });
 
+    it('should show error when input value is negative', () => {
+        mockInput(fixture.debugElement, 'input', '-30');
+        fixture.detectChanges();
+        expect(component.errors['negativeAmount']).toBe(true);
+    });
+
     it('should show error when input value is 0', () => {
         mockInput(fixture.debugElement, 'input', '0');
         fixture.detectChanges();

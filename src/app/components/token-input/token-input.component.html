@@ -34,6 +34,9 @@
             <span *ngIf="errors['zeroAmount']">
                 The amount should be greater than 0
             </span>
+            <span *ngIf="errors['negativeAmount']">
+                The amount should not be negative
+            </span>
             <span *ngIf="errors['tooManyDecimals'] && selectedToken">
                 The selected token network only supports up to
                 {{ decimals }} decimals
