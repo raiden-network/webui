@@ -136,6 +136,10 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
             this.errors = {
                 insufficientFunds: true,
             };
+        } else if (amount.isNegative()) {
+            this.errors = {
+                negativeAmount: true,
+            };
         } else {
             this.errors = undefined;
         }
