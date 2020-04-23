@@ -13,6 +13,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { createAddress } from '../../../testing/test-data';
 import { mockInput, clickElement } from '../../../testing/interaction-helper';
 import { By } from '@angular/platform-browser';
+import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 
 describe('AddEditContactDialogComponent', () => {
     let component: AddEditContactDialogComponent;
@@ -60,6 +61,7 @@ describe('AddEditContactDialogComponent', () => {
                 NoopAnimationsModule,
                 ReactiveFormsModule,
                 HttpClientTestingModule,
+                RaidenIconsModule,
             ],
         }).compileComponents();
     }));

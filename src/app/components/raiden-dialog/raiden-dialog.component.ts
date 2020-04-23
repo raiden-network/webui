@@ -9,6 +9,7 @@ export class RaidenDialogComponent implements OnInit {
     @Input() titleText: string;
     @Input() acceptText: string;
     @Input() acceptDisabled: boolean;
+    @Input() noButtons = false;
     @Output() accept: EventEmitter<boolean> = new EventEmitter();
     @Output() cancel: EventEmitter<boolean> = new EventEmitter();
 

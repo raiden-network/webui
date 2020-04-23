@@ -1,27 +1,19 @@
-<div fxLayout="column" fxLayoutGap="33px" fxLayoutAlign="center center">
-    <div class="title">Your account</div>
-    <canvas #canvas></canvas>
-    <div class="address-field" fxLayout="row" fxLayoutAlign="center center">
-        <span class="address-field__content" fxFlex>
-            {{ content }}
-        </span>
-        <button
-            mat-icon-button
-            ngxClipboard
-            [cbContent]="content"
-            matTooltip="Copy address to clipboard"
-        >
-            <mat-icon svgIcon="copy" aria-label="Copy address to clipboard">
-            </mat-icon>
-        </button>
+<app-raiden-dialog titleText="Your account" noButtons="true" (cancel)="close()">
+    <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="20px">
+        <canvas #canvas></canvas>
+        <div class="address-field" fxLayout="row" fxLayoutAlign="center center">
+            <span class="address-field__content" fxFlex>
+                {{ content }}
+            </span>
+            <button
+                mat-icon-button
+                ngxClipboard
+                [cbContent]="content"
+                matTooltip="Copy address to clipboard"
+            >
+                <mat-icon svgIcon="copy" aria-label="Copy address to clipboard">
+                </mat-icon>
+            </button>
+        </div>
     </div>
-    <button
-        fxFlexAlign="start"
-        class="close-button"
-        mat-flat-button
-        color="accent"
-        (click)="close()"
-    >
-        Close
-    </button>
-</div>
+</app-raiden-dialog>

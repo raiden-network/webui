@@ -22,6 +22,7 @@ import { ChannelPollingService } from '../../services/channel-polling.service';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 
 describe('DepositWithdrawDialogComponent', () => {
     let component: DepositWithdrawDialogComponent;
@@ -75,6 +76,7 @@ describe('DepositWithdrawDialogComponent', () => {
                 NoopAnimationsModule,
                 ReactiveFormsModule,
                 HttpClientTestingModule,
+                RaidenIconsModule,
             ],
         }).compileComponents();
     }));

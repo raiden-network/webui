@@ -8,6 +8,8 @@ import {
 import { TestProviders } from '../../../testing/test-providers';
 import { clickElement } from '../../../testing/interaction-helper';
 import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component';
+import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ConfirmationDialogComponent', () => {
     let component: ConfirmationDialogComponent;
@@ -25,7 +27,12 @@ describe('ConfirmationDialogComponent', () => {
                 TestProviders.MockMatDialogData(payload),
                 TestProviders.MockMatDialogRef({ close: () => {} }),
             ],
-            imports: [MaterialComponentsModule, ReactiveFormsModule],
+            imports: [
+                MaterialComponentsModule,
+                ReactiveFormsModule,
+                RaidenIconsModule,
+                HttpClientTestingModule,
+            ],
         }).compileComponents();
     }));
 
