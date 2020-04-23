@@ -10,6 +10,7 @@ import { clickElement } from '../../../testing/interaction-helper';
 import * as QRCode from 'qrcode';
 import Spy = jasmine.Spy;
 import { By } from '@angular/platform-browser';
+import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component';
 
 describe('QrCodeComponent', () => {
     let component: QrCodeComponent;
@@ -24,7 +25,7 @@ describe('QrCodeComponent', () => {
         };
 
         TestBed.configureTestingModule({
-            declarations: [QrCodeComponent],
+            declarations: [QrCodeComponent, RaidenDialogComponent],
             providers: [
                 TestProviders.MockMatDialogData(payload),
                 TestProviders.MockMatDialogRef({ close: () => {} }),
@@ -72,7 +73,7 @@ describe('QrCodeComponent', () => {
 
         // @ts-ignore
         const closeSpy = spyOn(component.dialogRef, 'close');
-        clickElement(fixture.debugElement, '.close-button');
+        clickElement(fixture.debugElement, '#close');
         fixture.detectChanges();
 
         expect(closeSpy).toHaveBeenCalledTimes(1);

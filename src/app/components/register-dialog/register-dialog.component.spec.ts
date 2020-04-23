@@ -10,6 +10,7 @@ import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component'
 import { createAddress } from '../../../testing/test-data';
 import { mockInput, clickElement } from '../../../testing/interaction-helper';
 import { By } from '@angular/platform-browser';
+import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 
 describe('RegisterDialogComponent', () => {
     let component: RegisterDialogComponent;
@@ -35,6 +36,7 @@ describe('RegisterDialogComponent', () => {
                 NoopAnimationsModule,
                 ReactiveFormsModule,
                 HttpClientTestingModule,
+                RaidenIconsModule,
             ],
         }).compileComponents();
     }));

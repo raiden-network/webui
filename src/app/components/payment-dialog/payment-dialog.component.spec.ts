@@ -39,6 +39,7 @@ import { stub } from '../../../testing/stub';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { AddressBookService } from '../../services/address-book.service';
 import { Contacts } from '../../models/contact';
+import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 
 describe('PaymentDialogComponent', () => {
     let component: PaymentDialogComponent;
@@ -127,6 +128,7 @@ describe('PaymentDialogComponent', () => {
                 NoopAnimationsModule,
                 ReactiveFormsModule,
                 HttpClientTestingModule,
+                RaidenIconsModule,
             ],
         }).compileComponents();
     }));

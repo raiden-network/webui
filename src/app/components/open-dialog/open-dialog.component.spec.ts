@@ -28,6 +28,7 @@ import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component'
 import { of } from 'rxjs';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
+import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 
 describe('OpenDialogComponent', () => {
     let component: OpenDialogComponent;
@@ -98,6 +99,7 @@ describe('OpenDialogComponent', () => {
                 NoopAnimationsModule,
                 ReactiveFormsModule,
                 HttpClientTestingModule,
+                RaidenIconsModule,
             ],
         }).compileComponents();
     }));

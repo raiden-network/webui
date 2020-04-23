@@ -6,9 +6,22 @@
 >
     <div class="dialog__title">{{ titleText }}</div>
 
+    <button
+        mat-icon-button
+        (click)="cancel.emit(true)"
+        class="dialog__close-button"
+        id="close"
+    >
+        <mat-icon
+            aria-label="Close dialog"
+            svgIcon="close"
+            class="dialog__close-icon"
+        ></mat-icon>
+    </button>
+
     <ng-content></ng-content>
 
-    <div fxLayout="row" fxLayoutAlign="space-between">
+    <div *ngIf="!noButtons" fxLayout="row" fxLayoutAlign="space-between">
         <button
             class="dialog__button dialog__button--white"
             mat-flat-button
