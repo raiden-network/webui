@@ -25,7 +25,8 @@ import {
     ErrorComponent,
     ErrorPayload,
 } from './components/error/error.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, tap, delay } from 'rxjs/operators';
+import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
     selector: 'app-root',
@@ -37,6 +38,8 @@ export class AppComponent implements OnInit, OnDestroy {
     @HostBinding('@.disabled') animationsDisabled = false;
     @ViewChild('notification_sidenav', { static: true })
     private notificationSidenav: MatSidenav;
+    @ViewChild('menu_sidenav', { static: true })
+    public menuSidenav: MatSidenav;
 
     readonly network$: Observable<Network>;
     showNetworkInfo = false;
@@ -51,7 +54,8 @@ export class AppComponent implements OnInit, OnDestroy {
         private paymentHistoryPollingService: PaymentHistoryPollingService,
         private notificationService: NotificationService,
         private sharedService: SharedService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private mediaObserver: MediaObserver
     ) {
         this.network$ = raidenService.network$;
     }
@@ -63,15 +67,17 @@ export class AppComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.network$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((network) => {
-                if (network.chainId !== 1) {
-                    this.showNetworkInfo = true;
-                    setTimeout(() => {
-                        this.hideNetworkInfo();
-                    }, 5000);
-                }
-            });
+            .pipe(
+                tap((network) => {
+                    if (network.chainId !== 1) {
+                        this.showNetworkInfo = true;
+                    }
+                }),
+                delay(5000),
+                tap(() => this.hideNetworkInfo()),
+                takeUntil(this.ngUnsubscribe)
+            )
+            .subscribe();
 
         this.channelPollingService.channels$
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -100,6 +106,16 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
+    }
+
+    isMobile(): boolean {
+        return this.mediaObserver.isActive('xs');
+    }
+
+    closeMenu() {
+        if (this.isMobile()) {
+            this.menuSidenav.close();
+        }
     }
 
     hideNetworkInfo() {

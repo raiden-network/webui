@@ -489,7 +489,7 @@ export class RaidenService {
                 const message: UiMessage = {
                     title:
                         mode === DepositMode.WITHDRAW
-                            ? 'Withdrawed from channel'
+                            ? 'Withdrew from channel'
                             : 'Deposited to channel',
                     description: `${formattedAmount} ${token.symbol}`,
                     icon: 'channel',

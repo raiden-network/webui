@@ -29,6 +29,9 @@ export class RaidenIconsModule {
         'close',
         'error',
         'error-mark',
+        'transfers',
+        'home',
+        'contacts',
     ];
 
     constructor(

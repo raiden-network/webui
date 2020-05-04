@@ -1,6 +1,69 @@
 <mat-sidenav-container>
-    <mat-sidenav-content>
-        <div class="info-container" fxLayout="row" fxLayoutAlign="center">
+    <mat-sidenav
+        class="menu"
+        [mode]="isMobile() ? 'over' : 'side'"
+        [disableClose]="isMobile() ? false : true"
+        [opened]="isMobile() ? false : true"
+        role="navigation"
+        #menu_sidenav
+    >
+        <div
+            class="menu-inner"
+            fxLayout="column"
+            fxLayoutAlign="start center"
+            fxLayoutGap="53px"
+        >
+            <a target="_blank" href="http://raiden.network/">
+                <img
+                    alt="Raiden logo"
+                    src="assets/logo.svg"
+                    ngClass.xs="menu__logo-mobile"
+                    ngClass="menu__logo"
+                />
+            </a>
+            <app-navigation-entry
+                fxFlexOffset="8px"
+                (click)="closeMenu()"
+                icon="home"
+                text="Home"
+                route="/home"
+            ></app-navigation-entry>
+            <app-navigation-entry
+                (click)="closeMenu()"
+                icon="channel"
+                text="Channels"
+                route="/channels"
+            ></app-navigation-entry>
+            <app-navigation-entry
+                (click)="closeMenu()"
+                icon="contacts"
+                text="Contacts"
+                route="/contacts"
+            ></app-navigation-entry>
+            <app-navigation-entry
+                (click)="closeMenu()"
+                icon="transfers"
+                text="Transfers"
+                route="/transfers"
+            ></app-navigation-entry>
+            <div fxFlex="1 1 auto"></div>
+            <app-navigation-entry
+                (click)="closeMenu()"
+                icon="info"
+                route="/about"
+            ></app-navigation-entry>
+        </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content fxLayout="center start">
+        <div
+            class="page"
+            fxFlex="60"
+            fxFlex.lt-lg="96"
+            fxFlex.lg="75"
+            fxLayout="column"
+            fxLayoutGap="42px"
+        >
             <div
                 *ngIf="showNetworkInfo"
                 class="network-info"
@@ -23,9 +86,10 @@
                     ></mat-icon>
                 </button>
             </div>
-        </div>
-        <div class="content">
-            <router-outlet></router-outlet>
+            <app-header></app-header>
+            <div class="content">
+                <router-outlet></router-outlet>
+            </div>
         </div>
     </mat-sidenav-content>
 

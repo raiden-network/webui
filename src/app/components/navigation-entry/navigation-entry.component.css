@@ -1,0 +1,22 @@
+:host {
+    width: 100%;
+}
+
+.entry {
+    text-transform: uppercase;
+    letter-spacing: 0.91px;
+    font-size: 8px;
+    line-height: 9px;
+    color: #868686;
+    text-decoration: none;
+}
+
+.active {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.entry__icon {
+    width: auto;
+    height: 24px;
+}

@@ -1,25 +1,5 @@
-<div
-    class="page"
-    fxFlex="90"
-    fxFlex.xs="96"
-    fxFlex.lg="70"
-    fxFlex.xl="60"
-    fxLayout="column"
-    fxLayoutGap="37px"
->
-    <app-header></app-header>
-    <app-token-carousel></app-token-carousel>
-    <app-channel-list></app-channel-list>
-    <div fxLayout="row" fxLayoutGap="61px">
-        <app-contact-list fxFlex="1 1 341px"></app-contact-list>
-        <app-history-table fxFlex="1 1 auto"></app-history-table>
-    </div>
-    <a mat-icon-button class="button" routerLink="/about">
-        <mat-icon
-            class="button__icon"
-            svgIcon="info"
-            matTooltip="Open about page"
-        >
-        </mat-icon>
-    </a>
+<app-token-carousel></app-token-carousel>
+<div fxLayout="row" fxLayoutGap="61px">
+    <app-contact-list fxFlex="1 1 341px"></app-contact-list>
+    <app-history-table fxFlex="1 1 auto"></app-history-table>
 </div>

@@ -224,5 +224,5 @@ input:focus {
 }
 
 a {
-    outline: none;
+    outline-color: #ffffff;
 }

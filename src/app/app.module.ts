@@ -57,10 +57,17 @@ import { AddEditContactDialogComponent } from './components/add-edit-contact-dia
 import { RaidenIconsModule } from './modules/raiden-icons/raiden-icons.module';
 import { QrCodeComponent } from './components/qr-code/qr-code.component';
 import { SearchFieldComponent } from './components/search-field/search-field.component';
+import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
+import { ChannelsPageComponent } from './components/channels-page/channels-page.component';
+import { ContactsPageComponent } from './components/contacts-page/contacts-page.component';
+import { HistoryPageComponent } from './components/history-page/history-page.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
+    { path: 'channels', component: ChannelsPageComponent },
+    { path: 'contacts', component: ContactsPageComponent },
+    { path: 'transfers', component: HistoryPageComponent },
     { path: 'about', component: AboutComponent },
 ];
 
@@ -104,6 +111,10 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         AddEditContactDialogComponent,
         QrCodeComponent,
         SearchFieldComponent,
+        NavigationEntryComponent,
+        ChannelsPageComponent,
+        ContactsPageComponent,
+        HistoryPageComponent,
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
