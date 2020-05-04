@@ -1,15 +1,11 @@
-<div class="header" fxLayout="row wrap" fxLayoutAlign="space-between center">
-    <div
-        fxFlexAlign="start"
-        fxLayout="row wrap"
-        fxLayoutAlign="start end"
-        fxLayoutGap="32px"
-    >
+<div class="header" fxLayout="row wrap">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
         <div
             *ngIf="balance$ | async as balance"
-            class="header__label"
+            class="header__label header__box"
             fxLayout="row"
-            fxLayoutGap="18px"
+            fxLayoutAlign="start center"
+            fxLayoutGap="11px"
         >
             <div>
                 <span [matTooltip]="balance"
@@ -23,7 +19,7 @@
             </div>
         </div>
 
-        <div fxLayout="row" fxLayoutGap="16px">
+        <div fxLayout="row" fxLayoutGap="18px">
             <div class="header__label header__label--secondary">
                 Your address
             </div>
@@ -36,63 +32,29 @@
                 >{{ raidenAddress }}</span
             >
         </div>
+    </div>
 
-        <div fxLayout="row" fxLayoutGap="18px">
-            <button
-                mat-icon-button
-                matTooltip="Show QR code to scan your address"
-                (click)="showOwnAddressQrCode()"
-                class="header__icon-button"
-                fxLayout="column"
-                fxLayoutAlign="center center"
-                id="qr-button"
-            >
-                <mat-icon
-                    class="header__icon"
-                    svgIcon="qr"
-                    aria-label="Show QR code to scan your address"
-                >
-                </mat-icon>
-            </button>
-            <a
-                *ngIf="(network$ | async)?.faucet"
-                [href]="faucetLink$ | async"
-                target="_blank"
-                mat-icon-button
-                class="header__icon-button"
-                matTooltip="Open ether faucet"
-                fxLayout="column"
-                fxLayoutAlign="center center"
-                id="faucet-button"
-            >
-                <mat-icon
-                    class="header__icon"
-                    svgIcon="faucet"
-                    aria-label="Open ether faucet"
-                >
-                </mat-icon>
-            </a>
-        </div>
+    <div fxFlex="1 1 auto"></div>
 
-        <div fxLayout="row" fxLayoutGap="10px">
-            <app-search-field></app-search-field>
-            <button
-                mat-icon-button
-                matTooltip="Open notification panel"
-                (click)="toggleNotificationSidenav()"
-                id="notification-button"
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="55px">
+        <app-search-field></app-search-field>
+        <button
+            class="notification-button"
+            mat-icon-button
+            matTooltip="Open notification panel"
+            (click)="toggleNotificationSidenav()"
+            id="notification-button"
+        >
+            <mat-icon
+                class="notification-button__icon"
+                svgIcon="notification"
+                aria-label="Open notification panel"
+                [matBadge]="numberOfNotifications$ | async"
+                matBadgeOverlap="true"
+                matBadgePosition="above after"
+                [matBadgeHidden]="(numberOfNotifications$ | async) === '0'"
             >
-                <mat-icon
-                    class="header__notification-icon"
-                    svgIcon="notification"
-                    aria-label="Open notification panel"
-                    [matBadge]="numberOfNotifications$ | async"
-                    matBadgeOverlap="true"
-                    matBadgePosition="above after"
-                    [matBadgeHidden]="(numberOfNotifications$ | async) === '0'"
-                >
-                </mat-icon>
-            </button>
-        </div>
+            </mat-icon>
+        </button>
     </div>
 </div>

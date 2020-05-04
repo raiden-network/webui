@@ -1,4 +1,9 @@
-<div class="search" fxLayout="row" fxLayoutAlign="center center">
+<div
+    class="search"
+    [ngClass]="search_input.value ? 'search--focused' : ''"
+    fxLayout="row"
+    fxLayoutAlign="center center"
+>
     <mat-icon
         class="search__icon"
         svgIcon="search"

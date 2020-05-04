@@ -7,7 +7,7 @@
 }
 
 .mat-sidenav-content {
-    padding-top: 35px;
+    padding-top: 18px;
 }
 
 .page {
@@ -17,7 +17,7 @@
 
 .content {
     height: 100%;
-    padding-bottom: 29px;
+    padding-bottom: 35px;
 }
 
 .menu {
@@ -28,12 +28,12 @@
 
 .menu-inner {
     height: 100%;
-    padding-top: 35px;
-    padding-bottom: 69px;
+    padding-top: 25px;
+    padding-bottom: 80px;
 }
 
 .menu__logo {
-    height: 50px;
+    height: 39px;
 }
 
 .menu__logo-mobile {
