@@ -1,64 +1,73 @@
-<div class="actions-section">
-    <ng-container *ngIf="selected">
-        <button
-            *ngIf="openChannels !== 0 || !quickConnectPending; else connecting"
-            class="action"
-            id="transfer"
-            mat-flat-button
-            color="accent"
-            (click)="pay()"
+<div class="actions-section" fxLayout="row">
+    <button
+        *ngIf="openChannels !== 0 || !quickConnectPending; else connecting"
+        class="action"
+        id="transfer"
+        mat-flat-button
+        color="accent"
+        (click)="pay()"
+    >
+        <mat-icon
+            class="action__icon"
+            svgIcon="transfer"
+            aria-label="Transfer tokens"
         >
-            <mat-icon
-                class="action__icon"
-                svgIcon="transfer"
-                aria-label="Transfer tokens"
-            >
-            </mat-icon>
+        </mat-icon>
+        <span>
+            Transfer tokens
+        </span>
+    </button>
+    <ng-template #connecting>
+        <div
+            class="action action--connect"
+            color="accent"
+            fxLayout="row"
+            fxLayoutAlign="space-evenly center"
+        >
+            <mat-icon svgIcon="thunderbolt" aria-hidden="true"> </mat-icon>
             <span>
-                Transfer tokens
+                Quick connect pending
             </span>
-        </button>
-        <ng-template #connecting>
-            <div
-                class="action action--connect"
+            <mat-progress-spinner
+                diameter="24"
+                mode="indeterminate"
                 color="accent"
-                fxLayout="row"
-                fxLayoutAlign="space-evenly center"
-            >
-                <mat-icon svgIcon="thunderbolt" aria-hidden="true"> </mat-icon>
-                <span>
-                    Quick connect pending
-                </span>
-                <mat-progress-spinner
-                    diameter="24"
-                    mode="indeterminate"
-                    color="accent"
-                ></mat-progress-spinner>
-            </div>
-        </ng-template>
-    </ng-container>
+            ></mat-progress-spinner>
+        </div>
+    </ng-template>
+    <div fxFlex="1 1 auto"></div>
+    <app-account-actions></app-account-actions>
 </div>
 
-<div
-    class="card"
-    [class.card--focus]="selected"
-    [class.card--normal]="!selected"
-    fxLayout="column"
-    fxLayoutAlign="center start"
-    (click)="select.emit(true)"
->
-    <div class="top" fxLayout="row" fxLayoutAlign="start center">
-        <span *ngIf="selected; else inactive">
-            Viewing
-        </span>
-        <ng-template #inactive>
-            View network
-        </ng-template>
-        <div fxFlex="1 1 auto"></div>
+<div class="card" fxLayout="column" fxLayoutAlign="start center">
+    <div class="card__top" fxLayout="row" fxLayoutAlign="center">
+        <mat-select
+            [(value)]="selectedToken"
+            (selectionChange)="onSelect($event.value)"
+            class="network-selector"
+            placeholder="Select network"
+            panelClass="network-selector__panel"
+        >
+            <mat-select-trigger>
+                <ng-container *ngIf="isAllNetworksView; else change_network"
+                    >Select Network</ng-container
+                >
+                <ng-template #change_network>Change Network</ng-template>
+            </mat-select-trigger>
+            <mat-option [value]="undefined">
+                All Networks
+            </mat-option>
+            <mat-option
+                *ngFor="let option of tokens$ | async; trackBy: trackByFn"
+                [value]="option"
+                >{{ option | token }}
+            </mat-option>
+        </mat-select>
         <ng-container
-            *ngIf="!allNetworksView && (!onMainnet || openChannels > 0)"
+            *ngIf="!isAllNetworksView && (!onMainnet || openChannels > 0)"
         >
             <button
+                class="options-button"
                 mat-icon-button
                 [matMenuTriggerFor]="options"
                 stopClickPropagation
@@ -95,46 +104,33 @@
             </mat-menu>
         </ng-container>
     </div>
-    <div class="card__network">
-        <span
-            *ngIf="!allNetworksView; else all_networks"
-            matTooltip="{{ token.name }}
-                {{ token.address }}
-                (Click to copy)"
-            ngxClipboard
-            [cbContent]="token.address"
-        >
-            {{ token.symbol }}
-        </span>
+
+    <div class="card__network" fxLayout="row">
+        <div *ngIf="!isAllNetworksView; else all_networks">
+            <span
+                *ngIf="
+                    selectedToken.connected?.sum_deposits
+                        | decimal: selectedToken.decimals as sumDeposits
+                "
+                [matTooltip]="sumDeposits"
+                >{{ sumDeposits | displayDecimals: 3 }}</span
+            >
+            <span
+                matTooltip="{{ selectedToken.name }}
+                    {{ selectedToken.address }}
+                    (Click to copy)"
+                ngxClipboard
+                [cbContent]="selectedToken.address"
+            >
+                {{ selectedToken.symbol }}
+            </span>
+        </div>
         <ng-template #all_networks>
             All Networks
         </ng-template>
     </div>
-    <div class="card__values" fxLayout="row" fxLayoutAlign="space-between">
-        <div
-            *ngIf="
-                !allNetworksView &&
-                (token.balance | decimal: token.decimals) as balance
-            "
-            [matTooltip]="balance"
-            fxLayout="row"
-            fxLayoutAlign="center center"
-            fxLayoutGap="4px"
-        >
-            <mat-icon
-                class="card__icon"
-                svgIcon="token"
-                aria-hidden="true"
-            ></mat-icon>
-            <span>{{ balance | displayDecimals: 3 }} Tokens</span>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="4px">
-            <mat-icon
-                class="card__icon"
-                svgIcon="channel"
-                aria-hidden="true"
-            ></mat-icon>
-            <span>{{ openChannels }} Open channels</span>
-        </div>
+
+    <div *ngIf="!isAllNetworksView" class="card__values">
+        <span>In {{ openChannels }} open channels</span>
     </div>
 </div>

@@ -5,8 +5,6 @@ import { map, takeUntil } from 'rxjs/operators';
 import { Observable, zip, Subject } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
 import { Network } from '../../utils/network-info';
-import { MatDialog } from '@angular/material/dialog';
-import { QrCodeComponent, QrCodePayload } from '../qr-code/qr-code.component';
 import BigNumber from 'bignumber.js';
 
 @Component({
@@ -19,7 +17,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     raidenAddress: string;
     readonly network$: Observable<Network>;
     readonly balance$: Observable<string>;
-    readonly faucetLink$: Observable<string>;
     readonly zeroBalance$: Observable<boolean>;
     readonly numberOfNotifications$: Observable<string>;
 
@@ -27,19 +24,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     constructor(
         private raidenService: RaidenService,
-        private notificationService: NotificationService,
-        private dialog: MatDialog
+        private notificationService: NotificationService
     ) {
         this.network$ = raidenService.network$;
         this.balance$ = raidenService.balance$;
-        this.faucetLink$ = zip(
-            raidenService.network$,
-            raidenService.raidenAddress$
-        ).pipe(
-            map(([network, raidenAddress]) =>
-                network.faucet.replace('${ADDRESS}', raidenAddress)
-            )
-        );
         this.zeroBalance$ = raidenService.balance$.pipe(
             map((balance) => {
                 return new BigNumber(balance).isZero();
@@ -63,15 +51,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     toggleNotificationSidenav() {
         this.notificationService.toggleSidenav();
-    }
-
-    showOwnAddressQrCode() {
-        const payload: QrCodePayload = {
-            content: this.raidenAddress,
-        };
-        this.dialog.open(QrCodeComponent, {
-            data: payload,
-            width: '360px',
-        });
     }
 }

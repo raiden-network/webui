@@ -1,62 +1,39 @@
 .card {
-    height: 132px;
+    height: 136px;
     width: 278px;
-    border-radius: 25px;
-    padding: 0 25px;
+    padding: 17px 0;
     font-size: 13px;
     line-height: 15px;
+    color: #000000;
+    background-color: #21d1f8;
+    border-radius: 35px;
+    width: 100%;
 }
 
-.card--focus {
-    background-color: #000000;
-    box-shadow: 0 17px 63px -11px #000000;
-    color: #ffffff;
-}
-
-.card--normal {
-    background-color: #2b2b2d;
-    cursor: pointer;
-    color: #b8b8b8;
+.card__top {
+    width: 100%;
+    height: 19px;
+    position: relative;
 }
 
 .card__network {
-    width: 100%;
-    font-size: 41px;
+    font-size: 50px;
+    line-height: 59px;
     font-weight: 300;
-    line-height: 48px;
+    letter-spacing: -0.76087px;
 }
 
-.card__values {
-    width: 100%;
-    height: 32px;
+.network-selector {
+    background: none;
+    width: 115px;
+    height: 19px;
+    letter-spacing: 0;
 }
 
-.card__icon {
-    height: 18px;
-    width: 18px;
-    line-height: 18px;
-    font-size: 18px;
-}
-
-.card--focus .card__icon {
-    opacity: 1;
-}
-
-.top {
-    height: 32px;
-    width: 100%;
-}
-
-.card--normal .top {
-    opacity: 0.23;
-}
-
-.card--normal .card__network {
-    opacity: 0.23;
-}
-
-.card--normal .card__values {
-    opacity: 0.23;
+.options-button {
+    position: absolute;
+    right: 32px;
+    top: -8px;
 }
 
 .options__divider {
@@ -68,13 +45,13 @@
 }
 
 .actions-section {
-    height: 70px;
+    margin-bottom: 21px;
 }
 
 .action {
     padding: 0 15px !important;
-    width: 100%;
-    height: 52px;
+    width: 171px;
+    height: 47px;
 }
 
 .action--connect {
@@ -82,7 +59,7 @@
     font-size: 13px;
     line-height: 15px;
     font-weight: 500;
-    background-color: #000000;
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .action__icon {

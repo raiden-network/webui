@@ -83,7 +83,7 @@ body {
 }
 
 .mat-flat-button {
-    height: 52px;
+    height: 47px;
     border-radius: 25px !important;
     font-size: 13px !important;
     line-height: 15px !important;
@@ -108,8 +108,8 @@ body {
 }
 
 .mat-icon-button .mat-icon {
-    height: 20px !important;
-    width: 20px !important;
+    height: 22px !important;
+    width: 22px !important;
 }
 
 .mat-tooltip {
@@ -180,6 +180,22 @@ body {
 
 .mat-select-placeholder {
     color: rgb(184, 184, 184) !important;
+}
+
+.network-selector .mat-select-placeholder {
+    color: #000000 !important;
+}
+
+.mat-select-panel.network-selector__panel {
+    border-radius: 5px !important;
+    background-color: #000000 !important;
+}
+
+.network-selector__panel .mat-option {
+    background: none !important;
+    color: #ffffff !important;
+    height: 60px !important;
+    letter-spacing: 0 !important;
 }
 
 ::placeholder,

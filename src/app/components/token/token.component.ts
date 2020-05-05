@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { UserToken } from '../../models/usertoken';
 import { RaidenService } from '../../services/raiden.service';
 import { amountFromDecimal } from '../../utils/amount.converter';
@@ -9,8 +9,8 @@ import {
     ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { flatMap, tap, finalize } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { flatMap, finalize, takeUntil, map, share } from 'rxjs/operators';
+import { EMPTY, Subject, Observable } from 'rxjs';
 import {
     PaymentDialogPayload,
     PaymentDialogComponent,
@@ -21,34 +21,91 @@ import {
 } from '../connection-manager-dialog/connection-manager-dialog.component';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { ChannelPollingService } from '../../services/channel-polling.service';
+import { SelectedTokenService } from '../../services/selected-token.service';
+import { TokenUtils } from '../../utils/token.utils';
 
 @Component({
     selector: 'app-token',
     templateUrl: './token.component.html',
     styleUrls: ['./token.component.css'],
 })
-export class TokenComponent implements OnInit {
-    @Input() token: UserToken;
-    @Input() openChannels: number;
-    @Input() selected = false;
-    @Input() allNetworksView = false;
-    @Input() onMainnet = true;
-    @Output() select: EventEmitter<boolean> = new EventEmitter();
+export class TokenComponent implements OnInit, OnDestroy {
+    tokens$: Observable<UserToken[]>;
+    selectedToken: UserToken;
+    totalChannels = 0;
+    onMainnet: boolean;
+    quickConnectPending = false; // todo use a map per address
 
-    quickConnectPending = false;
+    private ngUnsubscribe = new Subject();
 
     constructor(
         private raidenService: RaidenService,
         private tokenPollingService: TokenPollingService,
         private dialog: MatDialog,
         private pendingTransferPollingService: PendingTransferPollingService,
-        private channelPollingService: ChannelPollingService
-    ) {}
+        private channelPollingService: ChannelPollingService,
+        private selectedTokenService: SelectedTokenService
+    ) {
+        this.tokens$ = this.tokenPollingService.tokens$.pipe(
+            map((tokens) =>
+                tokens.sort((a, b) => TokenUtils.compareTokens(a, b))
+            ),
+            share()
+        );
+    }
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.channelPollingService.channels$
+            .pipe(
+                map((channels) =>
+                    channels.filter(
+                        (channel) =>
+                            channel.state === 'opened' ||
+                            channel.state === 'waiting_for_open'
+                    )
+                ),
+                takeUntil(this.ngUnsubscribe)
+            )
+            .subscribe((channels) => {
+                this.totalChannels = channels.length;
+            });
 
-    getTokenSymbol(): string {
-        return this.allNetworksView ? '' : this.token.symbol;
+        this.selectedTokenService.selectedToken$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((token) => {
+                this.selectedToken = token;
+            });
+
+        this.raidenService.network$.subscribe((network) => {
+            this.onMainnet = network.chainId === 1;
+        });
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
+
+    get isAllNetworksView(): boolean {
+        return !this.selectedToken;
+    }
+
+    get openChannels(): number {
+        if (this.isAllNetworksView) {
+            return this.totalChannels;
+        } else {
+            return this.selectedToken.connected
+                ? this.selectedToken.connected.channels
+                : 0;
+        }
+    }
+
+    onSelect(item: UserToken) {
+        this.selectedTokenService.setToken(item);
+    }
+
+    trackByFn(index, item: UserToken) {
+        return item?.address ?? '0';
     }
 
     pay() {
@@ -58,7 +115,7 @@ export class TokenComponent implements OnInit {
         }
 
         const payload: PaymentDialogPayload = {
-            tokenAddress: this.allNetworksView ? '' : this.token.address,
+            tokenAddress: this.selectedToken?.address ?? '',
             targetAddress: '',
             amount: undefined,
         };
@@ -90,7 +147,7 @@ export class TokenComponent implements OnInit {
     }
 
     mint() {
-        const decimals = this.token.decimals;
+        const decimals = this.selectedToken.decimals;
         const scaleFactor = decimals >= 18 ? 1 : decimals / 18;
         const amount = amountFromDecimal(new BigNumber(0.5), decimals)
             .times(scaleFactor)
@@ -101,14 +158,19 @@ export class TokenComponent implements OnInit {
             )
             .integerValue();
         this.raidenService
-            .mintToken(this.token, this.raidenService.raidenAddress, amount)
+            .mintToken(
+                this.selectedToken,
+                this.raidenService.raidenAddress,
+                amount
+            )
             .subscribe(() => this.tokenPollingService.refresh());
     }
 
     leaveNetwork() {
+        const token = this.selectedToken;
         const payload: ConfirmationDialogPayload = {
             title: 'Leave Token Network',
-            message: `Are you sure you want to close and settle all ${this.token.symbol} channels in ${this.token.name} network?`,
+            message: `Are you sure you want to close and settle all ${token.symbol} channels in ${token.name} network?`,
         };
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: payload,
@@ -123,7 +185,7 @@ export class TokenComponent implements OnInit {
                         return EMPTY;
                     }
 
-                    return this.raidenService.leaveTokenNetwork(this.token);
+                    return this.raidenService.leaveTokenNetwork(token);
                 })
             )
             .subscribe(() => {
@@ -132,7 +194,7 @@ export class TokenComponent implements OnInit {
     }
 
     private askForQuickConnect() {
-        const tokenSymbol = this.token?.symbol ?? '';
+        const tokenSymbol = this.selectedToken?.symbol ?? '';
         const payload: ConfirmationDialogPayload = {
             title: `No open ${tokenSymbol} channels`,
             message: `Do you want to use quick connect to automatically open ${tokenSymbol} channels?`,
@@ -152,7 +214,7 @@ export class TokenComponent implements OnInit {
 
     private openConnectionManager() {
         const payload: ConnectionManagerDialogPayload = {
-            token: this.token,
+            token: this.selectedToken,
             funds: undefined,
         };
 

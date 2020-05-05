@@ -168,7 +168,7 @@ describe('TokenComponent', () => {
 
     describe('as token view', () => {
         beforeEach(() => {
-            component.token = token;
+            component.currentSelection = token;
             component.openChannels = 1;
             fixture.detectChanges();
         });
@@ -321,7 +321,7 @@ describe('TokenComponent', () => {
         it('should mint 5000 tokens when token has no decimals', () => {
             component.onMainnet = false;
             const noDecimalsToken = createToken({ decimals: 0 });
-            component.token = noDecimalsToken;
+            component.currentSelection = noDecimalsToken;
             fixture.detectChanges();
 
             clickElement(fixture.debugElement, '#options');
