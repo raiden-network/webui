@@ -37,4 +37,12 @@ describe('SelectedTokenService', () => {
             expect(tokenNetwork).toEqual(token);
         });
     });
+
+    it('should be possible to reset the token network', () => {
+        service.setToken(token);
+        service.resetToken();
+        service.selectedToken$.subscribe((tokenNetwork) => {
+            expect(tokenNetwork).toEqual(undefined);
+        });
+    });
 });

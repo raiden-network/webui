@@ -19,4 +19,8 @@ export class SelectedTokenService {
     setToken(token: UserToken) {
         this.selectedTokenSubject.next(token);
     }
+
+    resetToken() {
+        this.selectedTokenSubject.next(undefined);
+    }
 }
