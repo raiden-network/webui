@@ -48,35 +48,15 @@
             [@stretchInOut]="'in'"
         ></app-contact>
     </div>
-    <div class="button-section" fxLayout="row" fxLayoutGap="15px">
-        <button
-            mat-flat-button
-            color="primary"
-            class="button"
-            (click)="addContact()"
-            fxFlex="1 1 100"
-            id="add"
-        >
-            <mat-icon class="button__icon" svgIcon="add" aria-hidden="true">
-            </mat-icon>
-            <span> Add new contact</span>
-        </button>
-        <button
-            *ngIf="numberOfFilteredContacts > 4"
-            mat-flat-button
-            color="primary"
-            class="button button--grey"
-            (click)="toggleShowAll()"
-            fxFlex="1 1 100"
-            id="show-all"
-        >
-            <mat-icon
-                class="button__icon button__icon--big"
-                svgIcon="eye"
-                aria-hidden="true"
-            >
-            </mat-icon>
-            <span> {{ showAll ? 'Hide' : 'All' }} </span>
-        </button>
-    </div>
+    <button
+        mat-flat-button
+        color="primary"
+        class="button"
+        (click)="addContact()"
+        id="add"
+    >
+        <mat-icon class="button__icon" svgIcon="add" aria-hidden="true">
+        </mat-icon>
+        <span> Add new contact</span>
+    </button>
 </div>

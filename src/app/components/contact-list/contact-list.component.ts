@@ -30,13 +30,14 @@ import { takeUntil } from 'rxjs/operators';
     animations: Animations.stretchInOut,
 })
 export class ContactListComponent implements OnInit, OnDestroy {
+    @Input() showAll = false;
+
     @ViewChild('contact_list', { static: true })
     private contactsElement: ElementRef;
 
     visibleContacts: Contact[] = [];
     totalContacts = 0;
     numberOfFilteredContacts = 0;
-    showAll = false;
     selectedContactAddress = '';
 
     private contacts: Contact[] = [];
@@ -91,11 +92,6 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
     trackByFn(index, item: Contact) {
         return item.address;
-    }
-
-    toggleShowAll() {
-        this.showAll = !this.showAll;
-        this.updateVisibleContacts();
     }
 
     setSelection(contact: Contact) {
