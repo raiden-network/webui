@@ -4,6 +4,7 @@ import {
     OnDestroy,
     ViewChild,
     ElementRef,
+    Input,
 } from '@angular/core';
 import { Contact } from '../../models/contact';
 import { AddressBookService } from '../../services/address-book.service';
@@ -26,7 +27,7 @@ import { takeUntil } from 'rxjs/operators';
     selector: 'app-contact-list',
     templateUrl: './contact-list.component.html',
     styleUrls: ['./contact-list.component.css'],
-    animations: Animations.flyInOut,
+    animations: Animations.stretchInOut,
 })
 export class ContactListComponent implements OnInit, OnDestroy {
     @ViewChild('contact_list', { static: true })
@@ -151,7 +152,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
         if (this.showAll) {
             this.visibleContacts = filteredContacts;
         } else {
-            this.visibleContacts = filteredContacts.slice(0, 2);
+            this.visibleContacts = filteredContacts.slice(0, 4);
         }
     }
 

@@ -1,7 +1,7 @@
 <div class="list" fxLayout="column" fxLayoutGap="20px">
     <div class="list__labels" fxLayout="row" fxLayoutAlign="start center">
         <span
-            >Contacts - {{ visibleContacts.length }} of
+            >Contacts ・ {{ visibleContacts.length }} of
             {{ totalContacts }}</span
         >
         <div fxFlex="1 1 auto"></div>
@@ -45,34 +45,29 @@
             [contact]="contact"
             [selected]="isSelected(contact)"
             (select)="setSelection(contact)"
-            [@flyInOutLeft]="'in'"
+            [@stretchInOut]="'in'"
         ></app-contact>
     </div>
-    <div class="button-section" fxLayout="row">
+    <div class="button-section" fxLayout="row" fxLayoutGap="15px">
         <button
             mat-flat-button
             color="primary"
             class="button"
             (click)="addContact()"
-            fxLayout="row"
-            fxLayoutAlign="start center"
-            fxFlex="0 1 198px"
+            fxFlex="1 1 100"
             id="add"
         >
             <mat-icon class="button__icon" svgIcon="add" aria-hidden="true">
             </mat-icon>
             <span> Add new contact</span>
         </button>
-        <div fxFlex="1 1 auto"></div>
         <button
-            *ngIf="numberOfFilteredContacts > 2"
+            *ngIf="numberOfFilteredContacts > 4"
             mat-flat-button
             color="primary"
             class="button button--grey"
             (click)="toggleShowAll()"
-            fxLayout="row"
-            fxLayoutAlign="start center"
-            fxFlex="0 1 130px"
+            fxFlex="1 1 100"
             id="show-all"
         >
             <mat-icon
