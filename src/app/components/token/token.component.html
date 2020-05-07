@@ -107,14 +107,19 @@
 
     <div class="card__network" fxLayout="row">
         <div *ngIf="!isAllNetworksView; else all_networks">
-            <span
-                *ngIf="
-                    selectedToken.connected?.sum_deposits
-                        | decimal: selectedToken.decimals as sumDeposits
-                "
-                [matTooltip]="sumDeposits"
-                >{{ sumDeposits | displayDecimals: 3 }}</span
-            >
+            <ng-container *ngIf="selectedToken.connected; else no_deposits">
+                <span
+                    *ngIf="
+                        selectedToken.connected?.sum_deposits
+                            | decimal: selectedToken.decimals as sumDeposits
+                    "
+                    [matTooltip]="sumDeposits"
+                    >{{ sumDeposits | displayDecimals: 3 }}</span
+                >
+            </ng-container>
+            <ng-template #no_deposits>
+                0
+            </ng-template>
             <span
                 matTooltip="{{ selectedToken.name }}
                     {{ selectedToken.address }}
