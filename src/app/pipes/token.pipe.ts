@@ -1,30 +1,34 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { UserToken } from '../models/usertoken';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Pipe({
     name: 'token',
 })
 export class TokenPipe implements PipeTransform {
-    transform(token?: UserToken): string {
-        return this.tokenToString(token);
+    constructor(private sanitizer: DomSanitizer) {}
+
+    transform(token?: UserToken): SafeHtml {
+        return this.tokenToHtmlString(token);
     }
 
-    private tokenToString(token?: UserToken): string {
+    private tokenToHtmlString(token?: UserToken): SafeHtml {
         if (!token) {
             return '';
         }
-        let text = '';
+        let html = '';
         if (token.symbol) {
-            text += `[${token.symbol}] `;
+            html += `<span>${token.symbol}</span>`;
         }
         if (token.name) {
-            text += `${token.name} `;
+            html += `<span>${token.name}</span>`;
         }
-        if (text) {
-            text += `(${token.address})`;
+        if (html) {
+            html += `<span>${token.address}</span>`;
         } else {
-            text = token.address;
+            html = `<span></span><span>${token.address}</span>`;
         }
-        return text;
+        html = `<span class="mat-option-text">${html}</span>`;
+        return this.sanitizer.bypassSecurityTrustHtml(html);
     }
 }

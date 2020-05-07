@@ -47,6 +47,7 @@
             class="network-selector"
             placeholder="Select network"
             panelClass="network-selector__panel"
+            #selector
         >
             <mat-select-trigger>
                 <ng-container *ngIf="isAllNetworksView; else change_network"
@@ -54,13 +55,30 @@
                 >
                 <ng-template #change_network>Change Network</ng-template>
             </mat-select-trigger>
+            <button
+                mat-flat-button
+                class="mat-option register-button"
+                (click)="selector.close(); register()"
+                fxLayout="row"
+                fxLayoutGap="20px"
+            >
+                <mat-icon
+                    class="register-button__icon"
+                    svgIcon="add"
+                    aria-label="Add token"
+                >
+                </mat-icon>
+                <span>Add new Network</span>
+            </button>
             <mat-option [value]="undefined">
                 All Networks
             </mat-option>
             <mat-option
                 *ngFor="let option of tokens$ | async; trackBy: trackByFn"
                 [value]="option"
-                >{{ option | token }}
+                class="token-option"
+                [innerHtml]="option | token"
+            >
             </mat-option>
         </mat-select>
         <ng-container

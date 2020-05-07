@@ -187,15 +187,12 @@ body {
 }
 
 .mat-select-panel.network-selector__panel {
-    border-radius: 5px !important;
     background-color: #000000 !important;
 }
 
 .network-selector__panel .mat-option {
     background: none !important;
     color: #ffffff !important;
-    height: 60px !important;
-    letter-spacing: 0 !important;
 }
 
 ::placeholder,
@@ -207,7 +204,7 @@ body {
 .mat-select-panel,
 .mat-autocomplete-panel {
     box-shadow: none !important;
-    border-radius: 25px !important;
+    border-radius: 5px !important;
     background-color: #e7e7e7 !important;
     width: 306px;
 }
@@ -217,8 +214,25 @@ body {
     background-color: #e7e7e7 !important;
     font-size: 13px !important;
     line-height: 15px !important;
-    letter-spacing: 0.35px;
-    height: 32px !important;
+    height: 60px !important;
+    padding: 0 0 0 40px !important;
+}
+
+.mat-option-text > span {
+    margin-left: 22px;
+}
+
+.mat-option-text > span:first-child {
+    margin-left: 0;
+}
+
+.token-option > .mat-option-text > span:first-child,
+.token-option > .mat-option-text > span:last-child {
+    opacity: 0.5;
+}
+
+.contact-option > .mat-option-text > span:last-child {
+    opacity: 0.5;
 }
 
 .mat-badge-content {

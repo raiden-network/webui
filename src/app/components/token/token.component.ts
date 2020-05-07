@@ -23,6 +23,7 @@ import { PendingTransferPollingService } from '../../services/pending-transfer-p
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { SelectedTokenService } from '../../services/selected-token.service';
 import { TokenUtils } from '../../utils/token.utils';
+import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 
 @Component({
     selector: 'app-token',
@@ -101,6 +102,7 @@ export class TokenComponent implements OnInit, OnDestroy {
     }
 
     onSelect(item: UserToken) {
+        console.log(item);
         this.selectedTokenService.setToken(item);
     }
 
@@ -186,6 +188,27 @@ export class TokenComponent implements OnInit, OnDestroy {
                     }
 
                     return this.raidenService.leaveTokenNetwork(token);
+                })
+            )
+            .subscribe(() => {
+                this.tokenPollingService.refresh();
+            });
+    }
+
+    register() {
+        const dialog = this.dialog.open(RegisterDialogComponent, {
+            width: '360px',
+        });
+
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap((tokenAddress: string) => {
+                    if (!tokenAddress) {
+                        return EMPTY;
+                    }
+
+                    return this.raidenService.registerToken(tokenAddress);
                 })
             )
             .subscribe(() => {

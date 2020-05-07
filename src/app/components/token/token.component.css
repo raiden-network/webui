@@ -30,6 +30,17 @@
     letter-spacing: 0;
 }
 
+.register-button {
+    width: 100%;
+    padding: 0 40px !important;
+    border-radius: 0 !important;
+}
+
+.register-button__icon {
+    height: 20px;
+    width: auto;
+}
+
 .options-button {
     position: absolute;
     right: 32px;

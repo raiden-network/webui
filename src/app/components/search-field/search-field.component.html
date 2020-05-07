@@ -42,8 +42,9 @@
                     trackBy: tokenTrackByFn
                 "
                 [value]="userToken.address"
+                class="token-option"
+                [innerHtml]="userToken | token"
             >
-                {{ userToken | token }}
             </mat-option>
             <mat-option
                 *ngFor="
@@ -51,8 +52,10 @@
                     trackBy: contactTrackByFn
                 "
                 [value]="contact.address"
+                class="contact-option"
             >
-                {{ contact.label }} {{ contact.address }}
+                <span>{{ contact.label }}</span
+                ><span>{{ contact.address }}</span>
             </mat-option>
         </div>
     </mat-autocomplete>
