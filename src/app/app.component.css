@@ -21,23 +21,33 @@
 }
 
 .menu {
-    width: 91px;
+    width: 216px;
     background-color: rgba(255, 255, 255, 0.05);
     border: none;
 }
 
 .menu-inner {
     height: 100%;
-    padding-top: 25px;
-    padding-bottom: 80px;
+    padding: 41px 26px 51px 26px;
 }
 
 .menu__logo {
-    height: 39px;
+    width: 24px;
+    height: auto;
+    margin-left: 22px;
 }
 
 .menu__logo-mobile {
     height: 25px;
+}
+
+.menu__title {
+    font-family: Roboto Mono;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 21px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
 .notification-sidenav {

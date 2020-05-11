@@ -7,22 +7,20 @@
         role="navigation"
         #menu_sidenav
     >
-        <div
-            class="menu-inner"
-            fxLayout="column"
-            fxLayoutAlign="start center"
-            fxLayoutGap="53px"
-        >
-            <a target="_blank" href="http://raiden.network/">
-                <img
-                    alt="Raiden logo"
-                    src="assets/logo.svg"
-                    ngClass.xs="menu__logo-mobile"
-                    ngClass="menu__logo"
-                />
-            </a>
+        <div class="menu-inner" fxLayout="column" fxLayoutGap="60px">
+            <div fxLayout="row" fxLayoutGap="14px" fxLayoutAlign="start center">
+                <a target="_blank" href="http://raiden.network/">
+                    <img
+                        alt="Raiden logo"
+                        src="assets/logo.svg"
+                        ngClass.xs="menu__logo-mobile"
+                        ngClass="menu__logo"
+                    />
+                </a>
+                <span class="menu__title">WebUI</span>
+            </div>
             <app-navigation-entry
-                fxFlexOffset="46px"
+                fxFlexOffset="50px"
                 (click)="closeMenu()"
                 icon="home"
                 text="Home"

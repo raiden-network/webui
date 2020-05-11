@@ -102,7 +102,6 @@ export class TokenComponent implements OnInit, OnDestroy {
     }
 
     onSelect(item: UserToken) {
-        console.log(item);
         this.selectedTokenService.setToken(item);
     }
 
