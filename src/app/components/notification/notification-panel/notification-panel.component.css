@@ -11,8 +11,8 @@
 }
 
 .notifications__label {
-    font-size: 11px;
-    letter-spacing: 0.91px;
+    font-size: 12px;
+    letter-spacing: 1px;
     line-height: 32px;
     text-transform: uppercase;
     opacity: 0.47;

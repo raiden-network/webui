@@ -4,15 +4,16 @@
 
 .entry {
     text-transform: uppercase;
-    letter-spacing: 0.91px;
-    font-size: 8px;
-    line-height: 9px;
-    color: #868686;
+    letter-spacing: 1px;
+    font-size: 12px;
+    line-height: 14px;
+    color: #ffffff;
+    opacity: 0.5;
     text-decoration: none;
 }
 
 .active {
-    color: #ffffff;
+    opacity: 1;
     font-weight: 500;
 }
 

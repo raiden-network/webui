@@ -1,9 +1,9 @@
 .header {
     min-height: 50px;
     color: #b8b8b8;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 20px;
-    letter-spacing: 0.91px;
+    letter-spacing: 1px;
 }
 
 .header__label {
