@@ -31,7 +31,7 @@
 .dialog__close-button {
     position: absolute;
     top: -19px;
-    right: 0;
+    right: -8px;
 }
 
 .dialog__close-icon {

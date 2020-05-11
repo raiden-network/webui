@@ -43,6 +43,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     @Input() allowZero = false;
     @Input() infoText = '';
     @Input() placeholder = 'Amount';
+    @Input() onChainInput = false;
     @ViewChild('input', { static: true }) private inputElement: ElementRef;
 
     amount: BigNumber;
