@@ -226,7 +226,6 @@ body {
     box-shadow: none !important;
     border-radius: 5px !important;
     background-color: #e7e7e7 !important;
-    width: 306px;
 }
 
 .mat-option {
@@ -235,7 +234,7 @@ body {
     font-size: 13px !important;
     line-height: 15px !important;
     height: 60px !important;
-    padding: 0 0 0 40px !important;
+    padding: 0 0 0 25px !important;
 }
 
 .mat-option-text > span {

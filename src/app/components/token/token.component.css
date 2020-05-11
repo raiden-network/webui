@@ -32,7 +32,7 @@
 
 .register-button {
     width: 100%;
-    padding: 0 40px !important;
+    padding: 0 20px !important;
     border-radius: 0 !important;
 }
 
@@ -70,7 +70,7 @@
     font-size: 13px;
     line-height: 15px;
     font-weight: 500;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.06);
 }
 
 .action__icon {

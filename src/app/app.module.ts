@@ -61,7 +61,6 @@ import { NavigationEntryComponent } from './components/navigation-entry/navigati
 import { ChannelsPageComponent } from './components/channels-page/channels-page.component';
 import { ContactsPageComponent } from './components/contacts-page/contacts-page.component';
 import { HistoryPageComponent } from './components/history-page/history-page.component';
-import { AccountActionsComponent } from './components/account-actions/account-actions.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -116,7 +115,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ChannelsPageComponent,
         ContactsPageComponent,
         HistoryPageComponent,
-        AccountActionsComponent,
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

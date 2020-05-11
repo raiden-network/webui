@@ -1,4 +1,4 @@
-<div class="actions-section" fxLayout="row">
+<div class="actions-section">
     <button
         *ngIf="openChannels !== 0 || !quickConnectPending; else connecting"
         class="action"
@@ -35,8 +35,6 @@
             ></mat-progress-spinner>
         </div>
     </ng-template>
-    <div fxFlex="1 1 auto"></div>
-    <app-account-actions></app-account-actions>
 </div>
 
 <div class="card" fxLayout="column" fxLayoutAlign="start center">

@@ -5,7 +5,7 @@
             class="header__label header__box"
             fxLayout="row"
             fxLayoutAlign="start center"
-            fxLayoutGap="11px"
+            fxLayoutGap="16px"
         >
             <div>
                 <span [matTooltip]="balance"
@@ -17,9 +17,32 @@
             <div *ngIf="zeroBalance$ | async" class="header__alert-box">
                 Funds needed
             </div>
+            <a
+                *ngIf="(network$ | async)?.faucet"
+                [href]="faucetLink$ | async"
+                target="_blank"
+                mat-icon-button
+                class="account-button"
+                matTooltip="Open ether faucet"
+                fxLayout="column"
+                fxLayoutAlign="center center"
+                id="faucet-button"
+            >
+                <mat-icon
+                    class="account-button__icon"
+                    svgIcon="faucet"
+                    aria-label="Open ether faucet"
+                >
+                </mat-icon>
+            </a>
         </div>
 
-        <div fxLayout="row" fxLayoutGap="18px">
+        <div
+            fxLayout="row"
+            fxLayoutGap="16px"
+            fxLayoutAlign="start center"
+            class="header__box"
+        >
             <div class="header__label header__label--secondary">
                 Your address
             </div>
@@ -31,12 +54,28 @@
                 [cbContent]="raidenAddress"
                 >{{ raidenAddress }}</span
             >
+            <button
+                mat-icon-button
+                matTooltip="Show QR code to scan your address"
+                (click)="showOwnAddressQrCode()"
+                class="account-button"
+                fxLayout="column"
+                fxLayoutAlign="center center"
+                id="qr-button"
+            >
+                <mat-icon
+                    class="account-button__icon"
+                    svgIcon="qr"
+                    aria-label="Show QR code to scan your address"
+                >
+                </mat-icon>
+            </button>
         </div>
     </div>
 
     <div fxFlex="1 1 auto"></div>
 
-    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="55px">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="23px">
         <app-search-field></app-search-field>
         <button
             class="notification-button"

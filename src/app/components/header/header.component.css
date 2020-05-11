@@ -1,6 +1,5 @@
 .header {
     min-height: 50px;
-    color: #b8b8b8;
     font-size: 12px;
     line-height: 20px;
     letter-spacing: 1px;
@@ -15,7 +14,7 @@
 }
 
 .header__box {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.06);
     height: 100%;
     padding: 0 20px;
     border-radius: 25px;
@@ -26,12 +25,9 @@
     border-radius: 7.24px;
     height: 20px;
     width: 104.5px;
+    padding: 0 8px;
     text-align: center;
     color: #ff0000;
-}
-
-.header__alert-box--hidden {
-    visibility: hidden;
 }
 
 .header__address {
@@ -43,10 +39,22 @@
     text-overflow: ellipsis;
 }
 
+.account-button {
+    height: 29px !important;
+    width: 29px !important;
+    border: 2px solid #ffffff;
+}
+
+.account-button__icon {
+    height: 15px !important;
+    width: auto !important;
+    line-height: 15px !important;
+}
+
 .notification-button {
     height: 50px !important;
     width: 50px !important;
-    background-color: rgba(255, 255, 255, 0.31);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .notification-button__icon {

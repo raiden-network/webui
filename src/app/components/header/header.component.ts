@@ -6,6 +6,8 @@ import { Observable, zip, Subject } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
 import { Network } from '../../utils/network-info';
 import BigNumber from 'bignumber.js';
+import { QrCodePayload, QrCodeComponent } from '../qr-code/qr-code.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-header',
@@ -18,13 +20,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     readonly network$: Observable<Network>;
     readonly balance$: Observable<string>;
     readonly zeroBalance$: Observable<boolean>;
+    readonly faucetLink$: Observable<string>;
     readonly numberOfNotifications$: Observable<string>;
 
     private ngUnsubscribe = new Subject();
 
     constructor(
         private raidenService: RaidenService,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private dialog: MatDialog
     ) {
         this.network$ = raidenService.network$;
         this.balance$ = raidenService.balance$;
@@ -32,6 +36,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
             map((balance) => {
                 return new BigNumber(balance).isZero();
             })
+        );
+        this.faucetLink$ = zip(
+            raidenService.network$,
+            raidenService.raidenAddress$
+        ).pipe(
+            map(([network, raidenAddress]) =>
+                network.faucet.replace('${ADDRESS}', raidenAddress)
+            )
         );
         this.numberOfNotifications$ = this.notificationService.numberOfNotifications$.pipe(
             map((value) => value.toString())
@@ -51,5 +63,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     toggleNotificationSidenav() {
         this.notificationService.toggleSidenav();
+    }
+
+    showOwnAddressQrCode() {
+        const payload: QrCodePayload = {
+            content: this.raidenAddress,
+        };
+        this.dialog.open(QrCodeComponent, {
+            data: payload,
+            width: '360px',
+        });
     }
 }
