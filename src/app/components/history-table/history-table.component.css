@@ -1,26 +1,22 @@
 .history {
-    font-size: 13px;
-    line-height: 15px;
+    font-size: 16px;
+    line-height: 19px;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-radius: 35px;
+    padding: 20px;
 }
 
 .history__label {
-    font-size: 12px !important;
-    line-height: 14px !important;
+    font-size: 12px;
+    line-height: 24px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    height: 32px;
-    opacity: 0.47;
-}
-
-.table {
-    background-color: #2b2b2b;
-    border-radius: 25px;
-    padding: 30px;
+    opacity: 0.75;
 }
 
 .table__row {
-    padding-bottom: 13px;
-    border-bottom: 1px solid rgba(151, 151, 151, 0.21);
+    padding-bottom: 17px;
+    border-bottom: 1px solid #000000;
 }
 
 .table__row:last-child {
@@ -28,23 +24,38 @@
     border: none;
 }
 
-.table__element {
-    max-width: 120px;
+.table__main {
+    max-width: 40%;
+    height: 35px;
 }
 
-.table__address {
+.table__partner {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.icon-box {
-    width: 45px;
-    height: 45px;
-    border-radius: 15px;
-    background-color: #000000;
+.table__date {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+    text-transform: uppercase;
+    opacity: 0.5;
 }
 
-.icon-box--round {
-    border-radius: 50% !important;
+.table__amount {
+    font-weight: 700;
+}
+
+.icon-box {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.icon-box__icon {
+    color: #000000;
+    width: 12px;
+    height: auto;
 }

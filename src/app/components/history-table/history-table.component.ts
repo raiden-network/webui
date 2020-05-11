@@ -19,10 +19,10 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class HistoryTableComponent implements OnInit, OnDestroy {
     visibleHistory: PaymentEvent[] = [];
+    selectedToken: UserToken;
 
     private history: PaymentEvent[] = [];
     private searchFilter = '';
-    private selectedToken: UserToken;
     private ngUnsubscribe = new Subject();
 
     constructor(
@@ -64,12 +64,13 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
         return item.log_time;
     }
 
-    addressLabel(address: string): string | undefined {
-        return this.addressBookService.get()[address];
+    paymentPartner(event: PaymentEvent): string {
+        const partnerAddress = this.partnerAddress(event);
+        return this.addressLabel(partnerAddress) ?? partnerAddress;
     }
 
-    paymentPartner(event: PaymentEvent): string {
-        if (event.event === 'EventPaymentReceivedSuccess') {
+    partnerAddress(event: PaymentEvent): string {
+        if (this.isReceivedEvent(event)) {
             return event.initiator;
         }
         return event.target;
@@ -77,6 +78,14 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
 
     getUTCTimeString(event: PaymentEvent): string {
         return event.log_time + 'Z';
+    }
+
+    isReceivedEvent(event: PaymentEvent): boolean {
+        return event.event === 'EventPaymentReceivedSuccess';
+    }
+
+    private addressLabel(address: string): string | undefined {
+        return this.addressBookService.get()[address];
     }
 
     private updateVisibleEvents() {
