@@ -1,20 +1,19 @@
 <div class="actions-section">
     <button
-        *ngIf="openChannels !== 0 || !quickConnectPending; else connecting"
+        *ngIf="
+            openChannels !== 0 || !quickConnectPending[selectedToken?.address];
+            else connecting
+        "
         class="action"
         id="transfer"
         mat-flat-button
         color="accent"
         (click)="pay()"
     >
-        <mat-icon
-            class="action__icon"
-            svgIcon="transfer"
-            aria-label="Transfer tokens"
-        >
+        <mat-icon class="action__icon" svgIcon="transfer" aria-label="Transfer">
         </mat-icon>
         <span>
-            Transfer tokens
+            Transfer
         </span>
     </button>
     <ng-template #connecting>
@@ -22,9 +21,14 @@
             class="action action--connect"
             color="accent"
             fxLayout="row"
-            fxLayoutAlign="space-evenly center"
+            fxLayoutAlign="center center"
         >
-            <mat-icon svgIcon="thunderbolt" aria-hidden="true"> </mat-icon>
+            <mat-icon
+                class="action__icon"
+                svgIcon="thunderbolt"
+                aria-hidden="true"
+            >
+            </mat-icon>
             <span>
                 Quick connect pending
             </span>
@@ -32,12 +36,18 @@
                 diameter="24"
                 mode="indeterminate"
                 color="accent"
+                fxFlexOffset="12px"
             ></mat-progress-spinner>
         </div>
     </ng-template>
 </div>
 
-<div class="card" fxLayout="column" fxLayoutAlign="start center">
+<div
+    class="card"
+    fxLayout="column"
+    fxLayoutAlign="start center"
+    fxLayoutGap="15px"
+>
     <div class="card__top" fxLayout="row" fxLayoutAlign="center">
         <mat-select
             [(value)]="selectedToken"
@@ -151,7 +161,53 @@
         </ng-template>
     </div>
 
-    <div *ngIf="!isAllNetworksView" class="card__values">
-        <span>In {{ openChannels }} open channels</span>
+    <div fxFlex="1 1 auto"></div>
+    <div class="card__values" fxLayout="row" fxLayoutAlign="center">
+        <div
+            *ngIf="isAllNetworksView; else open_channels"
+            fxLayout="row"
+            fxLayoutAlign="center"
+            class="overview"
+        >
+            <div
+                *ngFor="
+                    let token of (tokens$ | async).slice(0, 3);
+                    trackBy: trackByFn
+                "
+                fxFlex="33"
+                fxLayout="column"
+                fxLayoutAlign="center center"
+                class="overview__item"
+            >
+                <div>
+                    <ng-container *ngIf="token.connected; else no_deposits">
+                        <span
+                            *ngIf="
+                                token.connected?.sum_deposits
+                                    | decimal: token.decimals as sumDeposits
+                            "
+                            [matTooltip]="sumDeposits"
+                            >{{ sumDeposits | displayDecimals: 3 }}</span
+                        >
+                    </ng-container>
+                    <ng-template #no_deposits>
+                        0
+                    </ng-template>
+                    <span
+                        matTooltip="{{ token.name }}
+                    {{ token.address }}
+                    (Click to copy)"
+                        ngxClipboard
+                        [cbContent]="token.address"
+                        class="overview__token-symbol"
+                    >
+                        {{ token.symbol }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <ng-template #open_channels>
+            <span>in {{ openChannels }} open channels</span>
+        </ng-template>
     </div>
 </div>

@@ -1,20 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
-    <desc>Created with Sketch.</desc>
-    <g id="Skeleton" stroke="none" stroke-width="1" fill-rule="evenodd">
-        <g id="dashboard-new-header" transform="translate(-185.000000, -278.000000)">
-            <g id="button-transfer" transform="translate(166.500000, 261.000000)">
-                <g id="info" transform="translate(18.500000, 17.000000)">
-                    <g id="transfer-icon" transform="translate(0.500000, 0.750000)">
-                        <mask id="mask-transfer" fill="white">
-                            <circle id="path-1" cx="8.5" cy="8.5" r="8.5"></circle>
-                        </mask>
-                        <circle id="path-1" cx="8.5" cy="8.5" r="8.5"></circle>
-                        <polyline id="Line-Copy" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" mask="url(#mask-transfer)" points="2.08105469 14.8813477 10.2 6.95 4.53333333 6.95 10.2 6.95 10.2 12.8212891"></polyline>
-                    </g>
-                </g>
-            </g>
-        </g>
-    </g>
+<svg width="9" height="11" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 1.80725H8V8.19023" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 1.80725L1 9.25406" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

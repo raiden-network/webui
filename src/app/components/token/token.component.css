@@ -1,11 +1,9 @@
 .card {
-    height: 136px;
-    width: 278px;
-    padding: 17px 0;
-    font-size: 13px;
-    line-height: 15px;
-    color: #000000;
-    background-color: #21d1f8;
+    height: 188px;
+    padding: 21px 0 0 0;
+    font-size: 16px;
+    line-height: 19px;
+    background-color: rgba(255, 255, 255, 0.06);
     border-radius: 35px;
     width: 100%;
 }
@@ -23,11 +21,20 @@
     letter-spacing: -0.76px;
 }
 
+.card__values {
+    height: 47px;
+    width: 100%;
+}
+
 .network-selector {
     background: none;
     width: 115px;
     height: 19px;
     letter-spacing: 0;
+    padding: 0;
+    border-radius: 0;
+    border-bottom: 1px solid #ffffff;
+    color: #ffffff;
 }
 
 .register-button {
@@ -55,26 +62,45 @@
     opacity: 0.17;
 }
 
+.overview {
+    border-top: 1px solid #000000;
+    width: 100%;
+}
+
+.overview__item {
+    border-right: 1px solid #000000;
+}
+
+.overview__item:last-child {
+    border-right: none;
+}
+
+.overview__token-symbol {
+    opacity: 0.7;
+}
+
 .actions-section {
-    margin-bottom: 21px;
+    margin-bottom: 20px;
 }
 
 .action {
-    padding: 0 15px !important;
-    width: 171px;
-    height: 47px;
+    width: 170px;
+    background-color: #cccccc;
+    font-weight: 700 !important;
 }
 
 .action--connect {
+    height: 50px;
+    width: 240px;
     border-radius: 25px;
     font-size: 13px;
     line-height: 15px;
-    font-weight: 500;
+    font-weight: 400 !important;
     background-color: rgba(255, 255, 255, 0.06);
 }
 
 .action__icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 5px;
+    width: 8px;
+    height: auto;
+    margin-right: 10px;
 }

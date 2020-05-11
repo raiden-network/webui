@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserToken } from '../../models/usertoken';
 import { RaidenService } from '../../services/raiden.service';
 import { amountFromDecimal } from '../../utils/amount.converter';
@@ -9,7 +9,7 @@ import {
     ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { flatMap, finalize, takeUntil, map, share } from 'rxjs/operators';
+import { flatMap, finalize, takeUntil, map, shareReplay } from 'rxjs/operators';
 import { EMPTY, Subject, Observable } from 'rxjs';
 import {
     PaymentDialogPayload,
@@ -35,7 +35,7 @@ export class TokenComponent implements OnInit, OnDestroy {
     selectedToken: UserToken;
     totalChannels = 0;
     onMainnet: boolean;
-    quickConnectPending = false; // todo use a map per address
+    quickConnectPending: { [tokenAddress: string]: boolean } = {};
 
     private ngUnsubscribe = new Subject();
 
@@ -51,7 +51,7 @@ export class TokenComponent implements OnInit, OnDestroy {
             map((tokens) =>
                 tokens.sort((a, b) => TokenUtils.compareTokens(a, b))
             ),
-            share()
+            shareReplay({ refCount: true, bufferSize: 1 })
         );
     }
 
@@ -235,6 +235,8 @@ export class TokenComponent implements OnInit, OnDestroy {
     }
 
     private openConnectionManager() {
+        let tokenAddressResult: string;
+
         const payload: ConnectionManagerDialogPayload = {
             token: this.selectedToken,
             funds: undefined,
@@ -252,15 +254,18 @@ export class TokenComponent implements OnInit, OnDestroy {
                     if (!result) {
                         return EMPTY;
                     }
-                    this.quickConnectPending = true;
+                    tokenAddressResult = result.token.address;
+                    this.quickConnectPending[tokenAddressResult] = true;
 
                     return this.raidenService.connectTokenNetwork(
                         result.funds,
-                        result.token.address
+                        tokenAddressResult
                     );
                 }),
                 finalize(() => {
-                    this.quickConnectPending = false;
+                    if (tokenAddressResult) {
+                        this.quickConnectPending[tokenAddressResult] = false;
+                    }
                 })
             )
             .subscribe(() => {

@@ -37,6 +37,14 @@ describe('TokenUtils', () => {
         balance: new BigNumber(0),
     };
 
+    const unconnectedToken2: UserToken = {
+        address: '0xB9eF346D094864794a0666D6E84D7Ebd640B4EC5',
+        symbol: 'ATT4',
+        name: 'Another Test Token4',
+        decimals: 0,
+        balance: new BigNumber(50),
+    };
+
     it('should give connected token a lower index', () => {
         expect(
             TokenUtils.compareTokens(connectedToken, unconnectedToken)
@@ -49,9 +57,15 @@ describe('TokenUtils', () => {
         ).toEqual(1);
     });
 
-    it('should compare tokens with same connection status depending on balance', () => {
+    it('should compare not connected tokens depending on balance', () => {
+        expect(
+            TokenUtils.compareTokens(unconnectedToken, unconnectedToken2)
+        ).toEqual(50);
+    });
+
+    it('should compare connected tokens depending on deposits', () => {
         expect(
             TokenUtils.compareTokens(connectedToken, connectedToken2)
-        ).toEqual(-50);
+        ).toEqual(-80);
     });
 });
