@@ -55,6 +55,10 @@ export class TokenComponent implements OnInit, OnDestroy {
         );
     }
 
+    get production(): boolean {
+        return this.raidenService.production;
+    }
+
     ngOnInit() {
         this.channelPollingService.channels$
             .pipe(

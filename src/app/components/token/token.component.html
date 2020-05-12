@@ -64,6 +64,7 @@
                 <ng-template #change_network>Change Network</ng-template>
             </mat-select-trigger>
             <button
+                *ngIf="!production"
                 mat-flat-button
                 class="mat-option register-button"
                 (click)="selector.close(); register()"
