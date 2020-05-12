@@ -44,7 +44,6 @@ import { NotificationService } from './services/notification.service';
 import { RaidenToastComponent } from './components/notification/raiden-toast/raiden-toast.component';
 import { ChannelComponent } from './components/channel/channel.component';
 import { TokenComponent } from './components/token/token.component';
-import { TokenCarouselComponent } from './components/token-carousel/token-carousel.component';
 import { ChannelListComponent } from './components/channel-list/channel-list.component';
 import { StopClickPropagationDirective } from './directives/stop-click-propagation.directive';
 import { ContactListComponent } from './components/contact-list/contact-list.component';
@@ -99,7 +98,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         RaidenToastComponent,
         ChannelComponent,
         TokenComponent,
-        TokenCarouselComponent,
         ChannelListComponent,
         StopClickPropagationDirective,
         ContactListComponent,
