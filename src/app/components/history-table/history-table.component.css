@@ -15,7 +15,7 @@
 }
 
 .table__row {
-    padding-bottom: 17px;
+    padding-bottom: 12px;
     border-bottom: 1px solid #000000;
 }
 
@@ -26,7 +26,7 @@
 
 .table__main {
     max-width: 40%;
-    height: 35px;
+    height: 41px;
 }
 
 .table__partner {
@@ -41,10 +41,30 @@
     line-height: 14px;
     text-transform: uppercase;
     opacity: 0.5;
+    margin-top: 4px;
 }
 
 .table__amount {
+    text-align: right;
     font-weight: 700;
+}
+
+.table__label {
+    text-transform: uppercase;
+    border-radius: 9px;
+    padding: 0 12px;
+    font-size: 10px;
+    line-height: 18px;
+    letter-spacing: 0.5px;
+    text-align: center;
+    background-color: rgba(29, 197, 18, 0.3);
+    color: #1dc512;
+    margin-top: 4px;
+}
+
+.table__label--pending {
+    background-color: rgba(253, 211, 39, 0.3);
+    color: #fdd327;
 }
 
 .icon-box {

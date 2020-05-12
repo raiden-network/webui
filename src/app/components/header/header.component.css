@@ -21,11 +21,10 @@
 }
 
 .header__alert-box {
-    background-color: rgba(255, 0, 0, 0.25);
-    border-radius: 7.24px;
+    background-color: rgba(255, 0, 0, 0.3);
+    border-radius: 9px;
     height: 20px;
-    width: 104.5px;
-    padding: 0 8px;
+    padding: 0 12px;
     text-align: center;
     color: #ff0000;
 }

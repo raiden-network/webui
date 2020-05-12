@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
-import { Subject } from 'rxjs';
+import { Subject, combineLatest } from 'rxjs';
 import { PaymentEvent } from '../../models/payment-event';
 import { AddressBookService } from '../../services/address-book.service';
 import { Animations } from '../../animations/animations';
@@ -9,7 +9,12 @@ import { UserToken } from '../../models/usertoken';
 import { SharedService } from '../../services/shared.service';
 import { matchesToken, matchesContact } from '../../shared/keyword-matcher';
 import { Contact } from '../../models/contact';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
+import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
+
+interface HistoryEvent extends PaymentEvent {
+    pending?: boolean;
+}
 
 @Component({
     selector: 'app-history-table',
@@ -18,10 +23,10 @@ import { takeUntil } from 'rxjs/operators';
     animations: Animations.flyInOut,
 })
 export class HistoryTableComponent implements OnInit, OnDestroy {
-    visibleHistory: PaymentEvent[] = [];
+    visibleHistory: HistoryEvent[] = [];
     selectedToken: UserToken;
 
-    private history: PaymentEvent[] = [];
+    private history: HistoryEvent[] = [];
     private searchFilter = '';
     private ngUnsubscribe = new Subject();
 
@@ -29,12 +34,41 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
         private paymentHistoryPollingService: PaymentHistoryPollingService,
         private addressBookService: AddressBookService,
         private selectedTokenService: SelectedTokenService,
-        private sharedService: SharedService
+        private sharedService: SharedService,
+        private pendingTransferPollingService: PendingTransferPollingService
     ) {}
 
     ngOnInit() {
-        this.paymentHistoryPollingService.paymentHistory$
-            .pipe(takeUntil(this.ngUnsubscribe))
+        combineLatest([
+            this.paymentHistoryPollingService.paymentHistory$,
+            this.pendingTransferPollingService.pendingTransfers$,
+        ])
+            .pipe(
+                map(([paymentEvents, pendingTransfers]) => {
+                    const pendingEvents: HistoryEvent[] = pendingTransfers.map(
+                        (pendingTransfer) => {
+                            const initiator =
+                                pendingTransfer.role === 'initiator';
+                            const event: HistoryEvent = {
+                                target: pendingTransfer.target,
+                                initiator: pendingTransfer.initiator,
+                                event: initiator
+                                    ? 'EventPaymentSentSuccess'
+                                    : 'EventPaymentReceivedSuccess',
+                                amount: pendingTransfer.locked_amount,
+                                identifier: pendingTransfer.payment_identifier,
+                                log_time: '',
+                                token_address: pendingTransfer.token_address,
+                                userToken: pendingTransfer.userToken,
+                                pending: true,
+                            };
+                            return event;
+                        }
+                    );
+                    return paymentEvents.concat(pendingEvents);
+                }),
+                takeUntil(this.ngUnsubscribe)
+            )
             .subscribe((events) => {
                 this.history = events;
                 this.updateVisibleEvents();
@@ -60,27 +94,27 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
         this.ngUnsubscribe.complete();
     }
 
-    trackByFn(index, item: PaymentEvent) {
-        return item.log_time;
+    trackByFn(index, item: HistoryEvent) {
+        return `${item.log_time}_${item.identifier}_${item.token_address}_${item.initiator}_${item.target}`;
     }
 
-    paymentPartner(event: PaymentEvent): string {
+    paymentPartner(event: HistoryEvent): string {
         const partnerAddress = this.partnerAddress(event);
         return this.addressLabel(partnerAddress) ?? partnerAddress;
     }
 
-    partnerAddress(event: PaymentEvent): string {
+    partnerAddress(event: HistoryEvent): string {
         if (this.isReceivedEvent(event)) {
             return event.initiator;
         }
         return event.target;
     }
 
-    getUTCTimeString(event: PaymentEvent): string {
+    getUTCTimeString(event: HistoryEvent): string {
         return event.log_time + 'Z';
     }
 
-    isReceivedEvent(event: PaymentEvent): boolean {
+    isReceivedEvent(event: HistoryEvent): boolean {
         return event.event === 'EventPaymentReceivedSuccess';
     }
 
@@ -90,7 +124,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
 
     private updateVisibleEvents() {
         const events = this.history;
-        const visibleEvents: PaymentEvent[] = [];
+        const visibleEvents: HistoryEvent[] = [];
         for (let i = events.length - 1; i >= 0; i--) {
             if (visibleEvents.length >= 4) {
                 break;
@@ -111,7 +145,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
         this.visibleHistory = visibleEvents;
     }
 
-    private matchesSearchFilter(event: PaymentEvent): boolean {
+    private matchesSearchFilter(event: HistoryEvent): boolean {
         const keyword = this.searchFilter.toLocaleLowerCase();
         const paymentPartner = this.paymentPartner(event);
 
