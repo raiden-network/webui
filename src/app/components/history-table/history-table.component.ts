@@ -12,7 +12,7 @@ import { Contact } from '../../models/contact';
 import { takeUntil, map } from 'rxjs/operators';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 
-interface HistoryEvent extends PaymentEvent {
+export interface HistoryEvent extends PaymentEvent {
     pending?: boolean;
 }
 

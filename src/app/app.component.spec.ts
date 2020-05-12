@@ -27,7 +27,7 @@ import { NotificationItemComponent } from './components/notification/notificatio
 import { HttpErrorResponse } from '@angular/common/http';
 import { RaidenIconsModule } from './modules/raiden-icons/raiden-icons.module';
 import { stub } from '../testing/stub';
-import { createNetworkMock } from '../testing/test-data';
+import { createNetworkMock, createAddress } from '../testing/test-data';
 import { PendingTransferPollingService } from './services/pending-transfer-polling.service';
 import { PaymentHistoryPollingService } from './services/payment-history-polling.service';
 import { SharedService } from './services/shared.service';
@@ -35,6 +35,11 @@ import { ConnectionErrorType } from './models/connection-errors';
 import { MockMatDialog } from '../testing/mock-mat-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ClipboardModule } from 'ngx-clipboard';
+import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
+import { HeaderComponent } from './components/header/header.component';
+import { SearchFieldComponent } from './components/search-field/search-field.component';
+import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
+import { TokenPollingService } from './services/token-polling.service';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -51,6 +56,10 @@ describe('AppComponent', () => {
         raidenServiceMock.network$ = networkSubject.asObservable();
         // @ts-ignore
         raidenServiceMock.paymentInitiated$ = NEVER;
+        // @ts-ignore
+        raidenServiceMock.balance$ = of('0');
+        // @ts-ignore
+        raidenServiceMock.raidenAddress$ = of(createAddress());
 
         const pendingTransferPollingMock = stub<
             PendingTransferPollingService
@@ -66,11 +75,19 @@ describe('AppComponent', () => {
         // @ts-ignore
         channelPollingMock.channels$ = of([]);
 
+        const tokenPollingMock = stub<TokenPollingService>();
+        // @ts-ignore
+        tokenPollingMock.tokens$ = of([]);
+
         TestBed.configureTestingModule({
             declarations: [
                 AppComponent,
                 NotificationPanelComponent,
                 NotificationItemComponent,
+                NavigationEntryComponent,
+                HeaderComponent,
+                SearchFieldComponent,
+                DisplayDecimalsPipe,
             ],
             providers: [
                 {
@@ -98,6 +115,10 @@ describe('AppComponent', () => {
                 TestProviders.MockMatDialog(),
                 SharedService,
                 TestProviders.AddressBookStubProvider(),
+                {
+                    provide: TokenPollingService,
+                    useValue: tokenPollingMock,
+                },
             ],
             imports: [
                 MaterialComponentsModule,

@@ -6,7 +6,7 @@ import {
     tick,
     flush,
 } from '@angular/core/testing';
-import { HistoryTableComponent } from './history-table.component';
+import { HistoryTableComponent, HistoryEvent } from './history-table.component';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
@@ -18,16 +18,19 @@ import {
     createToken,
     createTestPaymentEvents,
     createPaymentEvent,
+    createPendingTransfer,
 } from '../../../testing/test-data';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { PaymentEvent } from '../../models/payment-event';
 import { stub } from '../../../testing/stub';
 import { SharedService } from '../../services/shared.service';
 import { AddressBookService } from '../../services/address-book.service';
 import { Contacts } from '../../models/contact';
 import { ClipboardModule } from 'ngx-clipboard';
+import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
+import { PendingTransfer } from '../../models/pending-transfer';
 
 describe('HistoryTableComponent', () => {
     let component: HistoryTableComponent;
@@ -38,13 +41,52 @@ describe('HistoryTableComponent', () => {
     const history = createTestPaymentEvents(3, token1).concat(
         createTestPaymentEvents(3, token2)
     );
+    const pendingTransfer1 = createPendingTransfer({
+        role: 'initiator',
+        userToken: token1,
+    });
+    const pendingTransfer2 = createPendingTransfer({
+        role: 'target',
+        userToken: token1,
+    });
     let historySubject: BehaviorSubject<PaymentEvent[]>;
+    let pendingTransfersSubject: BehaviorSubject<PendingTransfer[]>;
+
+    function pendingTransferToHistoryEvent(
+        pendingTransfer: PendingTransfer
+    ): HistoryEvent {
+        const initiator = pendingTransfer.role === 'initiator';
+        const event: HistoryEvent = {
+            target: pendingTransfer.target,
+            initiator: pendingTransfer.initiator,
+            event: initiator
+                ? 'EventPaymentSentSuccess'
+                : 'EventPaymentReceivedSuccess',
+            amount: pendingTransfer.locked_amount,
+            identifier: pendingTransfer.payment_identifier,
+            log_time: '',
+            token_address: pendingTransfer.token_address,
+            userToken: pendingTransfer.userToken,
+            pending: true,
+        };
+        return event;
+    }
 
     beforeEach(async(() => {
         const historyPollingMock = stub<PaymentHistoryPollingService>();
         historySubject = new BehaviorSubject(history);
         // @ts-ignore
         historyPollingMock.paymentHistory$ = historySubject.asObservable();
+
+        const pendingTransferPollingMock = stub<
+            PendingTransferPollingService
+        >();
+        pendingTransfersSubject = new BehaviorSubject([
+            pendingTransfer1,
+            pendingTransfer2,
+        ]);
+        // @ts-ignore
+        pendingTransferPollingMock.pendingTransfers$ = pendingTransfersSubject.asObservable();
 
         TestBed.configureTestingModule({
             declarations: [
@@ -60,6 +102,11 @@ describe('HistoryTableComponent', () => {
                     useValue: historyPollingMock,
                 },
                 SharedService,
+                TestProviders.MockRaidenConfigProvider(),
+                {
+                    provide: PendingTransferPollingService,
+                    useValue: pendingTransferPollingMock,
+                },
             ],
             imports: [
                 MaterialComponentsModule,
@@ -89,8 +136,18 @@ describe('HistoryTableComponent', () => {
     it('should not show failed payment events', () => {
         const errorEvent = createPaymentEvent('EventPaymentSentFailed');
         historySubject.next([errorEvent]);
+        pendingTransfersSubject.next([]);
         fixture.detectChanges();
         expect(component.visibleHistory.length).toBe(0);
+    });
+
+    it('should show pending transfers in the history', () => {
+        expect(component.visibleHistory[0]).toEqual(
+            pendingTransferToHistoryEvent(pendingTransfer2)
+        );
+        expect(component.visibleHistory[1]).toEqual(
+            pendingTransferToHistoryEvent(pendingTransfer1)
+        );
     });
 
     it('should filter the events by the selected token', () => {

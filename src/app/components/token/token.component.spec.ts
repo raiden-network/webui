@@ -9,9 +9,18 @@ import { MaterialComponentsModule } from '../../modules/material-components/mate
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { createToken, createAddress } from '../../../testing/test-data';
+import {
+    createToken,
+    createAddress,
+    createTestChannels,
+    createTestTokens,
+} from '../../../testing/test-data';
 import { By } from '@angular/platform-browser';
-import { clickElement } from '../../../testing/interaction-helper';
+import {
+    clickElement,
+    mockOpenMatSelect,
+    mockMatSelectByIndex,
+} from '../../../testing/interaction-helper';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -19,7 +28,7 @@ import {
     PaymentDialogPayload,
 } from '../payment-dialog/payment-dialog.component';
 import BigNumber from 'bignumber.js';
-import { of } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 import {
     ConnectionManagerDialogPayload,
     ConnectionManagerDialogComponent,
@@ -30,6 +39,12 @@ import {
     ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { ClipboardModule } from 'ngx-clipboard';
+import { SelectedTokenService } from '../../services/selected-token.service';
+import { Channel } from '../../models/channel';
+import { ChannelPollingService } from '../../services/channel-polling.service';
+import { stub } from '../../../testing/stub';
+import { TokenPipe } from '../../pipes/token.pipe';
+import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 
 describe('TokenComponent', () => {
     let component: TokenComponent;
@@ -37,18 +52,47 @@ describe('TokenComponent', () => {
 
     let dialog: MockMatDialog;
     let raidenService: RaidenService;
-    const token = createToken();
+
+    const tokens = createTestTokens(6);
+    const connectedToken = tokens[0];
+    const unconnectedToken = tokens[1];
+    let channelsSubject: BehaviorSubject<Channel[]>;
 
     beforeEach(async(() => {
+        const tokenPollingMock = stub<TokenPollingService>();
+        // @ts-ignore
+        tokenPollingMock.tokens$ = of(tokens);
+        tokenPollingMock.refresh = () => {};
+
+        const channelPollingMock = stub<ChannelPollingService>();
+        channelsSubject = new BehaviorSubject(createTestChannels(1, tokens[0]));
+        // @ts-ignore
+        channelPollingMock.channels$ = channelsSubject.asObservable();
+        channelPollingMock.refresh = () => {};
+
         TestBed.configureTestingModule({
-            declarations: [TokenComponent, DecimalPipe, DisplayDecimalsPipe],
+            declarations: [
+                TokenComponent,
+                DecimalPipe,
+                DisplayDecimalsPipe,
+                TokenPipe,
+            ],
             providers: [
                 RaidenService,
-                TokenPollingService,
                 TestProviders.MockRaidenConfigProvider(),
                 PendingTransferPollingService,
                 TestProviders.MockMatDialog(),
                 TestProviders.AddressBookStubProvider(),
+                {
+                    provide: ChannelPollingService,
+                    useValue: channelPollingMock,
+                },
+                {
+                    provide: TokenPollingService,
+                    useValue: tokenPollingMock,
+                },
+                SelectedTokenService,
+                TestProviders.MockRaidenConfigProvider(),
             ],
             imports: [
                 RaidenIconsModule,
@@ -63,7 +107,6 @@ describe('TokenComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(TokenComponent);
         component = fixture.componentInstance;
-        component.selected = true;
 
         dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         raidenService = TestBed.inject(RaidenService);
@@ -71,19 +114,76 @@ describe('TokenComponent', () => {
 
     describe('as all networks view', () => {
         beforeEach(() => {
-            component.allNetworksView = true;
-            component.openChannels = 1;
             fixture.detectChanges();
         });
 
         it('should create', () => {
             expect(component).toBeTruthy();
+            fixture.destroy();
+        });
+
+        it('should be able to select a token', () => {
+            const selectedTokenService = TestBed.inject(SelectedTokenService);
+            const setTokenSpy = spyOn(
+                selectedTokenService,
+                'setToken'
+            ).and.callThrough();
+
+            mockOpenMatSelect(fixture.debugElement);
+            fixture.detectChanges();
+
+            mockMatSelectByIndex(fixture.debugElement, 2);
+            fixture.detectChanges();
+
+            expect(setTokenSpy).toHaveBeenCalledTimes(1);
+            expect(setTokenSpy).toHaveBeenCalledWith(tokens[0]);
+        });
+
+        it('should open register dialog', () => {
+            const tokenAddress = createAddress();
+            const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+            dialog.returns = () => tokenAddress;
+            const registerSpy = spyOn(
+                raidenService,
+                'registerToken'
+            ).and.returnValue(of(null));
+
+            mockOpenMatSelect(fixture.debugElement);
+            fixture.detectChanges();
+
+            mockMatSelectByIndex(fixture.debugElement, 0);
+            fixture.detectChanges();
+
+            expect(dialogSpy).toHaveBeenCalledTimes(1);
+            expect(dialogSpy).toHaveBeenCalledWith(RegisterDialogComponent, {
+                width: '360px',
+            });
+            expect(registerSpy).toHaveBeenCalledTimes(1);
+            expect(registerSpy).toHaveBeenCalledWith(tokenAddress);
+        });
+
+        it('should not register token if dialog is cancelled', () => {
+            const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+            dialog.returns = () => null;
+            const registerSpy = spyOn(
+                raidenService,
+                'registerToken'
+            ).and.returnValue(of(null));
+
+            mockOpenMatSelect(fixture.debugElement);
+            fixture.detectChanges();
+
+            mockMatSelectByIndex(fixture.debugElement, 0);
+            fixture.detectChanges();
+
+            expect(dialogSpy).toHaveBeenCalledTimes(1);
+            expect(registerSpy).toHaveBeenCalledTimes(0);
         });
 
         it('should open payment dialog with no token network selected', () => {
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             const dialogResult: PaymentDialogPayload = {
-                tokenAddress: token.address,
+                tokenAddress: connectedToken.address,
                 targetAddress: createAddress(),
                 amount: new BigNumber(10),
             };
@@ -112,23 +212,18 @@ describe('TokenComponent', () => {
             );
         });
 
-        it('should not have a quick connect button', () => {
-            const button = fixture.debugElement.query(By.css('#quick-connect'));
-            expect(button).toBeFalsy();
-        });
-
-        it('should not have a options menu', () => {
+        it('should not have an options menu', () => {
             const button = fixture.debugElement.query(By.css('#options'));
             expect(button).toBeFalsy();
         });
 
         it('should open quick connect dialog with token undefined when no channels are open', () => {
-            component.openChannels = 0;
+            channelsSubject.next([]);
             fixture.detectChanges();
 
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             const dialogResult: ConnectionManagerDialogPayload = {
-                token: token,
+                token: unconnectedToken,
                 funds: new BigNumber(10),
             };
             spyOn(dialog, 'returns').and.returnValues(true, dialogResult);
@@ -167,20 +262,41 @@ describe('TokenComponent', () => {
     });
 
     describe('as token view', () => {
+        let selectedTokenService: SelectedTokenService;
+
         beforeEach(() => {
-            component.currentSelection = token;
-            component.openChannels = 1;
+            selectedTokenService = TestBed.inject(SelectedTokenService);
+            selectedTokenService.setToken(connectedToken);
             fixture.detectChanges();
         });
 
         it('should create', () => {
             expect(component).toBeTruthy();
+            fixture.destroy();
+        });
+
+        it('should be able to select the all networks view', () => {
+            const setTokenSpy = spyOn(
+                selectedTokenService,
+                'setToken'
+            ).and.callThrough();
+
+            mockOpenMatSelect(fixture.debugElement);
+            fixture.detectChanges();
+
+            mockMatSelectByIndex(fixture.debugElement, 1);
+            fixture.detectChanges();
+
+            // A bug in Angular Material leads to calling the function twice
+            // See https://github.com/angular/components/issues/13579
+            expect(setTokenSpy).toHaveBeenCalledTimes(2);
+            expect(setTokenSpy).toHaveBeenCalledWith(undefined);
         });
 
         it('should open payment dialog with token network selected', () => {
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             const dialogResult: PaymentDialogPayload = {
-                tokenAddress: token.address,
+                tokenAddress: connectedToken.address,
                 targetAddress: createAddress(),
                 amount: new BigNumber(10),
             };
@@ -192,7 +308,7 @@ describe('TokenComponent', () => {
             clickElement(fixture.debugElement, '#transfer');
 
             const payload: PaymentDialogPayload = {
-                tokenAddress: token.address,
+                tokenAddress: connectedToken.address,
                 targetAddress: '',
                 amount: undefined,
             };
@@ -223,12 +339,12 @@ describe('TokenComponent', () => {
         });
 
         it('should open quick connect dialog when no channels are open', () => {
-            component.openChannels = 0;
+            selectedTokenService.setToken(unconnectedToken);
             fixture.detectChanges();
 
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             const dialogResult: ConnectionManagerDialogPayload = {
-                token: token,
+                token: unconnectedToken,
                 funds: new BigNumber(10),
             };
             spyOn(dialog, 'returns').and.returnValues(true, dialogResult);
@@ -241,11 +357,11 @@ describe('TokenComponent', () => {
             fixture.detectChanges();
 
             const confirmationPayload: ConfirmationDialogPayload = {
-                title: `No open ${token.symbol} channels`,
-                message: `Do you want to use quick connect to automatically open ${token.symbol} channels?`,
+                title: `No open ${unconnectedToken.symbol} channels`,
+                message: `Do you want to use quick connect to automatically open ${unconnectedToken.symbol} channels?`,
             };
             const connectionManagerPayload: ConnectionManagerDialogPayload = {
-                token: token,
+                token: unconnectedToken,
                 funds: undefined,
             };
             expect(dialogSpy).toHaveBeenCalledTimes(2);
@@ -271,7 +387,7 @@ describe('TokenComponent', () => {
         });
 
         it('should not open quick connect dialog when user cancels confirmation', () => {
-            component.openChannels = 0;
+            selectedTokenService.setToken(unconnectedToken);
             fixture.detectChanges();
 
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
@@ -284,7 +400,7 @@ describe('TokenComponent', () => {
         });
 
         it('should not call the raiden service if quick connect is cancelled', () => {
-            component.openChannels = 0;
+            selectedTokenService.setToken(unconnectedToken);
             fixture.detectChanges();
 
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
@@ -302,7 +418,6 @@ describe('TokenComponent', () => {
         });
 
         it('should mint 0.5 tokens when token has 18 decimals', () => {
-            component.onMainnet = false;
             clickElement(fixture.debugElement, '#options');
             fixture.detectChanges();
 
@@ -312,16 +427,15 @@ describe('TokenComponent', () => {
             clickElement(fixture.debugElement, '#mint');
             expect(mintSpy).toHaveBeenCalledTimes(1);
             expect(mintSpy).toHaveBeenCalledWith(
-                token,
+                connectedToken,
                 raidenService.raidenAddress,
                 new BigNumber(500000000000000000)
             );
         });
 
         it('should mint 5000 tokens when token has no decimals', () => {
-            component.onMainnet = false;
             const noDecimalsToken = createToken({ decimals: 0 });
-            component.currentSelection = noDecimalsToken;
+            selectedTokenService.setToken(noDecimalsToken);
             fixture.detectChanges();
 
             clickElement(fixture.debugElement, '#options');
@@ -352,7 +466,7 @@ describe('TokenComponent', () => {
 
             const payload: ConfirmationDialogPayload = {
                 title: 'Leave Token Network',
-                message: `Are you sure you want to close and settle all ${token.symbol} channels in ${token.name} network?`,
+                message: `Are you sure you want to close and settle all ${connectedToken.symbol} channels in ${connectedToken.name} network?`,
             };
             expect(dialogSpy).toHaveBeenCalledTimes(1);
             expect(dialogSpy).toHaveBeenCalledWith(
@@ -363,7 +477,7 @@ describe('TokenComponent', () => {
                 }
             );
             expect(leaveSpy).toHaveBeenCalledTimes(1);
-            expect(leaveSpy).toHaveBeenCalledWith(token);
+            expect(leaveSpy).toHaveBeenCalledWith(connectedToken);
         });
 
         it('should not leave token network if dialog is cancelled', () => {

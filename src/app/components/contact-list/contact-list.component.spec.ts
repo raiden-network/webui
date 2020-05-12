@@ -32,6 +32,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { UploadChecks } from '../../shared/upload-checks';
 import { UiMessage } from '../../models/notification';
 import { of } from 'rxjs';
+import { ClipboardModule } from 'ngx-clipboard';
 
 function createMockReader(result: {}) {
     return {
@@ -94,6 +95,7 @@ describe('ContactListComponent', () => {
                 RaidenIconsModule,
                 HttpClientTestingModule,
                 ToastrModule.forRoot(),
+                ClipboardModule,
             ],
         }).compileComponents();
     }));
@@ -104,280 +106,294 @@ describe('ContactListComponent', () => {
 
         addressBookService = TestBed.inject(AddressBookService);
         addressBookService.getObservableArray = () => of(contacts);
-
-        fixture.detectChanges();
     });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-        fixture.destroy();
-    });
-
-    it('should display 2 contacts by default', () => {
-        expect(component.visibleContacts.length).toBe(2);
-    });
-
-    it('should be able to display all contacts', () => {
-        clickElement(fixture.debugElement, '#show-all');
-        fixture.detectChanges();
-        expect(component.visibleContacts.length).toBe(contacts.length);
-    });
-
-    it('should select a contact on click', () => {
-        const contactElement = fixture.debugElement.query(
-            By.directive(ContactComponent)
-        );
-        clickElement(contactElement, '.card');
-        fixture.detectChanges();
-        expect(component.selectedContactAddress).toBe(contacts[0].address);
-    });
-
-    it('should deselect the contact on a second click', () => {
-        const contactElement = fixture.debugElement.query(
-            By.directive(ContactComponent)
-        );
-        clickElement(contactElement, '.card');
-        fixture.detectChanges();
-        clickElement(contactElement, '.card');
-        fixture.detectChanges();
-        expect(component.selectedContactAddress).toBe('');
-    });
-
-    it('should deselect the contact when clicked elsewhere', () => {
-        const sharedService = TestBed.inject(SharedService);
-        const contactElement = fixture.debugElement.query(
-            By.directive(ContactComponent)
-        );
-        clickElement(contactElement, '.card');
-        fixture.detectChanges();
-        sharedService.newGlobalClick(document.createElement('div'));
-        fixture.detectChanges();
-        expect(component.selectedContactAddress).toBe('');
-    });
-
-    it('should filter the contacts by the search value', fakeAsync(() => {
-        const sharedService = TestBed.inject(SharedService);
-        sharedService.setSearchValue(contacts[1].label);
-        tick(1000);
-        fixture.detectChanges();
-
-        expect(component.visibleContacts.length).toBe(1);
-        expect(component.visibleContacts[0]).toEqual(contacts[1]);
-        flush();
-    }));
-
-    it('should open add contact dialog', () => {
-        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
-        const dialogSpy = spyOn(dialog, 'open').and.callThrough();
-        const dialogResult: Contact = {
-            address: createAddress(),
-            label: 'New test account',
-        };
-        dialog.returns = () => dialogResult;
-        const saveSpy = spyOn(addressBookService, 'save');
-        clickElement(fixture.debugElement, '#add');
-
-        const payload: AddEditContactDialogPayload = {
-            address: '',
-            label: '',
-            edit: false,
-        };
-        expect(dialogSpy).toHaveBeenCalledTimes(1);
-        expect(dialogSpy).toHaveBeenCalledWith(AddEditContactDialogComponent, {
-            data: payload,
-            width: '360px',
+    describe('not showing all contacts', () => {
+        beforeEach(() => {
+            fixture.detectChanges();
         });
-        expect(saveSpy).toHaveBeenCalledTimes(1);
-        expect(saveSpy).toHaveBeenCalledWith(dialogResult);
-    });
 
-    it('should download the contacts as a json file', () => {
-        clickElement(fixture.debugElement, '#options');
-        fixture.detectChanges();
-
-        const elementSpy = jasmine.createSpyObj('a', [
-            'dispatchEvent',
-            'setAttribute',
-        ]);
-        elementSpy.setAttribute = function (attr, value) {
-            this[attr] = value;
-        };
-        const createElementSpy = spyOn(
-            document,
-            'createElement'
-        ).and.returnValue(elementSpy);
-        addressBookService.createExportURL = () =>
-            'blob:http://localhost/mockpath';
-
-        clickElement(fixture.debugElement, '#export');
-        fixture.detectChanges();
-
-        expect(createElementSpy).toHaveBeenCalledTimes(1);
-        expect(createElementSpy).toHaveBeenCalledWith('a');
-        expect(elementSpy.href).toBe('blob:http://localhost/mockpath');
-        expect(elementSpy.target).toBe('_blank');
-        expect(elementSpy.download).toBe('address-book.json');
-        expect(elementSpy.dispatchEvent).toHaveBeenCalledTimes(1);
-        expect(elementSpy.dispatchEvent).toHaveBeenCalledWith(
-            new MouseEvent('click')
-        );
-    });
-
-    it('should import the uploaded json contacts', () => {
-        const reader = window['FileReader'];
-
-        const result: Contacts = {};
-        const data = createTestContacts(2);
-        data.forEach((contact) => {
-            result[contact.address] = contact.label;
+        it('should create', () => {
+            expect(component).toBeTruthy();
+            fixture.destroy();
         });
-        // @ts-ignore
-        window['FileReader'] = class {
-            constructor() {
-                return createMockReader(result);
-            }
-        };
-        const fileList = createMockFileList('address_book.json');
 
-        const storeSpy = spyOn(addressBookService, 'store');
-        component.filesSelected(fileList);
+        it('should display 4 contacts by default', () => {
+            expect(component.visibleContacts.length).toBe(4);
+        });
 
-        expect(storeSpy).toHaveBeenCalledTimes(1);
-        expect(storeSpy).toHaveBeenCalledWith(result, true);
+        it('should select a contact on click', () => {
+            const contactElement = fixture.debugElement.query(
+                By.directive(ContactComponent)
+            );
+            clickElement(contactElement, '.card');
+            fixture.detectChanges();
+            expect(component.selectedContactAddress).toBe(contacts[0].address);
+        });
 
-        window['FileReader'] = reader;
+        it('should deselect the contact on a second click', () => {
+            const contactElement = fixture.debugElement.query(
+                By.directive(ContactComponent)
+            );
+            clickElement(contactElement, '.card');
+            fixture.detectChanges();
+            clickElement(contactElement, '.card');
+            fixture.detectChanges();
+            expect(component.selectedContactAddress).toBe('');
+        });
+
+        it('should deselect the contact when clicked elsewhere', () => {
+            const sharedService = TestBed.inject(SharedService);
+            const contactElement = fixture.debugElement.query(
+                By.directive(ContactComponent)
+            );
+            clickElement(contactElement, '.card');
+            fixture.detectChanges();
+            sharedService.newGlobalClick(document.createElement('div'));
+            fixture.detectChanges();
+            expect(component.selectedContactAddress).toBe('');
+        });
+
+        it('should filter the contacts by the search value', fakeAsync(() => {
+            const sharedService = TestBed.inject(SharedService);
+            sharedService.setSearchValue(contacts[1].label);
+            tick(1000);
+            fixture.detectChanges();
+
+            expect(component.visibleContacts.length).toBe(1);
+            expect(component.visibleContacts[0]).toEqual(contacts[1]);
+            flush();
+        }));
+
+        it('should open add contact dialog', () => {
+            const dialog = (<unknown>(
+                TestBed.inject(MatDialog)
+            )) as MockMatDialog;
+            const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+            const dialogResult: Contact = {
+                address: createAddress(),
+                label: 'New test account',
+            };
+            dialog.returns = () => dialogResult;
+            const saveSpy = spyOn(addressBookService, 'save');
+            clickElement(fixture.debugElement, '#add');
+
+            const payload: AddEditContactDialogPayload = {
+                address: '',
+                label: '',
+                edit: false,
+            };
+            expect(dialogSpy).toHaveBeenCalledTimes(1);
+            expect(dialogSpy).toHaveBeenCalledWith(
+                AddEditContactDialogComponent,
+                {
+                    data: payload,
+                    width: '360px',
+                }
+            );
+            expect(saveSpy).toHaveBeenCalledTimes(1);
+            expect(saveSpy).toHaveBeenCalledWith(dialogResult);
+        });
+
+        it('should download the contacts as a json file', () => {
+            clickElement(fixture.debugElement, '#options');
+            fixture.detectChanges();
+
+            const elementSpy = jasmine.createSpyObj('a', [
+                'dispatchEvent',
+                'setAttribute',
+            ]);
+            elementSpy.setAttribute = function (attr, value) {
+                this[attr] = value;
+            };
+            const createElementSpy = spyOn(
+                document,
+                'createElement'
+            ).and.returnValue(elementSpy);
+            addressBookService.createExportURL = () =>
+                'blob:http://localhost/mockpath';
+
+            clickElement(fixture.debugElement, '#export');
+            fixture.detectChanges();
+
+            expect(createElementSpy).toHaveBeenCalledTimes(1);
+            expect(createElementSpy).toHaveBeenCalledWith('a');
+            expect(elementSpy.href).toBe('blob:http://localhost/mockpath');
+            expect(elementSpy.target).toBe('_blank');
+            expect(elementSpy.download).toBe('address-book.json');
+            expect(elementSpy.dispatchEvent).toHaveBeenCalledTimes(1);
+            expect(elementSpy.dispatchEvent).toHaveBeenCalledWith(
+                new MouseEvent('click')
+            );
+        });
+
+        it('should import the uploaded json contacts', () => {
+            const reader = window['FileReader'];
+
+            const result: Contacts = {};
+            const data = createTestContacts(2);
+            data.forEach((contact) => {
+                result[contact.address] = contact.label;
+            });
+            // @ts-ignore
+            window['FileReader'] = class {
+                constructor() {
+                    return createMockReader(result);
+                }
+            };
+            const fileList = createMockFileList('address_book.json');
+
+            const storeSpy = spyOn(addressBookService, 'store');
+            component.filesSelected(fileList);
+
+            expect(storeSpy).toHaveBeenCalledTimes(1);
+            expect(storeSpy).toHaveBeenCalledWith(result, true);
+
+            window['FileReader'] = reader;
+        });
+
+        it('should show an error if invalid json content is parsed', () => {
+            const reader = window['FileReader'];
+
+            const result = { fake: true, invalid: 'yes' };
+            // @ts-ignore
+            window['FileReader'] = class {
+                constructor() {
+                    return createMockReader(result);
+                }
+            };
+            const fileList = createMockFileList('address_book.json');
+
+            const notificationService = TestBed.inject(NotificationService);
+            const storeSpy = spyOn(addressBookService, 'store');
+            const notificationSpy = spyOn(
+                notificationService,
+                'addErrorNotification'
+            );
+            component.filesSelected(fileList);
+
+            const errorMessage: UiMessage = {
+                title: 'Contacts import',
+                description: 'Invalid file format',
+                icon: 'error-mark',
+            };
+            expect(storeSpy).toHaveBeenCalledTimes(0);
+            expect(notificationSpy).toHaveBeenCalledTimes(1);
+            expect(notificationSpy).toHaveBeenCalledWith(errorMessage);
+
+            window['FileReader'] = reader;
+        });
+
+        it('should show an error if wrong file extension is passed', () => {
+            const reader = window['FileReader'];
+
+            const result: Contacts = {};
+            // @ts-ignore
+            window['FileReader'] = class {
+                constructor() {
+                    return createMockReader(result);
+                }
+            };
+            const fileList = createMockFileList('image.png');
+
+            const notificationService = TestBed.inject(NotificationService);
+            const storeSpy = spyOn(addressBookService, 'store');
+            const notificationSpy = spyOn(
+                notificationService,
+                'addErrorNotification'
+            );
+            component.filesSelected(fileList);
+
+            const errorMessage: UiMessage = {
+                title: 'Contacts import',
+                description: 'Only json files allowed',
+                icon: 'error-mark',
+            };
+            expect(storeSpy).toHaveBeenCalledTimes(0);
+            expect(notificationSpy).toHaveBeenCalledTimes(1);
+            expect(notificationSpy).toHaveBeenCalledWith(errorMessage);
+
+            window['FileReader'] = reader;
+        });
+
+        it('should show an error if multiple files are selected for upload', () => {
+            const reader = window['FileReader'];
+
+            const result: Contacts = {};
+            // @ts-ignore
+            window['FileReader'] = class {
+                constructor() {
+                    return createMockReader(result);
+                }
+            };
+            const fileList = createMockFileList(
+                'address_book.json',
+                'more_address.json'
+            );
+
+            const notificationService = TestBed.inject(NotificationService);
+            const storeSpy = spyOn(addressBookService, 'store');
+            const notificationSpy = spyOn(
+                notificationService,
+                'addErrorNotification'
+            );
+            component.filesSelected(fileList);
+
+            const errorMessage: UiMessage = {
+                title: 'Contacts import',
+                description: 'Only single file supported',
+                icon: 'error-mark',
+            };
+            expect(storeSpy).toHaveBeenCalledTimes(0);
+            expect(notificationSpy).toHaveBeenCalledTimes(1);
+            expect(notificationSpy).toHaveBeenCalledWith(errorMessage);
+
+            window['FileReader'] = reader;
+        });
+
+        it('should show an error if selected file exceeds the upload limit', () => {
+            const reader = window['FileReader'];
+
+            const result: Contacts = {};
+            // @ts-ignore
+            window['FileReader'] = class {
+                constructor() {
+                    return createMockReader(result);
+                }
+            };
+            const fileList = createMockFileList('address_book.json');
+            // @ts-ignore
+            fileList.item(0).size = UploadChecks.MAX_UPLOAD_SIZE + 1;
+
+            const notificationService = TestBed.inject(NotificationService);
+            const storeSpy = spyOn(addressBookService, 'store');
+            const notificationSpy = spyOn(
+                notificationService,
+                'addErrorNotification'
+            );
+            component.filesSelected(fileList);
+
+            const errorMessage: UiMessage = {
+                title: 'Contacts import',
+                description: `Max allowed size of ${UploadChecks.MAX_UPLOAD_SIZE} bytes exceeded`,
+                icon: 'error-mark',
+            };
+            expect(storeSpy).toHaveBeenCalledTimes(0);
+            expect(notificationSpy).toHaveBeenCalledTimes(1);
+            expect(notificationSpy).toHaveBeenCalledWith(errorMessage);
+
+            window['FileReader'] = reader;
+        });
     });
 
-    it('should show an error if invalid json content is parsed', () => {
-        const reader = window['FileReader'];
+    describe('showing all contacts', () => {
+        beforeEach(() => {
+            component.showAll = true;
+            fixture.detectChanges();
+        });
 
-        const result = { fake: true, invalid: 'yes' };
-        // @ts-ignore
-        window['FileReader'] = class {
-            constructor() {
-                return createMockReader(result);
-            }
-        };
-        const fileList = createMockFileList('address_book.json');
-
-        const notificationService = TestBed.inject(NotificationService);
-        const storeSpy = spyOn(addressBookService, 'store');
-        const notificationSpy = spyOn(
-            notificationService,
-            'addErrorNotification'
-        );
-        component.filesSelected(fileList);
-
-        const errorMessage: UiMessage = {
-            title: 'Contacts import',
-            description: 'Invalid file format',
-            icon: 'error-mark',
-        };
-        expect(storeSpy).toHaveBeenCalledTimes(0);
-        expect(notificationSpy).toHaveBeenCalledTimes(1);
-        expect(notificationSpy).toHaveBeenCalledWith(errorMessage);
-
-        window['FileReader'] = reader;
-    });
-
-    it('should show an error if wrong file extension is passed', () => {
-        const reader = window['FileReader'];
-
-        const result: Contacts = {};
-        // @ts-ignore
-        window['FileReader'] = class {
-            constructor() {
-                return createMockReader(result);
-            }
-        };
-        const fileList = createMockFileList('image.png');
-
-        const notificationService = TestBed.inject(NotificationService);
-        const storeSpy = spyOn(addressBookService, 'store');
-        const notificationSpy = spyOn(
-            notificationService,
-            'addErrorNotification'
-        );
-        component.filesSelected(fileList);
-
-        const errorMessage: UiMessage = {
-            title: 'Contacts import',
-            description: 'Only json files allowed',
-            icon: 'error-mark',
-        };
-        expect(storeSpy).toHaveBeenCalledTimes(0);
-        expect(notificationSpy).toHaveBeenCalledTimes(1);
-        expect(notificationSpy).toHaveBeenCalledWith(errorMessage);
-
-        window['FileReader'] = reader;
-    });
-
-    it('should show an error if multiple files are selected for upload', () => {
-        const reader = window['FileReader'];
-
-        const result: Contacts = {};
-        // @ts-ignore
-        window['FileReader'] = class {
-            constructor() {
-                return createMockReader(result);
-            }
-        };
-        const fileList = createMockFileList(
-            'address_book.json',
-            'more_address.json'
-        );
-
-        const notificationService = TestBed.inject(NotificationService);
-        const storeSpy = spyOn(addressBookService, 'store');
-        const notificationSpy = spyOn(
-            notificationService,
-            'addErrorNotification'
-        );
-        component.filesSelected(fileList);
-
-        const errorMessage: UiMessage = {
-            title: 'Contacts import',
-            description: 'Only single file supported',
-            icon: 'error-mark',
-        };
-        expect(storeSpy).toHaveBeenCalledTimes(0);
-        expect(notificationSpy).toHaveBeenCalledTimes(1);
-        expect(notificationSpy).toHaveBeenCalledWith(errorMessage);
-
-        window['FileReader'] = reader;
-    });
-
-    it('should show an error if selected file exceeds the upload limit', () => {
-        const reader = window['FileReader'];
-
-        const result: Contacts = {};
-        // @ts-ignore
-        window['FileReader'] = class {
-            constructor() {
-                return createMockReader(result);
-            }
-        };
-        const fileList = createMockFileList('address_book.json');
-        // @ts-ignore
-        fileList.item(0).size = UploadChecks.MAX_UPLOAD_SIZE + 1;
-
-        const notificationService = TestBed.inject(NotificationService);
-        const storeSpy = spyOn(addressBookService, 'store');
-        const notificationSpy = spyOn(
-            notificationService,
-            'addErrorNotification'
-        );
-        component.filesSelected(fileList);
-
-        const errorMessage: UiMessage = {
-            title: 'Contacts import',
-            description: `Max allowed size of ${UploadChecks.MAX_UPLOAD_SIZE} bytes exceeded`,
-            icon: 'error-mark',
-        };
-        expect(storeSpy).toHaveBeenCalledTimes(0);
-        expect(notificationSpy).toHaveBeenCalledTimes(1);
-        expect(notificationSpy).toHaveBeenCalledWith(errorMessage);
-
-        window['FileReader'] = reader;
+        it('should display all contacts', () => {
+            expect(component.visibleContacts.length).toBe(contacts.length);
+        });
     });
 });

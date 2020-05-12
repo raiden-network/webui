@@ -1,44 +1,54 @@
-import { UserToken } from '../models/usertoken';
 import { TokenPipe } from './token.pipe';
-import BigNumber from 'bignumber.js';
+import { TestBed, async } from '@angular/core/testing';
+import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
+import { createToken } from '../../testing/test-data';
+import { UserToken } from '../models/usertoken';
 
 describe('TokenPipe', () => {
     let pipe: TokenPipe;
-
+    let sanitizer: DomSanitizer;
     let token: UserToken;
 
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [BrowserModule],
+        });
+    }));
+
     beforeEach(() => {
-        pipe = new TokenPipe();
-        token = {
-            address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-            symbol: 'TST',
-            name: 'Test Suite Token',
-            balance: new BigNumber(20),
-            decimals: 8,
-        };
+        sanitizer = TestBed.inject(DomSanitizer);
+        pipe = new TokenPipe(sanitizer);
+        token = createToken();
     });
 
     it('create an instance', () => {
         expect(pipe).toBeTruthy();
     });
 
-    it('should convert a user token to a string representation', () => {
-        const tokenString = pipe.transform(token);
-        expect(tokenString).toBe(
-            `[${token.symbol}] ${token.name} (${token.address})`
+    it('should convert a user token to a html representation', () => {
+        const tokenHtml = pipe.transform(token);
+        const expected = sanitizer.bypassSecurityTrustHtml(
+            `<span class="mat-option-text"><span>${token.symbol}</span><span>${token.name}</span><span>${token.address}</span></span>`
         );
+        expect(tokenHtml).toEqual(expected);
     });
 
     it('should have the following format if symbol is missing', () => {
         token.symbol = null;
-        const tokenString = pipe.transform(token);
-        expect(tokenString).toBe(`${token.name} (${token.address})`);
+        const tokenHtml = pipe.transform(token);
+        const expected = sanitizer.bypassSecurityTrustHtml(
+            `<span class="mat-option-text"><span>${token.name}</span><span>${token.address}</span></span>`
+        );
+        expect(tokenHtml).toEqual(expected);
     });
 
     it('should have the following format if only address is available', () => {
         token.symbol = null;
         token.name = null;
-        const tokenString = pipe.transform(token);
-        expect(tokenString).toBe(token.address);
+        const tokenHtml = pipe.transform(token);
+        const expected = sanitizer.bypassSecurityTrustHtml(
+            `<span class="mat-option-text"><span></span><span>${token.address}</span></span>`
+        );
+        expect(tokenHtml).toEqual(expected);
     });
 });

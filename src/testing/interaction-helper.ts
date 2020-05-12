@@ -44,8 +44,12 @@ export function mockOpenMatSelect(element: DebugElement) {
 }
 
 export function mockMatSelectFirst(element: DebugElement) {
-    const option = element.query(By.css('.mat-option'))
-        .nativeElement as HTMLElement;
+    mockMatSelectByIndex(element, 0);
+}
+
+export function mockMatSelectByIndex(element: DebugElement, index: number) {
+    const optionElements = element.queryAll(By.css('.mat-option'));
+    const option = optionElements[index].nativeElement as HTMLElement;
     option.focus();
     option.click();
 }

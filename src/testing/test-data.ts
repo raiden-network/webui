@@ -166,7 +166,7 @@ export function createPendingTransfer(obj: any = {}): PendingTransfer {
         payment_identifier: BigNumber.random(3).times(1000),
         role: 'initiator',
         target: createAddress(),
-        token_address: createAddress(),
+        token_address: obj.userToken ? obj.userToken.address : createAddress(),
         token_network_address: createAddress(),
         transferred_amount: new BigNumber(0),
     };
