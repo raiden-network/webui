@@ -59,14 +59,14 @@ import { SearchFieldComponent } from './components/search-field/search-field.com
 import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
 import { ChannelsPageComponent } from './components/channels-page/channels-page.component';
 import { ContactsPageComponent } from './components/contacts-page/contacts-page.component';
-import { HistoryPageComponent } from './components/history-page/history-page.component';
+import { TransfersPageComponent } from './components/transfers-page/transfers-page.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
     { path: 'channels', component: ChannelsPageComponent },
     { path: 'contacts', component: ContactsPageComponent },
-    { path: 'transfers', component: HistoryPageComponent },
+    { path: 'transfers', component: TransfersPageComponent },
     { path: 'about', component: AboutComponent },
 ];
 
@@ -112,7 +112,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         NavigationEntryComponent,
         ChannelsPageComponent,
         ContactsPageComponent,
-        HistoryPageComponent,
+        TransfersPageComponent,
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

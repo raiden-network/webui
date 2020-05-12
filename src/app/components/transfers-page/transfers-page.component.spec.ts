@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HistoryPageComponent } from './history-page.component';
+import { TransfersPageComponent } from './transfers-page.component';
 
-describe('HistoryPageComponent', () => {
-    let component: HistoryPageComponent;
-    let fixture: ComponentFixture<HistoryPageComponent>;
+describe('TransfersPageComponent', () => {
+    let component: TransfersPageComponent;
+    let fixture: ComponentFixture<TransfersPageComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [HistoryPageComponent],
+            declarations: [TransfersPageComponent],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(HistoryPageComponent);
+        fixture = TestBed.createComponent(TransfersPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
