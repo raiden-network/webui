@@ -8,6 +8,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Contact } from '../../models/contact';
 import { createAddress } from '../../../testing/test-data';
 import { ClipboardModule } from 'ngx-clipboard';
+import { clickElement } from '../../../testing/interaction-helper';
+import { SharedService } from '../../services/shared.service';
+import { TestProviders } from '../../../testing/test-providers';
 
 describe('ContactComponent', () => {
     let component: ContactComponent;
@@ -21,6 +24,11 @@ describe('ContactComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [ContactComponent, ContactActionsComponent],
+            providers: [
+                TestProviders.MockRaidenConfigProvider(),
+                SharedService,
+                TestProviders.AddressBookStubProvider(),
+            ],
             imports: [
                 MaterialComponentsModule,
                 NoopAnimationsModule,
@@ -40,5 +48,28 @@ describe('ContactComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should select a contact on click', () => {
+        clickElement(fixture.debugElement, '.card');
+        fixture.detectChanges();
+        expect(component.selected).toBe(true);
+    });
+
+    it('should deselect the contact on a second click', () => {
+        clickElement(fixture.debugElement, '.card');
+        fixture.detectChanges();
+        clickElement(fixture.debugElement, '.card');
+        fixture.detectChanges();
+        expect(component.selected).toBe(false);
+    });
+
+    it('should deselect the contact when clicked elsewhere', () => {
+        const sharedService = TestBed.inject(SharedService);
+        clickElement(fixture.debugElement, '.card');
+        fixture.detectChanges();
+        sharedService.newGlobalClick(document.createElement('div'));
+        fixture.detectChanges();
+        expect(component.selected).toBe(false);
     });
 });

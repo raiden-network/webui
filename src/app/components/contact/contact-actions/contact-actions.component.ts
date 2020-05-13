@@ -36,6 +36,7 @@ import { UserToken } from '../../../models/usertoken';
 })
 export class ContactActionsComponent implements OnInit, OnDestroy {
     @Input() contact: Contact;
+    @Output() actionClicked: EventEmitter<boolean> = new EventEmitter();
 
     selectedToken: UserToken;
     hasAnyConnection = false;
@@ -85,6 +86,8 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
     }
 
     pay() {
+        this.actionClicked.emit(true);
+
         const payload: PaymentDialogPayload = {
             tokenAddress: this.selectedToken ? this.selectedToken.address : '',
             targetAddress: this.contact.address,
@@ -118,6 +121,8 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
     }
 
     edit() {
+        this.actionClicked.emit(true);
+
         const payload: AddEditContactDialogPayload = {
             address: this.contact.address,
             label: this.contact.label,
@@ -137,6 +142,8 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
     }
 
     delete() {
+        this.actionClicked.emit(true);
+
         const contact = this.contact;
         const payload: ConfirmationDialogPayload = {
             title: 'Delete Contact',

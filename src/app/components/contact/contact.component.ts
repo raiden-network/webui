@@ -1,7 +1,17 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    OnDestroy,
+    ViewChild,
+    ElementRef,
+} from '@angular/core';
 import { Contact } from '../../models/contact';
 import { Animations } from '../../animations/animations';
 import { IdenticonCacheService } from '../../services/identicon-cache.service';
+import { SharedService } from '../../services/shared.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-contact',
@@ -9,14 +19,35 @@ import { IdenticonCacheService } from '../../services/identicon-cache.service';
     styleUrls: ['./contact.component.css'],
     animations: Animations.flyInOut,
 })
-export class ContactComponent implements OnInit {
+export class ContactComponent implements OnInit, OnDestroy {
     @Input() contact: Contact;
-    @Input() selected = false;
-    @Output() select: EventEmitter<boolean> = new EventEmitter();
 
-    constructor(private identiconCache: IdenticonCacheService) {}
+    @ViewChild('card', { static: true })
+    private cardElement: ElementRef;
 
-    ngOnInit() {}
+    selected = false;
+
+    private ngUnsubscribe = new Subject();
+
+    constructor(
+        private identiconCache: IdenticonCacheService,
+        private sharedService: SharedService
+    ) {}
+
+    ngOnInit() {
+        this.sharedService.globalClickTarget$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((target) => {
+                if (!this.cardElement.nativeElement.contains(target)) {
+                    this.selected = false;
+                }
+            });
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
 
     identicon(address: string) {
         return this.identiconCache.getIdenticon(address);
