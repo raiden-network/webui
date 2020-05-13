@@ -118,6 +118,10 @@ export class AddressInputComponent
         return this.errors;
     }
 
+    setDisabledState(isDisabled: boolean) {
+        this.inputElement.nativeElement.disabled = isDisabled;
+    }
+
     onChange(value: string) {
         this.inputSubject.next(value);
     }

@@ -25,7 +25,10 @@ export class AddEditContactDialogComponent implements OnInit {
     ) {
         this.editing = data.edit;
         this.form = this.fb.group({
-            address: [data.address, Validators.required],
+            address: [
+                { value: data.address, disabled: this.editing },
+                Validators.required,
+            ],
             label: [data.label, Validators.required],
         });
     }
