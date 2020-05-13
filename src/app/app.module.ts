@@ -59,6 +59,7 @@ import { NavigationEntryComponent } from './components/navigation-entry/navigati
 import { ChannelsPageComponent } from './components/channels-page/channels-page.component';
 import { ContactsPageComponent } from './components/contacts-page/contacts-page.component';
 import { TransfersPageComponent } from './components/transfers-page/transfers-page.component';
+import { ChunkPipe } from './pipes/chunk.pipe';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -111,6 +112,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ChannelsPageComponent,
         ContactsPageComponent,
         TransfersPageComponent,
+        ChunkPipe,
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

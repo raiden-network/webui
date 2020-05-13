@@ -36,17 +36,27 @@
         fxLayoutGap="28px"
         #contact_list
     >
-        <app-contact
+        <div
             *ngFor="
-                let contact of visibleContacts;
-                let i = index;
-                trackBy: trackByFn
+                let contactsRow of visibleContacts | chunk: itemsPerRow;
+                trackBy: rowTrackByFn
             "
-            [contact]="contact"
-            [selected]="isSelected(contact)"
-            (select)="setSelection(contact)"
-            [@stretchInOut]="'in'"
-        ></app-contact>
+            fxLayout="row"
+            fxLayoutGap="22px"
+        >
+            <app-contact
+                *ngFor="
+                    let contact of contactsRow;
+                    let i = index;
+                    trackBy: trackByFn
+                "
+                [contact]="contact"
+                [selected]="isSelected(contact)"
+                (select)="setSelection(contact)"
+                [@stretchInOut]="'in'"
+                [style.width.px]="contactWidth"
+            ></app-contact>
+        </div>
     </div>
     <button
         mat-flat-button

@@ -28,11 +28,7 @@
             </mat-icon>
         </button>
         <app-channel
-            *ngFor="
-                let channel of visibleChannels;
-                let i = index;
-                trackBy: trackByFn
-            "
+            *ngFor="let channel of visibleChannels; trackBy: trackByFn"
             [channel]="channel"
             class="list__channel"
             [@stretchInOut]="'in'"

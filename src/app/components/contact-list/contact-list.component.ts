@@ -5,6 +5,8 @@ import {
     ViewChild,
     ElementRef,
     Input,
+    HostListener,
+    AfterContentInit,
 } from '@angular/core';
 import { Contact } from '../../models/contact';
 import { AddressBookService } from '../../services/address-book.service';
@@ -29,7 +31,10 @@ import { takeUntil } from 'rxjs/operators';
     styleUrls: ['./contact-list.component.css'],
     animations: Animations.stretchInOut,
 })
-export class ContactListComponent implements OnInit, OnDestroy {
+export class ContactListComponent
+    implements OnInit, OnDestroy, AfterContentInit {
+    private static MIN_CONTACT_WIDTH = 300;
+
     @Input() showAll = false;
 
     @ViewChild('contact_list', { static: true })
@@ -39,6 +44,8 @@ export class ContactListComponent implements OnInit, OnDestroy {
     totalContacts = 0;
     numberOfFilteredContacts = 0;
     selectedContactAddress = '';
+    itemsPerRow = 0;
+    contactWidth = 0;
 
     private contacts: Contact[] = [];
     private readonly uploadChecks: UploadChecks = new UploadChecks();
@@ -85,12 +92,28 @@ export class ContactListComponent implements OnInit, OnDestroy {
             });
     }
 
+    ngAfterContentInit() {
+        this.calculateItemsPerRow();
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize() {
+        this.calculateItemsPerRow();
+    }
+
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
     }
 
-    trackByFn(index, item: Contact) {
+    rowTrackByFn(index, item: Contact[]): string {
+        return item.reduce(
+            (accumulator, current) => accumulator + `_${current.address}`,
+            ''
+        );
+    }
+
+    trackByFn(index, item: Contact): string {
         return item.address;
     }
 
@@ -190,5 +213,15 @@ export class ContactListComponent implements OnInit, OnDestroy {
             description: message,
             icon: 'error-mark',
         });
+    }
+
+    private calculateItemsPerRow() {
+        const sectionWidth = this.contactsElement.nativeElement.getBoundingClientRect()
+            .width;
+        this.itemsPerRow = Math.floor(
+            sectionWidth / ContactListComponent.MIN_CONTACT_WIDTH
+        );
+        this.contactWidth =
+            (sectionWidth - 22 * (this.itemsPerRow - 1)) / this.itemsPerRow;
     }
 }
