@@ -3,38 +3,38 @@
 }
 
 .card {
-    height: 113px;
+    height: 80px;
     border-radius: 25px;
-    background-color: #3a3a3a;
+    background-color: rgba(255, 255, 255, 0.06);
     padding: 0 25px;
     font-size: 13px;
     line-height: 15px;
     cursor: pointer;
 }
 
-.contact {
-    overflow: hidden;
-}
-
 .icon-box {
-    width: 45px;
-    height: 45px;
+    width: 51px;
+    height: 51px;
 }
 
 .icon-box__identicon {
     border-radius: 50%;
     height: 100%;
     width: auto;
+    cursor: default;
 }
 
-.info {
-    height: 44px;
-    width: 180px;
-    color: #ffffff;
+.contact {
+    overflow: hidden;
 }
 
-.info__text {
+.contact-info {
+    overflow: hidden;
     width: 100%;
+}
+
+.contact-info__label {
+    color: #ffffff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -42,5 +42,6 @@
 
 .card__go-icon {
     height: 20px;
-    color: rgba(255, 255, 255, 0.65);
+    width: auto;
+    color: #3d3d3d;
 }

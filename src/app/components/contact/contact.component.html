@@ -10,38 +10,33 @@
             class="icon-box__identicon"
             [src]="identicon(contact.address)"
             alt="Contact identicon"
+            stopClickPropagation
+            matTooltip="{{ contact.address }}
+                (Click to copy)"
+            ngxClipboard
+            [cbContent]="contact.address"
         />
     </div>
-    <div class="contact" fxLayout="row" fxLayoutAlign="start center" fxFlex>
+    <div class="contact" fxLayout="row" fxLayoutAlign="start" fxFlex>
         <div
             *ngIf="!selected; else actions"
             fxLayout="row"
             fxLayoutAlign="start center"
             [@flyInOutLeft]="'in'"
-            fxFlex
+            class="contact-info"
         >
-            <div
-                class="info"
-                fxLayout="column"
-                fxLayoutAlign="space-between start"
-            >
-                <span class="info__text">
-                    {{ contact.label }}
-                </span>
-                <span class="info__text">
-                    {{ contact.address }}
-                </span>
+            <div class="contact-info__label" fxFlex="0 1 100%">
+                {{ contact.label }}
             </div>
-            <div fxFlex="1 1 auto"></div>
             <mat-icon
                 class="card__go-icon"
                 svgIcon="go"
                 aria-hidden="true"
             ></mat-icon>
         </div>
+        <ng-template #actions>
+            <app-contact-actions [contact]="contact" [@flyInOut]="'in'">
+            </app-contact-actions>
+        </ng-template>
     </div>
-    <ng-template #actions>
-        <app-contact-actions [contact]="contact" [@flyInOut]="'in'">
-        </app-contact-actions>
-    </ng-template>
 </div>

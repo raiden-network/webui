@@ -54,6 +54,7 @@ describe('AboutComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+        fixture.destroy();
     });
 
     it('should return the environment information', () => {

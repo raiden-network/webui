@@ -66,6 +66,7 @@
                     {{ max | displayDecimals: 3 }}
                 </span>
                 {{ selectedToken?.symbol }} available
+                <span *ngIf="onChainInput">on-chain</span>
             </div>
         </ng-template>
     </div>

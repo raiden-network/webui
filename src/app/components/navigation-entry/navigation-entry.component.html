@@ -1,0 +1,11 @@
+<a
+    class="entry"
+    [routerLink]="route"
+    routerLinkActive="active"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="14px"
+>
+    <mat-icon class="entry__icon" [svgIcon]="icon"></mat-icon>
+    <span *ngIf="text">{{ text }}</span>
+</a>

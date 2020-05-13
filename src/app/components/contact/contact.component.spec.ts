@@ -7,6 +7,7 @@ import { ContactActionsComponent } from './contact-actions/contact-actions.compo
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Contact } from '../../models/contact';
 import { createAddress } from '../../../testing/test-data';
+import { ClipboardModule } from 'ngx-clipboard';
 
 describe('ContactComponent', () => {
     let component: ContactComponent;
@@ -25,6 +26,7 @@ describe('ContactComponent', () => {
                 NoopAnimationsModule,
                 RaidenIconsModule,
                 HttpClientTestingModule,
+                ClipboardModule,
             ],
         }).compileComponents();
     }));

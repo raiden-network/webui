@@ -56,6 +56,45 @@
             url('assets/fonts/roboto-v20-latin-500.svg#Roboto') format('svg'); /* Legacy iOS */
 }
 
+/* roboto-700 - latin */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    src: url('assets/fonts/roboto-v20-latin-700.eot'); /* IE9 Compat Modes */
+    src: local('Roboto Bold'), local('Roboto-Bold'),
+        url('assets/fonts/roboto-v20-latin-700.eot?#iefix')
+            format('embedded-opentype'),
+        /* IE6-IE8 */ url('assets/fonts/roboto-v20-latin-700.woff2')
+            format('woff2'),
+        /* Super Modern Browsers */
+            url('assets/fonts/roboto-v20-latin-700.woff') format('woff'),
+        /* Modern Browsers */ url('assets/fonts/roboto-v20-latin-700.ttf')
+            format('truetype'),
+        /* Safari, Android, iOS */
+            url('assets/fonts/roboto-v20-latin-700.svg#Roboto') format('svg'); /* Legacy iOS */
+}
+
+/* roboto-mono-300 - latin */
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: normal;
+    font-weight: 300;
+    src: url('assets/fonts/roboto-mono-v7-latin-300.eot'); /* IE9 Compat Modes */
+    src: local('Roboto Mono Light'), local('RobotoMono-Light'),
+        url('assets/fonts/roboto-mono-v7-latin-300.eot?#iefix')
+            format('embedded-opentype'),
+        /* IE6-IE8 */ url('assets/fonts/roboto-mono-v7-latin-300.woff2')
+            format('woff2'),
+        /* Super Modern Browsers */
+            url('assets/fonts/roboto-mono-v7-latin-300.woff') format('woff'),
+        /* Modern Browsers */ url('assets/fonts/roboto-mono-v7-latin-300.ttf')
+            format('truetype'),
+        /* Safari, Android, iOS */
+            url('assets/fonts/roboto-mono-v7-latin-300.svg#RobotoMono')
+            format('svg'); /* Legacy iOS */
+}
+
 /* roboto-mono-regular - latin */
 @font-face {
     font-family: 'Roboto Mono';
@@ -83,7 +122,7 @@ body {
 }
 
 .mat-flat-button {
-    height: 52px;
+    height: 50px;
     border-radius: 25px !important;
     font-size: 13px !important;
     line-height: 15px !important;
@@ -108,8 +147,8 @@ body {
 }
 
 .mat-icon-button .mat-icon {
-    height: 20px !important;
-    width: 20px !important;
+    height: 22px !important;
+    width: 22px !important;
 }
 
 .mat-tooltip {
@@ -182,6 +221,20 @@ body {
     color: rgb(184, 184, 184) !important;
 }
 
+.network-selector .mat-select-placeholder,
+.network-selector .mat-select-value {
+    color: #ffffff !important;
+}
+
+.mat-select-panel.network-selector__panel {
+    background-color: #000000 !important;
+}
+
+.network-selector__panel .mat-option {
+    background: none !important;
+    color: #ffffff !important;
+}
+
 ::placeholder,
 ::-webkit-input-placeholder {
     color: rgb(184, 184, 184);
@@ -191,9 +244,8 @@ body {
 .mat-select-panel,
 .mat-autocomplete-panel {
     box-shadow: none !important;
-    border-radius: 25px !important;
+    border-radius: 5px !important;
     background-color: #e7e7e7 !important;
-    width: 306px;
 }
 
 .mat-option {
@@ -201,8 +253,25 @@ body {
     background-color: #e7e7e7 !important;
     font-size: 13px !important;
     line-height: 15px !important;
-    letter-spacing: 0.35px;
-    height: 32px !important;
+    height: 60px !important;
+    padding: 0 0 0 25px !important;
+}
+
+.mat-option-text > span {
+    margin-left: 22px;
+}
+
+.mat-option-text > span:first-child {
+    margin-left: 0;
+}
+
+.token-option > .mat-option-text > span:first-child,
+.token-option > .mat-option-text > span:last-child {
+    opacity: 0.5;
+}
+
+.contact-option > .mat-option-text > span:last-child {
+    opacity: 0.5;
 }
 
 .mat-badge-content {
@@ -224,5 +293,5 @@ input:focus {
 }
 
 a {
-    outline: none;
+    outline-color: #ffffff;
 }

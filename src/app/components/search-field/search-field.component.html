@@ -1,4 +1,9 @@
-<div class="search" fxLayout="row" fxLayoutAlign="center center">
+<div
+    class="search"
+    [ngClass]="search_input.value ? 'search--focused' : ''"
+    fxLayout="row"
+    fxLayoutAlign="center center"
+>
     <mat-icon
         class="search__icon"
         svgIcon="search"
@@ -37,8 +42,11 @@
                     trackBy: tokenTrackByFn
                 "
                 [value]="userToken.address"
+                class="token-option"
             >
-                {{ userToken | token }}
+                <span>{{ userToken.symbol }}</span>
+                <span>{{ userToken.name }}</span>
+                <span>{{ userToken.address }}</span>
             </mat-option>
             <mat-option
                 *ngFor="
@@ -46,8 +54,10 @@
                     trackBy: contactTrackByFn
                 "
                 [value]="contact.address"
+                class="contact-option"
             >
-                {{ contact.label }} {{ contact.address }}
+                <span>{{ contact.label }}</span>
+                <span>{{ contact.address }}</span>
             </mat-option>
         </div>
     </mat-autocomplete>

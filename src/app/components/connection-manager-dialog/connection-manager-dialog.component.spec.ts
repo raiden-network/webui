@@ -27,7 +27,6 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { of } from 'rxjs';
-import { TokenPipe } from '../../pipes/token.pipe';
 import { stub } from '../../../testing/stub';
 
 describe('ConnectionManagerDialogComponent', () => {
@@ -64,7 +63,6 @@ describe('ConnectionManagerDialogComponent', () => {
                 DecimalPipe,
                 DisplayDecimalsPipe,
                 TokenNetworkSelectorComponent,
-                TokenPipe,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),

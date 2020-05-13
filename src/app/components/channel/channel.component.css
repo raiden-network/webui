@@ -30,7 +30,7 @@
     font-weight: 300;
     font-size: 28px;
     line-height: 33px;
-    letter-spacing: 0.4px;
+    letter-spacing: -0.76px;
     color: #ffffff;
     white-space: nowrap;
     overflow: hidden;
@@ -39,8 +39,8 @@
 
 .info__label {
     text-transform: uppercase;
-    font-size: 11px;
-    letter-spacing: 0.91px;
-    line-height: 13px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    line-height: 14px;
     opacity: 0.43;
 }

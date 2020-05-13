@@ -1,18 +1,7 @@
-<div class="page" fxFlex="0 1 850px" fxLayout="column" fxLayoutGap="110px">
-    <div fxLayout="row" fxLayoutAlign="start center">
-        <h1 class="about">
-            About this Software
-        </h1>
-        <div fxFlex="1 1 auto"></div>
-        <a
-            mat-icon-button
-            ngxClipboard
-            [cbContent]="environmentInformation()"
-            routerLink="/home"
-        >
-            <mat-icon svgIcon="close" aria-label="Close about page"> </mat-icon>
-        </a>
-    </div>
+<div fxLayout="column" fxLayoutGap="110px">
+    <h1 class="about">
+        About this Software
+    </h1>
 
     <div class="section" fxLayout="row" fxLayoutAlign="space-between">
         <div class="section__box-offset">
@@ -31,7 +20,7 @@
                 </mat-icon>
             </button>
         </div>
-        <div fxFlex="0 1 600px" fxLayout="column" fxLayoutGap="39px">
+        <div fxFlex="0 1 800px" fxLayout="column" fxLayoutGap="39px">
             <div
                 class="section__box"
                 fxLayout="column"
@@ -53,7 +42,7 @@
 
     <div class="section" fxLayout="row" fxLayoutAlign="space-between">
         <div class="section__descriptor">The MIT License (MIT)</div>
-        <div fxFlex="0 1 600px" fxLayout="column" fxLayoutGap="52px">
+        <div fxFlex="0 1 800px" fxLayout="column" fxLayoutGap="52px">
             <p class="section__text" id="copyright">
                 Copyright (c) 2015-{{ currentYear() }} Brainbot Labs Est.
             </p>

@@ -44,7 +44,7 @@ $webui-palette: (
 // hue. Available color palettes: https://material.io/design/color/
 $webui-app-primary: mat-palette($webui-palette);
 $webui-app-accent: mat-palette($webui-palette, A200, A100, A400);
-$background-color: #191919;
+$background-color: #000000;
 
 // The warn palette is optional (defaults to red).
 $webui-app-warn: mat-palette($mat-red);

@@ -8,7 +8,10 @@
     <mat-option
         *ngFor="let option of tokens$ | async; trackBy: trackByFn"
         [value]="option"
+        class="token-option"
     >
-        {{ option | token }}
+        <span>{{ option.symbol }}</span>
+        <span>{{ option.name }}</span>
+        <span>{{ option.address }}</span>
     </mat-option>
 </mat-select>

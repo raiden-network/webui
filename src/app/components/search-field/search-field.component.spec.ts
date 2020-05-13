@@ -3,7 +3,6 @@ import { SearchFieldComponent } from './search-field.component';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
-import { TokenPipe } from '../../pipes/token.pipe';
 import { TestProviders } from '../../../testing/test-providers';
 import { SharedService } from '../../services/shared.service';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -37,7 +36,7 @@ describe('SearchFieldComponent', () => {
         tokenPollingMock.tokens$ = of([token]);
 
         TestBed.configureTestingModule({
-            declarations: [SearchFieldComponent, TokenPipe],
+            declarations: [SearchFieldComponent],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),

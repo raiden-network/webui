@@ -1,8 +1,9 @@
 :host {
     width: 100%;
+    max-width: 200px;
 }
 
 .actions__button {
     height: 38px;
-    padding: 0 14px !important;
+    padding: 0 10px !important;
 }

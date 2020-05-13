@@ -489,7 +489,7 @@ export class RaidenService {
                 const message: UiMessage = {
                     title:
                         mode === DepositMode.WITHDRAW
-                            ? 'Withdrawed from channel'
+                            ? 'Withdrew from channel'
                             : 'Deposited to channel',
                     description: `${formattedAmount} ${token.symbol}`,
                     icon: 'channel',
@@ -839,13 +839,13 @@ export class RaidenService {
             if (success) {
                 this.notificationService.addInfoNotification({
                     title: 'JSON RPC',
-                    description: 'connection successful',
+                    description: 'Connection successful',
                     icon: 'info',
                 });
             } else {
                 this.notificationService.addErrorNotification({
                     title: 'JSON RPC',
-                    description: 'connection failure',
+                    description: 'Connection failure',
                     icon: 'error-mark',
                 });
             }

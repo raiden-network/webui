@@ -4,7 +4,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
-import { TokenPipe } from '../../pipes/token.pipe';
 import { RaidenService } from '../../services/raiden.service';
 import { TokenNetworkSelectorComponent } from './token-network-selector.component';
 import { TestProviders } from '../../../testing/test-providers';
@@ -45,7 +44,7 @@ describe('TokenNetworkSelectorComponent', () => {
         tokenPollingMock.tokens$ = of(tokens);
 
         TestBed.configureTestingModule({
-            declarations: [TokenNetworkSelectorComponent, TokenPipe],
+            declarations: [TokenNetworkSelectorComponent],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 { provide: TokenPollingService, useValue: tokenPollingMock },

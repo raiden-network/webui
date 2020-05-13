@@ -6,5 +6,9 @@
     (accept)="accept()"
     (cancel)="cancel()"
 >
-    <app-token-input formControlName="amount"> </app-token-input>
+    <app-token-input
+        formControlName="amount"
+        [onChainInput]="withdraw ? false : true"
+    >
+    </app-token-input>
 </app-raiden-dialog>

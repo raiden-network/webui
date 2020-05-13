@@ -5,9 +5,9 @@ import { map, takeUntil } from 'rxjs/operators';
 import { Observable, zip, Subject } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
 import { Network } from '../../utils/network-info';
-import { MatDialog } from '@angular/material/dialog';
-import { QrCodeComponent, QrCodePayload } from '../qr-code/qr-code.component';
 import BigNumber from 'bignumber.js';
+import { QrCodePayload, QrCodeComponent } from '../qr-code/qr-code.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-header',
@@ -19,8 +19,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     raidenAddress: string;
     readonly network$: Observable<Network>;
     readonly balance$: Observable<string>;
-    readonly faucetLink$: Observable<string>;
     readonly zeroBalance$: Observable<boolean>;
+    readonly faucetLink$: Observable<string>;
     readonly numberOfNotifications$: Observable<string>;
 
     private ngUnsubscribe = new Subject();
@@ -32,6 +32,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ) {
         this.network$ = raidenService.network$;
         this.balance$ = raidenService.balance$;
+        this.zeroBalance$ = raidenService.balance$.pipe(
+            map((balance) => {
+                return new BigNumber(balance).isZero();
+            })
+        );
         this.faucetLink$ = zip(
             raidenService.network$,
             raidenService.raidenAddress$
@@ -39,11 +44,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
             map(([network, raidenAddress]) =>
                 network.faucet.replace('${ADDRESS}', raidenAddress)
             )
-        );
-        this.zeroBalance$ = raidenService.balance$.pipe(
-            map((balance) => {
-                return new BigNumber(balance).isZero();
-            })
         );
         this.numberOfNotifications$ = this.notificationService.numberOfNotifications$.pipe(
             map((value) => value.toString())

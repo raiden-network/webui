@@ -16,7 +16,6 @@ import { OpenDialogComponent } from './components/open-dialog/open-dialog.compon
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
 import { RegisterDialogComponent } from './components/register-dialog/register-dialog.component';
 import { MaterialComponentsModule } from './modules/material-components/material-components.module';
-import { TokenPipe } from './pipes/token.pipe';
 import { RaidenConfig, Web3Factory } from './services/raiden.config';
 import { LosslessJsonInterceptor } from './interceptors/lossless-json.interceptor';
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
@@ -44,7 +43,6 @@ import { NotificationService } from './services/notification.service';
 import { RaidenToastComponent } from './components/notification/raiden-toast/raiden-toast.component';
 import { ChannelComponent } from './components/channel/channel.component';
 import { TokenComponent } from './components/token/token.component';
-import { TokenCarouselComponent } from './components/token-carousel/token-carousel.component';
 import { ChannelListComponent } from './components/channel-list/channel-list.component';
 import { StopClickPropagationDirective } from './directives/stop-click-propagation.directive';
 import { ContactListComponent } from './components/contact-list/contact-list.component';
@@ -57,10 +55,17 @@ import { AddEditContactDialogComponent } from './components/add-edit-contact-dia
 import { RaidenIconsModule } from './modules/raiden-icons/raiden-icons.module';
 import { QrCodeComponent } from './components/qr-code/qr-code.component';
 import { SearchFieldComponent } from './components/search-field/search-field.component';
+import { NavigationEntryComponent } from './components/navigation-entry/navigation-entry.component';
+import { ChannelsPageComponent } from './components/channels-page/channels-page.component';
+import { ContactsPageComponent } from './components/contacts-page/contacts-page.component';
+import { TransfersPageComponent } from './components/transfers-page/transfers-page.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
+    { path: 'channels', component: ChannelsPageComponent },
+    { path: 'contacts', component: ContactsPageComponent },
+    { path: 'transfers', component: TransfersPageComponent },
     { path: 'about', component: AboutComponent },
 ];
 
@@ -78,7 +83,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ConnectionManagerDialogComponent,
         RegisterDialogComponent,
         OpenDialogComponent,
-        TokenPipe,
         ConfirmationDialogComponent,
         DepositWithdrawDialogComponent,
         DecimalPipe,
@@ -92,7 +96,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         RaidenToastComponent,
         ChannelComponent,
         TokenComponent,
-        TokenCarouselComponent,
         ChannelListComponent,
         StopClickPropagationDirective,
         ContactListComponent,
@@ -104,6 +107,10 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         AddEditContactDialogComponent,
         QrCodeComponent,
         SearchFieldComponent,
+        NavigationEntryComponent,
+        ChannelsPageComponent,
+        ContactsPageComponent,
+        TransfersPageComponent,
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
@@ -156,7 +163,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
             }),
         },
         RaidenService,
-        TokenPipe,
         LocalStorageAdapter,
         Web3Factory,
         {

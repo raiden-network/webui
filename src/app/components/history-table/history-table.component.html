@@ -3,9 +3,10 @@
     fxLayout="column"
     fxLayoutGap="20px"
     fxLayoutAlign="space-between stretch"
+    [@flyInOutLeft]="'in'"
 >
     <div class="history__label" fxLayout="row" fxLayoutAlign="start center">
-        History
+        Transfer history
     </div>
     <cdk-table
         *ngIf="visibleHistory.length !== 0; else no_transfers"
@@ -13,8 +14,7 @@
         [dataSource]="visibleHistory"
         [trackBy]="trackByFn"
         fxLayout="column"
-        fxLayoutGap="13px"
-        [@flyInOut]="'in'"
+        fxLayoutGap="17px"
     >
         <ng-container cdkColumnDef="event">
             <cdk-cell *cdkCellDef="let event">
@@ -24,68 +24,58 @@
                     fxLayoutAlign="center center"
                 >
                     <mat-icon
-                        *ngIf="
-                            event.event === 'EventPaymentReceivedSuccess';
-                            else sent
-                        "
+                        *ngIf="isReceivedEvent(event); else sent"
                         class="icon-box__icon"
                         svgIcon="received"
-                        matTooltip="Received transfer"
                     ></mat-icon>
                     <ng-template #sent>
                         <mat-icon
                             class="icon-box__icon"
                             svgIcon="sent"
-                            matTooltip="Sent transfer"
                         ></mat-icon>
                     </ng-template>
                 </div>
             </cdk-cell>
         </ng-container>
 
-        <ng-container cdkColumnDef="label">
-            <cdk-cell class="table__element" *cdkCellDef="let event">
-                {{ addressLabel(paymentPartner(event)) }}
-            </cdk-cell>
-        </ng-container>
-
-        <ng-container cdkColumnDef="partner">
-            <cdk-cell
-                class="table__element table__address"
-                *cdkCellDef="let event"
-            >
-                {{ paymentPartner(event) }}
-            </cdk-cell>
-        </ng-container>
-
-        <ng-container cdkColumnDef="date">
-            <cdk-cell class="table__element" *cdkCellDef="let event">
-                {{ getUTCTimeString(event) | date: 'dd-MM-yyy H:mm' }}
-            </cdk-cell>
-        </ng-container>
-
-        <ng-container cdkColumnDef="icon">
-            <cdk-cell *cdkCellDef="let event">
-                <span *ngIf="event.userToken">
-                    <div
-                        class="icon-box icon-box--round"
-                        fxLayout="column"
-                        fxLayoutAlign="center center"
-                        matTooltip="{{ event.userToken.name }}
-                            {{ event.userToken.address }}
-                            (Click to copy)"
+        <ng-container cdkColumnDef="main">
+            <cdk-cell *cdkCellDef="let event" class="table__main">
+                <div class="table__partner">
+                    <ng-container *ngIf="isReceivedEvent(event); else sent_to">
+                        Received from
+                    </ng-container>
+                    <ng-template #sent_to>
+                        Sent to
+                    </ng-template>
+                    <span
+                        *ngIf="partnerAddress(event) as address"
+                        matTooltip="{{ address }}
+                        (Click to copy)"
                         ngxClipboard
-                        [cbContent]="event.userToken.address"
+                        [cbContent]="address"
                     >
-                        {{ event.userToken.symbol }}
-                    </div>
-                </span>
+                        {{ paymentPartner(event) }}
+                    </span>
+                </div>
+                <div *ngIf="!event.pending" class="table__date">
+                    {{ getUTCTimeString(event) | date: 'dd-MM-yyy H:mm' }}
+                </div>
             </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="spacer">
+            <cdk-cell *cdkCellDef="let event" fxFlex="1 1 auto"> </cdk-cell>
         </ng-container>
 
         <ng-container cdkColumnDef="amount">
-            <cdk-cell class="table__element" *cdkCellDef="let event">
-                <span *ngIf="event.userToken">
+            <cdk-cell *cdkCellDef="let event">
+                <div *ngIf="event.userToken" class="table__amount">
+                    <ng-container *ngIf="isReceivedEvent(event); else minus">
+                        +
+                    </ng-container>
+                    <ng-template #minus>
+                        -
+                    </ng-template>
                     <span
                         *ngIf="
                             event.amount
@@ -95,19 +85,34 @@
                     >
                         {{ amount | displayDecimals: 3 }}
                     </span>
-                    {{ event.userToken.symbol }}
-                </span>
+                    <span
+                        matTooltip="{{ event.userToken.name }}
+                            {{ event.userToken.address }}
+                            (Click to copy)"
+                        ngxClipboard
+                        [cbContent]="event.userToken.address"
+                    >
+                        {{ event.userToken.symbol }}
+                    </span>
+                </div>
+                <div>
+                    <ng-container *ngIf="event.pending; else confirmed">
+                        <div class="table__label table__label--pending">
+                            Pending
+                        </div>
+                    </ng-container>
+                    <ng-template #confirmed>
+                        <div class="table__label">Confirmed</div>
+                    </ng-template>
+                </div>
             </cdk-cell>
         </ng-container>
 
         <cdk-row
             class="table__row"
-            *cdkRowDef="
-                let row;
-                columns: ['event', 'label', 'partner', 'date', 'icon', 'amount']
-            "
+            *cdkRowDef="let row; columns: ['event', 'main', 'spacer', 'amount']"
             fxLayout="row"
-            fxLayoutAlign="space-between center"
+            fxLayoutAlign="start start"
             fxLayoutGap="20px"
         ></cdk-row>
     </cdk-table>

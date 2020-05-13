@@ -59,6 +59,7 @@ export class SearchFieldComponent implements OnInit {
         this.inputElement.nativeElement.value = '';
         this.inputSubject.next('');
         this.sharedService.setSearchValue('');
+        this.selectedTokenService.resetToken();
     }
 
     private setupFiltering() {

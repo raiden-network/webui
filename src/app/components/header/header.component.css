@@ -1,19 +1,8 @@
 .header {
-    min-height: 64px;
-    color: #b8b8b8;
-    font-size: 11px;
-    line-height: 19px;
-    letter-spacing: 0.91px;
-    margin-bottom: 121px;
-}
-
-.header__logo {
-    height: 52px;
-    margin-right: 32px;
-}
-
-.header__logo-mobile {
-    height: 26px;
+    min-height: 50px;
+    font-size: 12px;
+    line-height: 20px;
+    letter-spacing: 1px;
 }
 
 .header__label {
@@ -21,19 +10,27 @@
 }
 
 .header__label--secondary {
-    opacity: 0.5;
+    opacity: 0.7;
+}
+
+.header__box {
+    background-color: rgba(255, 255, 255, 0.06);
+    height: 100%;
+    padding: 0 20px;
+    border-radius: 25px;
 }
 
 .header__alert-box {
-    background-color: #4e4e4e;
-    border-radius: 7.24px;
-    height: 19px;
-    width: 104.5px;
+    background-color: rgba(255, 0, 0, 0.3);
+    border-radius: 9px;
+    height: 20px;
+    padding: 0 12px;
     text-align: center;
+    color: #ff0000;
 }
 
 .header__address {
-    width: 164px;
+    width: 115px;
     font-size: 13px;
     letter-spacing: 1.07px;
     white-space: nowrap;
@@ -41,17 +38,24 @@
     text-overflow: ellipsis;
 }
 
-.header__icon-button {
-    border: 1px solid #b8b8b8;
+.account-button {
+    height: 29px !important;
+    width: 29px !important;
+    border: 2px solid #ffffff;
 }
 
-.header__icon {
-    height: 18px !important;
-    width: 18px !important;
+.account-button__icon {
+    height: 15px !important;
+    width: auto !important;
+    line-height: 15px !important;
 }
 
-.header__notification-icon {
-    height: 22px !important;
-    width: 22px !important;
-    color: #4e4e4e;
+.notification-button {
+    height: 50px !important;
+    width: 50px !important;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.notification-button__icon {
+    color: #000000;
 }
