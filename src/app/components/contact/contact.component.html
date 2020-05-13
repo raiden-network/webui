@@ -3,7 +3,8 @@
     fxLayout="row"
     fxLayoutAlign="start center"
     fxLayoutGap="25px"
-    (click)="select.emit(true)"
+    (click)="selected = !selected"
+    #card
 >
     <div class="icon-box" fxLayout="column">
         <img
@@ -35,7 +36,11 @@
             ></mat-icon>
         </div>
         <ng-template #actions>
-            <app-contact-actions [contact]="contact" [@flyInOut]="'in'">
+            <app-contact-actions
+                [contact]="contact"
+                [@flyInOut]="'in'"
+                (actionClicked)="selected = false"
+            >
             </app-contact-actions>
         </ng-template>
     </div>

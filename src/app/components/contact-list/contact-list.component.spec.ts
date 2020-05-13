@@ -19,7 +19,6 @@ import { SharedService } from '../../services/shared.service';
 import { createTestContacts, createAddress } from '../../../testing/test-data';
 import { AddressBookService } from '../../services/address-book.service';
 import { clickElement } from '../../../testing/interaction-helper';
-import { By } from '@angular/platform-browser';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -122,38 +121,6 @@ describe('ContactListComponent', () => {
 
         it('should display 4 contacts by default', () => {
             expect(component.visibleContacts.length).toBe(4);
-        });
-
-        it('should select a contact on click', () => {
-            const contactElement = fixture.debugElement.query(
-                By.directive(ContactComponent)
-            );
-            clickElement(contactElement, '.card');
-            fixture.detectChanges();
-            expect(component.selectedContactAddress).toBe(contacts[0].address);
-        });
-
-        it('should deselect the contact on a second click', () => {
-            const contactElement = fixture.debugElement.query(
-                By.directive(ContactComponent)
-            );
-            clickElement(contactElement, '.card');
-            fixture.detectChanges();
-            clickElement(contactElement, '.card');
-            fixture.detectChanges();
-            expect(component.selectedContactAddress).toBe('');
-        });
-
-        it('should deselect the contact when clicked elsewhere', () => {
-            const sharedService = TestBed.inject(SharedService);
-            const contactElement = fixture.debugElement.query(
-                By.directive(ContactComponent)
-            );
-            clickElement(contactElement, '.card');
-            fixture.detectChanges();
-            sharedService.newGlobalClick(document.createElement('div'));
-            fixture.detectChanges();
-            expect(component.selectedContactAddress).toBe('');
         });
 
         it('should filter the contacts by the search value', fakeAsync(() => {

@@ -43,7 +43,6 @@ export class ContactListComponent
     visibleContacts: Contact[] = [];
     totalContacts = 0;
     numberOfFilteredContacts = 0;
-    selectedContactAddress = '';
     itemsPerRow = 0;
     contactWidth = 0;
 
@@ -71,17 +70,6 @@ export class ContactListComponent
                 this.contacts = contacts;
                 this.totalContacts = contacts.length;
                 this.updateVisibleContacts();
-            });
-
-        this.sharedService.globalClickTarget$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((target) => {
-                if (
-                    !this.contactsElement.nativeElement.contains(target) &&
-                    this.dialog.openDialogs.length === 0
-                ) {
-                    this.selectedContactAddress = '';
-                }
             });
 
         this.sharedService.searchFilter$
@@ -115,16 +103,6 @@ export class ContactListComponent
 
     trackByFn(index, item: Contact): string {
         return item.address;
-    }
-
-    setSelection(contact: Contact) {
-        this.selectedContactAddress = this.isSelected(contact)
-            ? ''
-            : contact.address;
-    }
-
-    isSelected(contact: Contact): boolean {
-        return contact.address === this.selectedContactAddress;
     }
 
     addContact() {
