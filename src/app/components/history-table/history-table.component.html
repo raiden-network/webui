@@ -41,9 +41,9 @@
         <ng-container cdkColumnDef="main">
             <cdk-cell *cdkCellDef="let event" class="table__main">
                 <div class="table__partner">
-                    <ng-container *ngIf="isReceivedEvent(event); else sent_to"
-                        >Received from</ng-container
-                    >
+                    <ng-container *ngIf="isReceivedEvent(event); else sent_to">
+                        Received from
+                    </ng-container>
                     <ng-template #sent_to>
                         Sent to
                     </ng-template>
