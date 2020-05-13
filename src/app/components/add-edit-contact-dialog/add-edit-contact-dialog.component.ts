@@ -19,17 +19,17 @@ export class AddEditContactDialogComponent implements OnInit {
     editing: boolean;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) data: AddEditContactDialogPayload,
+        @Inject(MAT_DIALOG_DATA) private data: AddEditContactDialogPayload,
         private dialogRef: MatDialogRef<AddEditContactDialogComponent>,
         private fb: FormBuilder
     ) {
-        this.editing = data.edit;
+        this.editing = this.data.edit;
         this.form = this.fb.group({
             address: [
-                { value: data.address, disabled: this.editing },
+                { value: this.data.address, disabled: this.editing },
                 Validators.required,
             ],
-            label: [data.label, Validators.required],
+            label: [this.data.label, Validators.required],
         });
     }
 
@@ -37,7 +37,7 @@ export class AddEditContactDialogComponent implements OnInit {
 
     accept() {
         const result: Contact = {
-            address: this.form.value.address,
+            address: this.editing ? this.data.address : this.form.value.address,
             label: this.form.value.label,
         };
         this.dialogRef.close(result);
