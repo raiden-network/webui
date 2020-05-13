@@ -14,6 +14,7 @@ import { createAddress } from '../../../testing/test-data';
 import { mockInput, clickElement } from '../../../testing/interaction-helper';
 import { By } from '@angular/platform-browser';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 describe('AddEditContactDialogComponent', () => {
     let component: AddEditContactDialogComponent;
@@ -66,38 +67,75 @@ describe('AddEditContactDialogComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(AddEditContactDialogComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+    describe('as add dialog', () => {
+        beforeEach(() => {
+            fixture = TestBed.createComponent(AddEditContactDialogComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
+        });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+        it('should create', () => {
+            expect(component).toBeTruthy();
+        });
 
-    it('should close the dialog with the result when accept button is clicked', () => {
-        mockAllInputs();
-        // @ts-ignore
-        const closeSpy = spyOn(component.dialogRef, 'close');
-        clickElement(fixture.debugElement, '#accept');
-        fixture.detectChanges();
+        it('should close the dialog with the result when accept button is clicked', () => {
+            mockAllInputs();
+            // @ts-ignore
+            const closeSpy = spyOn(component.dialogRef, 'close');
+            clickElement(fixture.debugElement, '#accept');
+            fixture.detectChanges();
 
-        expect(closeSpy).toHaveBeenCalledTimes(1);
-        expect(closeSpy).toHaveBeenCalledWith({
-            address: addressInput,
-            label: labelInput,
+            expect(closeSpy).toHaveBeenCalledTimes(1);
+            expect(closeSpy).toHaveBeenCalledWith({
+                address: addressInput,
+                label: labelInput,
+            });
+        });
+
+        it('should close the dialog with no result when cancel button is clicked', () => {
+            mockAllInputs();
+            // @ts-ignore
+            const closeSpy = spyOn(component.dialogRef, 'close');
+            clickElement(fixture.debugElement, '#cancel');
+            fixture.detectChanges();
+
+            expect(closeSpy).toHaveBeenCalledTimes(1);
+            expect(closeSpy).toHaveBeenCalledWith();
         });
     });
 
-    it('should close the dialog with no result when cancel button is clicked', () => {
-        mockAllInputs();
-        // @ts-ignore
-        const closeSpy = spyOn(component.dialogRef, 'close');
-        clickElement(fixture.debugElement, '#cancel');
-        fixture.detectChanges();
+    describe('as edit dialog', () => {
+        const payloadAddress = createAddress();
 
-        expect(closeSpy).toHaveBeenCalledTimes(1);
-        expect(closeSpy).toHaveBeenCalledWith();
+        beforeEach(() => {
+            const payload: AddEditContactDialogPayload = {
+                address: payloadAddress,
+                label: 'Tester',
+                edit: true,
+            };
+            TestBed.overrideProvider(MAT_DIALOG_DATA, { useValue: payload });
+            fixture = TestBed.createComponent(AddEditContactDialogComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
+        });
+
+        it('should close the dialog with the payload address when accept button is clicked', () => {
+            mockInput(
+                fixture.debugElement,
+                'input[formControlName="label"]',
+                labelInput
+            );
+            fixture.detectChanges();
+            // @ts-ignore
+            const closeSpy = spyOn(component.dialogRef, 'close');
+            clickElement(fixture.debugElement, '#accept');
+            fixture.detectChanges();
+
+            expect(closeSpy).toHaveBeenCalledTimes(1);
+            expect(closeSpy).toHaveBeenCalledWith({
+                address: payloadAddress,
+                label: labelInput,
+            });
+        });
     });
 });
