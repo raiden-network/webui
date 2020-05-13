@@ -33,6 +33,7 @@ import { UploadChecks } from '../../shared/upload-checks';
 import { UiMessage } from '../../models/notification';
 import { of } from 'rxjs';
 import { ClipboardModule } from 'ngx-clipboard';
+import { ChunkPipe } from '../../pipes/chunk.pipe';
 
 function createMockReader(result: {}) {
     return {
@@ -81,6 +82,7 @@ describe('ContactListComponent', () => {
                 ContactListComponent,
                 ContactComponent,
                 ContactActionsComponent,
+                ChunkPipe,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),

@@ -12,6 +12,7 @@ import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.modul
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ToastrModule } from 'ngx-toastr';
 import { ClipboardModule } from 'ngx-clipboard';
+import { ChunkPipe } from '../../pipes/chunk.pipe';
 
 describe('ContactsPageComponent', () => {
     let component: ContactsPageComponent;
@@ -24,6 +25,7 @@ describe('ContactsPageComponent', () => {
                 ContactListComponent,
                 ContactComponent,
                 ContactActionsComponent,
+                ChunkPipe,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),

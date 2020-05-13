@@ -13,6 +13,7 @@ import { TokenComponent } from '../token/token.component';
 import { ContactComponent } from '../contact/contact.component';
 import { ContactActionsComponent } from '../contact/contact-actions/contact-actions.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ChunkPipe } from '../../pipes/chunk.pipe';
 
 describe('HomeComponent', () => {
     let component: HomeComponent;
@@ -29,6 +30,7 @@ describe('HomeComponent', () => {
                 TokenComponent,
                 ContactComponent,
                 ContactActionsComponent,
+                ChunkPipe,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
