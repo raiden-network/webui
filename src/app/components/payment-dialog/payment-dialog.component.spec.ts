@@ -5,7 +5,6 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import BigNumber from 'bignumber.js';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
-import { TokenPipe } from '../../pipes/token.pipe';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
@@ -105,7 +104,6 @@ describe('PaymentDialogComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 PaymentDialogComponent,
-                TokenPipe,
                 TokenInputComponent,
                 AddressInputComponent,
                 TokenNetworkSelectorComponent,

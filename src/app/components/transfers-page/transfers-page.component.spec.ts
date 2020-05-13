@@ -13,7 +13,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ClipboardModule } from 'ngx-clipboard';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { TokenComponent } from '../token/token.component';
-import { TokenPipe } from '../../pipes/token.pipe';
 import { HistoryTableComponent } from '../history-table/history-table.component';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -31,7 +30,6 @@ describe('TransfersPageComponent', () => {
                 DecimalPipe,
                 DisplayDecimalsPipe,
                 TokenComponent,
-                TokenPipe,
             ],
             providers: [
                 TestProviders.AddressBookStubProvider(),

@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
-import { TokenPipe } from '../../pipes/token.pipe';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { TokenInputComponent } from '../token-input/token-input.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
@@ -79,7 +78,6 @@ describe('OpenDialogComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 OpenDialogComponent,
-                TokenPipe,
                 TokenInputComponent,
                 AddressInputComponent,
                 TokenNetworkSelectorComponent,

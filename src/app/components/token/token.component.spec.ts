@@ -43,7 +43,6 @@ import { SelectedTokenService } from '../../services/selected-token.service';
 import { Channel } from '../../models/channel';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { stub } from '../../../testing/stub';
-import { TokenPipe } from '../../pipes/token.pipe';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 
 describe('TokenComponent', () => {
@@ -71,12 +70,7 @@ describe('TokenComponent', () => {
         channelPollingMock.refresh = () => {};
 
         TestBed.configureTestingModule({
-            declarations: [
-                TokenComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-                TokenPipe,
-            ],
+            declarations: [TokenComponent, DecimalPipe, DisplayDecimalsPipe],
             providers: [
                 RaidenService,
                 TestProviders.MockRaidenConfigProvider(),

@@ -16,7 +16,6 @@ import { OpenDialogComponent } from './components/open-dialog/open-dialog.compon
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
 import { RegisterDialogComponent } from './components/register-dialog/register-dialog.component';
 import { MaterialComponentsModule } from './modules/material-components/material-components.module';
-import { TokenPipe } from './pipes/token.pipe';
 import { RaidenConfig, Web3Factory } from './services/raiden.config';
 import { LosslessJsonInterceptor } from './interceptors/lossless-json.interceptor';
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
@@ -84,7 +83,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ConnectionManagerDialogComponent,
         RegisterDialogComponent,
         OpenDialogComponent,
-        TokenPipe,
         ConfirmationDialogComponent,
         DepositWithdrawDialogComponent,
         DecimalPipe,
@@ -165,7 +163,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
             }),
         },
         RaidenService,
-        TokenPipe,
         LocalStorageAdapter,
         Web3Factory,
         {

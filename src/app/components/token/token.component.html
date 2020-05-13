@@ -86,8 +86,10 @@
                 *ngFor="let option of tokens$ | async; trackBy: trackByFn"
                 [value]="option"
                 class="token-option"
-                [innerHtml]="option | token"
             >
+                <span>{{ option.symbol }}</span>
+                <span>{{ option.name }}</span>
+                <span>{{ option.address }}</span>
             </mat-option>
         </mat-select>
         <ng-container

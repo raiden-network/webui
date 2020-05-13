@@ -43,8 +43,10 @@
                 "
                 [value]="userToken.address"
                 class="token-option"
-                [innerHtml]="userToken | token"
             >
+                <span>{{ userToken.symbol }}</span>
+                <span>{{ userToken.name }}</span>
+                <span>{{ userToken.address }}</span>
             </mat-option>
             <mat-option
                 *ngFor="
@@ -54,8 +56,8 @@
                 [value]="contact.address"
                 class="contact-option"
             >
-                <span>{{ contact.label }}</span
-                ><span>{{ contact.address }}</span>
+                <span>{{ contact.label }}</span>
+                <span>{{ contact.address }}</span>
             </mat-option>
         </div>
     </mat-autocomplete>

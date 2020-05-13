@@ -25,7 +25,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { QrCodePayload, QrCodeComponent } from '../qr-code/qr-code.component';
 import { SearchFieldComponent } from '../search-field/search-field.component';
-import { TokenPipe } from '../../pipes/token.pipe';
 import { ToastrModule } from 'ngx-toastr';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -64,7 +63,6 @@ describe('HeaderComponent', () => {
                 HeaderComponent,
                 DisplayDecimalsPipe,
                 SearchFieldComponent,
-                TokenPipe,
             ],
             providers: [
                 NotificationService,
