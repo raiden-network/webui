@@ -31,6 +31,7 @@ import { Contacts } from '../../models/contact';
 import { ClipboardModule } from 'ngx-clipboard';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { PendingTransfer } from '../../models/pending-transfer';
+import { By } from '@angular/platform-browser';
 
 describe('HistoryTableComponent', () => {
     let component: HistoryTableComponent;
@@ -49,6 +50,7 @@ describe('HistoryTableComponent', () => {
         role: 'target',
         userToken: token1,
     });
+    const pendingTransfers = [pendingTransfer1, pendingTransfer2];
     let historySubject: BehaviorSubject<PaymentEvent[]>;
     let pendingTransfersSubject: BehaviorSubject<PendingTransfer[]>;
 
@@ -81,10 +83,7 @@ describe('HistoryTableComponent', () => {
         const pendingTransferPollingMock = stub<
             PendingTransferPollingService
         >();
-        pendingTransfersSubject = new BehaviorSubject([
-            pendingTransfer1,
-            pendingTransfer2,
-        ]);
+        pendingTransfersSubject = new BehaviorSubject(pendingTransfers);
         // @ts-ignore
         pendingTransferPollingMock.pendingTransfers$ = pendingTransfersSubject.asObservable();
 
@@ -121,78 +120,108 @@ describe('HistoryTableComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(HistoryTableComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
     });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-        fixture.destroy();
-    });
+    describe('not showing complete history', () => {
+        beforeEach(() => {
+            fixture.detectChanges();
+        });
 
-    it('should only display 4 events', () => {
-        expect(component.visibleHistory.length).toBe(4);
-    });
+        it('should create', () => {
+            expect(component).toBeTruthy();
+            fixture.destroy();
+        });
 
-    it('should not show failed payment events', () => {
-        const errorEvent = createPaymentEvent('EventPaymentSentFailed');
-        historySubject.next([errorEvent]);
-        pendingTransfersSubject.next([]);
-        fixture.detectChanges();
-        expect(component.visibleHistory.length).toBe(0);
-    });
+        it('should only display 4 events', () => {
+            expect(component.visibleHistory.length).toBe(4);
+        });
 
-    it('should show pending transfers in the history', () => {
-        expect(component.visibleHistory[0]).toEqual(
-            pendingTransferToHistoryEvent(pendingTransfer2)
-        );
-        expect(component.visibleHistory[1]).toEqual(
-            pendingTransferToHistoryEvent(pendingTransfer1)
-        );
-    });
+        it('should not show failed payment events', () => {
+            const errorEvent = createPaymentEvent('EventPaymentSentFailed');
+            historySubject.next([errorEvent]);
+            pendingTransfersSubject.next([]);
+            fixture.detectChanges();
+            expect(component.visibleHistory.length).toBe(0);
+        });
 
-    it('should filter the events by the selected token', () => {
-        const selectedTokenService = TestBed.inject(SelectedTokenService);
-        selectedTokenService.setToken(token1);
-        fixture.detectChanges();
-
-        for (let i = 0; i < component.visibleHistory.length; i++) {
-            expect(component.visibleHistory[i].token_address).toBe(
-                token1.address
+        it('should show pending transfers in the history', () => {
+            expect(component.visibleHistory[0]).toEqual(
+                pendingTransferToHistoryEvent(pendingTransfer2)
             );
-        }
+            expect(component.visibleHistory[1]).toEqual(
+                pendingTransferToHistoryEvent(pendingTransfer1)
+            );
+        });
+
+        it('should filter the events by the selected token', () => {
+            const selectedTokenService = TestBed.inject(SelectedTokenService);
+            selectedTokenService.setToken(token1);
+            fixture.detectChanges();
+
+            for (let i = 0; i < component.visibleHistory.length; i++) {
+                expect(component.visibleHistory[i].token_address).toBe(
+                    token1.address
+                );
+            }
+        });
+
+        it('should filter the events by a token symbol search filter', fakeAsync(() => {
+            const sharedService = TestBed.inject(SharedService);
+            sharedService.setSearchValue(token2.symbol);
+            tick(1000);
+            fixture.detectChanges();
+
+            for (let i = 0; i < component.visibleHistory.length; i++) {
+                expect(component.visibleHistory[i].token_address).toBe(
+                    token2.address
+                );
+            }
+            flush();
+        }));
+
+        it('should filter the events by a contact label search filter', fakeAsync(() => {
+            const event = createPaymentEvent('EventPaymentSentSuccess');
+            historySubject.next([event].concat(history));
+            const addressBookService = TestBed.inject(AddressBookService);
+            addressBookService.get = () => {
+                const contacts: Contacts = {
+                    [event.target]: 'The test target',
+                };
+                return contacts;
+            };
+            fixture.detectChanges();
+
+            const sharedService: SharedService = TestBed.inject(SharedService);
+            sharedService.setSearchValue('The test target');
+            tick(1000);
+            fixture.detectChanges();
+
+            expect(component.visibleHistory.length).toBe(1);
+            expect(component.visibleHistory[0]).toEqual(event);
+            flush();
+        }));
+
+        it('should show all events link', () => {
+            const link = fixture.debugElement.query(By.css('.label__link'));
+            expect(link).toBeTruthy();
+        });
     });
 
-    it('should filter the events by a token symbol search filter', fakeAsync(() => {
-        const sharedService = TestBed.inject(SharedService);
-        sharedService.setSearchValue(token2.symbol);
-        tick(1000);
-        fixture.detectChanges();
+    describe('showing complete history', () => {
+        beforeEach(() => {
+            component.showAll = true;
+            fixture.detectChanges();
+        });
 
-        for (let i = 0; i < component.visibleHistory.length; i++) {
-            expect(component.visibleHistory[i].token_address).toBe(
-                token2.address
+        it('should display all events', () => {
+            expect(component.visibleHistory.length).toBe(
+                history.length + pendingTransfers.length
             );
-        }
-        flush();
-    }));
+        });
 
-    it('should filter the events by a contact label search filter', fakeAsync(() => {
-        const event = createPaymentEvent('EventPaymentSentSuccess');
-        historySubject.next([event].concat(history));
-        const addressBookService = TestBed.inject(AddressBookService);
-        addressBookService.get = () => {
-            const contacts: Contacts = { [event.target]: 'The test target' };
-            return contacts;
-        };
-        fixture.detectChanges();
-
-        const sharedService: SharedService = TestBed.inject(SharedService);
-        sharedService.setSearchValue('The test target');
-        tick(1000);
-        fixture.detectChanges();
-
-        expect(component.visibleHistory.length).toBe(1);
-        expect(component.visibleHistory[0]).toEqual(event);
-        flush();
-    }));
+        it('should not show all events link', () => {
+            const link = fixture.debugElement.query(By.css('.label__link'));
+            expect(link).toBeFalsy();
+        });
+    });
 });

@@ -5,7 +5,6 @@ import {
     ViewChild,
     ElementRef,
     Input,
-    HostListener,
     AfterContentInit,
 } from '@angular/core';
 import { Contact } from '../../models/contact';

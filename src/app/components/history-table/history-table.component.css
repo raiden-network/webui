@@ -6,12 +6,18 @@
     padding: 20px;
 }
 
-.history__label {
+.label {
     font-size: 12px;
     line-height: 24px;
     letter-spacing: 1px;
     text-transform: uppercase;
     opacity: 0.75;
+}
+
+.label__link {
+    text-decoration: underline;
+    text-transform: capitalize;
+    color: #ffffff;
 }
 
 .table__row {
@@ -70,12 +76,12 @@
 .icon-box {
     width: 35px;
     height: 35px;
-    border-radius: 10px;
+    border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.2);
 }
 
 .icon-box__icon {
     color: #000000;
-    width: 12px;
+    width: 14px;
     height: auto;
 }
