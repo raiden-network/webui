@@ -1,4 +1,4 @@
-<div class="actions-section">
+<div class="actions-section" fxLayout="row" fxLayoutGap="18px">
     <button
         *ngIf="
             openChannels !== 0 || !quickConnectPending[selectedToken?.address];
@@ -9,6 +9,7 @@
         mat-flat-button
         color="accent"
         (click)="pay()"
+        fxFlex="20"
     >
         <mat-icon class="action__icon" svgIcon="transfer" aria-label="Transfer">
         </mat-icon>
@@ -40,13 +41,58 @@
             ></mat-progress-spinner>
         </div>
     </ng-template>
+
+    <div
+        *ngIf="isAllNetworksView"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        class="overview"
+        fxFlex="80"
+    >
+        <div fxFlex="25" class="overview__item overview__item--label">
+            <div>
+                Top Networks
+            </div>
+        </div>
+        <div
+            *ngFor="
+                let token of (tokens$ | async).slice(0, 3);
+                trackBy: trackByFn
+            "
+            fxFlex="25"
+            class="overview__item"
+        >
+            <ng-container *ngIf="token.connected; else no_deposits">
+                <span
+                    *ngIf="
+                        token.connected?.sum_deposits
+                            | decimal: token.decimals as sumDeposits
+                    "
+                    [matTooltip]="sumDeposits"
+                    >{{ sumDeposits | displayDecimals: 3 }}</span
+                >
+            </ng-container>
+            <ng-template #no_deposits>
+                0
+            </ng-template>
+            <span
+                matTooltip="{{ token.name }}
+            {{ token.address }}
+            (Click to copy)"
+                ngxClipboard
+                [cbContent]="token.address"
+            >
+                {{ token.symbol }}
+            </span>
+        </div>
+    </div>
 </div>
 
 <div
     class="card"
     fxLayout="column"
     fxLayoutAlign="start center"
-    fxLayoutGap="15px"
+    fxLayoutGap="22px"
 >
     <div class="card__top" fxLayout="row" fxLayoutAlign="center">
         <mat-select
@@ -164,53 +210,7 @@
         </ng-template>
     </div>
 
-    <div fxFlex="1 1 auto"></div>
-    <div class="card__values" fxLayout="row" fxLayoutAlign="center">
-        <div
-            *ngIf="isAllNetworksView; else open_channels"
-            fxLayout="row"
-            fxLayoutAlign="center"
-            class="overview"
-        >
-            <div
-                *ngFor="
-                    let token of (tokens$ | async).slice(0, 3);
-                    trackBy: trackByFn
-                "
-                fxFlex="33"
-                fxLayout="column"
-                fxLayoutAlign="center center"
-                class="overview__item"
-            >
-                <div>
-                    <ng-container *ngIf="token.connected; else no_deposits">
-                        <span
-                            *ngIf="
-                                token.connected?.sum_deposits
-                                    | decimal: token.decimals as sumDeposits
-                            "
-                            [matTooltip]="sumDeposits"
-                            >{{ sumDeposits | displayDecimals: 3 }}</span
-                        >
-                    </ng-container>
-                    <ng-template #no_deposits>
-                        0
-                    </ng-template>
-                    <span
-                        matTooltip="{{ token.name }}
-                    {{ token.address }}
-                    (Click to copy)"
-                        ngxClipboard
-                        [cbContent]="token.address"
-                        class="overview__token-symbol"
-                    >
-                        {{ token.symbol }}
-                    </span>
-                </div>
-            </div>
-        </div>
-        <ng-template #open_channels>
-            <span>in {{ openChannels }} open channels</span>
-        </ng-template>
+    <div *ngIf="!isAllNetworksView" class="card__values">
+        <span>in {{ openChannels }} open channels</span>
     </div>
 </div>
