@@ -19,11 +19,11 @@ import * as Ajv from 'ajv';
 import { contactsSchema } from '../../models/contacts-schema';
 import { NotificationService } from '../../services/notification.service';
 import { UploadError } from '../../models/upload-error';
-import { Subject } from 'rxjs';
+import { Subject, fromEvent } from 'rxjs';
 import { SharedService } from '../../services/shared.service';
 import { AddEditContactDialogComponent } from '../add-edit-contact-dialog/add-edit-contact-dialog.component';
 import { matchesContact } from '../../shared/keyword-matcher';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'app-contact-list',
@@ -78,14 +78,15 @@ export class ContactListComponent
                 this.searchFilter = value;
                 this.updateVisibleContacts();
             });
+
+        fromEvent(window, 'resize')
+            .pipe(debounceTime(300), takeUntil(this.ngUnsubscribe))
+            .subscribe(() => {
+                this.calculateItemsPerRow();
+            });
     }
 
     ngAfterContentInit() {
-        this.calculateItemsPerRow();
-    }
-
-    @HostListener('window:resize', ['$event'])
-    onResize() {
         this.calculateItemsPerRow();
     }
 
