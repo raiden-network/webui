@@ -11,6 +11,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { clickElement } from '../../../testing/interaction-helper';
 import { SharedService } from '../../services/shared.service';
 import { TestProviders } from '../../../testing/test-providers';
+import { By } from '@angular/platform-browser';
 
 describe('ContactComponent', () => {
     let component: ContactComponent;
@@ -71,5 +72,15 @@ describe('ContactComponent', () => {
         sharedService.newGlobalClick(document.createElement('div'));
         fixture.detectChanges();
         expect(component.selected).toBe(false);
+    });
+
+    it('should not deselect when global click emits the card as target', () => {
+        const sharedService = TestBed.inject(SharedService);
+        clickElement(fixture.debugElement, '.card');
+        fixture.detectChanges();
+        const card = fixture.debugElement.query(By.css('.card')).nativeElement;
+        sharedService.newGlobalClick(card);
+        fixture.detectChanges();
+        expect(component.selected).toBe(true);
     });
 });
