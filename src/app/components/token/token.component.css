@@ -1,6 +1,6 @@
 .card {
     height: 188px;
-    padding: 21px 0 0 0;
+    padding: 22px 0;
     font-size: 16px;
     line-height: 19px;
     background-color: rgba(255, 255, 255, 0.06);
@@ -19,11 +19,6 @@
     line-height: 59px;
     font-weight: 300;
     letter-spacing: -0.76px;
-}
-
-.card__values {
-    height: 47px;
-    width: 100%;
 }
 
 .network-selector {
@@ -63,30 +58,37 @@
 }
 
 .overview {
-    border-top: 1px solid #000000;
-    width: 100%;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-radius: 15px;
 }
 
 .overview__item {
-    border-right: 1px solid #000000;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .overview__item:last-child {
     border-right: none;
 }
 
-.overview__token-symbol {
+.overview__item--label {
+    border-right: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     opacity: 0.7;
+    margin-left: 19px;
 }
 
 .actions-section {
-    margin-bottom: 20px;
+    margin-bottom: 32px;
 }
 
 .action {
-    width: 170px;
+    font-size: 16px !important;
+    line-height: 19px !important;
     background-color: #cccccc;
-    font-weight: 700 !important;
 }
 
 .action--connect {
@@ -100,7 +102,7 @@
 }
 
 .action__icon {
-    width: 8px;
-    height: auto;
+    width: auto;
+    height: 24px;
     margin-right: 10px;
 }
