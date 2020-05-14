@@ -5,8 +5,11 @@
     fxLayoutAlign="space-between stretch"
     [@flyInOutLeft]="'in'"
 >
-    <div class="history__label" fxLayout="row" fxLayoutAlign="start center">
-        Transfer history
+    <div class="label" fxLayout="row" fxLayoutAlign="space-between center">
+        <span>Transfer history</span>
+        <a *ngIf="!showAll" class="label__link" routerLink="/transfers">
+            All
+        </a>
     </div>
     <cdk-table
         *ngIf="visibleHistory.length !== 0; else no_transfers"

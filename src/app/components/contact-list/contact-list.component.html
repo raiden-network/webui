@@ -14,6 +14,18 @@
             [overlapTrigger]="true"
             xPosition="before"
         >
+            <ng-container *ngIf="!showAll">
+                <a
+                    mat-menu-item
+                    routerLink="/contacts"
+                    fxLayout="column"
+                    fxLayoutAlign="center center"
+                    id="all-link"
+                >
+                    All
+                </a>
+                <div class="options__divider"></div>
+            </ng-container>
             <input
                 #upload_select
                 class="options__file-input"

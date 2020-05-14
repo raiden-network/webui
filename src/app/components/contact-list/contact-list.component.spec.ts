@@ -33,6 +33,7 @@ import { UiMessage } from '../../models/notification';
 import { of } from 'rxjs';
 import { ClipboardModule } from 'ngx-clipboard';
 import { ChunkPipe } from '../../pipes/chunk.pipe';
+import { By } from '@angular/platform-browser';
 
 function createMockReader(result: {}) {
     return {
@@ -353,6 +354,13 @@ describe('ContactListComponent', () => {
 
             window['FileReader'] = reader;
         });
+
+        it('should show all contacts link', () => {
+            clickElement(fixture.debugElement, '#options');
+            fixture.detectChanges();
+            const link = fixture.debugElement.query(By.css('#all-link'));
+            expect(link).toBeTruthy();
+        });
     });
 
     describe('showing all contacts', () => {
@@ -363,6 +371,13 @@ describe('ContactListComponent', () => {
 
         it('should display all contacts', () => {
             expect(component.visibleContacts.length).toBe(contacts.length);
+        });
+
+        it('should not show all contacts link', () => {
+            clickElement(fixture.debugElement, '#options');
+            fixture.detectChanges();
+            const link = fixture.debugElement.query(By.css('#all-link'));
+            expect(link).toBeFalsy();
         });
     });
 });

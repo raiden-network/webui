@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
 import { Subject, combineLatest } from 'rxjs';
 import { PaymentEvent } from '../../models/payment-event';
@@ -23,6 +23,8 @@ export interface HistoryEvent extends PaymentEvent {
     animations: Animations.flyInOut,
 })
 export class HistoryTableComponent implements OnInit, OnDestroy {
+    @Input() showAll = false;
+
     visibleHistory: HistoryEvent[] = [];
     selectedToken: UserToken;
 
@@ -126,7 +128,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
         const events = this.history;
         const visibleEvents: HistoryEvent[] = [];
         for (let i = events.length - 1; i >= 0; i--) {
-            if (visibleEvents.length >= 4) {
+            if (!this.showAll && visibleEvents.length >= 4) {
                 break;
             }
 
