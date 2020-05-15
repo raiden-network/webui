@@ -1,20 +1,25 @@
 <div class="header" fxLayout="row" fxLayoutGap="30px">
-    <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex="66">
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex="555 0 0">
         <div
             *ngIf="balance$ | async as balance"
-            class="header__label header__box"
+            class="header__box"
             fxLayout="row"
             fxLayoutAlign="start center"
-            fxLayoutGap="16px"
+            fxLayoutGap="12px"
         >
-            <div>
+            <div class="header__label">
                 <span [matTooltip]="balance"
                     >{{ balance | displayDecimals: 3 }}
                     {{ (network$ | async)?.shortName }}
                 </span>
-                on-chain balance
+                <span class="header__label header__label--secondary"
+                    >on-chain</span
+                >
             </div>
-            <div *ngIf="zeroBalance$ | async" class="header__alert-box">
+            <div
+                *ngIf="zeroBalance$ | async"
+                class="header__label header__alert-box"
+            >
                 Funds needed
             </div>
             <a
@@ -39,12 +44,12 @@
 
         <div
             fxLayout="row"
-            fxLayoutGap="16px"
+            fxLayoutGap="12px"
             fxLayoutAlign="start center"
             class="header__box"
         >
             <div class="header__label header__label--secondary">
-                Your address
+                Address
             </div>
             <span
                 class="header__address"
@@ -77,7 +82,7 @@
         fxLayout="row"
         fxLayoutAlign="start center"
         fxLayoutGap="22px"
-        fxFlex="33"
+        fxFlex="334 0 0"
     >
         <app-search-field fxFlex></app-search-field>
         <button
