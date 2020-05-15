@@ -15,8 +15,6 @@ export class RaidenIconsModule {
         'token',
         'channel',
         'go',
-        'left',
-        'right',
         'faucet',
         'transfer',
         'add',
