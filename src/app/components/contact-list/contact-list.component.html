@@ -1,4 +1,4 @@
-<div class="list" fxLayout="column" fxLayoutGap="20px">
+<div class="list" fxLayout="column" fxLayoutGap="30px">
     <div class="list__labels" fxLayout="row" fxLayoutAlign="start center">
         <span>
             Contacts ・ {{ visibleContacts.length }} of
@@ -45,7 +45,7 @@
     <div
         class="list__contacts"
         fxLayout="column"
-        fxLayoutGap="28px"
+        fxLayoutGap="36px"
         #contact_list
     >
         <div
@@ -74,7 +74,7 @@
         class="button"
         (click)="addContact()"
         id="add"
-        fxFlexOffset="8px"
+        fxFlexOffset="6px"
     >
         <mat-icon class="button__icon" svgIcon="add" aria-hidden="true">
         </mat-icon>

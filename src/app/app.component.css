@@ -32,13 +32,13 @@
 }
 
 .menu__logo {
-    width: 24px;
-    height: auto;
-    margin-left: 22px;
+    height: 48px;
+    width: auto;
 }
 
 .menu__logo-mobile {
-    height: 25px;
+    height: 24px;
+    width: auto;
 }
 
 .menu__title {
@@ -63,7 +63,7 @@
 .network-info {
     width: 500px;
     height: 42px;
-    border-radius: 25px;
+    border-radius: 15px;
     background-color: #ffffff;
     color: #000000;
     font-size: 16px;

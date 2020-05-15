@@ -184,7 +184,7 @@ body {
 .mat-dialog-container {
     background-color: #ffffff !important;
     color: #000000 !important;
-    border-radius: 25px !important;
+    border-radius: 15px !important;
     padding: 32px 27px 27px 27px !important;
     box-shadow: none !important;
 }

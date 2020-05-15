@@ -261,6 +261,8 @@ export class TokenComponent implements OnInit, OnDestroy {
                     tokenAddressResult = result.token.address;
                     this.quickConnectPending[tokenAddressResult] = true;
 
+                    this.selectedTokenService.setToken(result.token);
+
                     return this.raidenService.connectTokenNetwork(
                         result.funds,
                         tokenAddressResult
