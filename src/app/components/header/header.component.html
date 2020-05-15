@@ -1,5 +1,5 @@
-<div class="header" fxLayout="row wrap">
-    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
+<div class="header" fxLayout="row" fxLayoutGap="30px">
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex="66">
         <div
             *ngIf="balance$ | async as balance"
             class="header__label header__box"
@@ -73,10 +73,13 @@
         </div>
     </div>
 
-    <div fxFlex="1 1 auto"></div>
-
-    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="23px">
-        <app-search-field></app-search-field>
+    <div
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap="22px"
+        fxFlex="33"
+    >
+        <app-search-field fxFlex></app-search-field>
         <button
             class="notification-button"
             mat-icon-button

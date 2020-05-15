@@ -32,7 +32,7 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
 })
 export class ContactListComponent
     implements OnInit, OnDestroy, AfterContentInit {
-    private static MIN_CONTACT_WIDTH = 300;
+    private static MIN_CONTACT_WIDTH = 280;
 
     @Input() showAll = false;
 
@@ -163,7 +163,7 @@ export class ContactListComponent
                 this.notificationService.addSuccessNotification({
                     title: 'Contacts import',
                     description: 'successful',
-                    icon: 'info',
+                    icon: 'contacts',
                 });
             } else {
                 this.showImportError({ invalidFormat: true });
