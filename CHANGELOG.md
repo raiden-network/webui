@@ -13,6 +13,7 @@
 - [#270] Add a contact for a new address from the transfer and open channel dialogs.
 - [#186] Shows the available tokens in the deposit/withdraw, open channel and quick connect dialogs.
 - [#297] ENS support on Goerli test network.
+- [#389] Shut down Raiden node button.
 
 ### Fixed
 - [#138] Fixes the decimals of token amount inputs to not get cut off on Firefox.
@@ -153,6 +154,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#389]: https://github.com/raiden-network/webui/issues/389
 [#339]: https://github.com/raiden-network/webui/issues/339
 [#297]: https://github.com/raiden-network/webui/issues/297
 [#270]: https://github.com/raiden-network/webui/issues/270
