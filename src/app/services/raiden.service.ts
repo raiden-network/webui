@@ -29,6 +29,7 @@ import {
     filter,
     delay,
     catchError,
+    mapTo,
 } from 'rxjs/operators';
 import { Channel } from '../models/channel';
 import { Connections } from '../models/connection';
@@ -395,7 +396,7 @@ export class RaidenService {
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
-            map(() => null),
+            mapTo(null),
             catchError((error) => {
                 this.notificationService.addErrorNotification({
                     title: 'Send transfer failed',
@@ -604,7 +605,7 @@ export class RaidenService {
                     {}
                 )
             ),
-            map(() => null),
+            mapTo(null),
             tap(() => {
                 const message: UiMessage = {
                     title: 'Registered token',
@@ -660,7 +661,7 @@ export class RaidenService {
                     }
                 )
             ),
-            map(() => null),
+            mapTo(null),
             tap(() => {
                 const message: UiMessage = {
                     title: 'Quick connect successful',
@@ -707,7 +708,7 @@ export class RaidenService {
                     `${this.raidenConfig.api}/connections/${userToken.address}`
                 )
             ),
-            map(() => null),
+            mapTo(null),
             tap(() => {
                 const message: UiMessage = {
                     title: 'Left token network',
@@ -788,7 +789,7 @@ export class RaidenService {
                     { to: targetAddress, value: amount }
                 )
             ),
-            map(() => null),
+            mapTo(null),
             tap(() => {
                 const message: UiMessage = {
                     title: 'Minted',
@@ -862,6 +863,12 @@ export class RaidenService {
     public attemptApiConnection() {
         this.notificationService.apiError.retrying = true;
         this.globalRetrySubject.next(null);
+    }
+
+    public shutdownRaiden(): Observable<void> {
+        return this.http
+            .post(`${this.raidenConfig.api}/shutdown`, {})
+            .pipe(mapTo(null));
     }
 
     public refreshAddress() {

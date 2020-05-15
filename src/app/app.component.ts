@@ -6,7 +6,7 @@ import {
     ViewChild,
     HostListener,
 } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, EMPTY } from 'rxjs';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
@@ -25,8 +25,12 @@ import {
     ErrorComponent,
     ErrorPayload,
 } from './components/error/error.component';
-import { takeUntil, tap, delay } from 'rxjs/operators';
+import { takeUntil, tap, delay, flatMap } from 'rxjs/operators';
 import { MediaObserver } from '@angular/flex-layout';
+import {
+    ConfirmationDialogPayload,
+    ConfirmationDialogComponent,
+} from './components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-root',
@@ -120,6 +124,32 @@ export class AppComponent implements OnInit, OnDestroy {
 
     hideNetworkInfo() {
         this.showNetworkInfo = false;
+    }
+
+    shutdownRaiden() {
+        this.closeMenu();
+
+        const payload: ConfirmationDialogPayload = {
+            title: 'Shutdown',
+            message: 'Are you sure you want to shut down your Raiden Node?',
+        };
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+            data: payload,
+            width: '360px',
+        });
+
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap((result) => {
+                    if (!result) {
+                        return EMPTY;
+                    }
+
+                    return this.raidenService.shutdownRaiden();
+                })
+            )
+            .subscribe(() => {});
     }
 
     private handleConnectionErrors(errors: ConnectionErrors) {

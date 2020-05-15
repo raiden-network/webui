@@ -44,13 +44,23 @@
                 text="Transfers"
                 route="/transfers"
             ></app-navigation-entry>
-            <div fxFlex="1 1 auto"></div>
             <app-navigation-entry
                 (click)="closeMenu()"
                 icon="info"
                 text="About"
                 route="/about"
             ></app-navigation-entry>
+            <div fxFlex="1 1 auto"></div>
+            <button
+                mat-flat-button
+                (click)="shutdownRaiden()"
+                class="shutdown"
+                fxLayout="row"
+                fxLayoutAlign="start center"
+            >
+                <mat-icon class="shutdown__icon" svgIcon="shutdown"></mat-icon>
+                <span>Shut down</span>
+            </button>
         </div>
     </mat-sidenav>
 

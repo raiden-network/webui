@@ -1371,4 +1371,22 @@ describe('RaidenService', () => {
             statusText: '',
         });
     });
+
+    it('should request the API to shutdown', () => {
+        const spy = jasmine.createSpy();
+        service.shutdownRaiden().subscribe(spy, (error) => {
+            fail(error);
+        });
+
+        const shutdownRequest = mockHttp.expectOne({
+            url: `${endpoint}/shutdown`,
+            method: 'POST',
+        });
+
+        shutdownRequest.flush(losslessStringify({ status: 'shutdown' }), {
+            status: 200,
+            statusText: '',
+        });
+        expect(spy).toHaveBeenCalledTimes(1);
+    });
 });
