@@ -9,7 +9,7 @@
         mat-flat-button
         color="accent"
         (click)="pay()"
-        fxFlex="20"
+        fxFlex="140 0 0"
     >
         <mat-icon class="action__icon" svgIcon="transfer" aria-label="Transfer">
         </mat-icon>
@@ -42,48 +42,49 @@
         </div>
     </ng-template>
 
-    <div
-        *ngIf="isAllNetworksView"
-        fxLayout="row"
-        fxLayoutAlign="center center"
-        class="overview"
-        fxFlex="80"
-    >
-        <div fxFlex="25" class="overview__item overview__item--label">
-            <div>
-                Top Networks
-            </div>
-        </div>
+    <div fxFlex="394 0 0">
         <div
-            *ngFor="
-                let token of (tokens$ | async).slice(0, 3);
-                trackBy: trackByFn
-            "
-            fxFlex="25"
-            class="overview__item"
+            *ngIf="isAllNetworksView"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+            class="overview"
         >
-            <ng-container *ngIf="token.connected; else no_deposits">
-                <span
-                    *ngIf="
-                        token.connected?.sum_deposits
-                            | decimal: token.decimals as sumDeposits
-                    "
-                    [matTooltip]="sumDeposits"
-                    >{{ sumDeposits | displayDecimals: 3 }}</span
-                >
-            </ng-container>
-            <ng-template #no_deposits>
-                0
-            </ng-template>
-            <span
-                matTooltip="{{ token.name }}
-            {{ token.address }}
-            (Click to copy)"
-                ngxClipboard
-                [cbContent]="token.address"
+            <div fxFlex="10 0 0" class="overview__item overview__item--label">
+                <div>
+                    Top Networks
+                </div>
+            </div>
+            <div
+                *ngFor="
+                    let token of (tokens$ | async).slice(0, 3);
+                    trackBy: trackByFn
+                "
+                fxFlex="7 0 0"
+                class="overview__item"
             >
-                {{ token.symbol }}
-            </span>
+                <ng-container *ngIf="token.connected; else no_deposits">
+                    <span
+                        *ngIf="
+                            token.connected?.sum_deposits
+                                | decimal: token.decimals as sumDeposits
+                        "
+                        [matTooltip]="sumDeposits"
+                        >{{ sumDeposits | displayDecimals: 3 }}</span
+                    >
+                </ng-container>
+                <ng-template #no_deposits>
+                    0
+                </ng-template>
+                <span
+                    matTooltip="{{ token.name }}
+                {{ token.address }}
+                (Click to copy)"
+                    ngxClipboard
+                    [cbContent]="token.address"
+                >
+                    {{ token.symbol }}
+                </span>
+            </div>
         </div>
     </div>
 </div>

@@ -1,120 +1,118 @@
-<mat-sidenav-container>
-    <mat-sidenav
-        class="menu"
-        [mode]="isMobile() ? 'over' : 'side'"
-        [disableClose]="isMobile() ? false : true"
-        [opened]="isMobile() ? false : true"
-        role="navigation"
-        #menu_sidenav
-    >
-        <div
-            class="menu-inner"
-            fxLayout="column"
-            fxLayoutAlign="start center"
-            fxLayoutGap="28px"
-        >
-            <a target="_blank" href="http://raiden.network/">
-                <img
-                    alt="Raiden logo"
-                    src="assets/logo.svg"
-                    ngClass.xs="menu__logo-mobile"
-                    ngClass="menu__logo"
-                />
-            </a>
-            <app-navigation-entry
-                fxFlexOffset="57px"
-                (click)="closeMenu()"
-                icon="home"
-                text="Home"
-                route="/home"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (click)="closeMenu()"
-                icon="channel"
-                text="Channels"
-                route="/channels"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (click)="closeMenu()"
-                icon="contacts"
-                text="Contacts"
-                route="/contacts"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (click)="closeMenu()"
-                icon="transfers"
-                text="Transfers"
-                route="/transfers"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (click)="closeMenu()"
-                icon="info"
-                text="About"
-                route="/about"
-            ></app-navigation-entry>
-            <div fxFlex="1 1 auto"></div>
-            <button
-                mat-flat-button
-                (click)="shutdownRaiden()"
-                class="shutdown"
-                fxLayout="row"
-                fxLayoutAlign="start center"
-            >
-                <mat-icon class="shutdown__icon" svgIcon="shutdown"></mat-icon>
-                <span>Shut down</span>
-            </button>
-        </div>
-    </mat-sidenav>
-
-    <mat-sidenav-content fxLayout="center start">
-        <div
-            class="page"
-            fxFlex="60"
-            fxFlex.lt-lg="96"
-            fxFlex.lg="75"
-            fxLayout="column"
-            fxLayoutGap="32px"
+<div class="wrapper" fxLayout="column" fxLayoutAlign="center center">
+    <mat-sidenav-container>
+        <mat-sidenav
+            class="menu"
+            [mode]="isMobile() ? 'over' : 'side'"
+            [disableClose]="isMobile() ? false : true"
+            [opened]="isMobile() ? false : true"
+            role="navigation"
+            #menu_sidenav
         >
             <div
-                *ngIf="showNetworkInfo"
-                class="network-info"
-                fxLayout="row"
-                fxLayoutAlign="center center"
-                [@easeInOut]="'in'"
+                class="menu-inner"
+                fxLayout="column"
+                fxLayoutAlign="start center"
+                fxLayoutGap="28px"
             >
-                <span>
-                    You are running Raiden on
-                    {{ (network$ | async)?.name }} testnet
-                </span>
+                <a target="_blank" href="http://raiden.network/">
+                    <img
+                        alt="Raiden logo"
+                        src="assets/logo.svg"
+                        ngClass.xs="menu__logo-mobile"
+                        ngClass="menu__logo"
+                    />
+                </a>
+                <app-navigation-entry
+                    fxFlexOffset="57px"
+                    (click)="closeMenu()"
+                    icon="home"
+                    text="Home"
+                    route="/home"
+                ></app-navigation-entry>
+                <app-navigation-entry
+                    (click)="closeMenu()"
+                    icon="channel"
+                    text="Channels"
+                    route="/channels"
+                ></app-navigation-entry>
+                <app-navigation-entry
+                    (click)="closeMenu()"
+                    icon="contacts"
+                    text="Contacts"
+                    route="/contacts"
+                ></app-navigation-entry>
+                <app-navigation-entry
+                    (click)="closeMenu()"
+                    icon="transfers"
+                    text="Transfers"
+                    route="/transfers"
+                ></app-navigation-entry>
+                <app-navigation-entry
+                    (click)="closeMenu()"
+                    icon="info"
+                    text="About"
+                    route="/about"
+                ></app-navigation-entry>
+                <div fxFlex="1 1 auto"></div>
                 <button
-                    mat-icon-button
-                    class="network-info__close"
-                    (click)="hideNetworkInfo()"
+                    mat-flat-button
+                    (click)="shutdownRaiden()"
+                    class="shutdown"
+                    fxLayout="row"
+                    fxLayoutAlign="start center"
                 >
                     <mat-icon
-                        aria-label="Close network info"
-                        svgIcon="close"
-                        class="network-info__close-icon"
+                        class="shutdown__icon"
+                        svgIcon="shutdown"
                     ></mat-icon>
+                    <span>Shut down</span>
                 </button>
             </div>
-            <app-header></app-header>
-            <div class="content">
-                <router-outlet></router-outlet>
-            </div>
-        </div>
-    </mat-sidenav-content>
+        </mat-sidenav>
 
-    <mat-sidenav
-        mode="over"
-        position="end"
-        [autoFocus]="false"
-        ngClass.xs="notification-sidenav-mobile"
-        ngClass="notification-sidenav"
-        #notification_sidenav
-    >
-        <app-notification-panel
-            (close)="notification_sidenav.close()"
-        ></app-notification-panel>
-    </mat-sidenav>
-</mat-sidenav-container>
+        <mat-sidenav-content fxLayout="center start">
+            <div class="page" fxLayout="column" fxLayoutGap="32px">
+                <div
+                    *ngIf="showNetworkInfo"
+                    class="network-info"
+                    fxLayout="row"
+                    fxLayoutAlign="center center"
+                    [@easeInOut]="'in'"
+                >
+                    <span>
+                        You are running Raiden on
+                        {{ (network$ | async)?.name }} testnet
+                    </span>
+                    <button
+                        mat-icon-button
+                        class="network-info__close"
+                        (click)="hideNetworkInfo()"
+                    >
+                        <mat-icon
+                            aria-label="Close network info"
+                            svgIcon="close"
+                            class="network-info__close-icon"
+                        ></mat-icon>
+                    </button>
+                </div>
+                <app-header></app-header>
+                <div class="content">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </mat-sidenav-content>
+
+        <mat-sidenav
+            mode="over"
+            position="end"
+            [autoFocus]="false"
+            ngClass.xs="notification-sidenav-mobile"
+            ngClass="notification-sidenav"
+            #notification_sidenav
+        >
+            <app-notification-panel
+                (close)="notification_sidenav.close()"
+            ></app-notification-panel>
+        </mat-sidenav>
+    </mat-sidenav-container>
+</div>

@@ -16,21 +16,23 @@
 .header__box {
     background-color: rgba(255, 255, 255, 0.06);
     height: 100%;
-    padding: 0 20px;
+    padding: 0 12px;
     border-radius: 15px;
 }
 
 .header__alert-box {
     background-color: rgba(255, 0, 0, 0.3);
     border-radius: 9px;
-    height: 20px;
     padding: 0 12px;
+    font-size: 10px;
+    line-height: 18px;
+    letter-spacing: 0.5px;
     text-align: center;
     color: #ff0000;
 }
 
 .header__address {
-    width: 115px;
+    width: 70px;
     font-size: 13px;
     letter-spacing: 1.07px;
     white-space: nowrap;
@@ -53,9 +55,9 @@
 .notification-button {
     height: 50px !important;
     width: 50px !important;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.06);
 }
 
 .notification-button__icon {
-    color: #000000;
+    color: #888888;
 }

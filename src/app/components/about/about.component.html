@@ -1,10 +1,10 @@
-<div fxLayout="column" fxLayoutGap="110px">
+<div fxLayout="column" fxLayoutGap="51px">
     <h1 class="about">
         About this Software
     </h1>
 
     <div class="section" fxLayout="row" fxLayoutAlign="space-between">
-        <div class="section__box-offset">
+        <div fxFlex="3 0 0" class="section__box-offset">
             <span class="section__descriptor">Versions</span>
             <button
                 mat-icon-button
@@ -20,7 +20,7 @@
                 </mat-icon>
             </button>
         </div>
-        <div fxFlex="0 1 800px" fxLayout="column" fxLayoutGap="39px">
+        <div fxFlex="8 0 0" fxLayout="column" fxLayoutGap="39px">
             <div
                 class="section__box"
                 fxLayout="column"
@@ -41,8 +41,10 @@
     </div>
 
     <div class="section" fxLayout="row" fxLayoutAlign="space-between">
-        <div class="section__descriptor">The MIT License (MIT)</div>
-        <div fxFlex="0 1 800px" fxLayout="column" fxLayoutGap="52px">
+        <div fxFlex="3 0 0" class="section__descriptor">
+            The MIT License (MIT)
+        </div>
+        <div fxFlex="8 0 0" fxLayout="column" fxLayoutGap="52px">
             <p class="section__text" id="copyright">
                 Copyright (c) 2015-{{ currentYear() }} Brainbot Labs Est.
             </p>
