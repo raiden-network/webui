@@ -32,6 +32,7 @@ export class RaidenIconsModule {
         'transfers',
         'home',
         'contacts',
+        'shutdown',
     ];
 
     constructor(

@@ -84,3 +84,23 @@
     width: 16px !important;
     height: 16px !important;
 }
+
+.shutdown {
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #ffffff;
+    opacity: 0.5;
+    font-size: 12px !important;
+    line-height: 14px !important;
+    padding: 11px 22px !important;
+    border-radius: 15px !important;
+    font-weight: 400 !important;
+    background: none;
+}
+
+.shutdown__icon {
+    width: 24px;
+    height: auto;
+    margin-right: 14px;
+}

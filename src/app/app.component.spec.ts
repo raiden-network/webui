@@ -40,6 +40,11 @@ import { HeaderComponent } from './components/header/header.component';
 import { SearchFieldComponent } from './components/search-field/search-field.component';
 import { DisplayDecimalsPipe } from './pipes/display-decimals.pipe';
 import { TokenPollingService } from './services/token-polling.service';
+import { clickElement } from '../testing/interaction-helper';
+import {
+    ConfirmationDialogPayload,
+    ConfirmationDialogComponent,
+} from './components/confirmation-dialog/confirmation-dialog.component';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -60,6 +65,7 @@ describe('AppComponent', () => {
         raidenServiceMock.balance$ = of('0');
         // @ts-ignore
         raidenServiceMock.raidenAddress$ = of(createAddress());
+        raidenServiceMock.shutdownRaiden = () => of(null);
 
         const pendingTransferPollingMock = stub<
             PendingTransferPollingService
@@ -231,5 +237,40 @@ describe('AppComponent', () => {
         };
         // @ts-ignore
         expect(app.errorDialog.componentInstance.data).toEqual(payload);
+    });
+
+    it('should shutdown Raiden', () => {
+        const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+        const raidenService = TestBed.inject(RaidenService);
+        const shutdownSpy = spyOn(
+            raidenService,
+            'shutdownRaiden'
+        ).and.returnValue(of(null));
+        clickElement(fixture.debugElement, '.shutdown');
+
+        const payload: ConfirmationDialogPayload = {
+            title: 'Shutdown',
+            message: 'Are you sure you want to shut down your Raiden Node?',
+        };
+        expect(dialogSpy).toHaveBeenCalledTimes(1);
+        expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
+            data: payload,
+            width: '360px',
+        });
+        expect(shutdownSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not shutdown Raiden if dialog is cancelled', () => {
+        const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+        dialog.returns = () => null;
+        const raidenService = TestBed.inject(RaidenService);
+        const shutdownSpy = spyOn(
+            raidenService,
+            'shutdownRaiden'
+        ).and.returnValue(of(null));
+        clickElement(fixture.debugElement, '.shutdown');
+
+        expect(dialogSpy).toHaveBeenCalledTimes(1);
+        expect(shutdownSpy).toHaveBeenCalledTimes(0);
     });
 });

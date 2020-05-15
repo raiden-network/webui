@@ -5,13 +5,15 @@
 .entry {
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-size: 12px;
-    line-height: 14px;
     color: #ffffff;
     opacity: 0.5;
     text-decoration: none;
-    padding: 11px 22px;
-    border-radius: 15px;
+    font-size: 12px !important;
+    line-height: 14px !important;
+    padding: 11px 22px !important;
+    border-radius: 15px !important;
+    font-weight: 400 !important;
+    background: none;
 }
 
 .active {
@@ -23,4 +25,5 @@
 .entry__icon {
     width: 24px;
     height: auto;
+    margin-right: 14px;
 }
