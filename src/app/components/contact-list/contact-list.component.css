@@ -33,18 +33,10 @@
     border-radius: 15px !important;
 }
 
-.button--grey {
-    background-color: #3a3a3a;
-}
-
 .button__icon {
     height: 20px;
     line-height: 20px;
     margin-right: 15px;
-}
-
-.button__icon--big {
-    height: 24px !important;
 }
 
 .options__file-input {

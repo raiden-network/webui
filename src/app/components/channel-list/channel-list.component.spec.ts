@@ -27,7 +27,11 @@ import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { SelectedTokenService } from '../../services/selected-token.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { Channel } from '../../models/channel';
-import { clickElement } from '../../../testing/interaction-helper';
+import {
+    clickElement,
+    mockOpenMatSelect,
+    mockMatSelectByIndex,
+} from '../../../testing/interaction-helper';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -40,6 +44,8 @@ import BigNumber from 'bignumber.js';
 import { SharedService } from '../../services/shared.service';
 import { AddressBookService } from '../../services/address-book.service';
 import { Contacts } from '../../models/contact';
+import { stub } from '../../../testing/stub';
+import { ChunkPipe } from '../../pipes/chunk.pipe';
 
 describe('ChannelListComponent', () => {
     let component: ChannelListComponent;
@@ -52,17 +58,26 @@ describe('ChannelListComponent', () => {
     );
 
     beforeEach(async(() => {
+        const tokenPollingMock = stub<TokenPollingService>();
+        // @ts-ignore
+        tokenPollingMock.tokens$ = of([token1, token2]);
+        tokenPollingMock.refresh = () => {};
+
         TestBed.configureTestingModule({
             declarations: [
                 ChannelListComponent,
                 ChannelComponent,
                 DecimalPipe,
                 DisplayDecimalsPipe,
+                ChunkPipe,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 RaidenService,
-                TokenPollingService,
+                {
+                    provide: TokenPollingService,
+                    useValue: tokenPollingMock,
+                },
                 TestProviders.MockMatDialog(),
                 ChannelPollingService,
                 SelectedTokenService,
@@ -98,20 +113,11 @@ describe('ChannelListComponent', () => {
         fixture.destroy();
     });
 
-    it('should not display all channels by default', () => {
-        expect(component.visibleChannels.length).toBeGreaterThan(0);
-        expect(component.visibleChannels.length).toBeLessThan(channels.length);
-    });
-
-    it('should be able to display all channels', () => {
-        clickElement(fixture.debugElement, '#show-all');
-        fixture.detectChanges();
+    it('should display all channels by default', () => {
         expect(component.visibleChannels.length).toBe(channels.length);
     });
 
     it('should display the channels sorted', () => {
-        clickElement(fixture.debugElement, '#show-all');
-        fixture.detectChanges();
         for (let i = 0; i < channels.length - 1; i++) {
             expect(
                 component.visibleChannels[i].balance.isGreaterThanOrEqualTo(
@@ -123,10 +129,19 @@ describe('ChannelListComponent', () => {
 
     it('should filter the channels by the selected token', () => {
         const selectedTokenService = TestBed.inject(SelectedTokenService);
-        selectedTokenService.setToken(token1);
-        clickElement(fixture.debugElement, '#show-all');
+        const setTokenSpy = spyOn(
+            selectedTokenService,
+            'setToken'
+        ).and.callThrough();
+
+        mockOpenMatSelect(fixture.debugElement);
         fixture.detectChanges();
 
+        mockMatSelectByIndex(fixture.debugElement, 1);
+        fixture.detectChanges();
+
+        expect(setTokenSpy).toHaveBeenCalledTimes(1);
+        expect(setTokenSpy).toHaveBeenCalledWith(token1);
         for (let i = 0; i < component.visibleChannels.length; i++) {
             expect(component.visibleChannels[i].token_address).toBe(
                 token1.address

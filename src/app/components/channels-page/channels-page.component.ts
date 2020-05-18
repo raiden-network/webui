@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SelectedTokenService } from '../../services/selected-token.service';
 
 @Component({
     selector: 'app-channels-page',
@@ -7,9 +6,7 @@ import { SelectedTokenService } from '../../services/selected-token.service';
     styleUrls: ['./channels-page.component.css'],
 })
 export class ChannelsPageComponent implements OnInit {
-    constructor(selectedTokenService: SelectedTokenService) {
-        selectedTokenService.resetToken();
-    }
+    constructor() {}
 
     ngOnInit(): void {}
 }

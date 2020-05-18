@@ -57,11 +57,7 @@
             fxLayoutGap="22px"
         >
             <app-contact
-                *ngFor="
-                    let contact of contactsRow;
-                    let i = index;
-                    trackBy: trackByFn
-                "
+                *ngFor="let contact of contactsRow; trackBy: trackByFn"
                 [contact]="contact"
                 [@stretchInOut]="'in'"
                 [style.width.px]="contactWidth"
@@ -70,7 +66,6 @@
     </div>
     <button
         mat-flat-button
-        color="primary"
         class="button"
         (click)="addContact()"
         id="add"

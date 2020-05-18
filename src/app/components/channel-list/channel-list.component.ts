@@ -4,11 +4,11 @@ import {
     OnDestroy,
     ViewChild,
     ElementRef,
-    AfterViewInit,
     HostListener,
+    AfterContentInit,
 } from '@angular/core';
 import { Channel } from '../../models/channel';
-import { EMPTY, Subject } from 'rxjs';
+import { EMPTY, Subject, Observable, fromEvent } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { amountToDecimal } from '../../utils/amount.converter';
 import { UserToken } from '../../models/usertoken';
@@ -19,7 +19,13 @@ import {
 } from '../open-dialog/open-dialog.component';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
-import { flatMap, map, takeUntil } from 'rxjs/operators';
+import {
+    flatMap,
+    map,
+    takeUntil,
+    shareReplay,
+    debounceTime,
+} from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Animations } from '../../animations/animations';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -28,6 +34,7 @@ import { SharedService } from '../../services/shared.service';
 import { matchesChannel, matchesContact } from '../../shared/keyword-matcher';
 import { AddressBookService } from '../../services/address-book.service';
 import { Contact } from '../../models/contact';
+import { TokenUtils } from '../../utils/token.utils';
 
 @Component({
     selector: 'app-channel-list',
@@ -35,19 +42,21 @@ import { Contact } from '../../models/contact';
     styleUrls: ['./channel-list.component.css'],
     animations: Animations.stretchInOut,
 })
-export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ChannelListComponent
+    implements OnInit, OnDestroy, AfterContentInit {
+    private static MIN_CHANNEL_WIDTH = 183;
+
     @ViewChild('channel_list', { static: true })
-    private listElement: ElementRef;
+    private channelsElement: ElementRef;
 
     visibleChannels: Channel[] = [];
-    totalChannels = 0;
-    numberOfFilteredChannels = 0;
-    showAll = false;
     itemsPerRow = 0;
+    channelWidth = 0;
+    selectedToken: UserToken;
+    tokens$: Observable<UserToken[]>;
 
     private channels: Channel[] = [];
     private searchFilter = '';
-    private selectedToken: UserToken;
     private ngUnsubscribe = new Subject();
 
     constructor(
@@ -59,23 +68,25 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
         private selectedTokenService: SelectedTokenService,
         private sharedService: SharedService,
         private addressBookService: AddressBookService
-    ) {}
+    ) {
+        this.tokens$ = this.tokenPollingService.tokens$.pipe(
+            map((tokens) =>
+                tokens.sort((a, b) => TokenUtils.compareTokens(a, b))
+            ),
+            shareReplay({ refCount: true, bufferSize: 1 })
+        );
+    }
 
     ngOnInit() {
         this.channelPollingService.channels$
             .pipe(
                 map((channels) =>
-                    channels.filter(
-                        (channel) =>
-                            channel.state === 'opened' ||
-                            channel.state === 'waiting_for_open'
-                    )
+                    channels.filter((channel) => channel.state !== 'settled')
                 ),
                 takeUntil(this.ngUnsubscribe)
             )
             .subscribe((channels: Channel[]) => {
                 this.channels = channels;
-                this.totalChannels = channels.length;
                 this.updateVisibleChannels();
             });
 
@@ -83,7 +94,6 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((token: UserToken) => {
                 this.selectedToken = token;
-                this.showAll = false;
                 this.updateVisibleChannels();
             });
 
@@ -93,6 +103,16 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.searchFilter = value;
                 this.updateVisibleChannels();
             });
+
+        fromEvent(window, 'resize')
+            .pipe(debounceTime(300), takeUntil(this.ngUnsubscribe))
+            .subscribe(() => {
+                this.calculateItemsPerRow();
+            });
+    }
+
+    ngAfterContentInit() {
+        this.calculateItemsPerRow();
     }
 
     ngOnDestroy() {
@@ -100,23 +120,21 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.ngUnsubscribe.complete();
     }
 
-    ngAfterViewInit() {
-        this.calculateItemsPerRow();
-    }
-
-    @HostListener('window:resize', ['$event'])
-    onResize() {
-        this.calculateItemsPerRow();
-        this.updateVisibleChannels();
+    rowTrackByFn(index, item: Channel[]): string {
+        return item.reduce(
+            (accumulator, current) =>
+                accumulator +
+                `_${current.token_address}-${current.partner_address}`,
+            ''
+        );
     }
 
     trackByFn(index, item: Channel) {
         return `${item.token_address}_${item.partner_address}`;
     }
 
-    toggleShowAll() {
-        this.showAll = !this.showAll;
-        this.updateVisibleChannels();
+    onSelect(item: UserToken) {
+        this.selectedTokenService.setToken(item);
     }
 
     openChannel() {
@@ -187,7 +205,6 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private updateVisibleChannels() {
         const filteredChannels = this.getFilteredChannels();
-        this.numberOfFilteredChannels = filteredChannels.length;
 
         filteredChannels.sort((a, b) => {
             const aBalance = amountToDecimal(a.balance, a.userToken.decimals);
@@ -196,16 +213,16 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
             return bBalance.minus(aBalance).toNumber();
         });
 
-        if (this.showAll) {
-            this.visibleChannels = filteredChannels;
-        } else {
-            this.visibleChannels = filteredChannels.slice(0, this.itemsPerRow);
-        }
+        this.visibleChannels = filteredChannels;
     }
 
     private calculateItemsPerRow() {
-        const listWidth = this.listElement.nativeElement.getBoundingClientRect()
+        const sectionWidth = this.channelsElement.nativeElement.getBoundingClientRect()
             .width;
-        this.itemsPerRow = Math.floor((listWidth - 213) / 229);
+        this.itemsPerRow = Math.floor(
+            sectionWidth / ChannelListComponent.MIN_CHANNEL_WIDTH
+        );
+        this.channelWidth =
+            (sectionWidth - 37 * (this.itemsPerRow - 1)) / this.itemsPerRow;
     }
 }

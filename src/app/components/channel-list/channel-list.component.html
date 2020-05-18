@@ -1,52 +1,82 @@
-<div fxLayout="column">
-    <div class="labels">
-        Open Channels -
-        {{ visibleChannels.length }} of
-        {{ totalChannels }}
-    </div>
-    <div
-        class="list"
-        fxLayout="row wrap"
-        fxLayoutAlign="start"
-        fxLayoutGap="19px"
-        #channel_list
+<div
+    class="wrapper"
+    fxLayout="column"
+    fxLayoutAlign="start start"
+    fxLayoutGap="18px"
+>
+    <button
+        mat-flat-button
+        class="action"
+        (click)="openChannel()"
+        id="open-channel"
     >
-        <button
-            mat-flat-button
-            class="button"
-            fxLayout="column"
-            fxLayoutAlign="center"
-            (click)="openChannel()"
-            fxFlex="0 0 64px"
-            id="open-channel"
-        >
-            <mat-icon
-                class="button__icon"
-                svgIcon="add"
-                aria-label="Open channel"
+        <mat-icon class="action__icon" svgIcon="add" aria-hidden="true">
+        </mat-icon>
+        <span> New channel</span>
+    </button>
+
+    <div fxFlex="1 0 0" class="list" fxLayout="column" fxLayoutGap="22px">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="label">
+                <ng-container *ngIf="selectedToken; else all_networks">
+                    Channels in {{ selectedToken.symbol }} network
+                </ng-container>
+                <ng-template #all_networks>
+                    Channels in all networks
+                </ng-template>
+            </div>
+            <mat-select
+                [(value)]="selectedToken"
+                (selectionChange)="onSelect($event.value)"
+                class="network-selector"
+                placeholder="Select network"
+                panelClass="network-selector__panel"
             >
-            </mat-icon>
-        </button>
-        <app-channel
-            *ngFor="let channel of visibleChannels; trackBy: trackByFn"
-            [channel]="channel"
-            class="list__channel"
-            [@stretchInOut]="'in'"
-        >
-        </app-channel>
-        <button
-            *ngIf="numberOfFilteredChannels > itemsPerRow"
-            mat-flat-button
-            class="button button--big"
-            fxLayout="row"
-            fxLayoutAlign="center center"
-            (click)="toggleShowAll()"
-            fxFlex="0 0 130px"
-            id="show-all"
-        >
-            <mat-icon class="button__icon" svgIcon="eye" aria-hidden="true">
-            </mat-icon>
-            <span> {{ showAll ? 'Hide' : 'All' }} </span>
-        </button>
+                <mat-select-trigger>
+                    <ng-container *ngIf="!selectedToken; else change_network"
+                        >Select Network</ng-container
+                    >
+                    <ng-template #change_network>Change Network</ng-template>
+                </mat-select-trigger>
+                <mat-option>
+                    All Networks
+                </mat-option>
+                <mat-option
+                    *ngFor="let option of tokens$ | async; trackBy: trackByFn"
+                    [value]="option"
+                    class="token-option"
+                >
+                    <span>{{ option.symbol }}</span>
+                    <span>{{ option.name }}</span>
+                    <span>{{ option.address }}</span>
+                </mat-option>
+            </mat-select>
+        </div>
+
+        <div fxFlex="1 0 0" class="channels">
+            <div
+                class="channels__items"
+                fxLayout="column"
+                fxLayoutGap="27px"
+                #channel_list
+            >
+                <div
+                    *ngFor="
+                        let channelsRow of visibleChannels | chunk: itemsPerRow;
+                        trackBy: rowTrackByFn
+                    "
+                    fxLayout="row"
+                    fxLayoutGap="37px"
+                >
+                    <app-channel
+                        *ngFor="let channel of channelsRow; trackBy: trackByFn"
+                        [channel]="channel"
+                        [@stretchInOut]="'in'"
+                        [style.width.px]="channelWidth"
+                    >
+                    </app-channel>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

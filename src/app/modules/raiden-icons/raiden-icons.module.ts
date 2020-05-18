@@ -18,7 +18,6 @@ export class RaidenIconsModule {
         'faucet',
         'transfer',
         'add',
-        'eye',
         'thunderbolt',
         'received',
         'sent',
