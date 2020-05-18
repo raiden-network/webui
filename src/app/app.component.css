@@ -42,12 +42,10 @@
 
 .menu__logo {
     height: 48px;
-    width: auto;
 }
 
 .menu__logo-mobile {
     height: 24px;
-    width: auto;
 }
 
 .menu__title {
@@ -110,6 +108,5 @@
 
 .shutdown__icon {
     width: 24px;
-    height: auto;
     margin-right: 14px;
 }

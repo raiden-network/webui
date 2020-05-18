@@ -34,7 +34,6 @@
 .icon-box__identicon {
     border-radius: 50%;
     height: 100%;
-    width: auto;
 }
 
 .info-box {
@@ -71,6 +70,5 @@
 
 .icon {
     height: 20px;
-    width: auto;
     line-height: 20px;
 }
