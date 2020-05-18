@@ -119,7 +119,7 @@
 body {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
     font-weight: 400;
-    scrollbar-color: #393939 rgba(0,0,0,0);
+    scrollbar-color: #393939 rgba(0, 0, 0, 0);
     scrollbar-width: 10px;
 }
 

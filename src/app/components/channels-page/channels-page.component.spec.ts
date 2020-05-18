@@ -15,6 +15,7 @@ import { TokenPollingService } from '../../services/token-polling.service';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { SelectedTokenService } from '../../services/selected-token.service';
 import { SharedService } from '../../services/shared.service';
+import { ChunkPipe } from '../../pipes/chunk.pipe';
 
 describe('ChannelsPageComponent', () => {
     let component: ChannelsPageComponent;
@@ -28,6 +29,7 @@ describe('ChannelsPageComponent', () => {
                 ChannelComponent,
                 DecimalPipe,
                 DisplayDecimalsPipe,
+                ChunkPipe,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),

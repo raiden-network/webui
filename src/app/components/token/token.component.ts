@@ -63,11 +63,7 @@ export class TokenComponent implements OnInit, OnDestroy {
         this.channelPollingService.channels$
             .pipe(
                 map((channels) =>
-                    channels.filter(
-                        (channel) =>
-                            channel.state === 'opened' ||
-                            channel.state === 'waiting_for_open'
-                    )
+                    channels.filter((channel) => channel.state !== 'settled')
                 ),
                 takeUntil(this.ngUnsubscribe)
             )
