@@ -40,7 +40,6 @@
 
 .register-button__icon {
     height: 20px;
-    width: auto;
 }
 
 .options-button {
@@ -104,7 +103,6 @@
 }
 
 .action__icon {
-    width: auto;
     height: 24px;
     margin-right: 10px;
 }
