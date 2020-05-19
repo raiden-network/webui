@@ -26,7 +26,9 @@
 
 .content {
     height: 100%;
-    padding-bottom: 47px;
+    margin-bottom: 47px;
+    overflow-y: scroll;
+    position: relative;
 }
 
 .menu {
