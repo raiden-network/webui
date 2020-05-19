@@ -32,6 +32,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { PendingTransfer } from '../../models/pending-transfer';
 import { By } from '@angular/platform-browser';
+import { clickElement } from '../../../testing/interaction-helper';
 
 describe('HistoryTableComponent', () => {
     let component: HistoryTableComponent;
@@ -205,6 +206,13 @@ describe('HistoryTableComponent', () => {
             const link = fixture.debugElement.query(By.css('.label__link'));
             expect(link).toBeTruthy();
         });
+
+        it('should not show pagination buttons', () => {
+            const next = fixture.debugElement.query(By.css('#next'));
+            const previous = fixture.debugElement.query(By.css('#previous'));
+            expect(next).toBeFalsy();
+            expect(previous).toBeFalsy();
+        });
     });
 
     describe('showing complete history', () => {
@@ -213,10 +221,35 @@ describe('HistoryTableComponent', () => {
             fixture.detectChanges();
         });
 
-        it('should display all events', () => {
-            expect(component.visibleHistory.length).toBe(
-                history.length + pendingTransfers.length
-            );
+        it('should display events in pages', () => {
+            expect(component.numberOfPages).toBe(Math.ceil(history.length / 4));
+            expect(component.visibleHistory.length).toBe(4);
+        });
+
+        it('should go to the next page when button clicked', () => {
+            clickElement(fixture.debugElement, '#next');
+            fixture.detectChanges();
+            expect(component.currentPage).toBe(1);
+        });
+
+        it('should go to the previous page when button clicked', () => {
+            component.currentPage = 2;
+            fixture.detectChanges();
+            clickElement(fixture.debugElement, '#previous');
+            fixture.detectChanges();
+            expect(component.currentPage).toBe(1);
+        });
+
+        it('should not go to the next page when on last page', () => {
+            component.currentPage = component.numberOfPages - 1;
+            fixture.detectChanges();
+            component.nextPage();
+            expect(component.currentPage).toBe(component.numberOfPages - 1);
+        });
+
+        it('should not go to the previous page when on first page', () => {
+            component.previousPage();
+            expect(component.currentPage).toBe(0);
         });
 
         it('should not show all events link', () => {

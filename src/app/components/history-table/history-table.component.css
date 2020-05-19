@@ -3,10 +3,11 @@
     line-height: 19px;
     background-color: rgba(255, 255, 255, 0.06);
     border-radius: 15px;
-    padding: 20px;
+    padding: 12px 20px 20px 20px;
 }
 
 .label {
+    height: 32px;
     font-size: 12px;
     line-height: 24px;
     letter-spacing: 1px;
@@ -83,4 +84,13 @@
 .icon-box__icon {
     color: #000000;
     width: 14px;
+}
+
+.navigation:disabled {
+    border: none;
+}
+
+.navigation__icon {
+    height: 100% !important;
+    width: unset !important;
 }
