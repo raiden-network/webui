@@ -1,10 +1,9 @@
 <div
     class="card"
-    [ngClass]="
-        channel.state !== 'opened' && channel.state !== 'waiting_for_open'
-            ? 'card--transparent'
-            : ''
-    "
+    [ngClass]="{
+        'card--transparent':
+            channel.state !== 'opened' && channel.state !== 'waiting_for_open'
+    }"
     fxLayout="column"
     fxLayoutAlign="space-between start"
 >
