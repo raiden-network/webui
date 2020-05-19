@@ -205,10 +205,23 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
         const filteredChannels = this.getFilteredChannels();
 
         filteredChannels.sort((a, b) => {
-            const aBalance = amountToDecimal(a.balance, a.userToken.decimals);
-            const bBalance = amountToDecimal(b.balance, b.userToken.decimals);
-
-            return bBalance.minus(aBalance).toNumber();
+            const aOpened =
+                a.state === 'opened' || a.state === 'waiting_for_open';
+            const bOpened =
+                b.state === 'opened' || b.state === 'waiting_for_open';
+            if (aOpened === bOpened) {
+                const aBalance = amountToDecimal(
+                    a.balance,
+                    a.userToken.decimals
+                );
+                const bBalance = amountToDecimal(
+                    b.balance,
+                    b.userToken.decimals
+                );
+                return bBalance.minus(aBalance).toNumber();
+            } else {
+                return aOpened ? -1 : 1;
+            }
         });
 
         this.visibleChannels = filteredChannels;
