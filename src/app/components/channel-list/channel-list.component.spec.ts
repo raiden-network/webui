@@ -11,6 +11,7 @@ import {
     createToken,
     createTestChannels,
     createAddress,
+    createChannel,
 } from '../../../testing/test-data';
 import { ChannelComponent } from '../channel/channel.component';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
@@ -53,9 +54,12 @@ describe('ChannelListComponent', () => {
 
     const token1 = createToken();
     const token2 = createToken({ symbol: 'TST2', name: 'Test Suite Token 2' });
-    const channels = createTestChannels(10, token1).concat(
-        createTestChannels(10, token2)
-    );
+    const channels = [
+        createChannel({ userToken: token1, state: 'closed' }),
+    ].concat(createTestChannels(10, token1), createTestChannels(10, token2), [
+        createChannel({ userToken: token1, state: 'waiting_for_open' }),
+        createChannel({ userToken: token2, state: 'closed' }),
+    ]);
 
     beforeEach(async(() => {
         const tokenPollingMock = stub<TokenPollingService>();
@@ -119,6 +123,19 @@ describe('ChannelListComponent', () => {
 
     it('should display the channels sorted', () => {
         for (let i = 0; i < channels.length - 1; i++) {
+            if (i === channels.length - 3) {
+                expect(component.visibleChannels[i].state).not.toBe('closed');
+                expect(component.visibleChannels[i + 1].state).toBe('closed');
+                expect(component.visibleChannels[i + 2].state).toBe('closed');
+                expect(
+                    component.visibleChannels[
+                        i + 1
+                    ].balance.isGreaterThanOrEqualTo(
+                        component.visibleChannels[i + 2].balance
+                    )
+                ).toBe(true);
+                break;
+            }
             expect(
                 component.visibleChannels[i].balance.isGreaterThanOrEqualTo(
                     component.visibleChannels[i + 1].balance

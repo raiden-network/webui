@@ -68,7 +68,7 @@ export function createChannel(obj: any = {}): Channel {
         token_address: obj.userToken ? obj.userToken.address : createAddress(),
         partner_address: createAddress(),
         reveal_timeout: 50,
-        balance: new BigNumber(0),
+        balance: BigNumber.random(3).times(1000),
         total_deposit: new BigNumber(0),
         total_withdraw: new BigNumber(0),
         settle_timeout: 500,
@@ -86,7 +86,6 @@ export function createTestChannels(
         channels.push(
             createChannel({
                 userToken: userToken,
-                balance: BigNumber.random(3).times(1000),
             })
         );
     }
