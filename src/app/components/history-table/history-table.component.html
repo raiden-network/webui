@@ -5,11 +5,53 @@
     fxLayoutAlign="space-between stretch"
     [@flyInOutLeft]="'in'"
 >
-    <div class="label" fxLayout="row" fxLayoutAlign="space-between center">
+    <div class="label" fxLayout="row" fxLayoutAlign="space-between end">
         <span>Transfer history</span>
-        <a *ngIf="!showAll" class="label__link" routerLink="/transfers">
+        <a
+            *ngIf="!showAll; else navigation"
+            class="label__link"
+            routerLink="/transfers"
+        >
             All
         </a>
+        <ng-template #navigation>
+            <div
+                *ngIf="visibleHistory.length !== 0"
+                fxLayout="row"
+                fxLayoutAlign="start end"
+                fxLayoutGap="10px"
+            >
+                <span>Page {{ currentPage + 1 }} of {{ numberOfPages }}</span>
+                <button
+                    class="navigation"
+                    mat-icon-button
+                    [disabled]="currentPage <= 0"
+                    (click)="previousPage()"
+                    id="previous"
+                >
+                    <mat-icon
+                        class="navigation__icon"
+                        svgIcon="left"
+                        aria-label="Previous page"
+                    >
+                    </mat-icon>
+                </button>
+                <button
+                    class="navigation"
+                    mat-icon-button
+                    [disabled]="currentPage + 1 >= numberOfPages"
+                    (click)="nextPage()"
+                    id="next"
+                >
+                    <mat-icon
+                        class="navigation__icon"
+                        svgIcon="right"
+                        aria-label="Next page"
+                    >
+                    </mat-icon>
+                </button>
+            </div>
+        </ng-template>
     </div>
     <cdk-table
         *ngIf="visibleHistory.length !== 0; else no_transfers"
@@ -71,7 +113,11 @@
         </ng-container>
 
         <ng-container cdkColumnDef="amount">
-            <cdk-cell *cdkCellDef="let event">
+            <cdk-cell
+                *cdkCellDef="let event"
+                fxLayout="column"
+                fxLayoutAlign="start end"
+            >
                 <div *ngIf="event.userToken" class="table__amount">
                     <ng-container *ngIf="isReceivedEvent(event); else minus">
                         +

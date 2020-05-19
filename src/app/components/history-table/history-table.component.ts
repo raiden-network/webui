@@ -23,10 +23,14 @@ export interface HistoryEvent extends PaymentEvent {
     animations: Animations.flyInOut,
 })
 export class HistoryTableComponent implements OnInit, OnDestroy {
+    private static ITEMS_PER_PAGE = 4;
+
     @Input() showAll = false;
 
     visibleHistory: HistoryEvent[] = [];
     selectedToken: UserToken;
+    currentPage = 0;
+    numberOfPages = 0;
 
     private history: HistoryEvent[] = [];
     private searchFilter = '';
@@ -80,6 +84,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((token: UserToken) => {
                 this.selectedToken = token;
+                this.currentPage = 0;
                 this.updateVisibleEvents();
             });
 
@@ -87,6 +92,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((value) => {
                 this.searchFilter = value;
+                this.currentPage = 0;
                 this.updateVisibleEvents();
             });
     }
@@ -98,6 +104,22 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
 
     trackByFn(index, item: HistoryEvent) {
         return `${item.log_time}_${item.identifier}_${item.token_address}_${item.initiator}_${item.target}`;
+    }
+
+    nextPage() {
+        if (this.currentPage + 1 >= this.numberOfPages) {
+            return;
+        }
+        this.currentPage += 1;
+        this.updateVisibleEvents();
+    }
+
+    previousPage() {
+        if (this.currentPage <= 0) {
+            return;
+        }
+        this.currentPage -= 1;
+        this.updateVisibleEvents();
     }
 
     paymentPartner(event: HistoryEvent): string {
@@ -125,26 +147,32 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
     }
 
     private updateVisibleEvents() {
-        const events = this.history;
+        const filteredEvents = this.getFilteredEvents();
+        this.numberOfPages = Math.ceil(
+            filteredEvents.length / HistoryTableComponent.ITEMS_PER_PAGE
+        );
+
         const visibleEvents: HistoryEvent[] = [];
-        for (let i = events.length - 1; i >= 0; i--) {
-            if (!this.showAll && visibleEvents.length >= 4) {
+        const start = this.currentPage * HistoryTableComponent.ITEMS_PER_PAGE;
+        for (let i = filteredEvents.length - 1 - start; i >= 0; i--) {
+            if (visibleEvents.length >= HistoryTableComponent.ITEMS_PER_PAGE) {
                 break;
             }
-
-            const event = events[i];
-            if (
-                event.event === 'EventPaymentSentFailed' ||
-                (this.selectedToken &&
-                    event.token_address !== this.selectedToken.address) ||
-                !this.matchesSearchFilter(event)
-            ) {
-                continue;
-            }
-
-            visibleEvents.push(event);
+            visibleEvents.push(filteredEvents[i]);
         }
         this.visibleHistory = visibleEvents;
+    }
+
+    private getFilteredEvents() {
+        return this.history.filter(
+            (event) =>
+                event.event !== 'EventPaymentSentFailed' &&
+                this.matchesSearchFilter(event) &&
+                !(
+                    this.selectedToken &&
+                    event.token_address !== this.selectedToken.address
+                )
+        );
     }
 
     private matchesSearchFilter(event: HistoryEvent): boolean {

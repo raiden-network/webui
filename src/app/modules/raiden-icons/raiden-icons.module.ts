@@ -30,6 +30,8 @@ export class RaidenIconsModule {
         'home',
         'contacts',
         'shutdown',
+        'left',
+        'right',
     ];
 
     constructor(
