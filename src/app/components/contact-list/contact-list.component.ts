@@ -5,7 +5,7 @@ import {
     ViewChild,
     ElementRef,
     Input,
-    AfterContentInit,
+    AfterViewInit,
 } from '@angular/core';
 import { Contact } from '../../models/contact';
 import { AddressBookService } from '../../services/address-book.service';
@@ -30,8 +30,7 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
     styleUrls: ['./contact-list.component.css'],
     animations: Animations.stretchInOut,
 })
-export class ContactListComponent
-    implements OnInit, OnDestroy, AfterContentInit {
+export class ContactListComponent implements OnInit, OnDestroy, AfterViewInit {
     private static MIN_CONTACT_WIDTH = 280;
 
     @Input() showAll = false;
@@ -85,8 +84,8 @@ export class ContactListComponent
             });
     }
 
-    ngAfterContentInit() {
-        this.calculateItemsPerRow();
+    ngAfterViewInit() {
+        setTimeout(() => this.calculateItemsPerRow());
     }
 
     ngOnDestroy() {

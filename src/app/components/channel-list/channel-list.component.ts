@@ -4,8 +4,7 @@ import {
     OnDestroy,
     ViewChild,
     ElementRef,
-    HostListener,
-    AfterContentInit,
+    AfterViewInit,
 } from '@angular/core';
 import { Channel } from '../../models/channel';
 import { EMPTY, Subject, Observable, fromEvent } from 'rxjs';
@@ -42,8 +41,7 @@ import { TokenUtils } from '../../utils/token.utils';
     styleUrls: ['./channel-list.component.css'],
     animations: Animations.stretchInOut,
 })
-export class ChannelListComponent
-    implements OnInit, OnDestroy, AfterContentInit {
+export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
     private static MIN_CHANNEL_WIDTH = 183;
 
     @ViewChild('channel_list', { static: true })
@@ -111,8 +109,8 @@ export class ChannelListComponent
             });
     }
 
-    ngAfterContentInit() {
-        this.calculateItemsPerRow();
+    ngAfterViewInit() {
+        setTimeout(() => this.calculateItemsPerRow());
     }
 
     ngOnDestroy() {
