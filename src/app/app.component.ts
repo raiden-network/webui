@@ -6,7 +6,7 @@ import {
     ViewChild,
     HostListener,
 } from '@angular/core';
-import { Observable, Subject, EMPTY } from 'rxjs';
+import { Observable, Subject, EMPTY, BehaviorSubject } from 'rxjs';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChannelPollingService } from './services/channel-polling.service';
 import { RaidenService } from './services/raiden.service';
@@ -25,12 +25,20 @@ import {
     ErrorComponent,
     ErrorPayload,
 } from './components/error/error.component';
-import { takeUntil, tap, delay, flatMap } from 'rxjs/operators';
+import {
+    takeUntil,
+    tap,
+    delay,
+    flatMap,
+    switchMap,
+    takeWhile,
+} from 'rxjs/operators';
 import { MediaObserver } from '@angular/flex-layout';
 import {
     ConfirmationDialogPayload,
     ConfirmationDialogComponent,
 } from './components/confirmation-dialog/confirmation-dialog.component';
+import { Status } from './models/status';
 
 @Component({
     selector: 'app-root',
@@ -47,9 +55,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
     readonly network$: Observable<Network>;
     showNetworkInfo = false;
+    apiStatus: Status = { status: 'ready' };
+    syncingProgress = 0;
 
     private ngUnsubscribe = new Subject();
     private errorDialog: MatDialogRef<ErrorComponent>;
+    private statusSubject: BehaviorSubject<void> = new BehaviorSubject(null);
+    private initialBlocksToSync: number | undefined = undefined;
 
     constructor(
         private raidenService: RaidenService,
@@ -70,6 +82,27 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.statusSubject
+            .pipe(
+                switchMap(() => this.raidenService.getStatus()),
+                tap((status) => {
+                    this.apiStatus = status;
+                    if (status.status === 'syncing') {
+                        if (this.initialBlocksToSync === undefined) {
+                            this.initialBlocksToSync = status.blocks_to_sync;
+                        }
+                        this.syncingProgress =
+                            (this.initialBlocksToSync - status.blocks_to_sync) /
+                            this.initialBlocksToSync;
+                    }
+                }),
+                takeUntil(this.ngUnsubscribe),
+                takeWhile((status) => status.status !== 'ready'),
+                delay(500),
+                tap(() => this.statusSubject.next(null))
+            )
+            .subscribe();
+
         this.network$
             .pipe(
                 tap((network) => {

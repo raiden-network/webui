@@ -5,6 +5,7 @@ import {
     fakeAsync,
     tick,
     async,
+    flush,
 } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -45,6 +46,7 @@ import {
     ConfirmationDialogPayload,
     ConfirmationDialogComponent,
 } from './components/confirmation-dialog/confirmation-dialog.component';
+import { By } from '@angular/platform-browser';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -66,6 +68,7 @@ describe('AppComponent', () => {
         // @ts-ignore
         raidenServiceMock.raidenAddress$ = of(createAddress());
         raidenServiceMock.shutdownRaiden = () => of(null);
+        raidenServiceMock.getStatus = () => of({ status: 'ready' });
 
         const pendingTransferPollingMock = stub<
             PendingTransferPollingService
@@ -240,6 +243,7 @@ describe('AppComponent', () => {
     });
 
     it('should shutdown Raiden', () => {
+        fixture.detectChanges();
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const raidenService = TestBed.inject(RaidenService);
         const shutdownSpy = spyOn(
@@ -261,6 +265,7 @@ describe('AppComponent', () => {
     });
 
     it('should not shutdown Raiden if dialog is cancelled', () => {
+        fixture.detectChanges();
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         dialog.returns = () => null;
         const raidenService = TestBed.inject(RaidenService);
@@ -273,4 +278,59 @@ describe('AppComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(shutdownSpy).toHaveBeenCalledTimes(0);
     });
+
+    it('should poll the status until the API is available', fakeAsync(() => {
+        const raidenService = TestBed.inject(RaidenService);
+        const statusSpy = spyOn(raidenService, 'getStatus').and.returnValues(
+            of({ status: 'unavailable' }),
+            of({ status: 'unavailable' }),
+            of({ status: 'ready' })
+        );
+        fixture.detectChanges();
+
+        expect(app.apiStatus).toEqual({ status: 'unavailable' });
+        tick(500);
+        expect(app.apiStatus).toEqual({ status: 'unavailable' });
+        tick(500);
+        expect(app.apiStatus).toEqual({ status: 'ready' });
+        tick(5000);
+        expect(statusSpy).toHaveBeenCalledTimes(3);
+        flush();
+    }));
+
+    it('should show a progress bar if blocks are being synced', fakeAsync(() => {
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'getStatus').and.returnValues(
+            of({ status: 'syncing', blocks_to_sync: 100 }),
+            of({ status: 'syncing', blocks_to_sync: 30 }),
+            of({ status: 'ready' })
+        );
+        fixture.detectChanges();
+
+        expect(app.apiStatus).toEqual({
+            status: 'syncing',
+            blocks_to_sync: 100,
+        });
+        let progressBar = fixture.debugElement.query(By.css('.progress__bar'));
+        expect(progressBar).toBeTruthy();
+        expect(progressBar.nativeElement.value).toBe(0);
+        tick(500);
+        fixture.detectChanges();
+
+        expect(app.apiStatus).toEqual({
+            status: 'syncing',
+            blocks_to_sync: 30,
+        });
+        progressBar = fixture.debugElement.query(By.css('.progress__bar'));
+        expect(progressBar.nativeElement.value).toBe(70 / 100);
+        tick(500);
+        fixture.detectChanges();
+
+        expect(app.apiStatus).toEqual({ status: 'ready' });
+        progressBar = fixture.debugElement.query(By.css('.progress__bar'));
+        expect(progressBar).toBeFalsy();
+
+        tick(4000);
+        flush();
+    }));
 });

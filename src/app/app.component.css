@@ -9,6 +9,10 @@
     background-color: #121212;
 }
 
+.wrapper--black {
+    background-color: #000000;
+}
+
 .mat-sidenav-container {
     width: 1272px;
     height: 818px;
@@ -48,15 +52,6 @@
 
 .menu__logo-mobile {
     height: 24px;
-}
-
-.menu__title {
-    font-family: Roboto Mono;
-    font-weight: 300;
-    font-size: 18px;
-    line-height: 21px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
 }
 
 .notification-sidenav {
@@ -111,4 +106,51 @@
 .shutdown__icon {
     width: 24px;
     margin-right: 14px;
+}
+
+.unavailable {
+    font-size: 50px;
+    line-height: 59px;
+    font-weight: 300;
+    letter-spacing: -0.76px;
+    color: #ffffff;
+}
+
+.unavailable__logo {
+    width: 120px;
+}
+
+.unavailable__logo-mobile {
+    width: 60px;
+}
+
+.progress {
+    width: 300px;
+    font-size: 16px;
+    line-height: 19px;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+.progress__bar {
+    width: 100%;
+    border-radius: 15px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.progress__bar::-webkit-progress-bar {
+    border-radius: 15px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.06);
+}
+.progress__bar::-webkit-progress-value {
+    border-radius: 15px;
+    border: none;
+    background-color: #ffffff;
+}
+.progress__bar::-moz-progress-bar {
+    border-radius: 15px;
+    border: none;
+    background-color: #ffffff;
 }

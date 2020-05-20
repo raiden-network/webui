@@ -1389,4 +1389,48 @@ describe('RaidenService', () => {
         });
         expect(spy).toHaveBeenCalledTimes(1);
     });
+
+    it('should return the API status', () => {
+        const spy = jasmine.createSpy();
+        service.getStatus().subscribe(spy, (error) => {
+            fail(error);
+        });
+
+        const statusRequest = mockHttp.expectOne({
+            url: `${endpoint}/status`,
+            method: 'GET',
+        });
+
+        statusRequest.flush(losslessStringify({ status: 'ready' }), {
+            status: 200,
+            statusText: '',
+        });
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({ status: 'ready' });
+    });
+
+    it('should return the API status when syncing', () => {
+        const spy = jasmine.createSpy();
+        service.getStatus().subscribe(spy, (error) => {
+            fail(error);
+        });
+
+        const statusRequest = mockHttp.expectOne({
+            url: `${endpoint}/status`,
+            method: 'GET',
+        });
+
+        statusRequest.flush(
+            losslessStringify({ status: 'syncing', blocks_to_sync: '1000' }),
+            {
+                status: 200,
+                statusText: '',
+            }
+        );
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({
+            status: 'syncing',
+            blocks_to_sync: 1000,
+        });
+    });
 });
