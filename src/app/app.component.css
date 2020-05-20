@@ -114,6 +114,8 @@
     font-weight: 300;
     letter-spacing: -0.76px;
     color: #ffffff;
+    text-align: center;
+    z-index: 1000000;
 }
 
 .unavailable__logo {
