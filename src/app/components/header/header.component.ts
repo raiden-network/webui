@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    EventEmitter,
+    Output,
+} from '@angular/core';
 import { Animations } from '../../animations/animations';
 import { RaidenService } from '../../services/raiden.service';
 import { map, takeUntil } from 'rxjs/operators';
@@ -16,6 +22,8 @@ import { MatDialog } from '@angular/material/dialog';
     animations: Animations.easeInOut,
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+    @Output() toggleNotifications: EventEmitter<boolean> = new EventEmitter();
+
     raidenAddress: string;
     readonly network$: Observable<Network>;
     readonly balance$: Observable<string>;
@@ -59,10 +67,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
-    }
-
-    toggleNotificationSidenav() {
-        this.notificationService.toggleSidenav();
     }
 
     showOwnAddressQrCode() {

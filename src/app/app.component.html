@@ -100,7 +100,9 @@
                         ></mat-icon>
                     </button>
                 </div>
-                <app-header></app-header>
+                <app-header
+                    (toggleNotifications)="toggleNotifications()"
+                ></app-header>
                 <div class="content">
                     <router-outlet></router-outlet>
                 </div>

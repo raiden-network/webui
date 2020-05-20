@@ -167,6 +167,17 @@ describe('AppComponent', () => {
         expect(app.showNetworkInfo).toBe(false);
     });
 
+    it('should toggle the notification panel', () => {
+        fixture.detectChanges();
+        const toggleSpy = spyOn(
+            // @ts-ignore
+            app.notificationSidenav,
+            'toggle'
+        ).and.callThrough();
+        clickElement(fixture.debugElement, '#notification-button');
+        expect(toggleSpy).toHaveBeenCalledTimes(1);
+    });
+
     it('should show the API error screen', () => {
         const dialogSpy = spyOn(dialog, 'open');
         const error = new HttpErrorResponse({});
