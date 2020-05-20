@@ -120,12 +120,6 @@ describe('HeaderComponent', () => {
         expect(href).toBe(`http://faucet.test/?${raidenAddress}`);
     });
 
-    it('should toggle the notification panel', () => {
-        const toggleSpy = spyOn(notificationService, 'toggleSidenav');
-        clickElement(fixture.debugElement, '#notification-button');
-        expect(toggleSpy).toHaveBeenCalledTimes(1);
-    });
-
     it('should show the qr code dialog for the raiden address', () => {
         const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open');

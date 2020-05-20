@@ -48,9 +48,9 @@ import { Status } from './models/status';
 })
 export class AppComponent implements OnInit, OnDestroy {
     @HostBinding('@.disabled') animationsDisabled = false;
-    @ViewChild('notification_sidenav', { static: true })
+    @ViewChild('notification_sidenav', { static: false })
     private notificationSidenav: MatSidenav;
-    @ViewChild('menu_sidenav', { static: true })
+    @ViewChild('menu_sidenav', { static: false })
     public menuSidenav: MatSidenav;
 
     readonly network$: Observable<Network>;
@@ -136,9 +136,6 @@ export class AppComponent implements OnInit, OnDestroy {
             });
 
         this.disableAnimationsOnAndroid();
-        this.notificationService.setNotificationSidenav(
-            this.notificationSidenav
-        );
     }
 
     ngOnDestroy() {
@@ -186,6 +183,10 @@ export class AppComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 this.didShutdown = true;
             });
+    }
+
+    toggleNotifications() {
+        this.notificationSidenav.toggle();
     }
 
     private handleConnectionErrors(errors: ConnectionErrors) {

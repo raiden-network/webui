@@ -2,7 +2,6 @@ import { Inject, Injectable, Injector } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { UiMessage, NotificationMessage } from '../models/notification';
-import { MatSidenav } from '@angular/material/sidenav';
 import {
     ConnectionErrors,
     ApiErrorResponse,
@@ -41,7 +40,6 @@ export class NotificationService {
     private pendingActions: NotificationMessage[] = [];
     private notificationCounter = 0;
     private connectionErrors: ConnectionErrors = {};
-    private sidenav: MatSidenav;
 
     constructor(@Inject(Injector) private injector: Injector) {}
 
@@ -123,14 +121,6 @@ export class NotificationService {
             return true;
         });
         this.pendingActionsSubject.next(this.pendingActions);
-    }
-
-    public setNotificationSidenav(sidenav: MatSidenav) {
-        this.sidenav = sidenav;
-    }
-
-    public toggleSidenav() {
-        this.sidenav.toggle();
     }
 
     private get toastrService(): ToastrService {
