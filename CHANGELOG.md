@@ -14,6 +14,7 @@
 - [#186] Shows the available tokens in the deposit/withdraw, open channel and quick connect dialogs.
 - [#297] ENS support on Goerli test network.
 - [#389] Shut down Raiden node button.
+- [#341] API not ready yet view with a progress bar for the blocks to sync.
 
 ### Fixed
 - [#138] Fixes the decimals of token amount inputs to not get cut off on Firefox.
@@ -155,6 +156,7 @@ token network.
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
 [#389]: https://github.com/raiden-network/webui/issues/389
+[#341]: https://github.com/raiden-network/webui/issues/341
 [#339]: https://github.com/raiden-network/webui/issues/339
 [#297]: https://github.com/raiden-network/webui/issues/297
 [#270]: https://github.com/raiden-network/webui/issues/270
