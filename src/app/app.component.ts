@@ -57,6 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
     showNetworkInfo = false;
     apiStatus: Status = { status: 'ready' };
     syncingProgress = 0;
+    didShutdown = false;
 
     private ngUnsubscribe = new Subject();
     private errorDialog: MatDialogRef<ErrorComponent>;
@@ -182,7 +183,9 @@ export class AppComponent implements OnInit, OnDestroy {
                     return this.raidenService.shutdownRaiden();
                 })
             )
-            .subscribe(() => {});
+            .subscribe(() => {
+                this.didShutdown = true;
+            });
     }
 
     private handleConnectionErrors(errors: ConnectionErrors) {
@@ -206,6 +209,7 @@ export class AppComponent implements OnInit, OnDestroy {
             if (this.errorDialog) {
                 this.errorDialog.close();
                 this.errorDialog = undefined;
+                this.didShutdown = false;
             }
             return;
         }

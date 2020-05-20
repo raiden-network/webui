@@ -1,5 +1,5 @@
 <div
-    *ngIf="apiStatus.status === 'ready'; else api_unavailable"
+    *ngIf="apiStatus.status === 'ready' && !didShutdown; else shutdown"
     class="wrapper"
     fxLayout="column"
     fxLayoutAlign="center center"
@@ -121,6 +121,24 @@
         </mat-sidenav>
     </mat-sidenav-container>
 </div>
+
+<ng-template #shutdown>
+    <div
+        *ngIf="didShutdown; else api_unavailable"
+        class="wrapper wrapper--black unavailable"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        fxLayoutGap="100px"
+    >
+        <img
+            alt="Raiden logo"
+            src="assets/logo.svg"
+            ngClass.xs="unavailable__logo-mobile"
+            ngClass="unavailable__logo"
+        />
+        <span>Shutdown successful. You can close this window.</span>
+    </div>
+</ng-template>
 
 <ng-template #api_unavailable>
     <div
