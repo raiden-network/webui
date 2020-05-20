@@ -1,4 +1,9 @@
-<div class="wrapper" fxLayout="column" fxLayoutAlign="center center">
+<div
+    *ngIf="apiStatus.status === 'ready'; else api_unavailable"
+    class="wrapper"
+    fxLayout="column"
+    fxLayoutAlign="center center"
+>
     <mat-sidenav-container>
         <mat-sidenav
             class="menu"
@@ -116,3 +121,32 @@
         </mat-sidenav>
     </mat-sidenav-container>
 </div>
+
+<ng-template #api_unavailable>
+    <div
+        class="wrapper wrapper--black unavailable"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        fxLayoutGap="50px"
+    >
+        <img
+            alt="Raiden logo"
+            src="assets/logo.svg"
+            ngClass.xs="unavailable__logo-mobile"
+            ngClass="unavailable__logo"
+        />
+        <span fxFlexOffset="50px">Raiden API unavailable</span>
+        <div
+            *ngIf="apiStatus.status === 'syncing'"
+            class="progress"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+            fxLayoutGap="30px"
+        >
+            <progress class="progress__bar" [value]="syncingProgress" max="1">{{
+                syncingProgress
+            }}</progress>
+            <span>{{ apiStatus.blocks_to_sync }} blocks to sync</span>
+        </div>
+    </div>
+</ng-template>

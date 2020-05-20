@@ -49,6 +49,7 @@ import { NotificationService } from './notification.service';
 import { PendingTransfer } from '../models/pending-transfer';
 import { UiMessage } from '../models/notification';
 import { AddressBookService } from './address-book.service';
+import { Status } from '../models/status';
 
 interface PendingChannelsMap {
     [tokenAddress: string]: { [partnerAddress: string]: Channel };
@@ -814,6 +815,19 @@ export class RaidenService {
                     notificationIdentifier
                 )
             )
+        );
+    }
+
+    public getStatus(): Observable<Status> {
+        return this.http.get<Status>(`${this.raidenConfig.api}/status`).pipe(
+            map((status) => {
+                if (status.blocks_to_sync) {
+                    status.blocks_to_sync = (<BigNumber>(
+                        (<unknown>status.blocks_to_sync)
+                    )).toNumber();
+                }
+                return status;
+            })
         );
     }
 
