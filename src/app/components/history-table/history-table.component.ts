@@ -177,7 +177,7 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
 
     private matchesSearchFilter(event: HistoryEvent): boolean {
         const keyword = this.searchFilter.toLocaleLowerCase();
-        const paymentPartner = this.paymentPartner(event);
+        const partnerAddress = this.partnerAddress(event);
 
         let matchingToken = false;
         if (event.userToken) {
@@ -185,16 +185,16 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
         }
 
         let matchingContact = false;
-        const partnerLabel = this.addressLabel(paymentPartner);
+        const partnerLabel = this.addressLabel(partnerAddress);
         if (partnerLabel) {
             const contact: Contact = {
-                address: paymentPartner,
+                address: partnerAddress,
                 label: partnerLabel,
             };
             matchingContact = matchesContact(this.searchFilter, contact);
         }
 
-        const partner = paymentPartner.toLocaleLowerCase();
+        const partner = partnerAddress.toLocaleLowerCase();
         const tokenAddress = event.token_address.toLocaleLowerCase();
 
         return (

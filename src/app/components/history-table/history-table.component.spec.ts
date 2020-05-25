@@ -202,6 +202,28 @@ describe('HistoryTableComponent', () => {
             flush();
         }));
 
+        it('should filter the events by a contact address search filter', fakeAsync(() => {
+            const event = createPaymentEvent('EventPaymentSentSuccess');
+            historySubject.next([event].concat(history));
+            const addressBookService = TestBed.inject(AddressBookService);
+            addressBookService.get = () => {
+                const contacts: Contacts = {
+                    [event.target]: 'The test target',
+                };
+                return contacts;
+            };
+            fixture.detectChanges();
+
+            const sharedService: SharedService = TestBed.inject(SharedService);
+            sharedService.setSearchValue(event.target);
+            tick(1000);
+            fixture.detectChanges();
+
+            expect(component.visibleHistory.length).toBe(1);
+            expect(component.visibleHistory[0]).toEqual(event);
+            flush();
+        }));
+
         it('should show all events link', () => {
             const link = fixture.debugElement.query(By.css('.label__link'));
             expect(link).toBeTruthy();
