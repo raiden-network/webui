@@ -32,6 +32,7 @@ export class RaidenIconsModule {
         'shutdown',
         'left',
         'right',
+        'notification-with-badge',
     ];
 
     constructor(
