@@ -21,7 +21,14 @@ import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { RaidenService } from '../../services/raiden.service';
 import { AddressBookService } from '../../services/address-book.service';
 import { Contact } from '../../models/contact';
-import { debounceTime, map, tap, switchMap, takeUntil } from 'rxjs/operators';
+import {
+    debounceTime,
+    map,
+    tap,
+    switchMap,
+    takeUntil,
+    catchError,
+} from 'rxjs/operators';
 import {
     merge,
     Observable,
@@ -207,16 +214,16 @@ export class AddressInputComponent
                     ),
                     tap(() => (this.searching = false)),
                     map((resolvedAddress) => {
-                        if (resolvedAddress) {
-                            return { value: resolvedAddress };
-                        } else {
-                            return {
-                                value: '',
-                                errors: {
-                                    unableToResolveEns: true,
-                                },
-                            };
-                        }
+                        return { value: resolvedAddress };
+                    }),
+                    catchError(() => {
+                        this.searching = false;
+                        return of({
+                            value: '',
+                            errors: {
+                                unableToResolveEns: value,
+                            },
+                        });
                     })
                 );
             })

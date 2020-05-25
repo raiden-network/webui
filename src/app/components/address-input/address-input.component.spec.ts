@@ -185,15 +185,17 @@ describe('AddressInputComponent', () => {
             expect(component.errors['ownAddress']).toBe(true);
         });
 
-        it('should show an error if ENS resolve returns null', fakeAsync(() => {
+        it('should show an error if ENS resolve returns error', fakeAsync(() => {
             const raidenService = TestBed.inject(RaidenService);
-            spyOn(raidenService, 'resolveEnsName').and.returnValue(of(null));
+            spyOn(raidenService, 'resolveEnsName').and.throwError(
+                new Error('Could not resolve addess.')
+            );
 
             mockInput(fixture.debugElement, 'input', 'test.eth');
             tick(2000);
             fixture.detectChanges();
 
-            expect(component.errors['unableToResolveEns']).toBe(true);
+            expect(component.errors['unableToResolveEns']).toBe('test.eth');
             flush();
         }));
 
