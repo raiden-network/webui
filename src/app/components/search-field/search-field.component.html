@@ -16,6 +16,7 @@
         placeholder="Search"
         (input)="onInput($event.target.value)"
         [matAutocomplete]="auto"
+        spellcheck="false"
         #search_input
     />
     <button
