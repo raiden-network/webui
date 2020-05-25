@@ -9,6 +9,7 @@
         (input)="onChange($event.target.value)"
         (focus)="onTouched()"
         fxFlex="0 1 226px"
+        spellcheck="false"
         #input
     />
 
@@ -115,6 +116,7 @@
             type="text"
             fxFlex="0 1 196px"
             (keyup.enter)="labelFieldOnEnter($event)"
+            spellcheck="false"
         />
         <div class="icon-box">
             <button
