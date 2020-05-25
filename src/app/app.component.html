@@ -1,9 +1,4 @@
-<div
-    *ngIf="apiStatus.status === 'ready' && !didShutdown; else shutdown"
-    class="wrapper"
-    fxLayout="column"
-    fxLayoutAlign="center center"
->
+<div class="wrapper" fxLayout="column" fxLayoutAlign="center center">
     <mat-sidenav-container>
         <mat-sidenav
             class="menu"
@@ -76,6 +71,7 @@
         </mat-sidenav>
 
         <mat-sidenav-content fxLayout="center start">
+            <div class="toast-container" toastContainer></div>
             <div class="page" fxLayout="column" fxLayoutGap="32px">
                 <div
                     *ngIf="showNetworkInfo"
@@ -124,49 +120,46 @@
     </mat-sidenav-container>
 </div>
 
-<ng-template #shutdown>
+<div
+    *ngIf="apiStatus.status !== 'ready'"
+    class="wrapper wrapper--black unavailable"
+    fxLayout="column"
+    fxLayoutAlign="center center"
+    fxLayoutGap="50px"
+>
+    <img
+        alt="Raiden logo"
+        src="assets/logo.svg"
+        ngClass.xs="unavailable__logo-mobile"
+        ngClass="unavailable__logo"
+    />
+    <span fxFlexOffset="50px">Raiden API unavailable</span>
     <div
-        *ngIf="didShutdown; else api_unavailable"
-        class="wrapper wrapper--black unavailable"
+        *ngIf="apiStatus.status === 'syncing'"
+        class="progress"
         fxLayout="column"
         fxLayoutAlign="center center"
-        fxLayoutGap="100px"
+        fxLayoutGap="30px"
     >
-        <img
-            alt="Raiden logo"
-            src="assets/logo.svg"
-            ngClass.xs="unavailable__logo-mobile"
-            ngClass="unavailable__logo"
-        />
-        <span>Shutdown successful. You can close this window.</span>
+        <progress class="progress__bar" [value]="syncingProgress" max="1">
+            {{ syncingProgress }}
+        </progress>
+        <span>{{ apiStatus.blocks_to_sync }} blocks to sync</span>
     </div>
-</ng-template>
+</div>
 
-<ng-template #api_unavailable>
-    <div
-        class="wrapper wrapper--black unavailable"
-        fxLayout="column"
-        fxLayoutAlign="center center"
-        fxLayoutGap="50px"
-    >
-        <img
-            alt="Raiden logo"
-            src="assets/logo.svg"
-            ngClass.xs="unavailable__logo-mobile"
-            ngClass="unavailable__logo"
-        />
-        <span fxFlexOffset="50px">Raiden API unavailable</span>
-        <div
-            *ngIf="apiStatus.status === 'syncing'"
-            class="progress"
-            fxLayout="column"
-            fxLayoutAlign="center center"
-            fxLayoutGap="30px"
-        >
-            <progress class="progress__bar" [value]="syncingProgress" max="1">{{
-                syncingProgress
-            }}</progress>
-            <span>{{ apiStatus.blocks_to_sync }} blocks to sync</span>
-        </div>
-    </div>
-</ng-template>
+<div
+    *ngIf="didShutdown"
+    class="wrapper wrapper--black unavailable"
+    fxLayout="column"
+    fxLayoutAlign="center center"
+    fxLayoutGap="100px"
+>
+    <img
+        alt="Raiden logo"
+        src="assets/logo.svg"
+        ngClass.xs="unavailable__logo-mobile"
+        ngClass="unavailable__logo"
+    />
+    <span>Shutdown successful. You can close this window.</span>
+</div>
