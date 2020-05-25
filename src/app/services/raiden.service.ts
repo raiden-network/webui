@@ -79,6 +79,7 @@ export class RaidenService {
     public readonly globalRetry$: Observable<
         void
     > = this.globalRetrySubject.asObservable();
+    public quickConnectPending: { [tokenAddress: string]: boolean } = {};
 
     private userTokens: { [id: string]: UserToken | null } = {};
     private pendingChannels: PendingChannelsMap = {};
@@ -644,6 +645,7 @@ export class RaidenService {
 
         return of(null).pipe(
             tap(() => {
+                this.quickConnectPending[tokenAddress] = true;
                 const message: UiMessage = {
                     title: 'Quick connect',
                     description: `${formattedAmount} ${token.symbol} funds`,
@@ -681,11 +683,12 @@ export class RaidenService {
                 });
                 return throwError(error);
             }),
-            finalize(() =>
+            finalize(() => {
+                this.quickConnectPending[tokenAddress] = false;
                 this.notificationService.removePendingAction(
                     notificationIdentifier
-                )
-            )
+                );
+            })
         );
     }
 

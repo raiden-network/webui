@@ -9,7 +9,7 @@ import {
     ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { flatMap, finalize, takeUntil, map, shareReplay } from 'rxjs/operators';
+import { flatMap, takeUntil, map, shareReplay } from 'rxjs/operators';
 import { EMPTY, Subject, Observable } from 'rxjs';
 import {
     PaymentDialogPayload,
@@ -36,7 +36,6 @@ export class TokenComponent implements OnInit, OnDestroy {
     selectedToken: UserToken;
     totalChannels = 0;
     onMainnet: boolean;
-    quickConnectPending: { [tokenAddress: string]: boolean } = {};
 
     private ngUnsubscribe = new Subject();
 
@@ -109,6 +108,10 @@ export class TokenComponent implements OnInit, OnDestroy {
 
     trackByFn(index, item: UserToken) {
         return item?.address ?? '0';
+    }
+
+    quickConnectPending(tokenAddress: string): boolean {
+        return !!this.raidenService.quickConnectPending[tokenAddress];
     }
 
     pay() {
@@ -240,8 +243,6 @@ export class TokenComponent implements OnInit, OnDestroy {
     }
 
     private openConnectionManager() {
-        let tokenAddressResult: string;
-
         const payload: ConnectionManagerDialogPayload = {
             token: this.selectedToken,
             funds: undefined,
@@ -259,20 +260,12 @@ export class TokenComponent implements OnInit, OnDestroy {
                     if (!result) {
                         return EMPTY;
                     }
-                    tokenAddressResult = result.token.address;
-                    this.quickConnectPending[tokenAddressResult] = true;
-
                     this.selectedTokenService.setToken(result.token);
 
                     return this.raidenService.connectTokenNetwork(
                         result.funds,
-                        tokenAddressResult
+                        result.token.address
                     );
-                }),
-                finalize(() => {
-                    if (tokenAddressResult) {
-                        this.quickConnectPending[tokenAddressResult] = false;
-                    }
                 })
             )
             .subscribe(() => {

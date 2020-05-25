@@ -1,7 +1,7 @@
 <div class="actions-section" fxLayout="row" fxLayoutGap="18px">
     <button
         *ngIf="
-            openChannels !== 0 || !quickConnectPending[selectedToken?.address];
+            openChannels !== 0 || !quickConnectPending(selectedToken?.address);
             else connecting
         "
         class="action"
