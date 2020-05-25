@@ -47,6 +47,7 @@ import {
     ConfirmationDialogComponent,
 } from './components/confirmation-dialog/confirmation-dialog.component';
 import { By } from '@angular/platform-browser';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -136,6 +137,7 @@ describe('AppComponent', () => {
                 NoopAnimationsModule,
                 RaidenIconsModule,
                 ClipboardModule,
+                ToastrModule.forRoot({ timeOut: 50, easeTime: 0 }),
             ],
         }).compileComponents();
     }));

@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { ClipboardModule } from 'ngx-clipboard';
-import { ToastrModule } from 'ngx-toastr';
+import { ToastrModule, ToastContainerModule } from 'ngx-toastr';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
@@ -127,7 +127,9 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
             extendedTimeOut: 10000,
             preventDuplicates: false,
             toastComponent: RaidenToastComponent,
+            positionClass: 'inline',
         }),
+        ToastContainerModule,
         ClipboardModule,
         RaidenIconsModule,
     ],

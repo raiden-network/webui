@@ -39,6 +39,7 @@ import {
     ConfirmationDialogComponent,
 } from './components/confirmation-dialog/confirmation-dialog.component';
 import { Status } from './models/status';
+import { ToastContainerDirective, ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-root',
@@ -48,9 +49,11 @@ import { Status } from './models/status';
 })
 export class AppComponent implements OnInit, OnDestroy {
     @HostBinding('@.disabled') animationsDisabled = false;
-    @ViewChild('notification_sidenav', { static: false })
+    @ViewChild(ToastContainerDirective, { static: true })
+    private toastContainer: ToastContainerDirective;
+    @ViewChild('notification_sidenav', { static: true })
     private notificationSidenav: MatSidenav;
-    @ViewChild('menu_sidenav', { static: false })
+    @ViewChild('menu_sidenav', { static: true })
     public menuSidenav: MatSidenav;
 
     readonly network$: Observable<Network>;
@@ -72,7 +75,8 @@ export class AppComponent implements OnInit, OnDestroy {
         private notificationService: NotificationService,
         private sharedService: SharedService,
         private dialog: MatDialog,
-        private mediaObserver: MediaObserver
+        private mediaObserver: MediaObserver,
+        private toastrService: ToastrService
     ) {
         this.network$ = raidenService.network$;
     }
@@ -83,6 +87,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.toastrService.overlayContainer = this.toastContainer;
+
         this.statusSubject
             .pipe(
                 switchMap(() => this.raidenService.getStatus()),
