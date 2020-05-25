@@ -37,8 +37,6 @@
 .content {
     height: 100%;
     margin-bottom: 47px;
-    overflow-y: scroll;
-    position: relative;
 }
 
 .menu {
