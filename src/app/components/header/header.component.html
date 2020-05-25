@@ -93,15 +93,21 @@
             id="notification-button"
         >
             <mat-icon
+                *ngIf="(numberOfNotifications$ | async) === 0; else show_badge"
                 class="notification-button__icon"
                 svgIcon="notification"
                 aria-label="Open notification panel"
-                [matBadge]="numberOfNotifications$ | async"
-                matBadgeOverlap="true"
-                matBadgePosition="above after"
-                [matBadgeHidden]="(numberOfNotifications$ | async) === '0'"
             >
             </mat-icon>
+            <ng-template #show_badge>
+                <mat-icon
+                    class="notification-button__icon"
+                    svgIcon="notification-with-badge"
+                    aria-label="Open notification panel"
+                    id="badge"
+                >
+                </mat-icon>
+            </ng-template>
         </button>
     </div>
 </div>

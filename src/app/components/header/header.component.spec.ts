@@ -152,20 +152,16 @@ describe('HeaderComponent', () => {
     });
 
     it('should not show a notifications badge by default', () => {
-        expect(
-            fixture.debugElement.query(By.css('.mat-badge-hidden'))
-        ).toBeTruthy();
+        expect(fixture.debugElement.query(By.css('#badge'))).toBeFalsy();
     });
 
-    it('should display the number of notifications in a badge', () => {
+    it('should display a badge if there are notifications', () => {
         notificationService.addInfoNotification({
             title: 'Testing',
             description: 'Currently testing the application.',
             icon: '',
         });
         fixture.detectChanges();
-        const badge = fixture.debugElement.query(By.css('.mat-badge-content'));
-        expect(badge).toBeTruthy();
-        expect(badge.nativeElement.innerText.trim()).toBe('1');
+        expect(fixture.debugElement.query(By.css('#badge'))).toBeTruthy();
     });
 });
