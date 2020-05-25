@@ -1,9 +1,14 @@
+:host {
+    height: 100%;
+}
+
 .history {
     font-size: 16px;
     line-height: 19px;
     background-color: rgba(255, 255, 255, 0.06);
     border-radius: 15px;
     padding: 12px 20px 20px 20px;
+    height: 100%;
 }
 
 .label {
@@ -23,7 +28,7 @@
 
 .table__row {
     padding-bottom: 12px;
-    border-bottom: 1px solid #000000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .table__row:last-child {
