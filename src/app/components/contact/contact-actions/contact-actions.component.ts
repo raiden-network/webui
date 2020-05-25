@@ -28,6 +28,8 @@ import {
     AddEditContactDialogPayload,
 } from '../../add-edit-contact-dialog/add-edit-contact-dialog.component';
 import { UserToken } from '../../../models/usertoken';
+import { PaymentHistoryPollingService } from '../../../services/payment-history-polling.service';
+import { TokenPollingService } from '../../../services/token-polling.service';
 
 @Component({
     selector: 'app-contact-actions',
@@ -49,7 +51,9 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
         private dialog: MatDialog,
         private raidenService: RaidenService,
         private addressBookService: AddressBookService,
-        private selectedTokenService: SelectedTokenService
+        private selectedTokenService: SelectedTokenService,
+        private paymentHistoryPollingService: PaymentHistoryPollingService,
+        private tokenPollingService: TokenPollingService
     ) {}
 
     ngOnInit() {
@@ -117,6 +121,8 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 this.channelPollingService.refresh();
                 this.pendingTransferPollingService.refresh();
+                this.paymentHistoryPollingService.refresh();
+                this.tokenPollingService.refresh();
             });
     }
 

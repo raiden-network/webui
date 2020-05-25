@@ -24,6 +24,7 @@ import { ChannelPollingService } from '../../services/channel-polling.service';
 import { SelectedTokenService } from '../../services/selected-token.service';
 import { TokenUtils } from '../../utils/token.utils';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
+import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
 
 @Component({
     selector: 'app-token',
@@ -45,7 +46,8 @@ export class TokenComponent implements OnInit, OnDestroy {
         private dialog: MatDialog,
         private pendingTransferPollingService: PendingTransferPollingService,
         private channelPollingService: ChannelPollingService,
-        private selectedTokenService: SelectedTokenService
+        private selectedTokenService: SelectedTokenService,
+        private paymentHistoryPollingService: PaymentHistoryPollingService
     ) {
         this.tokens$ = this.tokenPollingService.tokens$.pipe(
             map((tokens) =>
@@ -144,6 +146,8 @@ export class TokenComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 this.channelPollingService.refresh();
                 this.pendingTransferPollingService.refresh();
+                this.paymentHistoryPollingService.refresh();
+                this.tokenPollingService.refresh();
             });
     }
 
@@ -191,6 +195,7 @@ export class TokenComponent implements OnInit, OnDestroy {
             )
             .subscribe(() => {
                 this.tokenPollingService.refresh();
+                this.channelPollingService.refresh();
             });
     }
 
