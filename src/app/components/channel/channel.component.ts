@@ -120,6 +120,9 @@ export class ChannelComponent implements OnInit {
                     );
                 })
             )
-            .subscribe(() => this.channelPollingService.refresh());
+            .subscribe(() => {
+                this.channelPollingService.refresh();
+                this.tokenPollingService.refresh();
+            });
     }
 }
