@@ -55,7 +55,7 @@
         class="info-box__text info-box__text--error"
     >
         <span *ngIf="errors['unableToResolveEns']">
-            Could not resolve the address for {{ input.value }}
+            Could not resolve the address for {{ errors['unableToResolveEns'] }}
         </span>
 
         <span *ngIf="errors['ownAddress']">
