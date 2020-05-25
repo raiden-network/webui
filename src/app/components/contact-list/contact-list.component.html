@@ -42,26 +42,28 @@
             </button>
         </mat-menu>
     </div>
-    <div
-        class="list__contacts"
-        fxLayout="column"
-        fxLayoutGap="36px"
-        #contact_list
-    >
+    <div fxFlex="1 0 0" class="contacts">
         <div
-            *ngFor="
-                let contactsRow of visibleContacts | chunk: itemsPerRow;
-                trackBy: rowTrackByFn
-            "
-            fxLayout="row"
-            fxLayoutGap="22px"
+            class="contacts__items"
+            fxLayout="column"
+            fxLayoutGap="36px"
+            #contact_list
         >
-            <app-contact
-                *ngFor="let contact of contactsRow; trackBy: trackByFn"
-                [contact]="contact"
-                [@stretchInOut]="'in'"
-                [style.width.px]="contactWidth"
-            ></app-contact>
+            <div
+                *ngFor="
+                    let contactsRow of visibleContacts | chunk: itemsPerRow;
+                    trackBy: rowTrackByFn
+                "
+                fxLayout="row"
+                fxLayoutGap="22px"
+            >
+                <app-contact
+                    *ngFor="let contact of contactsRow; trackBy: trackByFn"
+                    [contact]="contact"
+                    [@stretchInOut]="'in'"
+                    [style.width.px]="contactWidth"
+                ></app-contact>
+            </div>
         </div>
     </div>
     <button

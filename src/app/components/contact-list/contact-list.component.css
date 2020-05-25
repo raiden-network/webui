@@ -2,6 +2,7 @@
     background-color: rgba(255, 255, 255, 0.06);
     border-radius: 15px;
     padding: 10px 20px 25px 20px;
+    height: 100%;
 }
 
 .list__labels {
@@ -13,8 +14,18 @@
     opacity: 0.75;
 }
 
-.list__contacts {
-    width: 100%;
+.contacts {
+    overflow-y: auto;
+    position: relative;
+}
+
+.contacts__items {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .button-section {
