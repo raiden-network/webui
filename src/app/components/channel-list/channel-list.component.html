@@ -53,6 +53,10 @@
             </mat-select>
         </div>
 
+        <div *ngIf="visibleChannels.length === 0">
+            No {{ selectedToken?.symbol }} channels
+        </div>
+
         <div fxFlex="1 0 0" class="channels">
             <div
                 class="channels__items"
