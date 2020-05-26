@@ -20,6 +20,7 @@ import {
     ConfirmationDialogPayload
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { amountToDecimal } from '../../utils/amount.converter';
+import { transferThresholds } from '../../utils/transfer-thresholds';
 
 export interface PaymentDialogPayload {
     tokenAddress: string;
@@ -187,8 +188,11 @@ export class PaymentDialogComponent implements OnInit {
     tokenNetworkSelected(token: UserToken) {
         if (!token) {
             this.tokenInput.decimals = 0;
+            this.tokenInput.threshold = undefined;
             return;
         }
         this.tokenInput.decimals = token.decimals;
+        this.tokenInput.threshold =
+            transferThresholds[token.address.toLowerCase()];
     }
 }

@@ -28,9 +28,29 @@
         />
 
         <mat-hint align="start">
-            <span *ngIf="form.get('decimals').value; else alternative">
-                The smallest allowed value is {{ step() }}
+            <span
+                *ngIf="
+                    isLessThanThreshold() && (form.touched || form.dirty);
+                    else smallest_value
+                "
+                id="threshold-hint"
+            >
+                The amount of your transfer is below the limit for mediated
+                payments. We recommend an amount of at least
+                {{ formattedThreshold() }} if you are not using a direct
+                channel. Click
+                <a
+                    href="https://docs.raiden.network/using-raiden/mediation-fees/"
+                    target="_blank"
+                    >here</a
+                >
+                for more info.
             </span>
+            <ng-template #smallest_value>
+                <span *ngIf="form.get('decimals').value; else alternative">
+                    The smallest allowed value is {{ step() }}
+                </span>
+            </ng-template>
             <ng-template #alternative>
                 1 represents the {{ minimumAmount() }} of the token
             </ng-template>

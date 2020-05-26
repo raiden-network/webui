@@ -51,6 +51,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         amount: [new BigNumber(0), this.amountValidator()],
         decimals: true
     });
+    threshold: BigNumber;
 
     private readonly inputControl: FormControl;
     private readonly checkboxControl: FormControl;
@@ -185,6 +186,19 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         if (!this.inputControl.dirty) {
             this.inputControl.setValue('');
         }
+    }
+
+    isLessThanThreshold(): boolean {
+        return (
+            this.threshold &&
+            this.threshold.isGreaterThanOrEqualTo(this.inputControl.value)
+        );
+    }
+
+    formattedThreshold(): string {
+        return this.decimalInput
+            ? amountToDecimal(this.threshold, this.decimals).toString()
+            : this.threshold.toString();
     }
 
     private amountValidator(): ValidatorFn {
