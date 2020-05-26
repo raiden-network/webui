@@ -12,6 +12,7 @@ import { TokenInputComponent } from './token-input.component';
 import { TestProviders } from '../../../testing/test-providers';
 import { mockInput, errorMessage } from '../../../testing/interaction-helper';
 import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
+import BigNumber from 'bignumber.js';
 
 describe('TokenInputComponent', () => {
     let component: TokenInputComponent;
@@ -265,5 +266,26 @@ describe('TokenInputComponent', () => {
         mockFormInput('1');
         input.dispatchEvent(new Event('focus'));
         expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
+    });
+
+    it('should show a hint if amount is lower than threshold', () => {
+        component.threshold = new BigNumber(10);
+        fixture.detectChanges();
+        mockFormInput('1');
+        fixture.detectChanges();
+
+        const hint = fixture.debugElement.query(By.css('#threshold-hint'));
+        expect(hint).toBeTruthy();
+    });
+
+    it('should format threshold depending on decimals checked', () => {
+        component.threshold = new BigNumber(10000);
+        component.decimals = 8;
+        fixture.detectChanges();
+        expect(component.formattedThreshold()).toBe('0.0001');
+
+        checkbox.click();
+        fixture.detectChanges();
+        expect(component.formattedThreshold()).toBe('10000');
     });
 });
