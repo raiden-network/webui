@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- [#432] Warning for transfers of small amounts, which may fail when the transfer is mediated.
 
 ## [0.11.0] - 2019-12-20
 ### Changed
@@ -133,6 +135,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#432]: https://github.com/raiden-network/webui/issues/432
 [#218]: https://github.com/raiden-network/webui/issues/218
 [#212]: https://github.com/raiden-network/webui/issues/212
 [#208]: https://github.com/raiden-network/webui/issues/208
