@@ -3,6 +3,7 @@
     position: relative;
     height: 100%;
     display: block;
+    min-height: 409px;
 }
 
 .container {

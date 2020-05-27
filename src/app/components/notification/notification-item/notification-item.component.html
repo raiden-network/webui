@@ -1,8 +1,8 @@
-<div class="card" fxLayout="row" fxLayoutAlign="space-between">
+<div class="card" fxLayout="row" fxLayoutGap="17px">
     <div class="icon-box" fxLayout="column" fxLayoutAlign="center center">
         <mat-icon [svgIcon]="notification.icon" aria-hidden="true"></mat-icon>
     </div>
-    <div fxLayout="column" fxLayoutGap="13px" class="content">
+    <div fxLayout="column" fxLayoutGap="13px" class="content" fxFlex="1 0 0">
         <div class="content__title">{{ notification.title }}</div>
         <div class="content__description" fxFlex="1 0 auto">
             {{ notification.description }}
@@ -22,11 +22,12 @@
             *ngIf="removable"
             (click)="remove.emit(true)"
             id="remove"
+            class="remove"
         >
             <mat-icon
                 aria-label="Remove notification"
                 svgIcon="close"
-                class="side__close"
+                class="remove__icon"
             ></mat-icon>
         </button>
         <div

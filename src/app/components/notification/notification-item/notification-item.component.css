@@ -14,10 +14,6 @@
     background-color: #000000;
 }
 
-.content {
-    width: 304px;
-}
-
 .content__title {
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -39,7 +35,11 @@
     width: 32px;
 }
 
-.side__close {
+.remove {
+    margin-top: -8px;
+}
+
+.remove__icon {
     width: 16px !important;
     height: 16px !important;
 }

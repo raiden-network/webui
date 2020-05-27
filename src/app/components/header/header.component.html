@@ -1,5 +1,28 @@
-<div class="header" fxLayout="row" fxLayoutGap="30px">
-    <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex="555 0 0">
+<div
+    class="header"
+    ngClass.lt-lg="header--mobile"
+    fxLayout="row"
+    fxLayoutGap="30px"
+    fxLayout.lt-lg="column"
+>
+    <div *ngIf="isMobile()" fxLayout="column" fxLayoutAlign="center">
+        <button
+            aria-label="Toggle navigation menu"
+            mat-icon-button
+            (click)="toggleMenu.emit(true)"
+        >
+            <mat-icon aria-label="Toggle navigation menu">menu</mat-icon>
+        </button>
+    </div>
+
+    <div
+        fxLayout="row"
+        fxLayoutAlign="space-between start"
+        fxLayoutGap="0"
+        fxFlex.gt-md="555 0 0"
+        fxLayout.xs="column"
+        fxLayoutGap.xs="30px"
+    >
         <div
             *ngIf="balance$ | async as balance"
             class="header__box"
@@ -80,11 +103,11 @@
 
     <div
         fxLayout="row"
-        fxLayoutAlign="start center"
+        fxLayoutAlign="space-between center"
         fxLayoutGap="22px"
-        fxFlex="334 0 0"
+        fxFlex.gt-md="334 0 0"
     >
-        <app-search-field fxFlex></app-search-field>
+        <app-search-field fxFlex fxFlex.lt-lg="0 1 233px"></app-search-field>
         <button
             class="notification-button"
             mat-icon-button

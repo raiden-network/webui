@@ -230,8 +230,9 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
     private calculateItemsPerRow() {
         const sectionWidth = this.channelsElement.nativeElement.getBoundingClientRect()
             .width;
-        this.itemsPerRow = Math.floor(
-            sectionWidth / ChannelListComponent.MIN_CHANNEL_WIDTH
+        this.itemsPerRow = Math.max(
+            1,
+            Math.floor(sectionWidth / ChannelListComponent.MIN_CHANNEL_WIDTH)
         );
         this.channelWidth =
             (sectionWidth - 37 * (this.itemsPerRow - 1)) / this.itemsPerRow;

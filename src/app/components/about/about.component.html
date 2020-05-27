@@ -3,8 +3,15 @@
         About this Software
     </h1>
 
-    <div class="section" fxLayout="row" fxLayoutAlign="space-between">
-        <div fxFlex="3 0 0" class="section__box-offset">
+    <div
+        class="section"
+        fxLayout="row"
+        fxLayoutAlign="space-between"
+        fxLayoutGap="0"
+        fxLayout.xs="column"
+        fxLayoutGap.xs="22px"
+    >
+        <div fxFlex="3 0 0" ngClass.gt-xs="section__box-offset">
             <span class="section__descriptor">Versions</span>
             <button
                 mat-icon-button
@@ -40,7 +47,14 @@
         </div>
     </div>
 
-    <div class="section" fxLayout="row" fxLayoutAlign="space-between">
+    <div
+        class="section"
+        fxLayout="row"
+        fxLayoutAlign="space-between"
+        fxLayoutGap="0"
+        fxLayout.xs="column"
+        fxLayoutGap.xs="22px"
+    >
         <div fxFlex="3 0 0" class="section__descriptor">
             The MIT License (MIT)
         </div>

@@ -51,8 +51,6 @@ export class AppComponent implements OnInit, OnDestroy {
     @HostBinding('@.disabled') animationsDisabled = false;
     @ViewChild(ToastContainerDirective, { static: true })
     private toastContainer: ToastContainerDirective;
-    @ViewChild('notification_sidenav', { static: true })
-    private notificationSidenav: MatSidenav;
     @ViewChild('menu_sidenav', { static: true })
     public menuSidenav: MatSidenav;
 
@@ -150,7 +148,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     isMobile(): boolean {
-        return this.mediaObserver.isActive('xs');
+        return this.mediaObserver.isActive('lt-lg');
     }
 
     closeMenu() {
@@ -189,10 +187,6 @@ export class AppComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 this.didShutdown = true;
             });
-    }
-
-    toggleNotifications() {
-        this.notificationSidenav.toggle();
     }
 
     private handleConnectionErrors(errors: ConnectionErrors) {
