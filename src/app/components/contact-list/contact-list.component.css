@@ -17,6 +17,7 @@
 .contacts {
     overflow-y: auto;
     position: relative;
+    min-height: 196px;
 }
 
 .contacts__items {

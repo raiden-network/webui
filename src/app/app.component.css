@@ -19,19 +19,33 @@
     right: 82px;
 }
 
-.mat-sidenav-container {
+.toast-container--mobile {
+    top: 22px;
+    right: 22px;
+}
+
+.container {
     width: 1272px;
     height: 818px;
     border-radius: 25px;
 }
 
-.mat-sidenav-content {
-    padding-right: 82px;
+.container--mobile {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+}
+
+.sidenav-content {
+    padding: 47px 82px 0 0;
+}
+
+.sidenav-content--mobile {
+    padding: 22px 22px 0 22px;
 }
 
 .page {
     width: 100%;
-    margin-top: 47px;
 }
 
 .content {
@@ -39,10 +53,18 @@
     margin-bottom: 47px;
 }
 
+.content--mobile {
+    margin-bottom: 22px;
+}
+
 .menu {
     width: 272px;
     background-color: #000000;
     border: none;
+}
+
+.menu--mobile {
+    width: 100%;
 }
 
 .menu-inner {
@@ -54,18 +76,13 @@
     height: 48px;
 }
 
-.menu__logo-mobile {
-    height: 24px;
-}
-
 .notification-sidenav {
     width: 582px;
     background-color: #000000;
 }
 
-.notification-sidenav-mobile {
+.notification-sidenav--mobile {
     width: 100%;
-    background-color: #000000;
 }
 
 .network-info {
@@ -124,10 +141,6 @@
 
 .unavailable__logo {
     width: 120px;
-}
-
-.unavailable__logo-mobile {
-    width: 60px;
 }
 
 .progress {

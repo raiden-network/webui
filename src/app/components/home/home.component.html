@@ -1,7 +1,13 @@
-<div class="container" fxLayout="row" fxLayoutGap="30px">
-    <div fxLayout="column" fxLayoutGap="32px" fxFlex="555 0 0">
+<div
+    class="container"
+    fxLayout="row"
+    fxLayoutGap="30px"
+    fxLayout.lt-lg="column"
+    fxLayoutGap.lt-lg="32px"
+>
+    <div fxLayout="column" fxLayoutGap="32px" fxFlex.gt-md="555 0 0">
         <app-token></app-token>
         <app-history-table></app-history-table>
     </div>
-    <app-contact-list fxFlex="334 0 0"></app-contact-list>
+    <app-contact-list fxFlex.gt-md="334 0 0"></app-contact-list>
 </div>

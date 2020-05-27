@@ -1,10 +1,11 @@
 <div
     class="history"
+    ngClass.lt-lg="history--mobile"
     fxLayout="column"
     fxLayoutGap="20px"
     [@flyInOutLeft]="'in'"
 >
-    <div class="label" fxLayout="row" fxLayoutAlign="space-between end">
+    <div class="label" fxLayout="row wrap" fxLayoutAlign="space-between end">
         <span>Transfer history</span>
         <a
             *ngIf="!showAll; else navigation"
@@ -116,6 +117,7 @@
                 *cdkCellDef="let event"
                 fxLayout="column"
                 fxLayoutAlign="start end"
+                fxFlex.xs="1 0 0"
             >
                 <div *ngIf="event.userToken" class="table__amount">
                     <ng-container *ngIf="isReceivedEvent(event); else minus">
@@ -159,7 +161,7 @@
         <cdk-row
             class="table__row"
             *cdkRowDef="let row; columns: ['event', 'main', 'spacer', 'amount']"
-            fxLayout="row"
+            fxLayout="row wrap"
             fxLayoutAlign="start start"
             fxLayoutGap="20px"
         ></cdk-row>

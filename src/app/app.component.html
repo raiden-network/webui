@@ -1,7 +1,8 @@
 <div class="wrapper" fxLayout="column" fxLayoutAlign="center center">
-    <mat-sidenav-container>
+    <mat-sidenav-container class="container" ngClass.lt-lg="container--mobile">
         <mat-sidenav
             class="menu"
+            ngClass.xs="menu--mobile"
             [mode]="isMobile() ? 'over' : 'side'"
             [disableClose]="isMobile() ? false : true"
             [opened]="isMobile() ? false : true"
@@ -18,12 +19,11 @@
                     <img
                         alt="Raiden logo"
                         src="assets/logo.svg"
-                        ngClass.xs="menu__logo-mobile"
-                        ngClass="menu__logo"
+                        class="menu__logo"
                     />
                 </a>
                 <app-navigation-entry
-                    fxFlexOffset="57px"
+                    fxFlexOffset.gt-md="57px"
                     (click)="closeMenu()"
                     icon="home"
                     text="Home"
@@ -53,7 +53,7 @@
                     text="About"
                     route="/about"
                 ></app-navigation-entry>
-                <div fxFlex="1 1 auto"></div>
+                <div fxHide.xs="true" fxFlex="1 1 auto"></div>
                 <button
                     mat-flat-button
                     (click)="shutdownRaiden()"
@@ -70,8 +70,16 @@
             </div>
         </mat-sidenav>
 
-        <mat-sidenav-content fxLayout="center start">
-            <div class="toast-container" toastContainer></div>
+        <mat-sidenav-content
+            class="sidenav-content"
+            ngClass.lt-lg="sidenav-content--mobile"
+            fxLayout="center start"
+        >
+            <div
+                class="toast-container"
+                ngClass.lt-lg="toast-container--mobile"
+                toastContainer
+            ></div>
             <div class="page" fxLayout="column" fxLayoutGap="32px">
                 <div
                     *ngIf="showNetworkInfo"
@@ -97,9 +105,10 @@
                     </button>
                 </div>
                 <app-header
-                    (toggleNotifications)="toggleNotifications()"
+                    (toggleNotifications)="notification_sidenav.toggle()"
+                    (toggleMenu)="menu_sidenav.toggle()"
                 ></app-header>
-                <div class="content">
+                <div class="content" ngClass.lt-lg="content--mobile">
                     <router-outlet></router-outlet>
                 </div>
             </div>
@@ -109,8 +118,8 @@
             mode="over"
             position="end"
             [autoFocus]="false"
-            ngClass.xs="notification-sidenav-mobile"
-            ngClass="notification-sidenav"
+            class="notification-sidenav"
+            ngClass.xs="notification-sidenav--mobile"
             #notification_sidenav
         >
             <app-notification-panel
@@ -127,12 +136,7 @@
     fxLayoutAlign="center center"
     fxLayoutGap="50px"
 >
-    <img
-        alt="Raiden logo"
-        src="assets/logo.svg"
-        ngClass.xs="unavailable__logo-mobile"
-        ngClass="unavailable__logo"
-    />
+    <img alt="Raiden logo" src="assets/logo.svg" class="unavailable__logo" />
     <span fxFlexOffset="50px">Raiden API unavailable</span>
     <div
         *ngIf="apiStatus.status === 'syncing'"
@@ -155,11 +159,6 @@
     fxLayoutAlign="center center"
     fxLayoutGap="100px"
 >
-    <img
-        alt="Raiden logo"
-        src="assets/logo.svg"
-        ngClass.xs="unavailable__logo-mobile"
-        ngClass="unavailable__logo"
-    />
+    <img alt="Raiden logo" src="assets/logo.svg" class="unavailable__logo" />
     <span>Shutdown successful. You can close this window.</span>
 </div>

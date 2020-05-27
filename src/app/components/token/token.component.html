@@ -1,4 +1,9 @@
-<div class="actions-section" fxLayout="row" fxLayoutGap="18px">
+<div
+    class="actions-section"
+    fxLayout="row"
+    fxLayoutGap="18px"
+    fxLayout.xs="column"
+>
     <button
         *ngIf="
             openChannels !== 0 || !quickConnectPending(selectedToken?.address);
@@ -9,7 +14,7 @@
         mat-flat-button
         color="accent"
         (click)="pay()"
-        fxFlex="140 0 0"
+        fxFlex.gt-xs="140 0 0"
     >
         <mat-icon class="action__icon" svgIcon="transfer" aria-label="Transfer">
         </mat-icon>
@@ -42,7 +47,7 @@
         </div>
     </ng-template>
 
-    <div fxFlex="394 0 0">
+    <div fxFlex.gt-xs="394 0 0">
         <div
             *ngIf="isAllNetworksView"
             fxLayout="row"

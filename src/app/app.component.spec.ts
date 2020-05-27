@@ -48,6 +48,7 @@ import {
 } from './components/confirmation-dialog/confirmation-dialog.component';
 import { By } from '@angular/platform-browser';
 import { ToastrModule } from 'ngx-toastr';
+import { MatSidenav } from '@angular/material/sidenav';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -171,9 +172,11 @@ describe('AppComponent', () => {
 
     it('should toggle the notification panel', () => {
         fixture.detectChanges();
+        const notificationSidenav = fixture.debugElement.query(
+            By.css('.notification-sidenav')
+        ).componentInstance as MatSidenav;
         const toggleSpy = spyOn(
-            // @ts-ignore
-            app.notificationSidenav,
+            notificationSidenav,
             'toggle'
         ).and.callThrough();
         clickElement(fixture.debugElement, '#notification-button');

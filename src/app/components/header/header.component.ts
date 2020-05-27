@@ -14,6 +14,7 @@ import { Network } from '../../utils/network-info';
 import BigNumber from 'bignumber.js';
 import { QrCodePayload, QrCodeComponent } from '../qr-code/qr-code.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
     selector: 'app-header',
@@ -23,6 +24,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
     @Output() toggleNotifications: EventEmitter<boolean> = new EventEmitter();
+    @Output() toggleMenu: EventEmitter<boolean> = new EventEmitter();
 
     raidenAddress: string;
     readonly network$: Observable<Network>;
@@ -36,7 +38,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     constructor(
         private raidenService: RaidenService,
         private notificationService: NotificationService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private mediaObserver: MediaObserver
     ) {
         this.network$ = raidenService.network$;
         this.balance$ = raidenService.balance$;
@@ -65,6 +68,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
+    }
+
+    isMobile(): boolean {
+        return this.mediaObserver.isActive('lt-lg');
     }
 
     showOwnAddressQrCode() {
