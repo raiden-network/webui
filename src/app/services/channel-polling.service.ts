@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { scan, switchMap, tap, map, shareReplay } from 'rxjs/operators';
+import { scan, switchMap, tap, map, shareReplay, startWith } from 'rxjs/operators';
 import { Channel } from '../models/channel';
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
@@ -45,6 +45,7 @@ export class ChannelPollingService {
                 this.checkForNewChannels(oldChannels, newChannels);
                 return newChannels;
             }, []),
+            startWith([]),
             backoff(
                 this.raidenConfig.config.error_poll_interval,
                 this.raidenService.globalRetry$

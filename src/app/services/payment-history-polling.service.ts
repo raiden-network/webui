@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { switchMap, tap, shareReplay, scan } from 'rxjs/operators';
+import { switchMap, tap, shareReplay, scan, startWith } from 'rxjs/operators';
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { backoff } from '../shared/backoff.operator';
@@ -43,6 +43,7 @@ export class PaymentHistoryPollingService {
                 this.checkForNewPayments(oldHistory, newHistory);
                 return newHistory;
             }, []),
+            startWith([]),
             backoff(
                 this.raidenConfig.config.error_poll_interval,
                 this.raidenService.globalRetry$
