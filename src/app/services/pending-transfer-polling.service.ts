@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { scan, switchMap, tap, shareReplay } from 'rxjs/operators';
+import { scan, switchMap, tap, shareReplay, startWith } from 'rxjs/operators';
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { backoff } from '../shared/backoff.operator';
@@ -53,6 +53,7 @@ export class PendingTransferPollingService {
                 },
                 []
             ),
+            startWith([]),
             backoff(
                 this.raidenConfig.config.error_poll_interval,
                 this.raidenService.globalRetry$
