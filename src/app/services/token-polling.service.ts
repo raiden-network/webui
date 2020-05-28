@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
 import { RaidenService } from './raiden.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { UserToken } from '../models/usertoken';
 import { tap, switchMap, shareReplay, startWith, map } from 'rxjs/operators';
 import { backoff } from '../shared/backoff.operator';
 import { RaidenConfig } from './raiden.config';
+import { ChannelPollingService } from './channel-polling.service';
+import { Channel } from '../models/channel';
+import BigNumber from 'bignumber.js';
+import { TokenUtils } from '../utils/token.utils';
 
 @Injectable({
     providedIn: 'root',
@@ -19,7 +23,8 @@ export class TokenPollingService {
 
     constructor(
         private raidenService: RaidenService,
-        private raidenConfig: RaidenConfig
+        private raidenConfig: RaidenConfig,
+        private channelPollingService: ChannelPollingService
     ) {
         let timeout;
         this.tokens$ = this.tokensSubject.pipe(
@@ -27,7 +32,17 @@ export class TokenPollingService {
                 clearTimeout(timeout);
                 this.refreshingSubject.next(true);
             }),
-            switchMap(() => this.raidenService.getTokens(true)),
+            switchMap(() =>
+                combineLatest([
+                    this.raidenService.getTokens(true),
+                    this.channelPollingService.channels$,
+                ])
+            ),
+            map(([tokens, channels]) =>
+                this.calculateSumOfBalances(tokens, channels).sort((a, b) =>
+                    TokenUtils.compareTokens(a, b)
+                )
+            ),
             tap(() => {
                 timeout = setTimeout(
                     () => this.refresh(),
@@ -61,5 +76,31 @@ export class TokenPollingService {
                 return updatedToken;
             })
         );
+    }
+
+    private calculateSumOfBalances(
+        tokens: UserToken[],
+        channels: Channel[]
+    ): UserToken[] {
+        const summedBalances: { [tokenAddress: string]: BigNumber } = {};
+
+        channels.forEach((channel) => {
+            const tokenAddress = channel.token_address;
+            if (!summedBalances[tokenAddress]) {
+                summedBalances[tokenAddress] = channel.balance;
+                return;
+            }
+            summedBalances[tokenAddress] = summedBalances[tokenAddress].plus(
+                channel.balance
+            );
+        });
+
+        Object.entries(summedBalances).forEach(([tokenAddress, balance]) => {
+            const token = tokens.find((item) => tokenAddress === item.address);
+            if (token) {
+                token.sumChannelBalances = balance;
+            }
+        });
+        return tokens;
     }
 }

@@ -36,7 +36,7 @@ describe('TokenNetworkSelectorComponent', () => {
         name: 'Another Test Token2',
         balance: new BigNumber(0),
     });
-    const tokens = [notOwnedToken, connectedToken, ownedToken];
+    const tokens = [connectedToken, ownedToken, notOwnedToken];
 
     beforeEach(async(() => {
         const tokenPollingMock = stub<TokenPollingService>();
@@ -68,24 +68,6 @@ describe('TokenNetworkSelectorComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
-    });
-
-    it('should sort tokens first by connection, then owned and last not owned', (done) => {
-        component.tokens$.subscribe((value) => {
-            expect(value[0].address).toBe(
-                connectedToken.address,
-                'connection token should go first'
-            );
-            expect(value[1].address).toBe(
-                ownedToken.address,
-                'owned token should go second'
-            );
-            expect(value[2].address).toBe(
-                notOwnedToken.address,
-                'not owned token should go third'
-            );
-            done();
-        });
     });
 
     it('should be able to only show connected tokens', (done) => {

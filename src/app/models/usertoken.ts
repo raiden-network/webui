@@ -8,4 +8,5 @@ export interface UserToken {
     decimals: number;
     balance: BigNumber;
     connected?: Connection;
+    sumChannelBalances?: BigNumber;
 }

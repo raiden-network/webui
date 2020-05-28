@@ -67,14 +67,16 @@
                 fxFlex="7 0 0"
                 class="overview__item"
             >
-                <ng-container *ngIf="token.connected; else no_deposits">
+                <ng-container
+                    *ngIf="token.sumChannelBalances; else no_deposits"
+                >
                     <span
                         *ngIf="
-                            token.connected?.sum_deposits
-                                | decimal: token.decimals as sumDeposits
+                            token.sumChannelBalances
+                                | decimal: token.decimals as sumChannelBalances
                         "
-                        [matTooltip]="sumDeposits"
-                        >{{ sumDeposits | displayDecimals: 3 }}</span
+                        [matTooltip]="sumChannelBalances"
+                        >{{ sumChannelBalances | displayDecimals: 3 }}</span
                     >
                 </ng-container>
                 <ng-template #no_deposits>
@@ -188,14 +190,17 @@
 
     <div class="card__network" fxLayout="row">
         <div *ngIf="!isAllNetworksView; else all_networks">
-            <ng-container *ngIf="selectedToken.connected; else no_deposits">
+            <ng-container
+                *ngIf="selectedToken.sumChannelBalances; else no_deposits"
+            >
                 <span
                     *ngIf="
-                        selectedToken.connected?.sum_deposits
-                            | decimal: selectedToken.decimals as sumDeposits
+                        selectedToken.sumChannelBalances
+                            | decimal
+                                : selectedToken.decimals as sumChannelBalances
                     "
-                    [matTooltip]="sumDeposits"
-                    >{{ sumDeposits | displayDecimals: 3 }}</span
+                    [matTooltip]="sumChannelBalances"
+                    >{{ sumChannelBalances | displayDecimals: 3 }}</span
                 >
             </ng-container>
             <ng-template #no_deposits>

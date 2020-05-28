@@ -9,6 +9,7 @@ describe('TokenUtils', () => {
         name: 'Another Test Token',
         decimals: 0,
         balance: new BigNumber(100),
+        sumChannelBalances: new BigNumber(100),
         connected: {
             funds: new BigNumber(100),
             sum_deposits: new BigNumber(100),
@@ -22,6 +23,7 @@ describe('TokenUtils', () => {
         name: 'Another Test Token2',
         decimals: 0,
         balance: new BigNumber(50),
+        sumChannelBalances: new BigNumber(30),
         connected: {
             funds: new BigNumber(40),
             sum_deposits: new BigNumber(20),
@@ -63,9 +65,9 @@ describe('TokenUtils', () => {
         ).toEqual(50);
     });
 
-    it('should compare connected tokens depending on deposits', () => {
+    it('should compare connected tokens depending on sum channel balances', () => {
         expect(
             TokenUtils.compareTokens(connectedToken, connectedToken2)
-        ).toEqual(-80);
+        ).toEqual(-70);
     });
 });

@@ -9,7 +9,7 @@ import {
     ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { flatMap, takeUntil, map, shareReplay } from 'rxjs/operators';
+import { flatMap, takeUntil, map } from 'rxjs/operators';
 import { EMPTY, Subject, Observable } from 'rxjs';
 import {
     PaymentDialogPayload,
@@ -22,7 +22,6 @@ import {
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { SelectedTokenService } from '../../services/selected-token.service';
-import { TokenUtils } from '../../utils/token.utils';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
 
@@ -48,12 +47,7 @@ export class TokenComponent implements OnInit, OnDestroy {
         private selectedTokenService: SelectedTokenService,
         private paymentHistoryPollingService: PaymentHistoryPollingService
     ) {
-        this.tokens$ = this.tokenPollingService.tokens$.pipe(
-            map((tokens) =>
-                tokens.sort((a, b) => TokenUtils.compareTokens(a, b))
-            ),
-            shareReplay({ refCount: true, bufferSize: 1 })
-        );
+        this.tokens$ = this.tokenPollingService.tokens$;
     }
 
     get production(): boolean {
