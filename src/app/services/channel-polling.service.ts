@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { scan, switchMap, tap, map, shareReplay, startWith } from 'rxjs/operators';
+import {
+    scan,
+    switchMap,
+    tap,
+    map,
+    shareReplay,
+    startWith,
+} from 'rxjs/operators';
 import { Channel } from '../models/channel';
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';

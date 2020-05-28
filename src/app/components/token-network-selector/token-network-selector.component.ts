@@ -45,7 +45,6 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
                     ? value.filter((token) => !!token.connected)
                     : value
             ),
-            map((value) => value.sort(TokenUtils.compareTokens)),
             share()
         );
     }

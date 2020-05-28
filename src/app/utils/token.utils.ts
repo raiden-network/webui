@@ -3,11 +3,11 @@ import { amountToDecimal } from './amount.converter';
 
 export class TokenUtils {
     static compareTokens(a: UserToken, b: UserToken): number {
-        const aConnected = !!a.connected;
-        const bConnected = !!b.connected;
+        const aConnected = a.connected && a.sumChannelBalances;
+        const bConnected = b.connected && b.sumChannelBalances;
         if (aConnected && bConnected) {
-            return amountToDecimal(b.connected.sum_deposits, b.decimals)
-                .minus(amountToDecimal(a.connected.sum_deposits, a.decimals))
+            return amountToDecimal(b.sumChannelBalances, b.decimals)
+                .minus(amountToDecimal(a.sumChannelBalances, a.decimals))
                 .toNumber();
         } else if (!aConnected && !bConnected) {
             return amountToDecimal(b.balance, b.decimals)

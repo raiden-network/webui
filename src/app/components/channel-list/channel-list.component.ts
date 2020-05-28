@@ -18,13 +18,7 @@ import {
 } from '../open-dialog/open-dialog.component';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
-import {
-    flatMap,
-    map,
-    takeUntil,
-    shareReplay,
-    debounceTime,
-} from 'rxjs/operators';
+import { flatMap, map, takeUntil, debounceTime } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Animations } from '../../animations/animations';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -33,7 +27,6 @@ import { SharedService } from '../../services/shared.service';
 import { matchesChannel, matchesContact } from '../../shared/keyword-matcher';
 import { AddressBookService } from '../../services/address-book.service';
 import { Contact } from '../../models/contact';
-import { TokenUtils } from '../../utils/token.utils';
 
 @Component({
     selector: 'app-channel-list',
@@ -67,12 +60,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
         private sharedService: SharedService,
         private addressBookService: AddressBookService
     ) {
-        this.tokens$ = this.tokenPollingService.tokens$.pipe(
-            map((tokens) =>
-                tokens.sort((a, b) => TokenUtils.compareTokens(a, b))
-            ),
-            shareReplay({ refCount: true, bufferSize: 1 })
-        );
+        this.tokens$ = this.tokenPollingService.tokens$;
     }
 
     ngOnInit() {
