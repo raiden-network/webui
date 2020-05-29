@@ -1270,7 +1270,7 @@ describe('RaidenService', () => {
             }
         );
 
-        service.refreshAddress();
+        service.reconnectSuccessful();
 
         request = mockHttp.expectOne({
             url: `${endpoint}/address`,
@@ -1347,14 +1347,11 @@ describe('RaidenService', () => {
         flush();
     }));
 
-    it('should query the payment history with UserTokens added', () => {
+    it('should query the payment history', () => {
         const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
-        const eventWithToken = Object.assign({}, paymentEvent, {
-            userToken: token,
-        });
         service.getPaymentHistory(tokenAddress, partnerAddress).subscribe(
             (history: PaymentEvent[]) => {
-                expect(history).toEqual([eventWithToken]);
+                expect(history).toEqual([paymentEvent]);
             },
             (error) => {
                 fail(error);
@@ -1369,6 +1366,19 @@ describe('RaidenService', () => {
         getPendingTransfersRequest.flush(losslessStringify([paymentEvent]), {
             status: 200,
             statusText: '',
+        });
+    });
+
+    it('should query the payment history and use limit and offset parameters', () => {
+        const limit = 5;
+        const offset = 10;
+        service
+            .getPaymentHistory(undefined, undefined, limit, offset)
+            .subscribe();
+
+        mockHttp.expectOne({
+            url: `${endpoint}/payments?limit=${limit}&offset=${offset}`,
+            method: 'GET',
         });
     });
 

@@ -224,7 +224,7 @@ describe('ErrorHandlingInterceptor', () => {
         const attemptSpy = spyOn(raidenService, 'attemptRpcConnection');
         const refreshSpy = spyOn(
             raidenService,
-            'refreshAddress'
+            'reconnectSuccessful'
         ).and.callFake(() => {});
 
         service.getData().subscribe(

@@ -63,7 +63,7 @@ export class RaidenService {
         void
     > = new BehaviorSubject(null);
     private globalRetrySubject: Subject<void> = new Subject();
-    private addressRefreshSubject: BehaviorSubject<void> = new BehaviorSubject(
+    private reconnectedSubject: BehaviorSubject<void> = new BehaviorSubject(
         null
     );
     private pendingChannelsSubject = new BehaviorSubject<PendingChannelsMap>(
@@ -79,6 +79,9 @@ export class RaidenService {
     public readonly globalRetry$: Observable<
         void
     > = this.globalRetrySubject.asObservable();
+    public readonly reconnected$: Observable<
+        void
+    > = this.reconnectedSubject.asObservable();
     public quickConnectPending: { [tokenAddress: string]: boolean } = {};
 
     private userTokens: { [id: string]: UserToken | null } = {};
@@ -91,7 +94,7 @@ export class RaidenService {
         private notificationService: NotificationService,
         private addressBookService: AddressBookService
     ) {
-        this.raidenAddress$ = this.addressRefreshSubject.pipe(
+        this.raidenAddress$ = this.reconnectedSubject.pipe(
             switchMap(() =>
                 this.http.get<{ our_address: string }>(
                     `${this.raidenConfig.api}/address`
@@ -414,7 +417,9 @@ export class RaidenService {
 
     public getPaymentHistory(
         tokenAddress?: string,
-        partnerAddress?: string
+        partnerAddress?: string,
+        limit?: number,
+        offset?: number
     ): Observable<PaymentEvent[]> {
         let paymentsResource = `${this.raidenConfig.api}/payments`;
         if (tokenAddress) {
@@ -424,14 +429,17 @@ export class RaidenService {
             }
         }
 
-        return this.http.get<PaymentEvent[]>(paymentsResource).pipe(
-            flatMap((events: PaymentEvent[]) => from(events)),
-            map((event: PaymentEvent) => {
-                event.userToken = this.getUserToken(event.token_address);
-                return event;
-            }),
-            toArray()
-        );
+        const params: { limit?: string; offset?: string } = {};
+        if (limit) {
+            params.limit = limit.toString();
+        }
+        if (offset) {
+            params.offset = offset.toString();
+        }
+
+        return this.http.get<PaymentEvent[]>(paymentsResource, {
+            params: params,
+        });
     }
 
     public modifyDeposit(
@@ -888,8 +896,8 @@ export class RaidenService {
             .pipe(mapTo(null));
     }
 
-    public refreshAddress() {
-        this.addressRefreshSubject.next(null);
+    public reconnectSuccessful() {
+        this.reconnectedSubject.next(null);
     }
 
     public resolveEnsName(name: string): Observable<string> {

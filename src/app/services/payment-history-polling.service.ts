@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+<<<<<<< HEAD
 import { switchMap, tap, shareReplay, scan, startWith } from 'rxjs/operators';
+=======
+import { switchMap, tap, shareReplay } from 'rxjs/operators';
+>>>>>>> Only query new payment events after initial loading
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { backoff } from '../shared/backoff.operator';
@@ -14,11 +18,12 @@ import { AddressBookService } from './address-book.service';
     providedIn: 'root',
 })
 export class PaymentHistoryPollingService {
-    readonly paymentHistory$: Observable<PaymentEvent[]>;
+    readonly newPaymentEvents$: Observable<PaymentEvent[]>;
 
     private readonly paymentHistorySubject: BehaviorSubject<
         void
     > = new BehaviorSubject(null);
+    private queryOffset = 0;
     private loaded = false;
 
     constructor(
@@ -27,28 +32,38 @@ export class PaymentHistoryPollingService {
         private raidenConfig: RaidenConfig,
         private addressBookService: AddressBookService
     ) {
+        this.raidenService.reconnected$.subscribe(() => {
+            this.queryOffset = 0;
+            this.loaded = false;
+            this.refresh();
+        });
+
         let timeout;
-        this.paymentHistory$ = this.paymentHistorySubject.pipe(
+        this.newPaymentEvents$ = this.paymentHistorySubject.pipe(
             tap(() => {
                 clearTimeout(timeout);
             }),
-            switchMap(() => this.raidenService.getPaymentHistory()),
-            tap(() => {
+            switchMap(() =>
+                this.raidenService.getPaymentHistory(
+                    undefined,
+                    undefined,
+                    undefined,
+                    this.queryOffset
+                )
+            ),
+            tap((newEvents: PaymentEvent[]) => {
                 timeout = setTimeout(
                     () => this.refresh(),
                     this.raidenConfig.config.poll_interval
                 );
+                this.updateNewPayments(newEvents);
             }),
-            scan((oldHistory: PaymentEvent[], newHistory: PaymentEvent[]) => {
-                this.checkForNewPayments(oldHistory, newHistory);
-                return newHistory;
-            }, []),
             startWith([]),
             backoff(
                 this.raidenConfig.config.error_poll_interval,
                 this.raidenService.globalRetry$
             ),
-            shareReplay({ refCount: true, bufferSize: 1 })
+            shareReplay(1)
         );
     }
 
@@ -56,18 +71,33 @@ export class PaymentHistoryPollingService {
         this.paymentHistorySubject.next(null);
     }
 
-    private checkForNewPayments(
-        oldHistory: PaymentEvent[],
-        newHistory: PaymentEvent[]
-    ) {
+    getHistory(
+        tokenAddress?: string,
+        partnerAddress?: string,
+        limit?: number,
+        offset?: number
+    ): Observable<PaymentEvent[]> {
+        return this.paymentHistorySubject.pipe(
+            switchMap(() =>
+                this.raidenService.getPaymentHistory(
+                    tokenAddress,
+                    partnerAddress,
+                    limit,
+                    offset
+                )
+            )
+        );
+    }
+
+    private updateNewPayments(history: PaymentEvent[]) {
         if (this.loaded) {
-            const oldLastIndex = oldHistory.length - 1;
-            for (let i = newHistory.length - 1; i > oldLastIndex; i--) {
-                if (newHistory[i].event === 'EventPaymentReceivedSuccess') {
-                    this.informAboutNewReceivedPayment(newHistory[i]);
+            history.forEach((event) =>{
+                if (event.event === 'EventPaymentReceivedSuccess') {
+                    this.informAboutNewReceivedPayment(event);
                 }
-            }
+            });
         }
+        this.queryOffset += history.length;
         this.loaded = true;
     }
 
@@ -75,10 +105,8 @@ export class PaymentHistoryPollingService {
         const token = this.raidenService.getUserToken(event.token_address);
         const formattedAmount = amountToDecimal(event.amount, token.decimals);
         const initiatorAddress = event.initiator;
-        let initiatorLabel = this.addressBookService.get()[initiatorAddress];
-        if (!initiatorLabel) {
-            initiatorLabel = '';
-        }
+        const initiatorLabel =
+            this.addressBookService.get()[initiatorAddress] ?? '';
         const message: UiMessage = {
             title: 'Received transfer',
             description: `${formattedAmount} ${token.symbol} from ${initiatorLabel} ${event.initiator}`,
