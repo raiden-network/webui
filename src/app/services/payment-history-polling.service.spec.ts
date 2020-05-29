@@ -48,11 +48,11 @@ describe('PaymentHistoryPollingService', () => {
         }
     ));
 
-    it('should refresh the payment history every polling interval', inject(
+    it('should refresh the new payment events every polling interval', inject(
         [PaymentHistoryPollingService],
         fakeAsync((service: PaymentHistoryPollingService) => {
             getPaymentHistorySpy.and.returnValue(of([paymentEvent]));
-            service.paymentHistory$.subscribe((value) =>
+            service.newPaymentEvents$.subscribe((value) =>
                 expect(value).toEqual([paymentEvent])
             );
             const refreshSpy = spyOn(service, 'refresh');
@@ -72,13 +72,30 @@ describe('PaymentHistoryPollingService', () => {
                 };
             };
             getPaymentHistorySpy.and.returnValues(
-                from([[paymentEvent], [paymentEvent, paymentEvent2]])
+                from([[], [paymentEvent], [paymentEvent2]])
             );
-            service.paymentHistory$.subscribe();
+            service.newPaymentEvents$.subscribe();
 
             expect(
                 notificationService.addInfoNotification
-            ).toHaveBeenCalledTimes(1);
+            ).toHaveBeenCalledTimes(2);
+        }
+    ));
+
+    it('should be able to poll the history for a token and a partner', inject(
+        [PaymentHistoryPollingService],
+        (service: PaymentHistoryPollingService) => {
+            getPaymentHistorySpy.and.returnValue(of([paymentEvent]));
+            service
+                .getHistory(paymentEvent.token_address, paymentEvent.initiator)
+                .subscribe((value) => expect(value).toEqual([paymentEvent]));
+            expect(getPaymentHistorySpy).toHaveBeenCalledTimes(1);
+            expect(getPaymentHistorySpy).toHaveBeenCalledWith(
+                paymentEvent.token_address,
+                paymentEvent.initiator,
+                undefined,
+                undefined
+            );
         }
     ));
 });

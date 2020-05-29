@@ -32,7 +32,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
                     this.notificationService.apiError
                 ) {
                     this.raidenService.attemptRpcConnection();
-                    this.raidenService.refreshAddress();
+                    this.raidenService.reconnectSuccessful();
                     this.notificationService.apiError = undefined;
                 }
             }),

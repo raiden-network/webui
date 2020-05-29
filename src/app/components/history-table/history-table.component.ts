@@ -11,6 +11,7 @@ import { matchesToken, matchesContact } from '../../shared/keyword-matcher';
 import { Contact } from '../../models/contact';
 import { takeUntil, map } from 'rxjs/operators';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
+import { RaidenService } from '../../services/raiden.service';
 
 export interface HistoryEvent extends PaymentEvent {
     pending?: boolean;
@@ -41,12 +42,13 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
         private addressBookService: AddressBookService,
         private selectedTokenService: SelectedTokenService,
         private sharedService: SharedService,
-        private pendingTransferPollingService: PendingTransferPollingService
+        private pendingTransferPollingService: PendingTransferPollingService,
+        private raidenService: RaidenService
     ) {}
 
     ngOnInit() {
         combineLatest([
-            this.paymentHistoryPollingService.paymentHistory$,
+            this.paymentHistoryPollingService.getHistory(),
             this.pendingTransferPollingService.pendingTransfers$,
         ])
             .pipe(
@@ -65,7 +67,6 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
                                 identifier: pendingTransfer.payment_identifier,
                                 log_time: '',
                                 token_address: pendingTransfer.token_address,
-                                userToken: pendingTransfer.userToken,
                                 pending: true,
                             };
                             return event;
@@ -142,6 +143,10 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
         return event.event === 'EventPaymentReceivedSuccess';
     }
 
+    getUserToken(event: HistoryEvent): UserToken {
+        return this.raidenService.getUserToken(event.token_address);
+    }
+
     private addressLabel(address: string): string | undefined {
         return this.addressBookService.get()[address];
     }
@@ -180,8 +185,9 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
         const partnerAddress = this.partnerAddress(event);
 
         let matchingToken = false;
-        if (event.userToken) {
-            matchingToken = matchesToken(keyword, event.userToken);
+        const userToken = this.getUserToken(event);
+        if (userToken) {
+            matchingToken = matchesToken(keyword, userToken);
         }
 
         let matchingContact = false;

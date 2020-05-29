@@ -129,7 +129,7 @@ export class AppComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe();
 
-        this.paymentHistoryPollingService.paymentHistory$
+        this.paymentHistoryPollingService.newPaymentEvents$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe();
 

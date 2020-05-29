@@ -80,7 +80,7 @@ describe('AppComponent', () => {
 
         const paymentHistoryPollingMock = stub<PaymentHistoryPollingService>();
         // @ts-ignore
-        paymentHistoryPollingMock.paymentHistory$ = of([]);
+        paymentHistoryPollingMock.newPaymentEvents$ = of([]);
 
         const channelPollingMock = stub<ChannelPollingService>();
         // @ts-ignore

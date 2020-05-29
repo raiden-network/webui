@@ -33,6 +33,7 @@ import { PendingTransferPollingService } from '../../services/pending-transfer-p
 import { PendingTransfer } from '../../models/pending-transfer';
 import { By } from '@angular/platform-browser';
 import { clickElement } from '../../../testing/interaction-helper';
+import { RaidenService } from '../../services/raiden.service';
 
 describe('HistoryTableComponent', () => {
     let component: HistoryTableComponent;
@@ -45,11 +46,9 @@ describe('HistoryTableComponent', () => {
     );
     const pendingTransfer1 = createPendingTransfer({
         role: 'initiator',
-        userToken: token1,
     });
     const pendingTransfer2 = createPendingTransfer({
         role: 'target',
-        userToken: token1,
     });
     const pendingTransfers = [pendingTransfer1, pendingTransfer2];
     let historySubject: BehaviorSubject<PaymentEvent[]>;
@@ -69,18 +68,12 @@ describe('HistoryTableComponent', () => {
             identifier: pendingTransfer.payment_identifier,
             log_time: '',
             token_address: pendingTransfer.token_address,
-            userToken: pendingTransfer.userToken,
             pending: true,
         };
         return event;
     }
 
     beforeEach(async(() => {
-        const historyPollingMock = stub<PaymentHistoryPollingService>();
-        historySubject = new BehaviorSubject(history);
-        // @ts-ignore
-        historyPollingMock.paymentHistory$ = historySubject.asObservable();
-
         const pendingTransferPollingMock = stub<
             PendingTransferPollingService
         >();
@@ -97,16 +90,14 @@ describe('HistoryTableComponent', () => {
             providers: [
                 TestProviders.AddressBookStubProvider(),
                 SelectedTokenService,
-                {
-                    provide: PaymentHistoryPollingService,
-                    useValue: historyPollingMock,
-                },
+                PaymentHistoryPollingService,
                 SharedService,
                 TestProviders.MockRaidenConfigProvider(),
                 {
                     provide: PendingTransferPollingService,
                     useValue: pendingTransferPollingMock,
                 },
+                RaidenService,
             ],
             imports: [
                 MaterialComponentsModule,
@@ -121,6 +112,21 @@ describe('HistoryTableComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(HistoryTableComponent);
         component = fixture.componentInstance;
+
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'getUserToken').and.callFake((tokenAddress) => {
+            return { [token1.address]: token1, [token2.address]: token2 }[
+                tokenAddress
+            ];
+        });
+
+        historySubject = new BehaviorSubject(history);
+        const paymentHistoryPollingService = TestBed.inject(
+            PaymentHistoryPollingService
+        );
+        spyOn(paymentHistoryPollingService, 'getHistory').and.callFake(() =>
+            historySubject.asObservable()
+        );
     });
 
     describe('not showing complete history', () => {
