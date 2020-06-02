@@ -787,7 +787,7 @@ export class RaidenService {
             tap(() => {
                 const message: UiMessage = {
                     title: 'Minting',
-                    description: `${formattedAmount} ${token.symbol} `,
+                    description: `${formattedAmount} ${token.symbol} on-chain`,
                     icon: 'token',
                     userToken: token,
                 };
@@ -805,7 +805,7 @@ export class RaidenService {
             tap(() => {
                 const message: UiMessage = {
                     title: 'Minted',
-                    description: `${formattedAmount} ${token.symbol}`,
+                    description: `${formattedAmount} ${token.symbol} on-chain`,
                     icon: 'token',
                     userToken: token,
                 };
