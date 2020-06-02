@@ -49,25 +49,31 @@ describe('TokenUtils', () => {
 
     it('should give connected token a lower index', () => {
         expect(
-            TokenUtils.compareTokens(connectedToken, unconnectedToken)
+            TokenUtils.compareTokens(connectedToken, unconnectedToken, 0, 0)
         ).toEqual(-1);
     });
 
     it('should give unconnected token a higher index', () => {
         expect(
-            TokenUtils.compareTokens(unconnectedToken, connectedToken)
+            TokenUtils.compareTokens(unconnectedToken, connectedToken, 0, 0)
         ).toEqual(1);
     });
 
     it('should compare not connected tokens depending on balance', () => {
         expect(
-            TokenUtils.compareTokens(unconnectedToken, unconnectedToken2)
+            TokenUtils.compareTokens(unconnectedToken, unconnectedToken2, 0, 0)
         ).toEqual(50);
     });
 
     it('should compare connected tokens depending on sum channel balances', () => {
         expect(
-            TokenUtils.compareTokens(connectedToken, connectedToken2)
+            TokenUtils.compareTokens(connectedToken, connectedToken2, 0, 0)
         ).toEqual(-70);
+    });
+
+    it('should compare tokens based on usage', () => {
+        expect(
+            TokenUtils.compareTokens(connectedToken, connectedToken2, 4, 1)
+        ).toEqual(-3);
     });
 });

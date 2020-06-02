@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-<<<<<<< HEAD
-import { switchMap, tap, shareReplay, scan, startWith } from 'rxjs/operators';
-=======
-import { switchMap, tap, shareReplay } from 'rxjs/operators';
->>>>>>> Only query new payment events after initial loading
+import { switchMap, tap, shareReplay, startWith } from 'rxjs/operators';
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { backoff } from '../shared/backoff.operator';
@@ -25,6 +21,8 @@ export class PaymentHistoryPollingService {
     > = new BehaviorSubject(null);
     private queryOffset = 0;
     private loaded = false;
+    private tokenUsage: { [tokenAddress: string]: number } = {};
+    private paymentTargetUsage: { [targetAddress: string]: number } = {};
 
     constructor(
         private raidenService: RaidenService,
@@ -56,7 +54,7 @@ export class PaymentHistoryPollingService {
                     () => this.refresh(),
                     this.raidenConfig.config.poll_interval
                 );
-                this.updateNewPayments(newEvents);
+                this.checkNewPayments(newEvents);
             }),
             startWith([]),
             backoff(
@@ -89,15 +87,23 @@ export class PaymentHistoryPollingService {
         );
     }
 
-    private updateNewPayments(history: PaymentEvent[]) {
-        if (this.loaded) {
-            history.forEach((event) =>{
-                if (event.event === 'EventPaymentReceivedSuccess') {
-                    this.informAboutNewReceivedPayment(event);
-                }
-            });
-        }
-        this.queryOffset += history.length;
+    getTokenUsage(tokenAddress: string): number {
+        return this.tokenUsage[tokenAddress];
+    }
+
+    getPaymentTargetUsage(targetAddress: string): number {
+        return this.paymentTargetUsage[targetAddress];
+    }
+
+    private checkNewPayments(events: PaymentEvent[]) {
+        events.forEach((event) => {
+            if (this.loaded && event.event === 'EventPaymentReceivedSuccess') {
+                this.informAboutNewReceivedPayment(event);
+            } else if (event.event === 'EventPaymentSentSuccess') {
+                this.updateUsageInformation(event);
+            }
+        });
+        this.queryOffset += events.length;
         this.loaded = true;
     }
 
@@ -115,5 +121,19 @@ export class PaymentHistoryPollingService {
             userToken: token,
         };
         this.notificationService.addInfoNotification(message);
+    }
+
+    private updateUsageInformation(event: PaymentEvent) {
+        if (!this.tokenUsage[event.token_address]) {
+            this.tokenUsage[event.token_address] = 1;
+        } else {
+            this.tokenUsage[event.token_address] += 1;
+        }
+
+        if (!this.paymentTargetUsage[event.target]) {
+            this.paymentTargetUsage[event.target] = 1;
+        } else {
+            this.paymentTargetUsage[event.target] += 1;
+        }
     }
 }

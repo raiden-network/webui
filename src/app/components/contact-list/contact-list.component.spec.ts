@@ -34,6 +34,7 @@ import { of } from 'rxjs';
 import { ClipboardModule } from 'ngx-clipboard';
 import { ChunkPipe } from '../../pipes/chunk.pipe';
 import { By } from '@angular/platform-browser';
+import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
 
 function createMockReader(result: {}) {
     return {
@@ -90,6 +91,7 @@ describe('ContactListComponent', () => {
                 TestProviders.MockMatDialog(),
                 NotificationService,
                 SharedService,
+                PaymentHistoryPollingService,
             ],
             imports: [
                 MaterialComponentsModule,
@@ -108,6 +110,21 @@ describe('ContactListComponent', () => {
 
         addressBookService = TestBed.inject(AddressBookService);
         addressBookService.getObservableArray = () => of(contacts);
+
+        const paymentHistoryPollingService = TestBed.inject(
+            PaymentHistoryPollingService
+        );
+        spyOn(
+            paymentHistoryPollingService,
+            'getPaymentTargetUsage'
+        ).and.callFake((targetAddress) => {
+            return {
+                [contacts[2].address]: 12,
+                [contacts[3].address]: 1,
+                [contacts[4].address]: 5,
+                [contacts[5].address]: 9,
+            }[targetAddress];
+        });
     });
 
     describe('not showing all contacts', () => {
@@ -360,6 +377,13 @@ describe('ContactListComponent', () => {
             fixture.detectChanges();
             const link = fixture.debugElement.query(By.css('#all-link'));
             expect(link).toBeTruthy();
+        });
+
+        it('should sort the contacts by usage', () => {
+            expect(component.visibleContacts[0]).toEqual(contacts[2]);
+            expect(component.visibleContacts[1]).toEqual(contacts[5]);
+            expect(component.visibleContacts[2]).toEqual(contacts[4]);
+            expect(component.visibleContacts[3]).toEqual(contacts[3]);
         });
     });
 

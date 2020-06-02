@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js';
 import { ChannelPollingService } from './channel-polling.service';
 import { stub } from '../../testing/stub';
 import { Channel } from '../models/channel';
+import { PaymentHistoryPollingService } from './payment-history-polling.service';
 
 describe('TokenPollingService', () => {
     let raidenService: RaidenService;
@@ -66,6 +67,7 @@ describe('TokenPollingService', () => {
                 RaidenService,
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.AddressBookStubProvider(),
+                PaymentHistoryPollingService,
                 {
                     provide: ChannelPollingService,
                     useValue: channelPollingMock,
@@ -148,17 +150,31 @@ describe('TokenPollingService', () => {
         }
     ));
 
-    it('should sort tokens first by sum of channel balances, then owned and last not owned', inject(
+    it('should sort tokens first by usage, then sum of channel balances, then owned and last not owned', inject(
         [TokenPollingService],
         (service: TokenPollingService) => {
-            spyOn(raidenService, 'getTokens').and.returnValue(
-                of(connectedTokens.concat([token, notOwnedToken]))
+            const usedToken = createToken();
+            const paymentHistoryPollingService = TestBed.inject(
+                PaymentHistoryPollingService
             );
+            spyOn(paymentHistoryPollingService, 'getTokenUsage').and.callFake(
+                (tokenAddress) => {
+                    return {
+                        [usedToken.address]: 6,
+                        [connectedTokens[0].address]: 2,
+                    }[tokenAddress];
+                }
+            );
+            spyOn(raidenService, 'getTokens').and.returnValue(
+                of(connectedTokens.concat([usedToken, token, notOwnedToken]))
+            );
+
             service.tokens$.subscribe((tokens: UserToken[]) => {
-                expect(tokens[0].address).toBe(connectedTokens[0].address);
-                expect(tokens[1].address).toBe(connectedTokens[1].address);
-                expect(tokens[2].address).toBe(token.address);
-                expect(tokens[3].address).toBe(notOwnedToken.address);
+                expect(tokens[0].address).toBe(usedToken.address);
+                expect(tokens[1].address).toBe(connectedTokens[0].address);
+                expect(tokens[2].address).toBe(connectedTokens[1].address);
+                expect(tokens[3].address).toBe(token.address);
+                expect(tokens[4].address).toBe(notOwnedToken.address);
             });
         }
     ));
