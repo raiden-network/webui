@@ -1,10 +1,16 @@
-<div class="panel" fxLayout="row" fxLayoutGap="15px">
-    <div fxFlex="1 0 0" fxLayout="column" fxLayoutGap="40px">
+<div class="panel" ngClass.xs="panel--mobile" fxLayout="row">
+    <div
+        class="panel__container"
+        fxFlex="0 0 100%"
+        fxLayout="column"
+        fxLayoutGap="40px"
+    >
         <div
             *ngIf="hasNoItems()"
             fxLayout="column"
             fxLayoutAlign="center center"
             class="no-items"
+            fxFlex="1 0 0"
         >
             No notifications
         </div>
@@ -66,11 +72,13 @@
             </div>
         </div>
     </div>
-    <button class="close" mat-icon-button (click)="close.emit(true)">
-        <mat-icon
-            class="close__icon"
-            aria-label="Close notification panel icon"
-            svgIcon="close"
-        ></mat-icon>
-    </button>
+    <div class="close">
+        <button mat-icon-button (click)="close.emit(true)">
+            <mat-icon
+                class="close__icon"
+                aria-label="Close notification panel icon"
+                svgIcon="close"
+            ></mat-icon>
+        </button>
+    </div>
 </div>

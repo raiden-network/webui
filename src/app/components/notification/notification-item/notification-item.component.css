@@ -14,6 +14,10 @@
     background-color: #000000;
 }
 
+.content {
+    overflow-x: hidden;
+}
+
 .content__title {
     letter-spacing: 1px;
     text-transform: uppercase;
