@@ -1,9 +1,17 @@
 .panel {
     color: #ffffff;
-    margin: 16px 32px;
+    margin: 0 64px 16px 32px;
     font-size: 16px;
     line-height: 19px;
     min-height: calc(100% - 32px);
+}
+
+.panel--mobile {
+    margin: 0 48px 16px 16px;
+}
+
+.panel__container {
+    margin-top: 16px;
 }
 
 .no-items {
@@ -28,6 +36,9 @@
     position: -webkit-sticky;
     top: 0;
     right: 0;
+    padding-top: 16px;
+    padding-left: 16px;
+    height: 32px;
 }
 
 .close__icon {
