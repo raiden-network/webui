@@ -143,12 +143,12 @@ describe('HistoryTableComponent', () => {
             expect(component.visibleHistory.length).toBe(4);
         });
 
-        it('should not show failed payment events', () => {
+        it('should show failed payment events', () => {
             const errorEvent = createPaymentEvent('EventPaymentSentFailed');
             historySubject.next([errorEvent]);
             pendingTransfersSubject.next([]);
             fixture.detectChanges();
-            expect(component.visibleHistory.length).toBe(0);
+            expect(component.visibleHistory).toEqual([errorEvent]);
         });
 
         it('should show pending transfers in the history', () => {
