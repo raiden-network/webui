@@ -179,7 +179,7 @@ describe('AppComponent', () => {
             notificationSidenav,
             'toggle'
         ).and.callThrough();
-        clickElement(fixture.debugElement, '#notification-button');
+        clickElement(fixture.debugElement, '.notification-panel-button');
         expect(toggleSpy).toHaveBeenCalledTimes(1);
     });
 
