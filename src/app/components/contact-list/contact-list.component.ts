@@ -23,6 +23,7 @@ import { SharedService } from '../../services/shared.service';
 import { AddEditContactDialogComponent } from '../add-edit-contact-dialog/add-edit-contact-dialog.component';
 import { matchesContact } from '../../shared/keyword-matcher';
 import { takeUntil, debounceTime } from 'rxjs/operators';
+import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
 
 @Component({
     selector: 'app-contact-list',
@@ -54,7 +55,8 @@ export class ContactListComponent implements OnInit, OnDestroy, AfterViewInit {
         private addressBookService: AddressBookService,
         private dialog: MatDialog,
         private notificationService: NotificationService,
-        private sharedService: SharedService
+        private sharedService: SharedService,
+        private paymentHistoryPollingService: PaymentHistoryPollingService
     ) {
         const validator = new Ajv({ allErrors: true });
         this.schema = validator.compile(contactsSchema);
@@ -141,9 +143,21 @@ export class ContactListComponent implements OnInit, OnDestroy, AfterViewInit {
         );
         this.numberOfFilteredContacts = filteredContacts.length;
 
-        filteredContacts.sort((a, b) =>
-            StringUtils.compare(true, a.label, b.label)
-        );
+        filteredContacts.sort((a, b) => {
+            const aUsage =
+                this.paymentHistoryPollingService.getPaymentTargetUsage(
+                    a.address
+                ) ?? 0;
+            const bUsage =
+                this.paymentHistoryPollingService.getPaymentTargetUsage(
+                    b.address
+                ) ?? 0;
+            if (aUsage === bUsage) {
+                return StringUtils.compare(true, a.label, b.label);
+            } else {
+                return bUsage - aUsage;
+            }
+        });
 
         if (this.showAll) {
             this.visibleContacts = filteredContacts;

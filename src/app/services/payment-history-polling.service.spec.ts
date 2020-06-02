@@ -15,8 +15,13 @@ describe('PaymentHistoryPollingService', () => {
     let getPaymentHistorySpy: Spy;
     let notificationService: NotificationService;
 
-    const paymentEvent = createPaymentEvent('EventPaymentReceivedSuccess');
-    const paymentEvent2 = createPaymentEvent('EventPaymentReceivedSuccess');
+    const receivedEvent = createPaymentEvent('EventPaymentReceivedSuccess');
+    const receivedEvent2 = createPaymentEvent('EventPaymentReceivedSuccess');
+    const sentEvent = createPaymentEvent('EventPaymentSentSuccess');
+    const sentEvent2 = createPaymentEvent('EventPaymentSentSuccess', {
+        token_address: sentEvent.token_address,
+        target: sentEvent.target,
+    });
 
     const token: UserToken = createToken();
 
@@ -51,9 +56,9 @@ describe('PaymentHistoryPollingService', () => {
     it('should refresh the new payment events every polling interval', inject(
         [PaymentHistoryPollingService],
         fakeAsync((service: PaymentHistoryPollingService) => {
-            getPaymentHistorySpy.and.returnValue(of([paymentEvent]));
+            getPaymentHistorySpy.and.returnValue(of([receivedEvent]));
             service.newPaymentEvents$.subscribe((value) =>
-                expect(value).toEqual([paymentEvent])
+                expect(value).toEqual([receivedEvent])
             );
             const refreshSpy = spyOn(service, 'refresh');
             tick(5000);
@@ -68,11 +73,11 @@ describe('PaymentHistoryPollingService', () => {
             const mockAddressBookService = TestBed.inject(AddressBookService);
             mockAddressBookService.get = () => {
                 return {
-                    [paymentEvent2.initiator]: 'Test account',
+                    [receivedEvent2.initiator]: 'Test account',
                 };
             };
             getPaymentHistorySpy.and.returnValues(
-                from([[], [paymentEvent], [paymentEvent2]])
+                from([[], [receivedEvent], [receivedEvent2]])
             );
             service.newPaymentEvents$.subscribe();
 
@@ -85,17 +90,30 @@ describe('PaymentHistoryPollingService', () => {
     it('should be able to poll the history for a token and a partner', inject(
         [PaymentHistoryPollingService],
         (service: PaymentHistoryPollingService) => {
-            getPaymentHistorySpy.and.returnValue(of([paymentEvent]));
+            getPaymentHistorySpy.and.returnValue(of([receivedEvent]));
             service
-                .getHistory(paymentEvent.token_address, paymentEvent.initiator)
-                .subscribe((value) => expect(value).toEqual([paymentEvent]));
+                .getHistory(
+                    receivedEvent.token_address,
+                    receivedEvent.initiator
+                )
+                .subscribe((value) => expect(value).toEqual([receivedEvent]));
             expect(getPaymentHistorySpy).toHaveBeenCalledTimes(1);
             expect(getPaymentHistorySpy).toHaveBeenCalledWith(
-                paymentEvent.token_address,
-                paymentEvent.initiator,
+                receivedEvent.token_address,
+                receivedEvent.initiator,
                 undefined,
                 undefined
             );
+        }
+    ));
+
+    it('should store usage information about tokens and payment targets', inject(
+        [PaymentHistoryPollingService],
+        (service: PaymentHistoryPollingService) => {
+            getPaymentHistorySpy.and.returnValue(of([sentEvent, sentEvent2]));
+            service.newPaymentEvents$.subscribe();
+            expect(service.getTokenUsage(sentEvent.token_address)).toBe(2);
+            expect(service.getPaymentTargetUsage(sentEvent.target)).toBe(2);
         }
     ));
 });

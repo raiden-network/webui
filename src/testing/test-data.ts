@@ -113,7 +113,7 @@ export function createPaymentEvent(
     const event: PaymentEvent = {
         event: eventType,
         log_time: new Date().toISOString().slice(0, -1),
-        token_address: obj.userToken ? obj.userToken.address : createAddress(),
+        token_address: createAddress(),
     };
     if (eventType === 'EventPaymentSentSuccess') {
         Object.assign(event, {

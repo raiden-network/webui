@@ -9,6 +9,7 @@ import { ChannelPollingService } from './channel-polling.service';
 import { Channel } from '../models/channel';
 import BigNumber from 'bignumber.js';
 import { TokenUtils } from '../utils/token.utils';
+import { PaymentHistoryPollingService } from './payment-history-polling.service';
 
 @Injectable({
     providedIn: 'root',
@@ -24,7 +25,8 @@ export class TokenPollingService {
     constructor(
         private raidenService: RaidenService,
         private raidenConfig: RaidenConfig,
-        private channelPollingService: ChannelPollingService
+        private channelPollingService: ChannelPollingService,
+        private paymentHistoryPollingService: PaymentHistoryPollingService
     ) {
         let timeout;
         this.tokens$ = this.tokensSubject.pipe(
@@ -39,9 +41,17 @@ export class TokenPollingService {
                 ])
             ),
             map(([tokens, channels]) =>
-                this.calculateSumOfBalances(tokens, channels).sort((a, b) =>
-                    TokenUtils.compareTokens(a, b)
-                )
+                this.calculateSumOfBalances(tokens, channels).sort((a, b) => {
+                    const aUsage =
+                        this.paymentHistoryPollingService.getTokenUsage(
+                            a.address
+                        ) ?? 0;
+                    const bUsage =
+                        this.paymentHistoryPollingService.getTokenUsage(
+                            b.address
+                        ) ?? 0;
+                    return TokenUtils.compareTokens(a, b, aUsage, bUsage);
+                })
             ),
             tap(() => {
                 timeout = setTimeout(
