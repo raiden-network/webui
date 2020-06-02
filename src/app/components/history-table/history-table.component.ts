@@ -171,7 +171,6 @@ export class HistoryTableComponent implements OnInit, OnDestroy {
     private getFilteredEvents() {
         return this.history.filter(
             (event) =>
-                event.event !== 'EventPaymentSentFailed' &&
                 this.matchesSearchFilter(event) &&
                 !(
                     this.selectedToken &&

@@ -83,6 +83,11 @@
     color: #fdd327;
 }
 
+.table__label--failed {
+    background-color: rgba(255, 0, 0, 0.3);
+    color: #ff0000;
+}
+
 .icon-box {
     width: 35px;
     height: 35px;
