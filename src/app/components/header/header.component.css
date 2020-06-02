@@ -55,12 +55,12 @@
     line-height: 15px !important;
 }
 
-.notification-button {
+.notification-panel-button {
     height: 50px !important;
     width: 50px !important;
     background-color: rgba(255, 255, 255, 0.06);
 }
 
-.notification-button__icon {
+.notification-panel-button__icon {
     color: #888888;
 }
