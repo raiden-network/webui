@@ -71,6 +71,7 @@ describe('AppComponent', () => {
         raidenServiceMock.raidenAddress$ = of(createAddress());
         raidenServiceMock.shutdownRaiden = () => of(null);
         raidenServiceMock.getStatus = () => of({ status: 'ready' });
+        raidenServiceMock.getUserToken = () => undefined;
 
         const pendingTransferPollingMock = stub<
             PendingTransferPollingService

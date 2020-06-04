@@ -82,9 +82,14 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
     }
 
     resetSearch() {
+        const searchedToken = this.raidenService.getUserToken(
+            this.inputElement.nativeElement.value
+        );
         this.resetInput();
         this.sharedService.setSearchValue('');
-        this.selectedTokenService.resetToken();
+        if (searchedToken) {
+            this.selectedTokenService.resetToken();
+        }
     }
 
     private setupFiltering() {
