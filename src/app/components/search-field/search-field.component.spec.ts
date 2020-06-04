@@ -21,7 +21,7 @@ import { AddressBookService } from '../../services/address-book.service';
 import { stub } from '../../../testing/stub';
 import { of } from 'rxjs';
 
-fdescribe('SearchFieldComponent', () => {
+describe('SearchFieldComponent', () => {
     let component: SearchFieldComponent;
     let fixture: ComponentFixture<SearchFieldComponent>;
 
@@ -102,13 +102,27 @@ fdescribe('SearchFieldComponent', () => {
         fixture.detectChanges();
 
         const searchSpy = spyOn(sharedService, 'setSearchValue');
-        const selectionSpy = spyOn(selectedTokenService, 'setToken');
+        const resetTokenSpy = spyOn(selectedTokenService, 'resetToken');
         clickElement(fixture.debugElement, '#reset');
         fixture.detectChanges();
 
         expect(searchSpy).toHaveBeenCalledTimes(1);
         expect(searchSpy).toHaveBeenCalledWith('');
-        expect(selectionSpy).toHaveBeenCalledTimes(0);
+        expect(resetTokenSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not reset the selected token on reset for a non token search value', () => {
+        mockInput(fixture.debugElement, 'input', 'Payment partner');
+        fixture.detectChanges();
+
+        const searchSpy = spyOn(sharedService, 'setSearchValue');
+        const resetTokenSpy = spyOn(selectedTokenService, 'resetToken');
+        clickElement(fixture.debugElement, '#reset');
+        fixture.detectChanges();
+
+        expect(searchSpy).toHaveBeenCalledTimes(1);
+        expect(searchSpy).toHaveBeenCalledWith('');
+        expect(resetTokenSpy).toHaveBeenCalledTimes(0);
     });
 
     it('should reset the token search value when another token is selected', () => {

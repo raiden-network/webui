@@ -49,6 +49,7 @@ describe('HeaderComponent', () => {
         balanceSubject = new BehaviorSubject('10.123456789');
         // @ts-ignore
         raidenServiceMock.balance$ = balanceSubject.asObservable();
+        raidenServiceMock.getUserToken = () => undefined;
 
         const tokenPollingMock = stub<TokenPollingService>();
         // @ts-ignore
