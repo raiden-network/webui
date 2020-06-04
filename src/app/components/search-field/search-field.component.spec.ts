@@ -21,7 +21,7 @@ import { AddressBookService } from '../../services/address-book.service';
 import { stub } from '../../../testing/stub';
 import { of } from 'rxjs';
 
-describe('SearchFieldComponent', () => {
+fdescribe('SearchFieldComponent', () => {
     let component: SearchFieldComponent;
     let fixture: ComponentFixture<SearchFieldComponent>;
 
@@ -74,7 +74,7 @@ describe('SearchFieldComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should call shared service on input and reset token selection', () => {
+    it('should call shared service on input and not reset token selection', () => {
         const searchSpy = spyOn(sharedService, 'setSearchValue');
         const selectionSpy = spyOn(selectedTokenService, 'setToken');
         mockInput(fixture.debugElement, 'input', 'TestToken');
@@ -82,8 +82,7 @@ describe('SearchFieldComponent', () => {
 
         expect(searchSpy).toHaveBeenCalledTimes(1);
         expect(searchSpy).toHaveBeenCalledWith('TestToken');
-        expect(selectionSpy).toHaveBeenCalledTimes(1);
-        expect(selectionSpy).toHaveBeenCalledWith(undefined);
+        expect(selectionSpy).toHaveBeenCalledTimes(0);
     });
 
     it('should set selected token if input is known token address', () => {
@@ -110,6 +109,28 @@ describe('SearchFieldComponent', () => {
         expect(searchSpy).toHaveBeenCalledTimes(1);
         expect(searchSpy).toHaveBeenCalledWith('');
         expect(selectionSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('should reset the token search value when another token is selected', () => {
+        mockInput(fixture.debugElement, 'input', token.address);
+        fixture.detectChanges();
+
+        selectedTokenService.setToken(createToken());
+        fixture.detectChanges();
+
+        const input = fixture.debugElement.query(By.css('input'));
+        expect(input.nativeElement.value).toBe('');
+    });
+
+    it('should not reset a non token search value when a token is selected', () => {
+        mockInput(fixture.debugElement, 'input', 'Payment partner');
+        fixture.detectChanges();
+
+        selectedTokenService.setToken(createToken());
+        fixture.detectChanges();
+
+        const input = fixture.debugElement.query(By.css('input'));
+        expect(input.nativeElement.value).toBe('Payment partner');
     });
 
     it('should show all autocomplete options with an empty input', () => {

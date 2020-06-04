@@ -1,8 +1,14 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ElementRef,
+    ViewChild,
+    OnDestroy,
+} from '@angular/core';
 import { SharedService } from '../../services/shared.service';
 import { AddressBookService } from '../../services/address-book.service';
-import { map } from 'rxjs/operators';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { UserToken } from '../../models/usertoken';
 import { Contact } from '../../models/contact';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -15,7 +21,7 @@ import { SelectedTokenService } from '../../services/selected-token.service';
     templateUrl: './search-field.component.html',
     styleUrls: ['./search-field.component.css'],
 })
-export class SearchFieldComponent implements OnInit {
+export class SearchFieldComponent implements OnInit, OnDestroy {
     @ViewChild('search_input', { static: true })
     private inputElement: ElementRef;
 
@@ -23,6 +29,7 @@ export class SearchFieldComponent implements OnInit {
     filteredContactOptions$: Observable<Contact[]>;
 
     private inputSubject: BehaviorSubject<string> = new BehaviorSubject('');
+    private ngUnsubscribe = new Subject();
 
     constructor(
         private sharedService: SharedService,
@@ -34,6 +41,25 @@ export class SearchFieldComponent implements OnInit {
 
     ngOnInit() {
         this.setupFiltering();
+
+        this.selectedTokenService.selectedToken$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((token) => {
+                const searchedToken = this.raidenService.getUserToken(
+                    this.inputElement.nativeElement.value
+                );
+                if (
+                    searchedToken &&
+                    token?.address !== this.inputElement.nativeElement.value
+                ) {
+                    this.resetInput();
+                }
+            });
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     tokenTrackByFn(token: UserToken) {
@@ -47,17 +73,16 @@ export class SearchFieldComponent implements OnInit {
     onInput(value: string) {
         this.inputSubject.next(value);
         const token = this.raidenService.getUserToken(value);
-        this.selectedTokenService.setToken(token);
         if (token) {
             this.sharedService.setSearchValue('');
+            this.selectedTokenService.setToken(token);
         } else {
             this.sharedService.setSearchValue(value);
         }
     }
 
-    resetInput() {
-        this.inputElement.nativeElement.value = '';
-        this.inputSubject.next('');
+    resetSearch() {
+        this.resetInput();
         this.sharedService.setSearchValue('');
         this.selectedTokenService.resetToken();
     }
@@ -82,5 +107,10 @@ export class SearchFieldComponent implements OnInit {
                 )
             )
         );
+    }
+
+    private resetInput() {
+        this.inputElement.nativeElement.value = '';
+        this.inputSubject.next('');
     }
 }
