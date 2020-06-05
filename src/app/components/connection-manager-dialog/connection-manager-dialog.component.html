@@ -10,6 +10,7 @@
         *ngIf="initiatedWithoutToken"
         formControlName="token"
         (tokenChanged)="tokenNetworkSelected($event)"
+        showOnChainBalance="true"
     >
     </app-token-network-selector>
     <app-token-input

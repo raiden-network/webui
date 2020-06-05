@@ -33,9 +33,9 @@
                 panelClass="network-selector__panel"
             >
                 <mat-select-trigger>
-                    <ng-container *ngIf="!selectedToken; else change_network"
-                        >Select Network</ng-container
-                    >
+                    <ng-container *ngIf="!selectedToken; else change_network">
+                        Select Network
+                    </ng-container>
                     <ng-template #change_network>Change Network</ng-template>
                 </mat-select-trigger>
                 <mat-option>
@@ -46,7 +46,14 @@
                     [value]="option"
                     class="token-option"
                 >
-                    <span>{{ option.symbol }}</span>
+                    <span>
+                        {{
+                            option.sumChannelBalances
+                                | decimal: option.decimals
+                                | displayDecimals: 3
+                        }}
+                        {{ option.symbol }}
+                    </span>
                     <span>{{ option.name }}</span>
                     <span>{{ option.address }}</span>
                 </mat-option>

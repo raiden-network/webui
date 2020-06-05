@@ -10,7 +10,6 @@ import { Observable } from 'rxjs';
 import { map, share } from 'rxjs/operators';
 import { UserToken } from '../../models/usertoken';
 import { RaidenService } from '../../services/raiden.service';
-import { TokenUtils } from '../../utils/token.utils';
 import { TokenPollingService } from '../../services/token-polling.service';
 
 @Component({
@@ -27,6 +26,7 @@ import { TokenPollingService } from '../../services/token-polling.service';
 })
 export class TokenNetworkSelectorComponent implements ControlValueAccessor {
     @Input() onlyConnectedTokens = false;
+    @Input() showOnChainBalance = false;
     @Output() tokenChanged = new EventEmitter<UserToken>();
 
     value: UserToken;
