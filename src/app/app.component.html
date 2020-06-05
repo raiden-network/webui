@@ -80,7 +80,12 @@
                 ngClass.lt-lg="toast-container--mobile"
                 toastContainer
             ></div>
-            <div class="page" fxLayout="column" fxLayoutGap="32px">
+            <div
+                *ngIf="apiStatus?.status === 'ready'"
+                class="page"
+                fxLayout="column"
+                fxLayoutGap="32px"
+            >
                 <div
                     *ngIf="showNetworkInfo"
                     class="network-info"
@@ -130,7 +135,7 @@
 </div>
 
 <div
-    *ngIf="apiStatus.status !== 'ready'"
+    *ngIf="apiStatus && apiStatus.status !== 'ready'"
     class="wrapper wrapper--black unavailable"
     fxLayout="column"
     fxLayoutAlign="center center"

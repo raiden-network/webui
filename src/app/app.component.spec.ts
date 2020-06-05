@@ -57,6 +57,9 @@ describe('AppComponent', () => {
     let networkSubject: BehaviorSubject<Network>;
     let notificationService: NotificationService;
     let dialog: MockMatDialog;
+    const channelsSubject = new BehaviorSubject([]);
+    const paymentHistorySubject = new BehaviorSubject([]);
+    const pendingTransfersSubject = new BehaviorSubject([]);
 
     beforeEach(async(() => {
         const raidenServiceMock = stub<RaidenService>();
@@ -77,15 +80,15 @@ describe('AppComponent', () => {
             PendingTransferPollingService
         >();
         // @ts-ignore
-        pendingTransferPollingMock.pendingTransfers$ = of([]);
+        pendingTransferPollingMock.pendingTransfers$ = pendingTransfersSubject.asObservable();
 
         const paymentHistoryPollingMock = stub<PaymentHistoryPollingService>();
         // @ts-ignore
-        paymentHistoryPollingMock.newPaymentEvents$ = of([]);
+        paymentHistoryPollingMock.newPaymentEvents$ = paymentHistorySubject.asObservable();
 
         const channelPollingMock = stub<ChannelPollingService>();
         // @ts-ignore
-        channelPollingMock.channels$ = of([]);
+        channelPollingMock.channels$ = channelsSubject.asObservable();
 
         const tokenPollingMock = stub<TokenPollingService>();
         // @ts-ignore
@@ -315,6 +318,28 @@ describe('AppComponent', () => {
         flush();
     }));
 
+    it('should not poll anything else than the status until the status is ready', fakeAsync(() => {
+        const raidenService = TestBed.inject(RaidenService);
+        const statusSpy = spyOn(raidenService, 'getStatus').and.returnValues(
+            of({ status: 'unavailable' }),
+            of({ status: 'ready' })
+        );
+        fixture.detectChanges();
+
+        expect(app.apiStatus).toEqual({ status: 'unavailable' });
+        expect(channelsSubject.observers.length).toBe(0);
+        expect(pendingTransfersSubject.observers.length).toBe(0);
+        expect(paymentHistorySubject.observers.length).toBe(0);
+        tick(500);
+        expect(app.apiStatus).toEqual({ status: 'ready' });
+        expect(channelsSubject.observers.length).toBeGreaterThan(0);
+        expect(pendingTransfersSubject.observers.length).toBeGreaterThan(0);
+        expect(paymentHistorySubject.observers.length).toBeGreaterThan(0);
+        tick(5000);
+        expect(statusSpy).toHaveBeenCalledTimes(2);
+        flush();
+    }));
+
     it('should show a progress bar if blocks are being synced', fakeAsync(() => {
         const raidenService = TestBed.inject(RaidenService);
         spyOn(raidenService, 'getStatus').and.returnValues(
@@ -347,7 +372,7 @@ describe('AppComponent', () => {
         progressBar = fixture.debugElement.query(By.css('.progress__bar'));
         expect(progressBar).toBeFalsy();
 
-        tick(4000);
+        tick(5000);
         flush();
     }));
 });

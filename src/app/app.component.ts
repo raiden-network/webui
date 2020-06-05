@@ -56,7 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     readonly network$: Observable<Network>;
     showNetworkInfo = false;
-    apiStatus: Status = { status: 'ready' };
+    apiStatus: Status;
     syncingProgress = 0;
     didShutdown = false;
 
@@ -92,13 +92,22 @@ export class AppComponent implements OnInit, OnDestroy {
                 switchMap(() => this.raidenService.getStatus()),
                 tap((status) => {
                     this.apiStatus = status;
-                    if (status.status === 'syncing') {
-                        if (this.initialBlocksToSync === undefined) {
-                            this.initialBlocksToSync = status.blocks_to_sync;
+                    switch (status.status) {
+                        case 'syncing': {
+                            if (this.initialBlocksToSync === undefined) {
+                                this.initialBlocksToSync =
+                                    status.blocks_to_sync;
+                            }
+                            this.syncingProgress =
+                                (this.initialBlocksToSync -
+                                    status.blocks_to_sync) /
+                                this.initialBlocksToSync;
+                            break;
                         }
-                        this.syncingProgress =
-                            (this.initialBlocksToSync - status.blocks_to_sync) /
-                            this.initialBlocksToSync;
+                        case 'ready': {
+                            this.startPolling();
+                            break;
+                        }
                     }
                 }),
                 takeUntil(this.ngUnsubscribe),
@@ -119,18 +128,6 @@ export class AppComponent implements OnInit, OnDestroy {
                 tap(() => this.hideNetworkInfo()),
                 takeUntil(this.ngUnsubscribe)
             )
-            .subscribe();
-
-        this.channelPollingService.channels$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe();
-
-        this.pendingTransferPollingService.pendingTransfers$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe();
-
-        this.paymentHistoryPollingService.newPaymentEvents$
-            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe();
 
         this.notificationService.connectionErrors$
@@ -187,6 +184,20 @@ export class AppComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 this.didShutdown = true;
             });
+    }
+
+    private startPolling() {
+        this.channelPollingService.channels$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe();
+
+        this.pendingTransferPollingService.pendingTransfers$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe();
+
+        this.paymentHistoryPollingService.newPaymentEvents$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe();
     }
 
     private handleConnectionErrors(errors: ConnectionErrors) {
