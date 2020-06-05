@@ -20,6 +20,8 @@ import {
     createChannel,
     createPaymentEvent,
     createToken,
+    createNetworkMock,
+    createAddress,
 } from '../../testing/test-data';
 import Spy = jasmine.Spy;
 import { Connection } from '../models/connection';
@@ -32,9 +34,10 @@ import { NotificationService } from './notification.service';
 import { PendingTransfer } from '../models/pending-transfer';
 import { ErrorHandlingInterceptor } from '../interceptors/error-handling.interceptor';
 import { PaymentEvent } from '../models/payment-event';
+import { MockConfig } from '../../testing/mock-config';
+import { TokenInfo } from '../models/usertoken';
 
 describe('RaidenService', () => {
-    const tokenAddress = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8';
     const token = createToken();
     const raidenAddress = '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C';
 
@@ -51,6 +54,7 @@ describe('RaidenService', () => {
         balance: new BigNumber(0),
         total_deposit: new BigNumber(10),
         total_withdraw: new BigNumber(10),
+        token_address: token.address,
     });
 
     const channel2: Channel = createChannel({
@@ -58,6 +62,7 @@ describe('RaidenService', () => {
         balance: new BigNumber(0),
         total_deposit: new BigNumber(10),
         total_withdraw: new BigNumber(10),
+        token_address: token.address,
     });
 
     const paymentEvent = createPaymentEvent('EventPaymentReceivedSuccess');
@@ -108,7 +113,9 @@ describe('RaidenService', () => {
             TestBed.inject(TokenInfoRetrieverService),
             'createBatch'
         );
-        spyOn(service, 'getUserToken').and.returnValue(token);
+        // @ts-ignore
+        service.userTokens[token.address] = token;
+        // spyOn(service, 'getUserToken').and.returnValue(token);
     });
 
     afterEach(inject(
@@ -140,7 +147,7 @@ describe('RaidenService', () => {
 
     it('should inform the user when token network creation was completed successfully', () => {
         service
-            .registerToken(tokenAddress)
+            .registerToken(token.address)
             .subscribe((value) => expect(value).toBeFalsy())
             .add(() => {
                 expect(
@@ -149,7 +156,7 @@ describe('RaidenService', () => {
             });
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/tokens/${tokenAddress}`,
+            url: `${endpoint}/tokens/${token.address}`,
             method: 'PUT',
         });
         expect(losslessParse(request.request.body)).toEqual({});
@@ -173,7 +180,7 @@ describe('RaidenService', () => {
 
     it('When token network creation fails there should be a nice message', () => {
         service
-            .registerToken(tokenAddress)
+            .registerToken(token.address)
             .subscribe(
                 () => {
                     fail('On next should not be called');
@@ -189,7 +196,7 @@ describe('RaidenService', () => {
             });
 
         const registerRequest = mockHttp.expectOne({
-            url: `${endpoint}/tokens/${tokenAddress}`,
+            url: `${endpoint}/tokens/${token.address}`,
             method: 'PUT',
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
@@ -213,7 +220,7 @@ describe('RaidenService', () => {
         const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
 
         service
-            .openChannel(tokenAddress, partnerAddress, 500, new BigNumber(10))
+            .openChannel(token.address, partnerAddress, 500, new BigNumber(10))
             .subscribe((channel: Channel) => expect(channel).toEqual(channel1))
             .add(() => {
                 expect(
@@ -227,7 +234,7 @@ describe('RaidenService', () => {
         });
 
         expect(losslessParse(openChannelRequest.request.body)).toEqual({
-            token_address: tokenAddress,
+            token_address: token.address,
             partner_address: partnerAddress,
             settle_timeout: new BigNumber(500),
             total_deposit: new BigNumber(10),
@@ -244,7 +251,7 @@ describe('RaidenService', () => {
         const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
 
         service
-            .openChannel(tokenAddress, partnerAddress, 500, new BigNumber(10))
+            .openChannel(token.address, partnerAddress, 500, new BigNumber(10))
             .subscribe(
                 () => {
                     fail('On next should not be called');
@@ -401,7 +408,7 @@ describe('RaidenService', () => {
 
         service
             .modifyDeposit(
-                '0xtkn',
+                token.address,
                 '0xpartn',
                 new BigNumber(100000000000),
                 DepositMode.DEPOSIT
@@ -426,7 +433,7 @@ describe('RaidenService', () => {
         tick();
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/channels/0xtkn/0xpartn`,
+            url: `${endpoint}/channels/${token.address}/0xpartn`,
             method: 'PATCH',
         });
 
@@ -464,7 +471,7 @@ describe('RaidenService', () => {
 
         service
             .modifyDeposit(
-                '0xtkn',
+                token.address,
                 '0xpartn',
                 new BigNumber(1000000000000),
                 DepositMode.WITHDRAW
@@ -489,7 +496,7 @@ describe('RaidenService', () => {
         tick();
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/channels/0xtkn/0xpartn`,
+            url: `${endpoint}/channels/${token.address}/0xpartn`,
             method: 'PATCH',
         });
 
@@ -527,7 +534,7 @@ describe('RaidenService', () => {
 
         service
             .modifyDeposit(
-                '0xtkn',
+                token.address,
                 '0xpartn',
                 new BigNumber(100000000000),
                 DepositMode.DEPOSIT
@@ -547,7 +554,7 @@ describe('RaidenService', () => {
             });
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/channels/0xtkn/0xpartn`,
+            url: `${endpoint}/channels/${token.address}/0xpartn`,
             method: 'PATCH',
         });
 
@@ -570,12 +577,13 @@ describe('RaidenService', () => {
             total_deposit: new BigNumber(10),
             balance: new BigNumber(1000000000000),
             total_withdraw: new BigNumber(1000000),
+            userToken: token,
         });
         spyOn(service, 'getChannel').and.returnValue(of(channel));
 
         service
             .modifyDeposit(
-                '0xtkn',
+                token.address,
                 '0xpartn',
                 new BigNumber(1000000000000),
                 DepositMode.WITHDRAW
@@ -595,7 +603,7 @@ describe('RaidenService', () => {
             });
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/channels/0xtkn/0xpartn`,
+            url: `${endpoint}/channels/${token.address}/0xpartn`,
             method: 'PATCH',
         });
 
@@ -684,7 +692,7 @@ describe('RaidenService', () => {
 
     it('should inform the user when quick connect was successful', fakeAsync(() => {
         service
-            .connectTokenNetwork(new BigNumber(1000), tokenAddress)
+            .connectTokenNetwork(new BigNumber(1000), token.address)
             .subscribe((value) => expect(value).toBeFalsy())
             .add(() => {
                 expect(
@@ -694,7 +702,7 @@ describe('RaidenService', () => {
         tick();
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/connections/${tokenAddress}`,
+            url: `${endpoint}/connections/${token.address}`,
             method: 'PUT',
         });
         expect(losslessParse(request.request.body)).toEqual({
@@ -718,7 +726,7 @@ describe('RaidenService', () => {
 
     it('should inform the user when quick connect was not successful', fakeAsync(() => {
         service
-            .connectTokenNetwork(new BigNumber(1000), tokenAddress)
+            .connectTokenNetwork(new BigNumber(1000), token.address)
             .subscribe(
                 () => {
                     fail('On next should not be called');
@@ -735,7 +743,7 @@ describe('RaidenService', () => {
         tick();
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/connections/${tokenAddress}`,
+            url: `${endpoint}/connections/${token.address}`,
             method: 'PUT',
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
@@ -834,7 +842,7 @@ describe('RaidenService', () => {
         const paymentIdentifier = new BigNumber(3);
         service
             .initiatePayment(
-                tokenAddress,
+                token.address,
                 targetAddress,
                 amount,
                 paymentIdentifier
@@ -843,7 +851,7 @@ describe('RaidenService', () => {
         tick(500);
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
+            url: `${endpoint}/payments/${token.address}/${targetAddress}`,
             method: 'POST',
         });
         expect(losslessParse(request.request.body)).toEqual({
@@ -872,12 +880,12 @@ describe('RaidenService', () => {
         const amount = new BigNumber(10);
         spyOnProperty(service, 'identifier', 'get').and.returnValue(50);
         service
-            .initiatePayment(tokenAddress, targetAddress, amount)
+            .initiatePayment(token.address, targetAddress, amount)
             .subscribe();
         tick(500);
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
+            url: `${endpoint}/payments/${token.address}/${targetAddress}`,
             method: 'POST',
         });
         expect(losslessParse(request.request.body)).toEqual({
@@ -893,7 +901,7 @@ describe('RaidenService', () => {
         const paymentIdentifier = new BigNumber(3);
         service
             .initiatePayment(
-                tokenAddress,
+                token.address,
                 targetAddress,
                 amount,
                 paymentIdentifier
@@ -909,7 +917,7 @@ describe('RaidenService', () => {
         tick(500);
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
+            url: `${endpoint}/payments/${token.address}/${targetAddress}`,
             method: 'POST',
         });
 
@@ -939,7 +947,7 @@ describe('RaidenService', () => {
         });
         service
             .initiatePayment(
-                tokenAddress,
+                token.address,
                 targetAddress,
                 amount,
                 paymentIdentifier
@@ -947,7 +955,7 @@ describe('RaidenService', () => {
             .subscribe((value) => expect(value).toBeFalsy());
 
         const request = mockHttp.expectOne({
-            url: `${endpoint}/payments/${tokenAddress}/${targetAddress}`,
+            url: `${endpoint}/payments/${token.address}/${targetAddress}`,
             method: 'POST',
         });
         expect(losslessParse(request.request.body)).toEqual({
@@ -1156,7 +1164,7 @@ describe('RaidenService', () => {
             payment_identifier: new BigNumber(1),
             role: 'initiator',
             target: '0x00AF5cBfc8dC76cd599aF623E60F763228906F3E',
-            token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
+            token_address: token.address,
             token_network_address: '0x111157460c0F41EfD9107239B7864c062aA8B978',
             transferred_amount: new BigNumber(331),
         };
@@ -1307,7 +1315,7 @@ describe('RaidenService', () => {
     it('should give the pending channels', fakeAsync(() => {
         const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
         service
-            .openChannel(tokenAddress, partnerAddress, 500, new BigNumber(10))
+            .openChannel(token.address, partnerAddress, 500, new BigNumber(10))
             .subscribe();
         const openChannelRequest = mockHttp.expectOne({
             url: `${endpoint}/channels`,
@@ -1326,7 +1334,7 @@ describe('RaidenService', () => {
                         balance: new BigNumber(0),
                         settle_timeout: 500,
                         reveal_timeout: 0,
-                        token_address: tokenAddress,
+                        token_address: token.address,
                         partner_address: partnerAddress,
                         depositPending: true,
                         userToken: token,
@@ -1349,7 +1357,7 @@ describe('RaidenService', () => {
 
     it('should query the payment history', () => {
         const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
-        service.getPaymentHistory(tokenAddress, partnerAddress).subscribe(
+        service.getPaymentHistory(token.address, partnerAddress).subscribe(
             (history: PaymentEvent[]) => {
                 expect(history).toEqual([paymentEvent]);
             },
@@ -1359,7 +1367,7 @@ describe('RaidenService', () => {
         );
 
         const getPendingTransfersRequest = mockHttp.expectOne({
-            url: `${endpoint}/payments/${tokenAddress}/${partnerAddress}`,
+            url: `${endpoint}/payments/${token.address}/${partnerAddress}`,
             method: 'GET',
         });
 
@@ -1442,5 +1450,20 @@ describe('RaidenService', () => {
             status: 'syncing',
             blocks_to_sync: 1000,
         });
+    });
+
+    it('should add the constant tokens to the userTokens on network change', () => {
+        const tokenInfo: TokenInfo = {
+            address: createAddress(),
+            name: 'TestToken',
+            symbol: 'TST',
+            decimals: 18,
+        };
+        const network = createNetworkMock({ tokenConstants: [tokenInfo] });
+        const raidenConfig = TestBed.inject(RaidenConfig) as MockConfig;
+        raidenConfig.updateNetwork(network);
+        expect(service.getUserToken(tokenInfo.address)).toEqual(
+            Object.assign({ balance: new BigNumber(0) }, tokenInfo)
+        );
     });
 });

@@ -84,7 +84,7 @@ export class RaidenService {
     > = this.reconnectedSubject.asObservable();
     public quickConnectPending: { [tokenAddress: string]: boolean } = {};
 
-    private userTokens: { [id: string]: UserToken | null } = {};
+    private userTokens: { [address: string]: UserToken | null } = {};
     private pendingChannels: PendingChannelsMap = {};
 
     constructor(
@@ -121,6 +121,18 @@ export class RaidenService {
         );
 
         this.network$ = this.raidenConfig.network$;
+
+        this.network$.subscribe((network) => {
+            this.userTokens = {};
+            if (network.tokenConstants) {
+                network.tokenConstants.forEach((tokenInfo) => {
+                    this.userTokens[tokenInfo.address] = Object.assign(
+                        { balance: new BigNumber(0) },
+                        tokenInfo
+                    );
+                });
+            }
+        });
     }
 
     public get production(): boolean {
