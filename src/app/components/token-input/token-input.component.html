@@ -26,7 +26,10 @@
 <div class="info-box" fxLayout="row" fxLayoutAlign="start center">
     <div fxFlex="1 0 226px">
         <div
-            *ngIf="errors && touched && input.value.length > 0; else hint_text"
+            *ngIf="
+                errors && touched && input.value.length > 0;
+                else low_transfer_amount
+            "
             [@fallDown]="'in'"
             id="errors"
             class="info-box__text info-box__text--error"
@@ -56,7 +59,31 @@
                 </span>
             </span>
         </div>
-        <ng-template #hint_text>
+        <ng-template #low_transfer_amount>
+            <div
+                *ngIf="
+                    showTransferLimit &&
+                        touched &&
+                        input.value.length > 0 &&
+                        isLessThanThreshold();
+                    else max_amount
+                "
+                class="info-box__text"
+                [@fallDown]="'in'"
+                id="threshold-hint"
+            >
+                Below recommended limit of {{ formattedThreshold() }}
+                {{ selectedToken.symbol }} for mediated transfers.
+                <a
+                    href="https://docs.raiden.network/using-raiden-on-mainnet/mediation-fees"
+                    target="_blank"
+                    class="info-link"
+                >
+                    More
+                </a>
+            </div>
+        </ng-template>
+        <ng-template #max_amount>
             <div *ngIf="maxAmount && selectedToken" class="info-box__text">
                 <span
                     *ngIf="maxAmount | decimal: selectedToken.decimals as max"

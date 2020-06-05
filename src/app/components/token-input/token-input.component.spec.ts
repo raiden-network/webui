@@ -167,4 +167,43 @@ describe('TokenInputComponent', () => {
         expect(component.amount.isEqualTo(7000000000000000)).toBe(true);
         expect(component.errors).toBeFalsy();
     });
+
+    it('should show a warning if amount is lower than token transfer threshold', () => {
+        component.selectedToken = createToken({
+            transferThreshold: new BigNumber(100),
+        });
+        component.showTransferLimit = true;
+        mockInput(fixture.debugElement, 'input', '0.00000000000000001');
+        fixture.detectChanges();
+        const hint = fixture.debugElement.query(By.css('#threshold-hint'));
+        expect(hint).toBeTruthy();
+    });
+
+    it('should not show a warning if amount is greater than token transfer threshold', () => {
+        component.selectedToken = createToken({
+            transferThreshold: new BigNumber(100),
+        });
+        component.showTransferLimit = true;
+        mockInput(fixture.debugElement, 'input', '0.0000000000001');
+        fixture.detectChanges();
+        const hint = fixture.debugElement.query(By.css('#threshold-hint'));
+        expect(hint).toBeFalsy();
+    });
+
+    it('should not show a low transfer amount warning if there is no threshold', () => {
+        component.showTransferLimit = true;
+        mockInput(fixture.debugElement, 'input', '0.00000000000000001');
+        fixture.detectChanges();
+        const hint = fixture.debugElement.query(By.css('#threshold-hint'));
+        expect(hint).toBeFalsy();
+    });
+
+    it('should not show a low transfer amount warning if no token selected', () => {
+        component.selectedToken = undefined;
+        component.showTransferLimit = true;
+        mockInput(fixture.debugElement, 'input', '0.00000000000000001');
+        fixture.detectChanges();
+        const hint = fixture.debugElement.query(By.css('#threshold-hint'));
+        expect(hint).toBeFalsy();
+    });
 });

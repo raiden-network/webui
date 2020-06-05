@@ -115,7 +115,6 @@ describe('RaidenService', () => {
         );
         // @ts-ignore
         service.userTokens[token.address] = token;
-        // spyOn(service, 'getUserToken').and.returnValue(token);
     });
 
     afterEach(inject(

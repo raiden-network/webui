@@ -44,6 +44,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     @Input() infoText = '';
     @Input() placeholder = 'Amount';
     @Input() onChainInput = false;
+    @Input() showTransferLimit = false;
     @ViewChild('input', { static: true }) private inputElement: ElementRef;
 
     amount: BigNumber;
@@ -113,6 +114,20 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         this.inputElement.nativeElement.value = max;
         this.onTouched();
         this.onChange();
+    }
+
+    isLessThanThreshold(): boolean {
+        return (
+            this.selectedToken?.transferThreshold &&
+            this.selectedToken.transferThreshold.isGreaterThan(this.amount)
+        );
+    }
+
+    formattedThreshold(): string {
+        return amountToDecimal(
+            this.selectedToken.transferThreshold,
+            this.decimals
+        ).toFixed();
     }
 
     private setAmount() {
