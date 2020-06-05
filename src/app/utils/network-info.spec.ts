@@ -1,4 +1,5 @@
 import { NetworkInfo } from './network-info';
+import { tokenConstants } from './token-constants';
 
 describe('NetworkInfo', () => {
     describe('getName', function () {
@@ -9,6 +10,7 @@ describe('NetworkInfo', () => {
                 chainId: 1,
                 ensSupported: true,
                 faucet: undefined,
+                tokenConstants: tokenConstants[1],
             });
         });
 

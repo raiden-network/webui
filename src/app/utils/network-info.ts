@@ -1,3 +1,6 @@
+import { tokenConstants } from './token-constants';
+import { TokenInfo } from '../models/usertoken';
+
 export class NetworkInfo {
     private static known: Network[] = [
         {
@@ -6,6 +9,7 @@ export class NetworkInfo {
             chainId: 1,
             ensSupported: true,
             faucet: undefined,
+            tokenConstants: tokenConstants[1],
         },
         {
             name: 'Ropsten',
@@ -61,4 +65,5 @@ export interface Network {
     readonly chainId: number;
     readonly ensSupported: boolean;
     readonly faucet?: string;
+    readonly tokenConstants?: TokenInfo[];
 }
