@@ -36,7 +36,10 @@ describe('ChannelPollingService', () => {
         name: 'Test Suite Token 2',
     });
     const channel1 = createChannel({ userToken: token });
-    const channel1Network2 = Object.assign({}, channel1, { userToken: token2 });
+    const channel1Network2 = Object.assign({}, channel1, {
+        userToken: token2,
+        token_address: token2.address,
+    });
     const channel1Updated = Object.assign({}, channel1, {
         balance: channel1.balance.plus(10),
     });
@@ -140,13 +143,13 @@ describe('ChannelPollingService', () => {
         flush();
     }));
 
-    it('should not show a notification for the same identifier on different network', fakeAsync(() => {
+    it('should show a notification for the same identifier on different network', fakeAsync(() => {
         raidenServiceSpy.and.returnValues(
-            from([[channel1, channel1Network2], [channel1Network2]])
+            from([[channel1], [channel1Network2]])
         );
         const subscription = pollingService.channels$.subscribe();
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
-            0
+            1
         );
         subscription.unsubscribe();
         flush();
@@ -181,4 +184,17 @@ describe('ChannelPollingService', () => {
         subscription.unsubscribe();
         flush();
     }));
+
+    it('should not show notifications when reconnected', () => {
+        raidenServiceSpy.and.returnValues(
+            of([channel1]),
+            of([channel1, channel2])
+        );
+        pollingService.channels$.subscribe();
+        raidenService.reconnectSuccessful();
+        expect(raidenServiceSpy).toHaveBeenCalledTimes(2);
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            0
+        );
+    });
 });

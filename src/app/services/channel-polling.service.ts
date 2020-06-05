@@ -34,6 +34,11 @@ export class ChannelPollingService {
         private raidenConfig: RaidenConfig,
         private addressBookService: AddressBookService
     ) {
+        this.raidenService.reconnected$.subscribe(() => {
+            this.loaded = false;
+            this.refresh();
+        });
+
         let timeout;
         const channels$ = this.channelsSubject.pipe(
             tap(() => {
@@ -103,7 +108,7 @@ export class ChannelPollingService {
         oldChannels: Channel[],
         newChannels: Channel[]
     ) {
-        if (oldChannels.length > 0) {
+        if (this.loaded) {
             const channels = newChannels.filter((newChannel) => {
                 return !oldChannels.find((oldChannel) =>
                     this.isTheSameChannel(oldChannel, newChannel)
@@ -111,14 +116,6 @@ export class ChannelPollingService {
             });
 
             for (const channel of channels) {
-                this.informAboutNewChannel(channel);
-            }
-        } else if (
-            this.loaded &&
-            oldChannels.length === 0 &&
-            newChannels.length > 0
-        ) {
-            for (const channel of newChannels) {
                 this.informAboutNewChannel(channel);
             }
         }
