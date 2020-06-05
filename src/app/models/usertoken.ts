@@ -6,6 +6,7 @@ export interface TokenInfo {
     symbol: string;
     name: string;
     decimals: number;
+    transferThreshold?: BigNumber;
 }
 
 export interface UserToken extends TokenInfo {

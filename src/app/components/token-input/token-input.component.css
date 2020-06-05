@@ -49,3 +49,12 @@
 .info-box__max-button:hover {
     color: #4aa7ab;
 }
+
+.info-link {
+    color: #2c8f94;
+    text-decoration: none;
+}
+
+.info-link:hover {
+    color: #4aa7ab;
+}
