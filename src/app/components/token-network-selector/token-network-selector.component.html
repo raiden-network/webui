@@ -5,12 +5,24 @@
     placeholder="Token Network"
     fxFlex="0 1 161px"
 >
+    <mat-select-trigger *ngIf="value">
+        {{ value.symbol }} {{ value.name }} {{ value.address }}
+    </mat-select-trigger>
     <mat-option
         *ngFor="let option of tokens$ | async; trackBy: trackByFn"
         [value]="option"
         class="token-option"
     >
-        <span>{{ option.symbol }}</span>
+        <span>
+            <ng-container *ngIf="showOnChainBalance">
+                {{
+                    option.balance
+                        | decimal: option.decimals
+                        | displayDecimals: 3
+                }}
+            </ng-container>
+            {{ option.symbol }}
+        </span>
         <span>{{ option.name }}</span>
         <span>{{ option.address }}</span>
     </mat-option>

@@ -67,21 +67,15 @@
                 fxFlex="7 0 0"
                 class="overview__item"
             >
-                <ng-container
-                    *ngIf="token.sumChannelBalances; else no_deposits"
+                <span
+                    *ngIf="
+                        token.sumChannelBalances
+                            | decimal: token.decimals as sumChannelBalances
+                    "
+                    [matTooltip]="sumChannelBalances"
                 >
-                    <span
-                        *ngIf="
-                            token.sumChannelBalances
-                                | decimal: token.decimals as sumChannelBalances
-                        "
-                        [matTooltip]="sumChannelBalances"
-                        >{{ sumChannelBalances | displayDecimals: 3 }}</span
-                    >
-                </ng-container>
-                <ng-template #no_deposits>
-                    0
-                </ng-template>
+                    {{ sumChannelBalances | displayDecimals: 3 }}
+                </span>
                 <span
                     matTooltip="{{ token.name }}
                 {{ token.address }}
@@ -141,7 +135,14 @@
                 [value]="option"
                 class="token-option"
             >
-                <span>{{ option.symbol }}</span>
+                <span>
+                    {{
+                        option.sumChannelBalances
+                            | decimal: option.decimals
+                            | displayDecimals: 3
+                    }}
+                    {{ option.symbol }}
+                </span>
                 <span>{{ option.name }}</span>
                 <span>{{ option.address }}</span>
             </mat-option>
@@ -190,22 +191,15 @@
 
     <div class="card__network" fxLayout="row">
         <div *ngIf="!isAllNetworksView; else all_networks">
-            <ng-container
-                *ngIf="selectedToken.sumChannelBalances; else no_deposits"
+            <span
+                *ngIf="
+                    selectedToken.sumChannelBalances
+                        | decimal: selectedToken.decimals as sumChannelBalances
+                "
+                [matTooltip]="sumChannelBalances"
             >
-                <span
-                    *ngIf="
-                        selectedToken.sumChannelBalances
-                            | decimal
-                                : selectedToken.decimals as sumChannelBalances
-                    "
-                    [matTooltip]="sumChannelBalances"
-                    >{{ sumChannelBalances | displayDecimals: 3 }}</span
-                >
-            </ng-container>
-            <ng-template #no_deposits>
-                0
-            </ng-template>
+                {{ sumChannelBalances | displayDecimals: 3 }}
+            </span>
             <span
                 matTooltip="{{ selectedToken.name }}
                     {{ selectedToken.address }}
