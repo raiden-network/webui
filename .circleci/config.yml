@@ -8,7 +8,7 @@ templates:
       ignore: /.*/
 
 
-var_1: &docker_image circleci/node:10.13.0-browsers
+var_1: &docker_image circleci/node:12.18.0-browsers
 var_2: &cache_key raiden-webui-{{ .Branch }}-{{ checksum "package-lock.json" }}
 
 anchor_1: &root_package_lock_key
