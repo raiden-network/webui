@@ -126,14 +126,6 @@
                     <ng-container
                         *ngIf="event.event !== 'EventPaymentSentFailed'"
                     >
-                        <ng-container
-                            *ngIf="isReceivedEvent(event); else minus"
-                        >
-                            +
-                        </ng-container>
-                        <ng-template #minus>
-                            -
-                        </ng-template>
                         <span
                             *ngIf="
                                 event.amount
@@ -141,6 +133,7 @@
                             "
                             [matTooltip]="amount"
                         >
+                            {{ isReceivedEvent(event) ? '+' : '-' }}
                             {{ amount | displayDecimals: 3 }}
                         </span>
                     </ng-container>
