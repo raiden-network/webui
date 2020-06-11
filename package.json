@@ -1,6 +1,6 @@
 {
   "name": "raiden-webui",
-  "version": "0.20.0-alpha5",
+  "version": "0.20.0-alpha6",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
