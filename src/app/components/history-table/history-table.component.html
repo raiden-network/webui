@@ -123,20 +123,20 @@
                     *ngIf="getUserToken(event) as userToken"
                     class="table__amount"
                 >
-                    <ng-container *ngIf="isReceivedEvent(event); else minus">
-                        +
-                    </ng-container>
-                    <ng-template #minus>
-                        -
-                    </ng-template>
-                    <span
-                        *ngIf="
-                            event.amount | decimal: userToken.decimals as amount
-                        "
-                        [matTooltip]="amount"
+                    <ng-container
+                        *ngIf="event.event !== 'EventPaymentSentFailed'"
                     >
-                        {{ amount | displayDecimals: 3 }}
-                    </span>
+                        <span
+                            *ngIf="
+                                event.amount
+                                    | decimal: userToken.decimals as amount
+                            "
+                            [matTooltip]="amount"
+                        >
+                            {{ isReceivedEvent(event) ? '+' : '-' }}
+                            {{ amount | displayDecimals: 3 }}
+                        </span>
+                    </ng-container>
                     <span
                         matTooltip="{{ userToken.name }}
                             {{ userToken.address }}
@@ -154,7 +154,23 @@
                         </div>
                     </ng-container>
                     <ng-template #confirmed>
-                        <div class="table__label">Confirmed</div>
+                        <div
+                            *ngIf="
+                                event.event !== 'EventPaymentSentFailed';
+                                else failed
+                            "
+                            class="table__label"
+                        >
+                            Confirmed
+                        </div>
+                    </ng-template>
+                    <ng-template #failed>
+                        <div
+                            class="table__label table__label--failed"
+                            [matTooltip]="event.reason"
+                        >
+                            Failed
+                        </div>
                     </ng-template>
                 </div>
             </cdk-cell>
