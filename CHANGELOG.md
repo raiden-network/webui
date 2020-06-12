@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [1.0.0] - 2020-06-12
 ### Changed
 - **Complete redesign of the UI**
 - [#189] Only shows one notification for a channel deposit.
@@ -140,7 +142,8 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/raiden-network/webui/compare/v0.11.0...v1.0.0
 [0.11.0]: https://github.com/raiden-network/webui/compare/v0.10.4...v0.11.0
 [0.10.4]: https://github.com/raiden-network/webui/compare/v0.10.3...v0.10.4
 [0.10.3]: https://github.com/raiden-network/webui/compare/v0.10.2...v0.10.3
