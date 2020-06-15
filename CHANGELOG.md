@@ -26,6 +26,10 @@
 - [#227] Removes non-decimal input for token amounts.
 - [#265] Possibility to add funds to the connection manager later.
 
+## [0.11.1] - 2020-05-26
+### Added
+- [#432] Warning for transfers of small amounts, which may fail when the transfer is mediated.
+
 ## [0.11.0] - 2019-12-20
 ### Changed
 - [#205] Dialogs can be submitted by pressing enter.
@@ -144,6 +148,7 @@ token network.
 
 [Unreleased]: https://github.com/raiden-network/webui/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/raiden-network/webui/compare/v0.11.0...v1.0.0
+[0.11.1]: https://github.com/raiden-network/webui/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/raiden-network/webui/compare/v0.10.4...v0.11.0
 [0.10.4]: https://github.com/raiden-network/webui/compare/v0.10.3...v0.10.4
 [0.10.3]: https://github.com/raiden-network/webui/compare/v0.10.2...v0.10.3
@@ -158,6 +163,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#432]: https://github.com/raiden-network/webui/issues/432
 [#389]: https://github.com/raiden-network/webui/issues/389
 [#341]: https://github.com/raiden-network/webui/issues/341
 [#339]: https://github.com/raiden-network/webui/issues/339
