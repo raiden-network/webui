@@ -3,11 +3,13 @@ import BigNumber from 'bignumber.js';
 import { amountToDecimal } from '../utils/amount.converter';
 
 @Pipe({
-    name: 'decimal'
+    name: 'decimal',
 })
 export class DecimalPipe implements PipeTransform {
     transform(value: BigNumber, decimals: number): string {
-        BigNumber.config({ DECIMAL_PLACES: decimals });
+        if (!value) {
+            return '0';
+        }
         const amount = amountToDecimal(value, decimals);
         return amount.toFixed();
     }

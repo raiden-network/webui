@@ -1,11 +1,11 @@
 <a
-    (click)="click()"
-    mat-list-item
+    mat-flat-button
+    class="entry"
     [routerLink]="route"
     routerLinkActive="active"
+    fxLayout="row"
+    fxLayoutAlign="start center"
 >
-    <div class="navigation-entry">
-        <mat-icon class="navigation-icon">{{ icon }}</mat-icon>
-        <div class="mat-small">{{ text }}</div>
-    </div>
+    <mat-icon class="entry__icon" [svgIcon]="icon"></mat-icon>
+    <span *ngIf="text">{{ text }}</span>
 </a>

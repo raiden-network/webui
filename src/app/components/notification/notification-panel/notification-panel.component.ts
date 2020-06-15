@@ -3,51 +3,46 @@ import {
     OnInit,
     OnDestroy,
     Output,
-    EventEmitter
+    EventEmitter,
 } from '@angular/core';
 import { NotificationService } from '../../../services/notification.service';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { NotificationMessage } from '../../../models/notification';
-import { PendingTransferPollingService } from '../../../services/pending-transfer-polling.service';
 import { Animations } from '../../../animations/animations';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-notification-panel',
     templateUrl: './notification-panel.component.html',
     styleUrls: ['./notification-panel.component.css'],
-    animations: Animations.flyInOut
+    animations: Animations.flyInOut,
 })
 export class NotificationPanelComponent implements OnInit, OnDestroy {
     @Output() close: EventEmitter<boolean> = new EventEmitter();
     public notifications: NotificationMessage[];
     public pendingActions: NotificationMessage[];
 
-    private subscription: Subscription;
+    private ngUnsubscribe = new Subject();
 
-    constructor(
-        private notificationService: NotificationService,
-        private pendingTransferPollingService: PendingTransferPollingService
-    ) {}
+    constructor(private notificationService: NotificationService) {}
 
     ngOnInit() {
-        this.subscription = this.notificationService.notifications$.subscribe(
-            (notifications: NotificationMessage[]) => {
+        this.notificationService.notifications$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((notifications: NotificationMessage[]) => {
                 this.notifications = notifications;
-            }
-        );
-        const pendingActionsSubscription = this.notificationService.pendingActions$.subscribe(
-            (pendingActions: NotificationMessage[]) => {
-                this.pendingActions = pendingActions;
-            }
-        );
-        const pendingTransfersSubscription = this.pendingTransferPollingService.pendingTransfers$.subscribe();
+            });
 
-        this.subscription.add(pendingActionsSubscription);
-        this.subscription.add(pendingTransfersSubscription);
+        this.notificationService.pendingActions$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((pendingActions: NotificationMessage[]) => {
+                this.pendingActions = pendingActions;
+            });
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     trackByFn(index, item: NotificationMessage) {

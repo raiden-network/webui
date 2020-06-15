@@ -6,13 +6,13 @@ import {
     HttpEvent,
     HttpResponse,
     HttpErrorResponse,
-    HttpResponseBase
+    HttpResponseBase,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import {
     losslessParse,
-    losslessStringify
+    losslessStringify,
 } from '../utils/lossless-json.converter';
 
 const XSSI_PREFIX = /^\)\]\}',?\n/;
@@ -28,17 +28,17 @@ export class LosslessJsonInterceptor implements HttpInterceptor {
         }
         req = req.clone({
             responseType: 'text',
-            body: losslessStringify(req.body)
+            body: losslessStringify(req.body),
         });
 
         return next.handle(req).pipe(
-            map(event => {
+            map((event) => {
                 if (event instanceof HttpResponse) {
                     return this.parseSuccessfulResponse(event);
                 }
                 return event;
             }),
-            catchError(error => {
+            catchError((error) => {
                 throw this.parseErrorResponse(error);
             })
         );
@@ -61,7 +61,7 @@ export class LosslessJsonInterceptor implements HttpInterceptor {
             headers: errorRes.headers,
             status: errorRes.status,
             statusText: errorRes.statusText,
-            url: errorRes.url || undefined
+            url: errorRes.url || undefined,
         });
     }
 
@@ -77,7 +77,7 @@ export class LosslessJsonInterceptor implements HttpInterceptor {
                     headers: res.headers,
                     status: res.status,
                     statusText: res.statusText,
-                    url: res.url || undefined
+                    url: res.url || undefined,
                 });
             }
         }

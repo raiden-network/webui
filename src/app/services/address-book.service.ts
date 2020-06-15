@@ -1,86 +1,104 @@
 import { Injectable } from '@angular/core';
-import { Address, Addresses } from '../models/address';
+import { Contact, Contacts } from '../models/contact';
 import { LocalStorageAdapter } from '../adapters/local-storage-adapter';
 import * as Utils from 'web3-utils';
-import { addressSchema } from '../models/address-schema';
+import { contactsSchema } from '../models/contacts-schema';
 import * as Ajv from 'ajv';
 import { ValidateFunction } from 'ajv';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class AddressBookService {
     private static ADDRESS_BOOK_KEY = 'raiden__address_book';
 
     private storage: Storage;
     private readonly schema: ValidateFunction;
+    private addressBookUpdateSubject = new BehaviorSubject<void>(null);
 
     constructor(localStorageAdapter: LocalStorageAdapter) {
         this.storage = localStorageAdapter.localStorage;
 
         const validator = new Ajv({ allErrors: true });
-        this.schema = validator.compile(addressSchema);
+        this.schema = validator.compile(contactsSchema);
     }
 
-    public save(address: Address) {
-        if (!Utils.isAddress(address.address)) {
-            throw Error(`${address.address} is not an ethereum address`);
-        }
-
-        if (!Utils.checkAddressChecksum(address.address)) {
-            throw Error(`${address.address} is not in checksum format`);
-        }
-
-        const addresses = this.get();
-        addresses[address.address] = address.label;
-        this.store(addresses);
+    getObservableArray(): Observable<Contact[]> {
+        return this.addressBookUpdateSubject.pipe(
+            map(() => {
+                const contacts = this.get();
+                return Object.keys(contacts).map((value) => {
+                    return {
+                        address: value,
+                        label: contacts[value],
+                    };
+                });
+            })
+        );
     }
 
-    public get(): Addresses {
-        const addresses: string = this.storage.getItem(
+    save(contact: Contact) {
+        if (!Utils.isAddress(contact.address)) {
+            throw Error(`${contact.address} is not an ethereum address`);
+        }
+
+        if (!Utils.checkAddressChecksum(contact.address)) {
+            throw Error(`${contact.address} is not in checksum format`);
+        }
+
+        const contacts = this.get();
+        contacts[contact.address] = contact.label;
+        this.store(contacts);
+    }
+
+    get(): Contacts {
+        const unparsedContacts: string = this.storage.getItem(
             AddressBookService.ADDRESS_BOOK_KEY
         );
-        let addressBook: Addresses;
+        let contacts: Contacts;
 
-        if (!addresses) {
-            addressBook = {};
+        if (!unparsedContacts) {
+            contacts = {};
         } else {
-            addressBook = JSON.parse(addresses);
+            contacts = JSON.parse(unparsedContacts);
         }
 
-        return addressBook;
+        return contacts;
     }
 
-    store(addresses: Addresses, merge: boolean = false) {
-        const isValid = this.schema(addresses);
+    store(contacts: Contacts, merge: boolean = false) {
+        const isValid = this.schema(contacts);
 
         if (!isValid) {
             throw Error(
-                this.schema.errors.map(value => value.message).join(', ')
+                this.schema.errors.map((value) => value.message).join(', ')
             );
         }
 
-        let data: Addresses;
+        let data: Contacts;
         if (merge) {
-            data = Object.assign(this.get(), addresses);
+            data = Object.assign(this.get(), contacts);
         } else {
-            data = addresses;
+            data = contacts;
         }
 
-        const addressesValue = JSON.stringify(data);
+        const stringifiedContacts = JSON.stringify(data);
         this.storage.setItem(
             AddressBookService.ADDRESS_BOOK_KEY,
-            addressesValue
+            stringifiedContacts
         );
+        this.addressBookUpdateSubject.next();
     }
 
-    public delete(address: Address) {
-        const addresses = this.get();
-        const numberOfKeys = Object.keys(addresses).length;
-        delete addresses[address.address];
+    delete(contact: Contact) {
+        const contacts = this.get();
+        const numberOfKeys = Object.keys(contacts).length;
+        delete contacts[contact.address];
 
-        if (numberOfKeys > Object.keys(addresses).length) {
-            this.store(addresses);
+        if (numberOfKeys > Object.keys(contacts).length) {
+            this.store(contacts);
         }
     }
 
@@ -93,16 +111,6 @@ export class AddressBookService {
         }
         const blob = new Blob([json], { type: 'application/json' });
         return URL.createObjectURL(blob);
-    }
-
-    getArray(): Array<Address> {
-        const addresses = this.get();
-        return Object.keys(addresses).map(value => {
-            return {
-                address: value,
-                label: addresses[value]
-            };
-        });
     }
 
     deleteAll() {

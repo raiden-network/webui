@@ -1,69 +1,91 @@
-<div
-    class="mat-typography match-parent-height"
-    fxLayout="column"
-    fxLayoutAlign="center"
-    fxFlex="50"
-    fxFlex.gt-lg="40"
-    fxFlex.sm="70"
-    fxFlex.xs="90"
-    fxFlexOffset="25"
-    fxFlexOffset.gt-lg="30"
-    fxFlexOffset.sm="15"
-    fxFlexOffset.xs="5"
->
-    <div class="about">
-        <h1 ngClass="mat-display-2" ngClass.xs="headline">
-            About this Software
-        </h1>
+<div class="container" fxLayout="column" fxLayoutGap="51px">
+    <h1 class="about">
+        About this Software
+    </h1>
 
-        <h2 class="mat-title" fxLayout="row" fxLayoutAlign="start center">
-            Versions
+    <div
+        class="section"
+        fxLayout="row"
+        fxLayoutAlign="space-between"
+        fxLayoutGap="0"
+        fxLayout.xs="column"
+        fxLayoutGap.xs="22px"
+    >
+        <div fxFlex="3 0 0" ngClass.gt-xs="section__box-offset">
+            <span class="section__descriptor">Versions</span>
             <button
                 mat-icon-button
                 ngxClipboard
                 [cbContent]="environmentInformation()"
                 matTooltip="Copy environment to clipboard"
             >
-                <mat-icon aria-label="Copy environment to clipboard">
-                    content_copy
+                <mat-icon
+                    class="section__icon"
+                    svgIcon="copy"
+                    aria-label="Copy environment to clipboard"
+                >
                 </mat-icon>
             </button>
-        </h2>
-        <ul>
-            <li>WebUI: {{ webuiVersion }}</li>
-            <li>Raiden client: {{ raidenVersion }}</li>
-        </ul>
+        </div>
+        <div fxFlex="8 0 0" fxLayout="column" fxLayoutGap="39px">
+            <div
+                class="section__box"
+                fxLayout="column"
+                fxLayoutAlign="space-between"
+            >
+                <span>WebUI</span>
+                <span class="section__version">{{ webuiVersion }}</span>
+            </div>
+            <div
+                class="section__box"
+                fxLayout="column"
+                fxLayoutAlign="space-between"
+            >
+                <span>Raiden client</span>
+                <span class="section__version">{{ raidenVersion }}</span>
+            </div>
+        </div>
+    </div>
 
-        <h2 class="mat-title">
+    <div
+        class="section"
+        fxLayout="row"
+        fxLayoutAlign="space-between"
+        fxLayoutGap="0"
+        fxLayout.xs="column"
+        fxLayoutGap.xs="22px"
+    >
+        <div fxFlex="3 0 0" class="section__descriptor">
             The MIT License (MIT)
-        </h2>
-
-        <p>Copyright (c) 2015-2019 Brainbot Labs Est.</p>
-
-        <p class="justify">
-            Permission is hereby granted, free of charge, to any person
-            obtaining a copy of this software and associated documentation files
-            (the "Software"), to deal in the Software without restriction,
-            including without limitation the rights to use, copy, modify, merge,
-            publish, distribute, sublicense, and/or sell copies of the Software,
-            and to permit persons to whom the Software is furnished to do so,
-            subject to the following conditions:
-        </p>
-
-        <p class="justify">
-            The above copyright notice and this permission notice shall be
-            included in all copies or substantial portions of the Software.
-        </p>
-
-        <p class="justify">
-            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-            EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-            MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-            NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-            BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-            ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-            SOFTWARE.
-        </p>
+        </div>
+        <div fxFlex="8 0 0" fxLayout="column" fxLayoutGap="52px">
+            <p class="section__text" id="copyright">
+                Copyright (c) 2015-{{ currentYear() }} Brainbot Labs Est.
+            </p>
+            <p class="section__text">
+                Permission is hereby granted, free of charge, to any person
+                obtaining a copy of this software and associated documentation
+                files (the "Software"), to deal in the Software without
+                restriction, including without limitation the rights to use,
+                copy, modify, merge, publish, distribute, sublicense, and/or
+                sell copies of the Software, and to permit persons to whom the
+                Software is furnished to do so, subject to the following
+                conditions:
+            </p>
+            <p class="section__text">
+                The above copyright notice and this permission notice shall be
+                included in all copies or substantial portions of the Software.
+            </p>
+            <p class="section__text section__text--small">
+                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+                EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+                OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+                NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+                HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+                WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+                FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+                OTHER DEALINGS IN THE SOFTWARE.
+            </p>
+        </div>
     </div>
 </div>

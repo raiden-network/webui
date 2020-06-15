@@ -1,49 +1,21 @@
-import { AbstractWeb3Module } from 'web3-core';
-import { AbstractMethod } from 'web3-core-method/types';
-import { isObject } from 'rxjs/internal-compatibility';
+import { Manager } from 'web3-core-requestmanager';
+import { provider } from 'web3-core';
+import { errors } from 'web3-core-helpers';
+import { Method } from 'web3-core-method';
 
 export interface BatchRequest {
-    readonly request: AbstractMethod;
+    readonly request: Method | any;
     readonly defaultValue?: any;
-}
-
-export class Validator {
-    static validate(response, payload?: object) {
-        if (isObject(response)) {
-            if (response.error) {
-                if (response.error instanceof Error) {
-                    return new Error(`Node error: ${response.error.message}`);
-                }
-
-                return new Error(
-                    `Node error: ${JSON.stringify(response.error)}`
-                );
-            }
-
-            if (payload && response.id !== payload['id']) {
-                return new Error(
-                    `Validation error: Invalid JSON-RPC response ID (request: ${
-                        payload['id']
-                    } / response: ${response.id})`
-                );
-            }
-
-            if (response.result === undefined) {
-                return new Error('Validation error: Undefined JSON-RPC result');
-            }
-
-            return true;
-        }
-
-        return new Error('Validation error: Response should be of type Object');
-    }
 }
 
 export class BatchManager {
     private static BATCH_LIMIT = 800;
     private requests: Array<BatchRequest> = [];
+    private requestManager: Manager;
 
-    constructor(private moduleInstance: AbstractWeb3Module) {}
+    constructor(web3Provider: provider) {
+        this.requestManager = new Manager(web3Provider);
+    }
 
     private static defaultOrThrow(defaultValue: any, error: Error): any {
         if (defaultValue === undefined) {
@@ -75,21 +47,21 @@ export class BatchManager {
 
         for (let i = 0; i < batches.length; i++) {
             const batch = batches[i];
-            const rpcRequests = batch.map(value => value.request);
+            const rpcRequests = batch.map((value) => value.request);
             const batchResponses = (await this.sendBatch(rpcRequests)) || [];
 
             const allResponses = batch.map((request, index) => {
                 return batchResponses[index] || {};
             });
 
-            const processedResults = [];
+            const processedResponses = [];
             for (let index = 0; index < allResponses.length; index++) {
-                processedResults[index] = this.processResult(
+                processedResponses[index] = this.processResponse(
                     allResponses[index],
                     batch[index]
                 );
             }
-            results.push(...processedResults);
+            results.push(...processedResponses);
         }
         this.requests = [];
 
@@ -101,43 +73,62 @@ export class BatchManager {
     }
 
     // noinspection JSMethodCanBeStatic
-    private processResult(
+    private processResponse(
         responseItem: any,
         currentRequest: BatchRequest
     ): Object {
         let resultValue: Object;
         const defaultValue = currentRequest.defaultValue;
-        const validationResult = Validator.validate(responseItem);
 
-        if (validationResult) {
+        if (responseItem && responseItem.error) {
+            resultValue = BatchManager.defaultOrThrow(
+                defaultValue,
+                errors.ErrorResponse(responseItem)
+            );
+        } else if (!this.isValidResponse(responseItem)) {
+            resultValue = BatchManager.defaultOrThrow(
+                defaultValue,
+                errors.ErrorResponse(responseItem)
+            );
+        } else {
             try {
-                const method = currentRequest.request;
-                const mappedValue = method.afterExecution(responseItem.result);
-                if (mappedValue) {
-                    resultValue = mappedValue;
-                } else {
-                    resultValue = BatchManager.defaultOrThrow(
-                        defaultValue,
-                        new Error('missing value')
-                    );
-                }
+                // @ts-ignore
+                const format = currentRequest.request.format;
+                resultValue = format
+                    ? format(responseItem.result)
+                    : responseItem.result;
             } catch (e) {
                 resultValue = BatchManager.defaultOrThrow(defaultValue, e);
             }
-        } else {
-            resultValue = BatchManager.defaultOrThrow(
-                defaultValue,
-                new Error(`Validation failed`)
-            );
         }
 
         return resultValue;
     }
 
-    private sendBatch(rpcRequests: any): Promise<object[]> {
-        return this.moduleInstance.currentProvider.sendBatch(
-            rpcRequests,
-            this.moduleInstance
+    private sendBatch(rpcRequests: any): Promise<Array<any>> {
+        return new Promise<Array<any>>((resolve, reject) => {
+            this.requestManager.sendBatch(
+                rpcRequests,
+                (err: any, results: Array<any>) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+        });
+    }
+
+    private isValidResponse(response: any) {
+        return (
+            !!response &&
+            !Array.isArray(response) &&
+            !response.error &&
+            response.jsonrpc === '2.0' &&
+            (typeof response.id === 'number' ||
+                typeof response.id === 'string') &&
+            response.result !== undefined
         );
     }
 }

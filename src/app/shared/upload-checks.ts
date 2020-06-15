@@ -26,7 +26,7 @@ export class UploadChecks {
 
         if (file.size > UploadChecks.MAX_UPLOAD_SIZE) {
             throw new UploadCheckError({
-                exceedsUploadLimit: UploadChecks.MAX_UPLOAD_SIZE
+                exceedsUploadLimit: UploadChecks.MAX_UPLOAD_SIZE,
             });
         }
 

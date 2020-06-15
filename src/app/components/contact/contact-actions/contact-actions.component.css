@@ -1,0 +1,10 @@
+:host {
+    width: 100%;
+    max-width: 200px;
+}
+
+.actions__button {
+    height: 38px;
+    padding: 0 8px !important;
+    overflow: hidden;
+}

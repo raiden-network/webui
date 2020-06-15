@@ -2,6 +2,30 @@
 
 ## [Unreleased]
 
+## [1.0.0] - 2020-06-12
+### Changed
+- **Complete redesign of the UI**
+- [#189] Only shows one notification for a channel deposit.
+- [#244] Transfer button asks for quick connect if user has no channels.
+
+### Added
+- [#6] View for the transfer history and history per token.
+- [#239] Adds a QR code overlay for the user address.
+- [#238] Search functionality for filtering tokens, channels, contacts and transfer history.
+- [#270] Add a contact for a new address from the transfer and open channel dialogs.
+- [#186] Shows the available tokens in the deposit/withdraw, open channel and quick connect dialogs.
+- [#297] ENS support on Goerli test network.
+- [#389] Shut down Raiden node button.
+- [#341] API not ready yet view with a progress bar for the blocks to sync.
+
+### Fixed
+- [#138] Fixes the decimals of token amount inputs to not get cut off on Firefox.
+- [#339] Disallows negative token amounts in dialogs.
+
+### Removed
+- [#227] Removes non-decimal input for token amounts.
+- [#265] Possibility to add funds to the connection manager later.
+
 ## [0.11.1] - 2020-05-26
 ### Added
 - [#432] Warning for transfers of small amounts, which may fail when the transfer is mediated.
@@ -122,7 +146,8 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v0.11.1...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/raiden-network/webui/compare/v0.11.0...v1.0.0
 [0.11.1]: https://github.com/raiden-network/webui/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/raiden-network/webui/compare/v0.10.4...v0.11.0
 [0.10.4]: https://github.com/raiden-network/webui/compare/v0.10.3...v0.10.4
@@ -139,6 +164,16 @@ token network.
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
 [#432]: https://github.com/raiden-network/webui/issues/432
+[#389]: https://github.com/raiden-network/webui/issues/389
+[#341]: https://github.com/raiden-network/webui/issues/341
+[#339]: https://github.com/raiden-network/webui/issues/339
+[#297]: https://github.com/raiden-network/webui/issues/297
+[#270]: https://github.com/raiden-network/webui/issues/270
+[#265]: https://github.com/raiden-network/webui/issues/265
+[#244]: https://github.com/raiden-network/webui/issues/244
+[#239]: https://github.com/raiden-network/webui/issues/239
+[#238]: https://github.com/raiden-network/webui/issues/238
+[#227]: https://github.com/raiden-network/webui/issues/227
 [#218]: https://github.com/raiden-network/webui/issues/218
 [#212]: https://github.com/raiden-network/webui/issues/212
 [#208]: https://github.com/raiden-network/webui/issues/208
@@ -148,6 +183,8 @@ token network.
 [#196]: https://github.com/raiden-network/webui/issues/196
 [#194]: https://github.com/raiden-network/webui/issues/194
 [#190]: https://github.com/raiden-network/webui/issues/190
+[#189]: https://github.com/raiden-network/webui/issues/189
+[#186]: https://github.com/raiden-network/webui/issues/186
 [#184]: https://github.com/raiden-network/webui/issues/184
 [#181]: https://github.com/raiden-network/webui/issues/181
 [#179]: https://github.com/raiden-network/webui/issues/179
@@ -159,9 +196,12 @@ token network.
 [#156]: https://github.com/raiden-network/webui/issues/156
 [#146]: https://github.com/raiden-network/webui/issues/146
 [#144]: https://github.com/raiden-network/webui/issues/144
+[#143]: https://github.com/raiden-network/webui/issues/143
+[#142]: https://github.com/raiden-network/webui/issues/142
 [#141]: https://github.com/raiden-network/webui/issues/141
 [#140]: https://github.com/raiden-network/webui/issues/140
 [#139]: https://github.com/raiden-network/webui/issues/139
+[#138]: https://github.com/raiden-network/webui/issues/138
 [#133]: https://github.com/raiden-network/webui/issues/133
 [#131]: https://github.com/raiden-network/webui/issues/131
 [#129]: https://github.com/raiden-network/webui/issues/129
@@ -201,4 +241,5 @@ token network.
 [#11]: https://github.com/raiden-network/webui/issues/11
 [#9]: https://github.com/raiden-network/webui/issues/9
 [#8]: https://github.com/raiden-network/webui/issues/8
+[#6]: https://github.com/raiden-network/webui/issues/6
 [#5]: https://github.com/raiden-network/webui/issues/5

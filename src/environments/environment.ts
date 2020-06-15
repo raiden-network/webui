@@ -5,5 +5,5 @@
 
 export const environment = {
     production: false,
-    configFile: 'assets/config/config.development.json'
+    configFile: 'assets/config/config.development.json',
 };

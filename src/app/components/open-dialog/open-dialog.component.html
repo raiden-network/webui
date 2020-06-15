@@ -1,51 +1,58 @@
-<h1 mat-dialog-title>Open Channel</h1>
-<div mat-dialog-content [formGroup]="form" (keyup.enter)="accept()">
-    <app-address-input
-        formControlName="address"
-        placeholder="Target address"
-        errorPlaceholder="Target"
-        [userAccount]="true"
-        [displayIdenticon]="true"
-    >
-    </app-address-input>
-
+<app-raiden-dialog
+    titleText="Open Channel"
+    acceptText="Open"
+    [acceptDisabled]="form.invalid"
+    [formGroup]="form"
+    (accept)="accept()"
+    (cancel)="cancel()"
+>
     <app-token-network-selector
-        (valueChanged)="tokenNetworkSelected($event)"
         formControlName="token"
+        (tokenChanged)="tokenNetworkSelected($event)"
+        showOnChainBalance="true"
     >
     </app-token-network-selector>
-
+    <app-address-input
+        [displayIdenticon]="true"
+        [userAccount]="true"
+        formControlName="address"
+        placeholder="Partner"
+    >
+    </app-address-input>
     <app-token-input
-        [allowZero]="true"
-        [placeholder]="'Balance'"
-        [errorPlaceholder]="'channel balance'"
         formControlName="amount"
+        [allowZero]="true"
+        onChainInput="true"
     >
     </app-token-input>
-
-    <mat-form-field class="full-width-form-field" [hideRequiredMarker]="true">
-        <input
-            matInput
-            type="number"
-            placeholder="Settle Timeout"
-            formControlName="settle_timeout"
-            required
-            [min]="this.data.revealTimeout * 2"
-        />
-        <mat-error *ngIf="form.get('settle_timeout').invalid">
-            <span *ngIf="form.get('settle_timeout').hasError('invalidAmount')">
-                The settle timeout has to be a number greater than zero
+    <div>
+        <div class="timeout-input" fxLayout="row">
+            <input
+                placeholder="Settle timeout"
+                aria-label="Settle timeout input"
+                formControlName="settle_timeout"
+                class="timeout-input__field"
+                type="number"
+                [min]="revealTimeout * 2"
+                matTooltip="The number of blocks after which a channel can be settled"
+            />
+        </div>
+        <div class="error" fxLayout="column" fxLayoutAlign="center">
+            <span
+                *ngIf="form.get('settle_timeout').invalid"
+                [@fallDown]="'in'"
+                id="timeout-error"
+            >
+                <span
+                    *ngIf="form.get('settle_timeout').hasError('invalidAmount')"
+                >
+                    The settle timeout is not a valid number
+                </span>
+                <span *ngIf="form.get('settle_timeout').hasError('min')">
+                    Reveal timeout is {{ revealTimeout }}, settle timeout should
+                    be at least {{ revealTimeout * 2 }}
+                </span>
             </span>
-            <span *ngIf="form.get('settle_timeout').hasError('min')">
-                Reveal timeout is {{ this.data.revealTimeout }}, settle timeout
-                should be at least {{ this.data.revealTimeout * 2 }}
-            </span>
-        </mat-error>
-    </mat-form-field>
-</div>
-<div mat-dialog-actions>
-    <button mat-button mat-dialog-close>Close</button>
-    <button mat-button [disabled]="form.invalid" (click)="accept()">
-        Open Channel
-    </button>
-</div>
+        </div>
+    </div>
+</app-raiden-dialog>

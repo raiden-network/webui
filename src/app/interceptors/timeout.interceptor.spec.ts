@@ -1,7 +1,7 @@
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import {
     HttpClientTestingModule,
-    HttpTestingController
+    HttpTestingController,
 } from '@angular/common/http/testing';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -32,14 +32,14 @@ describe('TimeoutInterceptor', () => {
                     provide: HTTP_INTERCEPTORS,
                     useClass: TimeoutInterceptor,
                     deps: [RaidenConfig],
-                    multi: true
+                    multi: true,
                 },
-                TestProviders.MockRaidenConfigProvider()
-            ]
+                TestProviders.MockRaidenConfigProvider(),
+            ],
         });
 
-        service = TestBed.get(MockRequestingService);
-        httpMock = TestBed.get(HttpTestingController);
+        service = TestBed.inject(MockRequestingService);
+        httpMock = TestBed.inject(HttpTestingController);
     });
 
     it('should throw an error if a timeout occurs', fakeAsync(() => {
@@ -47,7 +47,7 @@ describe('TimeoutInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error was expected');
             }
         );
@@ -55,7 +55,7 @@ describe('TimeoutInterceptor', () => {
 
         httpMock.expectOne({
             url: 'someurl.com/data',
-            method: 'GET'
+            method: 'GET',
         });
 
         flush();

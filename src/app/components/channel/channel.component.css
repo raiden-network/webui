@@ -1,0 +1,68 @@
+.card {
+    height: 116px;
+    border-radius: 15px;
+    background-color: #232323;
+    padding: 17px;
+}
+
+.card--transparent {
+    background: none;
+    border: 1px solid #232323;
+    color: #c4c4c4;
+}
+
+.card__top {
+    width: 100%;
+    position: relative;
+}
+
+.options-button {
+    position: absolute;
+    right: 0;
+    top: -8px;
+}
+
+.options__divider {
+    height: 1px;
+    width: 84%;
+    margin: 0 auto;
+    background-color: #000000;
+    opacity: 0.17;
+}
+
+.icon-box {
+    width: 35px;
+    height: 35px;
+}
+
+.icon-box__identicon {
+    border-radius: 50%;
+    height: 100%;
+}
+
+.info__state {
+    font-size: 9px;
+    line-height: 11px;
+    text-transform: uppercase;
+    color: #ff5c00;
+}
+
+.info__balance {
+    font-size: 15px;
+    line-height: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.label {
+    text-transform: uppercase;
+    border-radius: 9px;
+    padding: 0 12px;
+    font-size: 10px;
+    line-height: 18px;
+    letter-spacing: 0.5px;
+    text-align: center;
+    background-color: rgba(253, 211, 39, 0.3);
+    color: #fdd327;
+}

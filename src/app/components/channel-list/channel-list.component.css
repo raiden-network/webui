@@ -1,0 +1,64 @@
+:host {
+    height: 100%;
+}
+
+.wrapper {
+    height: 100%;
+}
+
+.label {
+    font-size: 12px;
+    letter-spacing: 1px;
+    line-height: 24px;
+    text-transform: uppercase;
+    opacity: 0.75;
+}
+
+.list {
+    background-color: #121212;
+    border-radius: 15px;
+    width: 100%;
+    padding: 22px 0 0 22px;
+    overflow: hidden;
+}
+
+.channels {
+    overflow-y: scroll;
+    position: relative;
+    margin-right: 22px;
+    margin-bottom: 22px;
+    min-height: 259px;
+}
+
+.channels__items {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-right: 22px;
+}
+
+.action {
+    padding: 0 20px !important;
+    background-color: #232323;
+}
+
+.action__icon {
+    height: 20px;
+    line-height: 20px;
+    margin-right: 7px;
+}
+
+.network-selector {
+    background: none;
+    width: 115px;
+    height: 19px;
+    letter-spacing: 0;
+    padding: 0;
+    border-radius: 0;
+    border-bottom: 1px solid #ffffff;
+    color: #ffffff;
+    margin-right: 22px;
+}

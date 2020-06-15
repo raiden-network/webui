@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { Contract } from 'web3-eth-contract';
 import { UserToken } from '../models/usertoken';
 import { RaidenConfig } from './raiden.config';
-import { tokenabi } from './tokenabi';
+import { tokenabi } from '../models/tokenabi';
 import Web3 from 'web3';
 import { BatchManager } from './batch-manager';
 import BigNumber from 'bignumber.js';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class TokenInfoRetrieverService {
     private readonly web3: Web3;
@@ -27,7 +27,7 @@ export class TokenInfoRetrieverService {
             name: '',
             symbol: '',
             decimals: 18,
-            balance: new BigNumber(0)
+            balance: new BigNumber(0),
         };
     }
 
@@ -50,16 +50,16 @@ export class TokenInfoRetrieverService {
         ) {
             const index = batchManager.add({
                 request: methods[nameProperty]().call.request(),
-                defaultValue: defaultValue
+                defaultValue: defaultValue,
             });
 
             map[index - 1] = {
                 method: nameProperty,
-                address: tokenAddress
+                address: tokenAddress,
             };
         }
 
-        tokenAddresses.forEach(tokenAddress => {
+        tokenAddresses.forEach((tokenAddress) => {
             const contract = this.tokenContract;
             contract.options.address = tokenAddress;
 
@@ -74,12 +74,12 @@ export class TokenInfoRetrieverService {
             const request = methods.balanceOf(raidenAddress).call.request();
 
             const balanceIndex = this.batchManager.add({
-                request: request
+                request: request,
             });
 
             map[balanceIndex - 1] = {
                 method: 'balanceOf',
-                address: tokenAddress
+                address: tokenAddress,
             };
         });
 

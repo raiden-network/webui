@@ -2,7 +2,7 @@ import { inject, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
 import { ToastrService, ToastrModule } from 'ngx-toastr';
 
 import { NotificationService } from './notification.service';
-import { UiMessage } from '../models/notification';
+import { UiMessage, NotificationMessage } from '../models/notification';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('NotificationService', () => {
@@ -10,11 +10,13 @@ describe('NotificationService', () => {
 
     const testMessage: UiMessage = {
         title: 'Testing',
-        description: 'Currently testing the application.'
+        description: 'Currently testing the application.',
+        icon: '',
     };
     const testMessage2: UiMessage = {
         title: 'Further testing',
-        description: 'Still testing the application.'
+        description: 'Still testing the application.',
+        icon: '',
     };
 
     beforeEach(() => {
@@ -22,13 +24,13 @@ describe('NotificationService', () => {
             providers: [NotificationService],
             imports: [
                 ToastrModule.forRoot({ timeOut: 50, easeTime: 0 }),
-                NoopAnimationsModule
-            ]
+                NoopAnimationsModule,
+            ],
         });
     });
 
     beforeEach(() => {
-        toastrService = TestBed.get(ToastrService);
+        toastrService = TestBed.inject(ToastrService);
     });
 
     it('should be created', inject(
@@ -42,19 +44,13 @@ describe('NotificationService', () => {
         [NotificationService],
         fakeAsync((service: NotificationService) => {
             const toastrSpy = spyOn(toastrService, 'success').and.callThrough();
-            let newNotificationEmitted = false;
-            service.newNotification$.subscribe(() => {
-                newNotificationEmitted = true;
-            });
-
             service.addSuccessNotification(testMessage);
-            tick(50);
 
-            const expectedNotification = Object.assign(
-                { identifier: 0 },
+            const expectedNotification: NotificationMessage = Object.assign(
+                { identifier: 0, timestamp: new Date().toISOString() },
                 testMessage
             );
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([expectedNotification])
             );
             expect(toastrSpy).toHaveBeenCalledTimes(1);
@@ -62,7 +58,6 @@ describe('NotificationService', () => {
                 testMessage.description,
                 testMessage.title
             );
-            expect(newNotificationEmitted).toBe(true);
             flush();
         })
     ));
@@ -71,19 +66,13 @@ describe('NotificationService', () => {
         [NotificationService],
         fakeAsync((service: NotificationService) => {
             const toastrSpy = spyOn(toastrService, 'info').and.callThrough();
-            let newNotificationEmitted = false;
-            service.newNotification$.subscribe(() => {
-                newNotificationEmitted = true;
-            });
-
             service.addInfoNotification(testMessage);
-            tick(50);
 
-            const expectedNotification = Object.assign(
-                { identifier: 0 },
+            const expectedNotification: NotificationMessage = Object.assign(
+                { identifier: 0, timestamp: new Date().toISOString() },
                 testMessage
             );
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([expectedNotification])
             );
             expect(toastrSpy).toHaveBeenCalledTimes(1);
@@ -91,7 +80,6 @@ describe('NotificationService', () => {
                 testMessage.description,
                 testMessage.title
             );
-            expect(newNotificationEmitted).toBe(true);
             flush();
         })
     ));
@@ -100,19 +88,13 @@ describe('NotificationService', () => {
         [NotificationService],
         fakeAsync((service: NotificationService) => {
             const toastrSpy = spyOn(toastrService, 'error').and.callThrough();
-            let newNotificationEmitted = false;
-            service.newNotification$.subscribe(() => {
-                newNotificationEmitted = true;
-            });
-
             service.addErrorNotification(testMessage);
-            tick(50);
 
-            const expectedNotification = Object.assign(
-                { identifier: 0 },
+            const expectedNotification: NotificationMessage = Object.assign(
+                { identifier: 0, timestamp: new Date().toISOString() },
                 testMessage
             );
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([expectedNotification])
             );
             expect(toastrSpy).toHaveBeenCalledTimes(1);
@@ -120,23 +102,21 @@ describe('NotificationService', () => {
                 testMessage.description,
                 testMessage.title
             );
-            expect(newNotificationEmitted).toBe(true);
             flush();
         })
     ));
 
     it('should be able to add and retrieve a pending action', inject(
         [NotificationService],
-        (service: NotificationService) => {
+        fakeAsync((service: NotificationService) => {
             const toastrSpy = spyOn(toastrService, 'info').and.callThrough();
-
             service.addPendingAction(testMessage2);
 
-            const expectedPendingAction = Object.assign(
-                { identifier: 0 },
+            const expectedPendingAction: NotificationMessage = Object.assign(
+                { identifier: 0, timestamp: new Date().toISOString() },
                 testMessage2
             );
-            service.pendingActions$.subscribe(pendingActions =>
+            service.pendingActions$.subscribe((pendingActions) =>
                 expect(pendingActions).toEqual([expectedPendingAction])
             );
             expect(toastrSpy).toHaveBeenCalledTimes(1);
@@ -144,73 +124,80 @@ describe('NotificationService', () => {
                 testMessage2.description,
                 testMessage2.title
             );
-        }
+            flush();
+        })
     ));
 
     it('should correctly increase the identifier for new notifications and pending actions', inject(
         [NotificationService],
-        (service: NotificationService) => {
+        fakeAsync((service: NotificationService) => {
             service.addSuccessNotification(testMessage);
             service.addInfoNotification(testMessage2);
 
-            const notification1 = Object.assign({ identifier: 0 }, testMessage);
-            const notification2 = Object.assign(
-                { identifier: 1 },
+            const notification1: NotificationMessage = Object.assign(
+                { identifier: 0, timestamp: new Date().toISOString() },
+                testMessage
+            );
+            const notification2: NotificationMessage = Object.assign(
+                { identifier: 1, timestamp: new Date().toISOString() },
                 testMessage2
             );
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([notification2, notification1])
             );
 
             service.addPendingAction(testMessage);
             service.addPendingAction(testMessage2);
 
-            const pendingAction1 = Object.assign(
-                { identifier: 2 },
+            const pendingAction1: NotificationMessage = Object.assign(
+                { identifier: 2, timestamp: new Date().toISOString() },
                 testMessage
             );
-            const pendingAction2 = Object.assign(
-                { identifier: 3 },
+            const pendingAction2: NotificationMessage = Object.assign(
+                { identifier: 3, timestamp: new Date().toISOString() },
                 testMessage2
             );
-            service.pendingActions$.subscribe(pendingActions =>
+            service.pendingActions$.subscribe((pendingActions) =>
                 expect(pendingActions).toEqual([pendingAction2, pendingAction1])
             );
-        }
+            flush();
+        })
     ));
 
     it('should be able to remove a notification', inject(
         [NotificationService],
-        (service: NotificationService) => {
+        fakeAsync((service: NotificationService) => {
             service.addSuccessNotification(testMessage);
             service.addErrorNotification(testMessage2);
             service.removeNotification(1);
 
-            const expectedNotification = Object.assign(
-                { identifier: 0 },
+            const expectedNotification: NotificationMessage = Object.assign(
+                { identifier: 0, timestamp: new Date().toISOString() },
                 testMessage
             );
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([expectedNotification])
             );
-        }
+            flush();
+        })
     ));
 
     it('should be able to remove a pending action', inject(
         [NotificationService],
-        (service: NotificationService) => {
+        fakeAsync((service: NotificationService) => {
             service.addPendingAction(testMessage);
             service.addPendingAction(testMessage2);
             service.removePendingAction(0);
 
-            const expectedPendingAction = Object.assign(
-                { identifier: 1 },
+            const expectedPendingAction: NotificationMessage = Object.assign(
+                { identifier: 1, timestamp: new Date().toISOString() },
                 testMessage2
             );
-            service.pendingActions$.subscribe(pendingActions =>
+            service.pendingActions$.subscribe((pendingActions) =>
                 expect(pendingActions).toEqual([expectedPendingAction])
             );
-        }
+            flush();
+        })
     ));
 
     it('should be able to remove all notifications', inject(
@@ -220,7 +207,7 @@ describe('NotificationService', () => {
             service.addErrorNotification(testMessage2);
             service.clearNotifications();
 
-            service.notifications$.subscribe(notifications =>
+            service.notifications$.subscribe((notifications) =>
                 expect(notifications).toEqual([])
             );
         }
@@ -229,23 +216,23 @@ describe('NotificationService', () => {
     it('should emit the number of notifications', inject(
         [NotificationService],
         (service: NotificationService) => {
-            let expectatedValue = 0;
-            service.numberOfNotifications$.subscribe(numberOfNotifications =>
-                expect(numberOfNotifications).toBe(expectatedValue)
+            let expectedValue = 0;
+            service.numberOfNotifications$.subscribe((numberOfNotifications) =>
+                expect(numberOfNotifications).toBe(expectedValue)
             );
 
-            expectatedValue++;
+            expectedValue++;
             service.addPendingAction(testMessage);
 
-            expectatedValue++;
+            expectedValue++;
             service.addSuccessNotification(testMessage);
-            expectatedValue++;
+            expectedValue++;
             service.addInfoNotification(testMessage2);
 
-            expectatedValue--;
+            expectedValue--;
             service.removePendingAction(0);
 
-            expectatedValue = 0;
+            expectedValue = 0;
             service.clearNotifications();
         }
     ));
@@ -253,8 +240,8 @@ describe('NotificationService', () => {
     it('should have null status for the errors by default', inject(
         [NotificationService],
         (service: NotificationService) => {
-            expect(service.apiError).toBe(null);
-            expect(service.rpcError).toBe(null);
+            expect(service.apiError).toBe(undefined);
+            expect(service.rpcError).toBe(undefined);
         }
     ));
 });

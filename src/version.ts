@@ -1,2 +1,2 @@
 // Do not change this, this is maintained by bumpversion.
-export const version = '0.11.1';
+export const version = '1.0.0';

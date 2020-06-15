@@ -1,33 +1,46 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { scan, share, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import {
+    scan,
+    switchMap,
+    tap,
+    map,
+    shareReplay,
+    startWith,
+} from 'rxjs/operators';
 import { Channel } from '../models/channel';
-import { amountToDecimal } from '../utils/amount.converter';
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { backoff } from '../shared/backoff.operator';
-import BigNumber from 'bignumber.js';
 import { NotificationService } from './notification.service';
 import { UiMessage } from '../models/notification';
+import { AddressBookService } from './address-book.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ChannelPollingService {
+    public readonly channels$: Observable<Channel[]>;
+
     private channelsSubject: BehaviorSubject<void> = new BehaviorSubject(null);
     private refreshingSubject: BehaviorSubject<boolean> = new BehaviorSubject<
         boolean
     >(false);
-    private readonly channels$: Observable<Channel[]>;
     private loaded = false;
 
     constructor(
         private raidenService: RaidenService,
         private notificationService: NotificationService,
-        private raidenConfig: RaidenConfig
+        private raidenConfig: RaidenConfig,
+        private addressBookService: AddressBookService
     ) {
+        this.raidenService.reconnected$.subscribe(() => {
+            this.loaded = false;
+            this.refresh();
+        });
+
         let timeout;
-        this.channels$ = this.channelsSubject.pipe(
+        const channels$ = this.channelsSubject.pipe(
             tap(() => {
                 clearTimeout(timeout);
                 this.refreshingSubject.next(true);
@@ -41,15 +54,34 @@ export class ChannelPollingService {
                 this.refreshingSubject.next(false);
             }),
             scan((oldChannels: Channel[], newChannels: Channel[]) => {
-                this.checkForBalanceChanges(oldChannels, newChannels);
                 this.checkForNewChannels(oldChannels, newChannels);
                 return newChannels;
             }, []),
+            startWith([]),
             backoff(
                 this.raidenConfig.config.error_poll_interval,
                 this.raidenService.globalRetry$
-            ),
-            share()
+            )
+        );
+
+        this.channels$ = combineLatest([
+            channels$,
+            this.raidenService.getPendingChannels(),
+        ]).pipe(
+            map(([channels, pendingChannels]) => {
+                const uniquePendingChannels = pendingChannels.filter(
+                    (pendingChannel) =>
+                        !channels.find(
+                            (channel) =>
+                                channel.partner_address ===
+                                    pendingChannel.partner_address &&
+                                channel.token_address ===
+                                    pendingChannel.token_address
+                        )
+                );
+                return channels.concat(uniquePendingChannels);
+            }),
+            shareReplay({ refCount: true, bufferSize: 1 })
         );
     }
 
@@ -57,21 +89,28 @@ export class ChannelPollingService {
         return this.refreshingSubject;
     }
 
-    public channels(): Observable<Channel[]> {
-        return this.channels$;
-    }
-
     public refresh() {
         this.channelsSubject.next(null);
+    }
+
+    public getChannelUpdates(channel: Channel): Observable<Channel> {
+        return this.channels$.pipe(
+            map((channels) => {
+                const updatedChannel = channels.find((newChannel) =>
+                    this.isTheSameChannel(channel, newChannel)
+                );
+                return updatedChannel;
+            })
+        );
     }
 
     private checkForNewChannels(
         oldChannels: Channel[],
         newChannels: Channel[]
     ) {
-        if (oldChannels.length > 0) {
-            const channels = newChannels.filter(newChannel => {
-                return !oldChannels.find(oldChannel =>
+        if (this.loaded) {
+            const channels = newChannels.filter((newChannel) => {
+                return !oldChannels.find((oldChannel) =>
                     this.isTheSameChannel(oldChannel, newChannel)
                 );
             });
@@ -79,34 +118,8 @@ export class ChannelPollingService {
             for (const channel of channels) {
                 this.informAboutNewChannel(channel);
             }
-        } else if (
-            this.loaded &&
-            oldChannels.length === 0 &&
-            newChannels.length > 0
-        ) {
-            for (const channel of newChannels) {
-                this.informAboutNewChannel(channel);
-            }
         }
         this.loaded = true;
-    }
-
-    private checkForBalanceChanges(
-        oldChannels: Channel[],
-        newChannels: Channel[]
-    ) {
-        for (const oldChannel of oldChannels) {
-            const newChannel = newChannels.find(channel =>
-                this.isTheSameChannel(oldChannel, channel)
-            );
-            if (
-                !newChannel ||
-                newChannel.balance.isLessThanOrEqualTo(oldChannel.balance)
-            ) {
-                continue;
-            }
-            this.informAboutBalanceUpdate(newChannel, oldChannel.balance);
-        }
     }
 
     // noinspection JSMethodCanBeStatic
@@ -119,30 +132,18 @@ export class ChannelPollingService {
     }
 
     private informAboutNewChannel(channel: Channel) {
-        const channelId = channel.channel_identifier;
+        const token = channel.userToken;
         const partnerAddress = channel.partner_address;
-        const network = channel.userToken.name;
+        let partnerLabel = this.addressBookService.get()[partnerAddress];
+        if (!partnerLabel) {
+            partnerLabel = '';
+        }
         const message: UiMessage = {
             title: 'New channel',
-            description: `A new channel (${channelId}) was opened with ${partnerAddress} in ${network} network`
-        };
-
-        this.notificationService.addInfoNotification(message);
-    }
-
-    private informAboutBalanceUpdate(
-        channel: Channel,
-        previousBalance: BigNumber
-    ) {
-        const amount = channel.balance.minus(previousBalance);
-        const symbol = channel.userToken.symbol;
-        const channelId = channel.channel_identifier;
-        const partnerAddress = channel.partner_address;
-        const balance = amountToDecimal(amount, channel.userToken.decimals);
-        const formattedBalance = balance.toFixed();
-        const message: UiMessage = {
-            title: 'Balance Update',
-            description: `The balance of channel ${channelId} with ${partnerAddress} was updated by ${formattedBalance} ${symbol}`
+            description: `${token.symbol} with ${partnerLabel} ${partnerAddress}`,
+            icon: 'channel',
+            identiconAddress: partnerAddress,
+            userToken: token,
         };
 
         this.notificationService.addInfoNotification(message);

@@ -1,0 +1,6 @@
+.message {
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.35px;
+    overflow-wrap: break-word;
+}

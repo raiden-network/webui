@@ -1,0 +1,40 @@
+.dialog {
+    position: relative;
+}
+
+.dialog__title {
+    margin: 0;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    line-height: 14px;
+    text-transform: uppercase;
+}
+
+.dialog__button {
+    height: 32px !important;
+    width: 100px;
+    letter-spacing: 0.35px;
+}
+
+.dialog__button--white {
+    border: 2px solid #000000;
+}
+
+.dialog__button--black {
+    color: #ffffff;
+}
+
+.dialog__button--black:disabled {
+    color: #979797;
+}
+
+.dialog__close-button {
+    position: absolute;
+    top: -19px;
+    right: -8px;
+}
+
+.dialog__close-icon {
+    width: 16px !important;
+    height: 16px !important;
+}

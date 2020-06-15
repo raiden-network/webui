@@ -1,9 +1,10 @@
 import { inject, TestBed } from '@angular/core/testing';
 
 import { AddressBookService } from './address-book.service';
-import { Address, Addresses } from '../models/address';
+import { Contact, Contacts } from '../models/contact';
 import { LocalStorageAdapter } from '../adapters/local-storage-adapter';
 import { storageMock } from '../../testing/mock-storage';
+import { first } from 'rxjs/operators';
 
 describe('AddressBookService', () => {
     beforeEach(() => {
@@ -17,11 +18,11 @@ describe('AddressBookService', () => {
                         return {
                             get localStorage(): Storage {
                                 return storage;
-                            }
+                            },
                         };
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         });
     });
 
@@ -32,60 +33,60 @@ describe('AddressBookService', () => {
         }
     ));
 
-    it('should be able to save and retrieve an address', inject(
+    it('should be able to save and retrieve a contact', inject(
         [AddressBookService],
         (service: AddressBookService) => {
-            const address: Address = {
+            const contact: Contact = {
                 label: 'Mah Address',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
-            let addresses = service.get();
-            expect(Object.keys(addresses).length).toBe(0);
+            let contacts = service.get();
+            expect(Object.keys(contacts).length).toBe(0);
 
-            service.save(address);
+            service.save(contact);
 
-            addresses = service.get();
-            expect(Object.keys(addresses).length).toBe(1);
-            const firstKey = Object.keys(addresses)[0];
-            expect(firstKey).toBe(address.address);
-            expect(addresses[firstKey]).toBe(address.label);
+            contacts = service.get();
+            expect(Object.keys(contacts).length).toBe(1);
+            const firstKey = Object.keys(contacts)[0];
+            expect(firstKey).toBe(contact.address);
+            expect(contacts[firstKey]).toBe(contact.label);
         }
     ));
 
-    it('should throw an error is the address is not an address', inject(
+    it('should throw an error if the address is not an address', inject(
         [AddressBookService],
         (service: AddressBookService) => {
-            const address: Address = {
+            const contact: Contact = {
                 label: 'Mah Address',
-                address: '112231'
+                address: '112231',
             };
 
             try {
-                service.save(address);
+                service.save(contact);
                 fail('There should be an exception before');
             } catch (e) {
                 expect(e.message).toEqual(
-                    `${address.address} is not an ethereum address`
+                    `${contact.address} is not an ethereum address`
                 );
             }
         }
     ));
 
-    it('should throw an error is the address is not in checksum format', inject(
+    it('should throw an error if the address is not in checksum format', inject(
         [AddressBookService],
         (service: AddressBookService) => {
-            const address: Address = {
+            const contact: Contact = {
                 label: 'Mah Address',
-                address: '0x504300c525cbe91adb3fe0944fe1f56f5162c75c'
+                address: '0x504300c525cbe91adb3fe0944fe1f56f5162c75c',
             };
 
             try {
-                service.save(address);
+                service.save(contact);
                 fail('There should be an exception before');
             } catch (e) {
                 expect(e.message).toEqual(
-                    `${address.address} is not in checksum format`
+                    `${contact.address} is not in checksum format`
                 );
             }
         }
@@ -94,100 +95,100 @@ describe('AddressBookService', () => {
     it('should update the label if the same address is added a second time', inject(
         [AddressBookService],
         (service: AddressBookService) => {
-            const address: Address = {
+            const contact: Contact = {
                 label: 'Mah Address',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
-            const addressUpdate: Address = {
+            const addressUpdate: Contact = {
                 label: 'Test Node',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
-            service.save(address);
+            service.save(contact);
 
-            let addresses = service.get();
-            let keys = Object.keys(addresses);
+            let contacts = service.get();
+            let keys = Object.keys(contacts);
 
             expect(keys.length).toBe(1);
 
             expect(keys[0]).toBe(
-                address.address,
+                contact.address,
                 'The address was not equal to the original address'
             );
-            expect(addresses[keys[0]]).toBe(address.label);
+            expect(contacts[keys[0]]).toBe(contact.label);
 
             service.save(addressUpdate);
 
-            addresses = service.get();
-            keys = Object.keys(addresses);
+            contacts = service.get();
+            keys = Object.keys(contacts);
 
             expect(keys.length).toBe(1);
             expect(keys[0]).toBe(
                 addressUpdate.address,
                 'The address was not equal to the updated address'
             );
-            expect(addresses[keys[0]]).toBe(addressUpdate.label);
+            expect(contacts[keys[0]]).toBe(addressUpdate.label);
         }
     ));
 
-    it('should delete the address from the list', inject(
+    it('should delete the contact from the list', inject(
         [AddressBookService],
         (service: AddressBookService) => {
-            const address: Address = {
+            const contact: Contact = {
                 label: 'Test Node 1',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
-            const secondAddress: Address = {
+            const secondContact: Contact = {
                 label: 'Test Node 2',
-                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
+                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A',
             };
 
-            service.save(address);
-            service.save(secondAddress);
+            service.save(contact);
+            service.save(secondContact);
 
-            let addresses = service.get();
+            let contacts = service.get();
 
-            expect(Object.keys(addresses).length).toBe(2);
+            expect(Object.keys(contacts).length).toBe(2);
 
-            service.delete(address);
+            service.delete(contact);
 
-            addresses = service.get();
-            const keys = Object.keys(addresses);
+            contacts = service.get();
+            const keys = Object.keys(contacts);
             expect(keys.length).toBe(1);
             expect(keys[0]).toBe(
-                secondAddress.address,
+                secondContact.address,
                 'The address was not equal to the updated address'
             );
-            expect(addresses[keys[0]]).toBe(secondAddress.label);
+            expect(contacts[keys[0]]).toBe(secondContact.label);
         }
     ));
 
-    it('should delete all the addresses if deleteAll is called', inject(
+    it('should delete all the contacts if deleteAll is called', inject(
         [AddressBookService],
         (service: AddressBookService) => {
-            const address: Address = {
+            const contact: Contact = {
                 label: 'Test Node 1',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
-            const secondAddress: Address = {
+            const secondContact: Contact = {
                 label: 'Test Node 2',
-                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
+                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A',
             };
 
-            service.save(address);
-            service.save(secondAddress);
+            service.save(contact);
+            service.save(secondContact);
 
-            let addresses = service.get();
+            let contacts = service.get();
 
-            expect(Object.keys(addresses).length).toBe(2);
+            expect(Object.keys(contacts).length).toBe(2);
 
             service.deleteAll();
 
-            addresses = service.get();
-            const keys = Object.keys(addresses);
+            contacts = service.get();
+            const keys = Object.keys(contacts);
             expect(keys.length).toBe(0);
         }
     ));
@@ -195,15 +196,15 @@ describe('AddressBookService', () => {
     it('should throw an exception when trying to restore invalid schema', inject(
         [AddressBookService],
         (service: AddressBookService) => {
-            const addresses: Addresses = {};
+            const contacts: Contacts = {};
 
             // @ts-ignore
-            addresses['randomKey'] = {};
+            contacts['randomKey'] = {};
             // @ts-ignore
-            addresses['anotherRandomKey'] = [];
+            contacts['anotherRandomKey'] = [];
 
             try {
-                service.store(addresses);
+                service.store(contacts);
                 fail('It should fail before reaching this point');
             } catch (e) {
                 expect(e).toBeTruthy();
@@ -211,26 +212,27 @@ describe('AddressBookService', () => {
         }
     ));
 
-    it('should return the addresses as an array', inject(
+    it('should return the contacts as an observable', inject(
         [AddressBookService],
         (service: AddressBookService) => {
-            const address: Address = {
+            const contact: Contact = {
                 label: 'Test Node 1',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
-            const secondAddress: Address = {
+            const secondContact: Contact = {
                 label: 'Test Node 2',
-                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
+                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A',
             };
 
-            service.save(address);
-            service.save(secondAddress);
+            service.save(contact);
+            service.save(secondContact);
 
-            const array = service.getArray();
-            expect(array.length).toBe(2);
-            expect(array).toContain(address);
-            expect(array).toContain(secondAddress);
+            service.getObservableArray().subscribe((array) => {
+                expect(array.length).toBe(2);
+                expect(array).toContain(contact);
+                expect(array).toContain(secondContact);
+            });
         }
     ));
 
@@ -245,39 +247,53 @@ describe('AddressBookService', () => {
     it('should merge and override if merge is specified', inject(
         [AddressBookService],
         (service: AddressBookService) => {
-            const first: Address = {
+            const firstContact: Contact = {
                 label: 'Test Node 1',
-                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C'
+                address: '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C',
             };
 
-            const second: Address = {
+            const secondContact: Contact = {
                 label: 'Test Node 2',
-                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A'
+                address: '0x0E809A051034723beE67871a5A4968aE22d36C5A',
             };
 
-            const third: Address = {
+            const thirdContact: Contact = {
                 label: 'Test Node 3',
-                address: '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6'
+                address: '0x53A9462Be18D8f74C1065Be65A58D5A41347e0A6',
             };
 
-            service.save(first);
-            service.save(second);
+            service.save(firstContact);
+            service.save(secondContact);
 
-            expect(service.getArray()).toEqual([first, second]);
+            service
+                .getObservableArray()
+                .pipe(first())
+                .subscribe((array) => {
+                    expect(array).toEqual([firstContact, secondContact]);
+                });
 
-            const modified: Address = {
+            const modified: Contact = {
                 label: 'New Node Label',
-                address: first.address
+                address: firstContact.address,
             };
 
-            const imported: Addresses = {};
+            const imported: Contacts = {};
             imported[modified.address] = modified.label;
-            imported[second.address] = second.label;
-            imported[third.address] = third.label;
+            imported[secondContact.address] = secondContact.label;
+            imported[thirdContact.address] = thirdContact.label;
 
             service.store(imported, true);
 
-            expect(service.getArray()).toEqual([modified, second, third]);
+            service
+                .getObservableArray()
+                .pipe(first())
+                .subscribe((array) => {
+                    expect(array).toEqual([
+                        modified,
+                        secondContact,
+                        thirdContact,
+                    ]);
+                });
         }
     ));
 });

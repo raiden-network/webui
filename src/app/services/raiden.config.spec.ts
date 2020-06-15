@@ -3,12 +3,12 @@ import { RaidenConfig, Web3Factory } from './raiden.config';
 import { HttpClientModule } from '@angular/common/http';
 import {
     HttpClientTestingModule,
-    HttpTestingController
+    HttpTestingController,
 } from '@angular/common/http/testing';
 import { NotificationService } from './notification.service';
-import { EnvironmentType } from './enviroment-type.enum';
+import { EnvironmentType } from '../models/enviroment-type.enum';
 import Web3 from 'web3';
-import { HttpProvider } from 'web3-providers/types';
+import { HttpProvider } from 'web3-core';
 import Spy = jasmine.Spy;
 
 describe('RaidenConfig', () => {
@@ -17,7 +17,6 @@ describe('RaidenConfig', () => {
     let notificationService: NotificationService;
     let tracking: { current: number; failed: number[] };
     let httpProvider: HttpProvider;
-    let send: Spy;
     let create: Spy;
 
     const url = 'http://localhost:5001/assets/config/config.production.json';
@@ -36,32 +35,27 @@ describe('RaidenConfig', () => {
             reveal_timeout: 20,
             settle_timeout: 600,
             web3: 'http://localhost:8485',
-            environment_type: 'production'
+            environment_type: 'production',
         };
 
         tracking = {
             failed: [],
-            current: 0
+            current: 0,
         };
 
         TestBed.configureTestingModule({
             imports: [HttpClientModule, HttpClientTestingModule],
-            providers: [RaidenConfig, NotificationService, Web3Factory]
+            providers: [RaidenConfig, NotificationService, Web3Factory],
         });
 
-        const web3Factory: Web3Factory = TestBed.get(Web3Factory);
-        const fake = async (method: string): Promise<object> => {
-            if (method !== 'net_version') {
-                throw new Error('not mocked');
-            }
-
+        const web3Factory = TestBed.inject(Web3Factory);
+        const fake = async (): Promise<number> => {
             const failed = tracking.failed;
             const current = tracking.current;
 
-            if (failed.findIndex(value => value === current) >= 0) {
+            if (failed.findIndex((value) => value === current) >= 0) {
                 throw new Error(`Connection error: Timeout exceeded`);
             } else {
-                // @ts-ignore
                 return 1;
             }
         };
@@ -70,29 +64,33 @@ describe('RaidenConfig', () => {
             (provider: HttpProvider) => {
                 httpProvider = provider;
                 tracking.current++;
-                send = spyOn(provider, 'send').and.callFake(fake);
-                return new Web3(provider);
+                spyOn(provider, 'send').and.callFake(() => {
+                    throw new Error('not mocked');
+                });
+                const web3 = new Web3(provider);
+                spyOn(web3.eth.net, 'getId').and.callFake(fake);
+                return web3;
             }
         );
 
-        testingController = TestBed.get(HttpTestingController);
-        raidenConfig = TestBed.get(RaidenConfig);
+        testingController = TestBed.inject(HttpTestingController);
+        raidenConfig = TestBed.inject(RaidenConfig);
 
-        notificationService = TestBed.get(NotificationService);
+        notificationService = TestBed.inject(NotificationService);
     });
 
     it('should be created', inject([RaidenConfig], (service: RaidenConfig) => {
         expect(service).toBeTruthy();
     }));
 
-    it('should translate a relative path url to absolute path', fakeAsync(function() {
+    it('should translate a relative path url to absolute path', fakeAsync(function () {
         configuration.web3 = '/web3';
         raidenConfig
             .load(url)
-            .then(value => {
+            .then((value) => {
                 expect(value).toBe(true);
             })
-            .catch(e => {
+            .catch((e) => {
                 console.error(e);
                 fail('it should not fail');
             });
@@ -100,11 +98,11 @@ describe('RaidenConfig', () => {
         testingController
             .expectOne({
                 url: url,
-                method: 'GET'
+                method: 'GET',
             })
             .flush(configuration, {
                 status: 200,
-                statusText: ''
+                statusText: '',
             });
 
         tick();
@@ -114,13 +112,13 @@ describe('RaidenConfig', () => {
         flush();
     }));
 
-    it('should use the default configuration if loading fails', fakeAsync(function() {
+    it('should use the default configuration if loading fails', fakeAsync(function () {
         raidenConfig
             .load(url)
-            .then(value => {
+            .then((value) => {
                 expect(value).toBe(true);
             })
-            .catch(e => {
+            .catch((e) => {
                 console.error(e);
                 fail('it should not fail');
             });
@@ -128,13 +126,13 @@ describe('RaidenConfig', () => {
         testingController
             .expectOne({
                 url: url,
-                method: 'GET'
+                method: 'GET',
             })
             .flush(
                 {},
                 {
                     status: 404,
-                    statusText: ''
+                    statusText: '',
                 }
             );
 
@@ -150,21 +148,21 @@ describe('RaidenConfig', () => {
             http_timeout: 600000,
             settle_timeout: 500,
             reveal_timeout: 10,
-            environment_type: EnvironmentType.DEVELOPMENT
+            environment_type: EnvironmentType.DEVELOPMENT,
         });
 
-        expect(notificationService.rpcError).toBe(null);
+        expect(notificationService.rpcError).toBe(undefined);
         expect(tracking.current).toBe(1);
         flush();
     }));
 
-    it('should merge the loaded configuration with the defaults', fakeAsync(function() {
+    it('should merge the loaded configuration with the defaults', fakeAsync(function () {
         raidenConfig
             .load(url)
-            .then(value => {
+            .then((value) => {
                 expect(value).toBe(true);
             })
-            .catch(e => {
+            .catch((e) => {
                 console.error(e);
                 fail('it should not fail');
             });
@@ -172,11 +170,11 @@ describe('RaidenConfig', () => {
         testingController
             .expectOne({
                 url: url,
-                method: 'GET'
+                method: 'GET',
             })
             .flush(configuration, {
                 status: 200,
-                statusText: ''
+                statusText: '',
             });
 
         tick();
@@ -191,22 +189,22 @@ describe('RaidenConfig', () => {
             http_timeout: 600000,
             settle_timeout: 600,
             reveal_timeout: 20,
-            environment_type: EnvironmentType.PRODUCTION
+            environment_type: EnvironmentType.PRODUCTION,
         });
 
-        expect(notificationService.rpcError).toBe(null);
+        expect(notificationService.rpcError).toBe(undefined);
         expect(tracking.current).toBe(1);
     }));
 
-    it('should fallback if the primary web3 endpoint fails', fakeAsync(function() {
+    it('should fallback if the primary web3 endpoint fails', fakeAsync(function () {
         tracking.failed.push(1);
 
         raidenConfig
             .load(url)
-            .then(value => {
+            .then((value) => {
                 expect(value).toBe(true);
             })
-            .catch(e => {
+            .catch((e) => {
                 console.error(e);
                 fail('it should not fail');
             });
@@ -214,16 +212,16 @@ describe('RaidenConfig', () => {
         testingController
             .expectOne({
                 url: url,
-                method: 'GET'
+                method: 'GET',
             })
             .flush(configuration, {
                 status: 200,
-                statusText: ''
+                statusText: '',
             });
 
         tick(2000);
 
-        expect(notificationService.rpcError).toBe(null);
+        expect(notificationService.rpcError).toBe(undefined);
         expect(tracking.current).toBe(2);
         expect(raidenConfig.config.web3).toBe(
             raidenConfig.config.web3_fallback
@@ -231,14 +229,14 @@ describe('RaidenConfig', () => {
         flush();
     }));
 
-    it('should return false and set error on the promise if both web3 endpoints fail', fakeAsync(function() {
+    it('should return false and set error on the promise if both web3 endpoints fail', fakeAsync(function () {
         tracking.failed.push(1, 2);
         raidenConfig
             .load(url)
-            .then(value => {
+            .then((value) => {
                 expect(value).toBe(false);
             })
-            .catch(e => {
+            .catch((e) => {
                 console.error(e);
                 fail('it should not fail');
             });
@@ -246,11 +244,11 @@ describe('RaidenConfig', () => {
         testingController
             .expectOne({
                 url: url,
-                method: 'GET'
+                method: 'GET',
             })
             .flush(configuration, {
                 status: 200,
-                statusText: ''
+                statusText: '',
             });
 
         tick(2000);
@@ -261,5 +259,31 @@ describe('RaidenConfig', () => {
             raidenConfig.config.web3_fallback
         );
         flush();
+    }));
+});
+
+describe('Web3Factory', () => {
+    let web3Factory: Web3Factory;
+
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+            providers: [Web3Factory],
+        });
+
+        web3Factory = TestBed.inject(Web3Factory);
+    });
+
+    it('should be created', inject([Web3Factory], (service: Web3Factory) => {
+        expect(service).toBeTruthy();
+    }));
+
+    it('should create a new web3 instance', fakeAsync(() => {
+        const web3 = web3Factory.create(
+            new Web3.providers.HttpProvider('http://localhost:8485')
+        );
+        expect((<HttpProvider>web3.currentProvider).host).toBe(
+            'http://localhost:8485'
+        );
     }));
 });

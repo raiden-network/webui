@@ -1,17 +1,15 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
-import { from } from 'rxjs';
+import { from, of, BehaviorSubject } from 'rxjs';
 import { Channel } from '../models/channel';
-import { UserToken } from '../models/usertoken';
-
 import { ChannelPollingService } from './channel-polling.service';
 import { RaidenService } from './raiden.service';
 import Spy = jasmine.Spy;
 import { TestProviders } from '../../testing/test-providers';
-import BigNumber from 'bignumber.js';
 import { NotificationService } from './notification.service';
-import { UiMessage } from '../models/notification';
+import { createToken, createChannel } from '../../testing/test-data';
+import { AddressBookService } from './address-book.service';
 
 describe('ChannelPollingService', () => {
     beforeEach(() => {
@@ -21,8 +19,8 @@ describe('ChannelPollingService', () => {
                 ChannelPollingService,
                 NotificationService,
                 TestProviders.MockRaidenConfigProvider(),
-                RaidenService
-            ]
+                RaidenService,
+            ],
         });
     });
 
@@ -30,105 +28,43 @@ describe('ChannelPollingService', () => {
     let notificationService: NotificationService;
     let raidenService: RaidenService;
     let raidenServiceSpy: Spy;
+    const pendingChannelsSubject = new BehaviorSubject<Channel[]>([]);
 
-    const token: UserToken = {
-        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        symbol: 'TST',
-        name: 'Test Suite Token',
-        balance: new BigNumber(20),
-        decimals: 8
-    };
-
-    const token2: UserToken = {
-        address: '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195',
+    const token = createToken();
+    const token2 = createToken({
         symbol: 'TST2',
         name: 'Test Suite Token 2',
-        balance: new BigNumber(20),
-        decimals: 8
-    };
-
-    const channel1: Channel = {
-        state: 'opened',
-        channel_identifier: new BigNumber(1),
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-        reveal_timeout: 600,
-        balance: new BigNumber(10),
-        total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10),
-        settle_timeout: 500,
-        userToken: token
-    };
-
-    const channel1Network2: Channel = {
-        state: 'opened',
-        channel_identifier: new BigNumber(1),
-        token_address: '0xeB7f4BBAa1714F3E5a12fF8B681908D7b98BD195',
-        partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-        reveal_timeout: 600,
-        balance: new BigNumber(20),
-        total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10),
-        settle_timeout: 500,
-        userToken: token2
-    };
-
-    const channel1Updated: Channel = {
-        state: 'opened',
-        channel_identifier: new BigNumber(1),
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-        reveal_timeout: 600,
-        balance: new BigNumber(20),
-        total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10),
-        settle_timeout: 500,
-        userToken: token
-    };
-
-    const channel1UpdatedNegative: Channel = {
-        state: 'opened',
-        channel_identifier: new BigNumber(1),
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        partner_address: '0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82',
-        reveal_timeout: 600,
-        balance: new BigNumber(5),
-        total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10),
-        settle_timeout: 500,
-        userToken: token
-    };
-
-    const channel2: Channel = {
-        state: 'opened',
-        channel_identifier: new BigNumber(2),
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        partner_address: '0xFC57d325f23b9121a8488fFdE2E6b3ef1208a20b',
-        reveal_timeout: 600,
-        balance: new BigNumber(0),
-        total_deposit: new BigNumber(10),
-        total_withdraw: new BigNumber(10),
-        settle_timeout: 500,
-        userToken: token
-    };
+    });
+    const channel1 = createChannel({ userToken: token });
+    const channel1Network2 = Object.assign({}, channel1, {
+        userToken: token2,
+        token_address: token2.address,
+    });
+    const channel1Updated = Object.assign({}, channel1, {
+        balance: channel1.balance.plus(10),
+    });
+    const channel2 = createChannel({ userToken: token });
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 ChannelPollingService,
                 RaidenService,
-                NotificationService
-            ]
+                NotificationService,
+                TestProviders.AddressBookStubProvider(),
+            ],
         });
 
-        raidenService = TestBed.get(RaidenService);
-        notificationService = TestBed.get(NotificationService);
-        pollingService = TestBed.get(ChannelPollingService);
+        raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'getPendingChannels').and.returnValue(
+            pendingChannelsSubject.asObservable()
+        );
+
+        notificationService = TestBed.inject(NotificationService);
+        pollingService = TestBed.inject(ChannelPollingService);
 
         raidenServiceSpy = spyOn(raidenService, 'getChannels');
-        spyOn(notificationService, 'addInfoNotification').and.callFake(
-            () => {}
-        );
+        spyOn(notificationService, 'addInfoNotification');
     });
 
     it('should be created', inject(
@@ -138,46 +74,9 @@ describe('ChannelPollingService', () => {
         }
     ));
 
-    it('should show a notification on balance increases', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(
-            from([[channel1], [channel1Updated]])
-        );
-        const subscription = pollingService.channels().subscribe();
-
-        const notificationMessage: UiMessage = {
-            title: 'Balance Update',
-            description: `The balance of channel ${
-                channel1.channel_identifier
-            } with ${channel1.partner_address} was updated by 0.0000001 ${
-                channel1.userToken.symbol
-            }`
-        };
-        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
-            1
-        );
-        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
-
-        subscription.unsubscribe();
-        flush();
-    }));
-
-    it('should not show a notification on when balance is reduced', fakeAsync(() => {
-        raidenServiceSpy.and.returnValues(
-            from([[channel1], [channel1UpdatedNegative]])
-        );
-        const subscription = pollingService.channels().subscribe();
-        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
-            0
-        );
-        subscription.unsubscribe();
-        flush();
-    }));
-
     it('should not send notification about channel the first time loading the channels', fakeAsync(() => {
         raidenServiceSpy.and.returnValues(from([[channel1], [channel1]]));
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             0
         );
@@ -186,27 +85,21 @@ describe('ChannelPollingService', () => {
     }));
 
     it('should send a notification when user opens the first channel', fakeAsync(() => {
+        const mockAddressBookService = TestBed.inject(AddressBookService);
+        mockAddressBookService.get = () => {
+            return {
+                [channel1.partner_address]: 'Test account',
+            };
+        };
         raidenServiceSpy.and.returnValues(
             from([[], [], [channel1], [channel1]])
         );
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
         tick();
 
-        const notificationMessage: UiMessage = {
-            title: 'New channel',
-            description: `A new channel (${
-                channel1.channel_identifier
-            }) was opened with ${channel1.partner_address} in ${
-                channel1.userToken.name
-            } network`
-        };
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             1
         );
-        expect(notificationService.addInfoNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
-
         subscription.unsubscribe();
         flush();
     }));
@@ -215,7 +108,7 @@ describe('ChannelPollingService', () => {
         raidenServiceSpy.and.returnValues(
             from([[], [channel1], [channel1, channel2]])
         );
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
 
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             2
@@ -230,7 +123,7 @@ describe('ChannelPollingService', () => {
 
     it('should not show a notification if no new channels are detected', fakeAsync(() => {
         raidenServiceSpy.and.returnValues(from([[channel1], [channel1]]));
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             0
         );
@@ -242,7 +135,7 @@ describe('ChannelPollingService', () => {
         raidenServiceSpy.and.returnValues(
             from([[channel1, channel2], [channel1]])
         );
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             0
         );
@@ -250,15 +143,58 @@ describe('ChannelPollingService', () => {
         flush();
     }));
 
-    it('should not show a notification for the same identifier on different network', fakeAsync(() => {
+    it('should show a notification for the same identifier on different network', fakeAsync(() => {
         raidenServiceSpy.and.returnValues(
-            from([[channel1, channel1Network2], [channel1Network2]])
+            from([[channel1], [channel1Network2]])
         );
-        const subscription = pollingService.channels().subscribe();
+        const subscription = pollingService.channels$.subscribe();
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
-            0
+            1
         );
         subscription.unsubscribe();
         flush();
     }));
+
+    it('should respond with pending channels', () => {
+        raidenServiceSpy.and.returnValue(of([channel1Updated]));
+        pendingChannelsSubject.next([channel1, channel2]);
+        pollingService.channels$.subscribe((channels: Channel[]) => {
+            expect(channels).toEqual([channel1Updated, channel2]);
+        });
+    });
+
+    it('should get updates for a channel', fakeAsync(() => {
+        raidenServiceSpy.and.returnValues(
+            of([channel1]),
+            of([channel1Updated])
+        );
+        let emittedTimes = 0;
+        const subscription = pollingService
+            .getChannelUpdates(channel1)
+            .subscribe((newChannel) => {
+                if (emittedTimes < 1) {
+                    expect(newChannel).toEqual(channel1);
+                } else {
+                    expect(newChannel).toEqual(channel1Updated);
+                }
+                emittedTimes++;
+            });
+
+        tick(5000);
+        subscription.unsubscribe();
+        flush();
+    }));
+
+    it('should not show notifications when reconnected', () => {
+        raidenServiceSpy.and.returnValues(
+            of([channel1]),
+            of([channel1, channel2])
+        );
+        pollingService.channels$.subscribe();
+        raidenService.reconnectSuccessful();
+        expect(raidenServiceSpy).toHaveBeenCalledTimes(2);
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            0
+        );
+    });
 });

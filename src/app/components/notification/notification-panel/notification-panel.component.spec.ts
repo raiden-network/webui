@@ -13,6 +13,8 @@ import { NotificationService } from '../../../services/notification.service';
 import { NotificationMessage } from '../../../models/notification';
 import { clickElement } from '../../../../testing/interaction-helper';
 import { By } from '@angular/platform-browser';
+import { ClipboardModule } from 'ngx-clipboard';
+import { RaidenIconsModule } from '../../../modules/raiden-icons/raiden-icons.module';
 
 describe('NotificationPanelComponent', () => {
     let component: NotificationPanelComponent;
@@ -27,13 +29,17 @@ describe('NotificationPanelComponent', () => {
     const notification: NotificationMessage = {
         title: 'Testing',
         description: 'Currently testing the application.',
-        identifier: 1
+        identifier: 1,
+        icon: '',
+        timestamp: new Date().toISOString(),
     };
 
     const pendingAction: NotificationMessage = {
         title: 'Testing pending',
         description: 'Test is pending.',
-        identifier: 2
+        identifier: 2,
+        icon: '',
+        timestamp: new Date().toISOString(),
     };
 
     beforeEach(async(() => {
@@ -43,7 +49,7 @@ describe('NotificationPanelComponent', () => {
             notifications$: notificationsSubject.asObservable(),
             pendingActions$: pendingActionsSubject.asObservable(),
             clearNotifications: () => {},
-            removeNotification: () => {}
+            removeNotification: () => {},
         };
         removeSpy = spyOn(notificationService, 'removeNotification');
         clearSpy = spyOn(notificationService, 'clearNotifications');
@@ -51,23 +57,25 @@ describe('NotificationPanelComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 NotificationPanelComponent,
-                NotificationItemComponent
-            ],
-            imports: [
-                MaterialComponentsModule,
-                HttpClientTestingModule,
-                NoopAnimationsModule
+                NotificationItemComponent,
             ],
             providers: [
                 PendingTransferPollingService,
                 {
                     provide: NotificationService,
-                    useValue: notificationService
+                    useValue: notificationService,
                 },
-                TestProviders.HammerJSProvider(),
+                TestProviders.MockRaidenConfigProvider(),
+                TestProviders.AddressBookStubProvider(),
+            ],
+            imports: [
+                MaterialComponentsModule,
+                HttpClientTestingModule,
                 NoopAnimationsModule,
-                TestProviders.MockRaidenConfigProvider()
-            ]
+                ClipboardModule,
+                RaidenIconsModule,
+                NoopAnimationsModule,
+            ],
         }).compileComponents();
     }));
 
@@ -89,10 +97,7 @@ describe('NotificationPanelComponent', () => {
         notificationsSubject.next([notification]);
         fixture.detectChanges();
 
-        clickElement(
-            fixture.debugElement,
-            '.notification-container .mat-icon-button'
-        );
+        clickElement(fixture.debugElement, '#remove');
 
         expect(removeSpy).toHaveBeenCalledTimes(1);
         expect(removeSpy).toHaveBeenCalledWith(notification.identifier);

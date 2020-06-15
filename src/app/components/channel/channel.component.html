@@ -1,0 +1,91 @@
+<div
+    class="card"
+    [ngClass]="{
+        'card--transparent':
+            channel.state !== 'opened' && channel.state !== 'waiting_for_open'
+    }"
+    fxLayout="column"
+    fxLayoutAlign="space-between start"
+>
+    <div class="card__top" fxLayout="row" fxLayoutAlign="start center">
+        <div class="icon-box" fxLayout="column">
+            <img
+                class="icon-box__identicon"
+                [src]="identicon(channel.partner_address)"
+                alt="Channel partner identicon"
+                matTooltip="{{ addressLabel(channel.partner_address) }}
+                    {{ channel.partner_address }}
+                    (Click to copy)"
+                ngxClipboard
+                [cbContent]="channel.partner_address"
+            />
+        </div>
+        <div fxFlex="1 1 auto"></div>
+        <button
+            *ngIf="channel.state === 'opened'"
+            mat-icon-button
+            [matMenuTriggerFor]="options"
+            id="options"
+            class="options-button"
+        >
+            <mat-icon svgIcon="more" aria-label="Options"></mat-icon>
+        </button>
+
+        <mat-menu
+            class="options"
+            #options="matMenu"
+            [overlapTrigger]="true"
+            xPosition="before"
+        >
+            <button mat-menu-item (click)="deposit()" id="deposit">
+                Deposit
+            </button>
+            <div class="options__divider"></div>
+            <button mat-menu-item (click)="withdraw()" id="withdraw">
+                Withdraw
+            </button>
+            <div class="options__divider"></div>
+            <button mat-menu-item (click)="close()" id="close">
+                Close Channel
+            </button>
+        </mat-menu>
+    </div>
+
+    <div class="info">
+        <div class="info__state" [ngSwitch]="channel.state">
+            <ng-container *ngSwitchCase="'closed'">
+                Closed
+            </ng-container>
+            <ng-container *ngSwitchCase="'waiting_for_close'">
+                Waiting for close
+            </ng-container>
+            <ng-container *ngSwitchCase="'waiting_for_settle'">
+                Waiting for settle
+            </ng-container>
+        </div>
+        <div class="info__balance">
+            <ng-container *ngIf="!channel.depositPending">
+                <span
+                    *ngIf="
+                        channel.balance
+                            | decimal: channel.userToken.decimals as balance
+                    "
+                    [matTooltip]="balance"
+                    >{{ balance | displayDecimals: 3 }}
+                </span>
+            </ng-container>
+            <span
+                matTooltip="{{ channel.userToken.name }}
+                {{ channel.userToken.address }}
+                (Click to copy)"
+                ngxClipboard
+                [cbContent]="channel.userToken.address"
+                >{{ channel.userToken.symbol }}</span
+            >
+        </div>
+    </div>
+
+    <div class="label" *ngIf="channel.depositPending">
+        awaiting Balance
+    </div>
+</div>

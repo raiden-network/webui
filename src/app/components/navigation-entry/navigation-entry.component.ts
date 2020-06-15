@@ -1,17 +1,9 @@
-import {
-    Component,
-    EventEmitter,
-    Input,
-    OnInit,
-    Output,
-    ViewEncapsulation
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-navigation-entry',
     templateUrl: './navigation-entry.component.html',
     styleUrls: ['./navigation-entry.component.css'],
-    encapsulation: ViewEncapsulation.None
 })
 export class NavigationEntryComponent implements OnInit {
     @Input()
@@ -21,14 +13,7 @@ export class NavigationEntryComponent implements OnInit {
     @Input()
     route: string;
 
-    @Output()
-    readonly clicked: EventEmitter<null> = new EventEmitter();
-
     constructor() {}
 
     ngOnInit() {}
-
-    click() {
-        this.clicked.emit(null);
-    }
 }

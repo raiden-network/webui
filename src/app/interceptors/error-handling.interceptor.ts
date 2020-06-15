@@ -4,13 +4,11 @@ import {
     HttpInterceptor,
     HttpRequest,
     HttpErrorResponse,
-    HttpResponse
+    HttpResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-
 import { catchError, tap } from 'rxjs/operators';
-
 import { NotificationService } from '../services/notification.service';
 import { UiMessage } from '../models/notification';
 import { RaidenService } from '../services/raiden.service';
@@ -27,17 +25,18 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
-            tap(event => {
+            tap((event) => {
                 if (
                     event instanceof HttpResponse &&
-                    this.notificationService.apiError !== null
+                    event.url.includes('/api') &&
+                    this.notificationService.apiError
                 ) {
                     this.raidenService.attemptRpcConnection();
-                    this.raidenService.refreshAddress();
-                    this.notificationService.apiError = null;
+                    this.raidenService.reconnectSuccessful();
+                    this.notificationService.apiError = undefined;
                 }
             }),
-            catchError(error => this.handleError(error))
+            catchError((error) => this.handleError(error))
         );
     }
 
@@ -50,14 +49,15 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
         ) {
             errMsg = 'Could not connect to the Raiden API';
             if (
-                this.notificationService.apiError === null ||
+                !this.notificationService.apiError ||
                 this.notificationService.apiError.retrying
             ) {
                 this.notificationService.apiError = error;
                 console.error(`${errMsg}: ${error.message}`);
                 const notificationMessage: UiMessage = {
-                    title: 'API not available',
-                    description: errMsg
+                    title: 'API',
+                    description: 'connection failure',
+                    icon: 'error-mark',
                 };
                 this.notificationService.addErrorNotification(
                     notificationMessage
@@ -89,11 +89,6 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
         }
 
         console.error(errMsg);
-        const message: UiMessage = {
-            title: 'Raiden Error',
-            description: errMsg
-        };
-        this.notificationService.addErrorNotification(message);
         return throwError(errMsg);
     }
 }

@@ -1,0 +1,49 @@
+<div
+    class="card"
+    ngClass.lt-lg="card--mobile"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="22px"
+    fxLayoutGap.lt-lg="15px"
+    (click)="selected = !selected"
+    #card
+>
+    <div class="icon-box" fxLayout="column">
+        <img
+            class="icon-box__identicon"
+            [src]="identicon(contact.address)"
+            alt="Contact identicon"
+            stopClickPropagation
+            matTooltip="{{ contact.address }}
+                (Click to copy)"
+            ngxClipboard
+            [cbContent]="contact.address"
+        />
+    </div>
+    <div class="contact" fxLayout="row" fxLayoutAlign="start" fxFlex>
+        <div
+            *ngIf="!selected; else actions"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            [@flyInOutLeft]="'in'"
+            class="contact-info"
+        >
+            <div class="contact-info__label" fxFlex="0 1 100%">
+                {{ contact.label }}
+            </div>
+            <mat-icon
+                class="card__go-icon"
+                svgIcon="go"
+                aria-hidden="true"
+            ></mat-icon>
+        </div>
+        <ng-template #actions>
+            <app-contact-actions
+                [contact]="contact"
+                [@flyInOut]="'in'"
+                (actionClicked)="selected = false"
+            >
+            </app-contact-actions>
+        </ng-template>
+    </div>
+</div>

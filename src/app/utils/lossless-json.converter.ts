@@ -11,7 +11,7 @@ export function losslessParse(json: string): any {
 }
 
 export function losslessStringify(obj: any): string {
-    return JSON.stringify(obj, function(key, value) {
+    return JSON.stringify(obj, function (key, value) {
         if (BigNumber.isBigNumber(this[key])) {
             return this[key].toFixed();
         }

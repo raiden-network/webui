@@ -1,113 +1,297 @@
-.full-width-form-field {
-    width: 100%;
+/* roboto-300 - latin */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    src: url('assets/fonts/roboto-v20-latin-300.eot'); /* IE9 Compat Modes */
+    src: local('Roboto Light'), local('Roboto-Light'),
+        url('assets/fonts/roboto-v20-latin-300.eot?#iefix')
+            format('embedded-opentype'),
+        /* IE6-IE8 */ url('assets/fonts/roboto-v20-latin-300.woff2')
+            format('woff2'),
+        /* Super Modern Browsers */
+            url('assets/fonts/roboto-v20-latin-300.woff') format('woff'),
+        /* Modern Browsers */ url('assets/fonts/roboto-v20-latin-300.ttf')
+            format('truetype'),
+        /* Safari, Android, iOS */
+            url('assets/fonts/roboto-v20-latin-300.svg#Roboto') format('svg'); /* Legacy iOS */
 }
 
-.full-width-form-field .mat-form-field-wrapper {
-    width: 100%;
+/* roboto-regular - latin */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: url('assets/fonts/roboto-v20-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local('Roboto'), local('Roboto-Regular'),
+        url('assets/fonts/roboto-v20-latin-regular.eot?#iefix')
+            format('embedded-opentype'),
+        /* IE6-IE8 */ url('assets/fonts/roboto-v20-latin-regular.woff2')
+            format('woff2'),
+        /* Super Modern Browsers */
+            url('assets/fonts/roboto-v20-latin-regular.woff') format('woff'),
+        /* Modern Browsers */ url('assets/fonts/roboto-v20-latin-regular.ttf')
+            format('truetype'),
+        /* Safari, Android, iOS */
+            url('assets/fonts/roboto-v20-latin-regular.svg#Roboto')
+            format('svg'); /* Legacy iOS */
 }
 
-.full-width-form-field .mat-form-field-infix {
-    width: 100%;
-}
-
-.full-width-expansion-panel {
-    width: 100%;
-}
-
-.dialog-expansion-panel .mat-expansion-panel-body {
-    padding-left: 0;
-}
-
-.inverted {
-    filter: invert(100%);
-}
-
-.round.identicon {
-    border-radius: 50%;
-}
-
-.identicon {
-    display: block;
-    width: 100%;
-    height: auto;
-    margin: 16px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    border-radius: 6.25%;
-    box-shadow: inset rgba(255, 255, 255, 0.6) 0 2px 2px,
-        inset rgba(0, 0, 0, 0.3) 0 -2px 6px;
-    transition: border-radius 2.5s;
-    transition-delay: 3s;
-}
-
-.identicon.mobile {
-    height: 50px !important;
-    width: 50px !important;
-    margin: 2px !important;
-}
-
-.token-symbol {
+/* roboto-500 - latin */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
     font-weight: 500;
-    font-size: small;
+    src: url('assets/fonts/roboto-v20-latin-500.eot'); /* IE9 Compat Modes */
+    src: local('Roboto Medium'), local('Roboto-Medium'),
+        url('assets/fonts/roboto-v20-latin-500.eot?#iefix')
+            format('embedded-opentype'),
+        /* IE6-IE8 */ url('assets/fonts/roboto-v20-latin-500.woff2')
+            format('woff2'),
+        /* Super Modern Browsers */
+            url('assets/fonts/roboto-v20-latin-500.woff') format('woff'),
+        /* Modern Browsers */ url('assets/fonts/roboto-v20-latin-500.ttf')
+            format('truetype'),
+        /* Safari, Android, iOS */
+            url('assets/fonts/roboto-v20-latin-500.svg#Roboto') format('svg'); /* Legacy iOS */
 }
 
-.justify {
-    text-align: justify;
+/* roboto-700 - latin */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    src: url('assets/fonts/roboto-v20-latin-700.eot'); /* IE9 Compat Modes */
+    src: local('Roboto Bold'), local('Roboto-Bold'),
+        url('assets/fonts/roboto-v20-latin-700.eot?#iefix')
+            format('embedded-opentype'),
+        /* IE6-IE8 */ url('assets/fonts/roboto-v20-latin-700.woff2')
+            format('woff2'),
+        /* Super Modern Browsers */
+            url('assets/fonts/roboto-v20-latin-700.woff') format('woff'),
+        /* Modern Browsers */ url('assets/fonts/roboto-v20-latin-700.ttf')
+            format('truetype'),
+        /* Safari, Android, iOS */
+            url('assets/fonts/roboto-v20-latin-700.svg#Roboto') format('svg'); /* Legacy iOS */
 }
 
-.match-parent-height {
-    height: 100%;
+/* roboto-mono-300 - latin */
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: normal;
+    font-weight: 300;
+    src: url('assets/fonts/roboto-mono-v7-latin-300.eot'); /* IE9 Compat Modes */
+    src: local('Roboto Mono Light'), local('RobotoMono-Light'),
+        url('assets/fonts/roboto-mono-v7-latin-300.eot?#iefix')
+            format('embedded-opentype'),
+        /* IE6-IE8 */ url('assets/fonts/roboto-mono-v7-latin-300.woff2')
+            format('woff2'),
+        /* Super Modern Browsers */
+            url('assets/fonts/roboto-mono-v7-latin-300.woff') format('woff'),
+        /* Modern Browsers */ url('assets/fonts/roboto-mono-v7-latin-300.ttf')
+            format('truetype'),
+        /* Safari, Android, iOS */
+            url('assets/fonts/roboto-mono-v7-latin-300.svg#RobotoMono')
+            format('svg'); /* Legacy iOS */
 }
 
-.match-parent-width {
+/* roboto-mono-regular - latin */
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: normal;
+    font-weight: 400;
+    src: url('assets/fonts/roboto-mono-v7-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local('Roboto Mono'), local('RobotoMono-Regular'),
+        url('assets/fonts/roboto-mono-v7-latin-regular.eot?#iefix')
+            format('embedded-opentype'),
+        /* IE6-IE8 */ url('assets/fonts/roboto-mono-v7-latin-regular.woff2')
+            format('woff2'),
+        /* Super Modern Browsers */
+            url('assets/fonts/roboto-mono-v7-latin-regular.woff') format('woff'),
+        /* Modern Browsers */
+            url('assets/fonts/roboto-mono-v7-latin-regular.ttf')
+            format('truetype'),
+        /* Safari, Android, iOS */
+            url('assets/fonts/roboto-mono-v7-latin-regular.svg#RobotoMono')
+            format('svg'); /* Legacy iOS */
+}
+
+body {
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    font-weight: 400;
+    scrollbar-color: #393939 rgba(0, 0, 0, 0);
+    scrollbar-width: 10px;
+}
+
+.mat-flat-button {
+    height: 50px;
+    border-radius: 25px !important;
+    font-size: 13px !important;
+    line-height: 15px !important;
+    font-weight: 500 !important;
+    padding: 0 !important;
+    min-width: 0px !important;
+    box-shadow: none !important;
+}
+
+.mat-flat-button:disabled,
+.mat-icon-button:disabled {
+    border: 2px solid #979797;
+    color: #979797 !important;
+    opacity: 0.32;
+    background: none !important;
+}
+
+.mat-icon-button {
+    height: 32px !important;
+    width: 32px !important;
+    line-height: 32px !important;
+}
+
+.mat-icon-button .mat-icon {
+    height: 22px !important;
+}
+
+.mat-tooltip {
+    font-size: 13px !important;
+    line-height: 15px !important;
+    font-weight: 400 !important;
+    border-radius: 5px !important;
+    padding: 10px 15px !important;
+    background-color: #363636 !important;
+    max-width: 350px !important;
+    white-space: pre-line !important;
+}
+
+.mat-menu-panel {
+    box-shadow: none !important;
+    border-radius: 20px !important;
+    background-color: #ffffff !important;
+    min-height: 38px !important;
+}
+
+.mat-menu-content {
+    padding: 0 !important;
+}
+
+.mat-menu-item {
+    font-size: 13px !important;
+    line-height: 15px !important;
+    height: 38px !important;
+    padding: 0 20px !important;
+    color: #000000 !important;
+}
+
+.mat-dialog-container {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-radius: 15px !important;
+    padding: 32px 27px 27px 27px !important;
+    box-shadow: none !important;
+}
+
+.grey-dialog .mat-dialog-container {
+    background-color: #d8d8d8 !important;
+}
+
+.mat-select {
+    border-radius: 25px;
+    background-color: #e7e7e7;
+    height: 32px;
+    padding: 0 18px;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.35px;
+}
+
+.mat-select-trigger {
+    height: 100% !important;
     width: 100%;
 }
 
-.events {
-    padding-top: 30px;
-    margin-left: 30px;
-    margin-right: 30px;
+.mat-select-value {
+    vertical-align: middle;
+    color: #000000 !important;
 }
 
-.card {
-    min-height: 7em;
+.mat-select-arrow {
+    color: currentColor !important;
 }
 
-.card-mobile {
-    min-height: 14rem;
+.mat-select-placeholder {
+    color: rgb(184, 184, 184) !important;
 }
 
-.truncate {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.network-selector .mat-select-placeholder,
+.network-selector .mat-select-value {
+    color: #ffffff !important;
 }
 
-.can-shrink {
-    min-width: 20px !important;
+.mat-select-panel.network-selector__panel {
+    background-color: #000000 !important;
+}
+
+.network-selector__panel .mat-option {
+    background: none !important;
+    color: #ffffff !important;
+}
+
+::placeholder,
+::-webkit-input-placeholder {
+    color: rgb(184, 184, 184);
+    opacity: 1;
+}
+
+.mat-select-panel,
+.mat-autocomplete-panel {
+    box-shadow: none !important;
+    border-radius: 5px !important;
+    background-color: #e7e7e7 !important;
+}
+
+.mat-option {
+    color: #000000 !important;
+    background-color: #e7e7e7 !important;
+    font-size: 13px !important;
+    line-height: 15px !important;
+    height: 60px !important;
+    padding: 0 0 0 25px !important;
+}
+
+.mat-option-text > span {
+    margin-left: 22px;
+}
+
+.mat-option-text > span:first-child {
+    margin-left: 0;
+}
+
+.token-option > .mat-option-text > span:first-child,
+.token-option > .mat-option-text > span:last-child {
+    opacity: 0.5;
+}
+
+.contact-option > .mat-option-text > span:last-child {
+    opacity: 0.5;
+}
+
+input:focus {
+    outline: none;
 }
 
 .toast-container {
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
-}
-
-app-page-base {
-    height: 100%;
-}
-
-.expanded-tooltip {
-    min-width: 260px;
-}
-
-/* temporary fix for https://github.com/angular/components/issues/11765 */
-.ng-animating .dialog-expansion-panel .mat-expansion-panel-header {
-    height: 48px;
-}
-.ng-animating .dialog-expansion-panel .mat-expansion-panel-content {
-    height: 0px;
-    visibility: hidden;
-}
-
-#toast-container {
     min-width: 300px;
+}
+
+a {
+    outline-color: #ffffff;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #393939;
+    border-radius: 10px;
 }

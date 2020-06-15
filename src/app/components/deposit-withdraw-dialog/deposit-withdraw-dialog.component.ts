@@ -1,60 +1,84 @@
-import {
-    ChangeDetectorRef,
-    Component,
-    Inject,
-    OnInit,
-    ViewChild
-} from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, Inject, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TokenInputComponent } from '../token-input/token-input.component';
-import { DepositMode } from '../../utils/helpers';
+import { DepositMode } from '../../models/deposit-mode.enum';
 import BigNumber from 'bignumber.js';
+import { Subject, Observable } from 'rxjs';
+import { Channel } from '../../models/channel';
+import { ChannelPollingService } from '../../services/channel-polling.service';
+import { TokenPollingService } from '../../services/token-polling.service';
+import { takeUntil, map } from 'rxjs/operators';
 
 export interface DepositWithdrawDialogPayload {
-    readonly decimals: number;
+    readonly channel: Channel;
     readonly depositMode: DepositMode;
 }
 
 export interface DepositWithdrawDialogResult {
     readonly tokenAmount: BigNumber;
-    readonly tokenAmountDecimals: number;
 }
 
 @Component({
     selector: 'app-deposit-dialog',
     templateUrl: './deposit-withdraw-dialog.component.html',
-    styleUrls: ['./deposit-withdraw-dialog.component.css']
+    styleUrls: ['./deposit-withdraw-dialog.component.css'],
 })
-export class DepositWithdrawDialogComponent implements OnInit {
+export class DepositWithdrawDialogComponent implements OnInit, OnDestroy {
     @ViewChild(TokenInputComponent, { static: true })
-    tokenInput: TokenInputComponent;
-
-    withdraw = false;
+    private tokenInput: TokenInputComponent;
 
     form = this.fb.group({
-        amount: new BigNumber(0)
+        amount: ['', Validators.required],
     });
+    channel: Channel;
+    withdraw = false;
+
+    private ngUnsubscribe = new Subject();
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: DepositWithdrawDialogPayload,
-        public dialogRef: MatDialogRef<DepositWithdrawDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) data: DepositWithdrawDialogPayload,
+        private dialogRef: MatDialogRef<DepositWithdrawDialogComponent>,
         private fb: FormBuilder,
-        private cdRef: ChangeDetectorRef
-    ) {}
+        private channelPollingService: ChannelPollingService,
+        private tokenPollingService: TokenPollingService
+    ) {
+        this.channel = data.channel;
+        this.withdraw = data.depositMode === DepositMode.WITHDRAW;
+    }
 
-    ngOnInit() {
-        this.tokenInput.decimals = this.data.decimals;
-        this.withdraw = this.data.depositMode === DepositMode.WITHDRAW;
-        this.cdRef.detectChanges();
+    ngOnInit(): void {
+        this.tokenInput.selectedToken = this.channel.userToken;
+        let maxAmount$: Observable<BigNumber>;
+
+        if (this.withdraw) {
+            maxAmount$ = this.channelPollingService
+                .getChannelUpdates(this.channel)
+                .pipe(map((channel) => channel.balance));
+        } else {
+            maxAmount$ = this.tokenPollingService
+                .getTokenUpdates(this.channel.token_address)
+                .pipe(map((token) => token.balance));
+        }
+
+        maxAmount$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((maxAmount) => {
+                this.tokenInput.maxAmount = maxAmount;
+            });
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     accept() {
-        if (this.form.invalid) {
-            return;
-        }
         const tokenAmount = this.form.value.amount;
-        const tokenAmountDecimals = this.tokenInput.tokenAmountDecimals;
-        this.dialogRef.close({ tokenAmount, tokenAmountDecimals });
+        this.dialogRef.close({ tokenAmount });
+    }
+
+    cancel() {
+        this.dialogRef.close();
     }
 }

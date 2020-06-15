@@ -3,230 +3,164 @@ import {
     forwardRef,
     Input,
     ViewChild,
-    ElementRef
+    ElementRef,
 } from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
-    ValidationErrors,
     Validator,
-    ValidatorFn
+    ValidationErrors,
+    NG_VALIDATORS,
 } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { BigNumber } from 'bignumber.js';
 import {
     amountFromDecimal,
-    amountToDecimal
+    amountToDecimal,
 } from '../../utils/amount.converter';
+import { UserToken } from '../../models/usertoken';
+import { Animations } from '../../animations/animations';
 
 @Component({
     selector: 'app-token-input',
     templateUrl: './token-input.component.html',
     styleUrls: ['./token-input.component.css'],
+    animations: Animations.fallDown,
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => TokenInputComponent),
-            multi: true
+            multi: true,
         },
         {
             provide: NG_VALIDATORS,
             useExisting: forwardRef(() => TokenInputComponent),
-            multi: true
-        }
-    ]
+            multi: true,
+        },
+    ],
 })
 export class TokenInputComponent implements ControlValueAccessor, Validator {
-    @Input() allowZero: boolean;
-    @Input() placeholder: string;
-    @Input() errorPlaceholder: string;
-    @ViewChild('amountInput', { static: true }) amountInput: ElementRef;
+    @Input() allowZero = false;
+    @Input() infoText = '';
+    @Input() placeholder = 'Amount';
+    @Input() onChainInput = false;
+    @Input() showTransferLimit = false;
+    @ViewChild('input', { static: true }) private inputElement: ElementRef;
 
-    readonly form: FormGroup = this.fb.group({
-        amount: [new BigNumber(0), this.amountValidator()],
-        decimals: true
-    });
-    threshold: BigNumber;
+    amount: BigNumber;
+    errors: ValidationErrors = { empty: true };
+    touched = false;
 
-    private readonly inputControl: FormControl;
-    private readonly checkboxControl: FormControl;
+    private _selectedToken: UserToken;
+    private _maxAmount: BigNumber;
+    private propagateTouched = () => {};
+    private propagateChange = (amount: BigNumber) => {};
 
-    constructor(private fb: FormBuilder) {
-        this.inputControl = this.form.get('amount') as FormControl;
-        this.checkboxControl = this.form.get('decimals') as FormControl;
+    constructor() {}
+
+    get decimals(): number {
+        return this._selectedToken ? this._selectedToken.decimals : 0;
     }
 
-    private _decimals = 0;
-
-    public get decimals(): number {
-        return this._decimals;
+    get selectedToken(): UserToken {
+        return this._selectedToken;
     }
 
-    public set decimals(decimals: number) {
-        this._decimals = decimals;
-        if (!this.checkboxControl) {
+    get maxAmount(): BigNumber {
+        return this._maxAmount;
+    }
+
+    set selectedToken(value: UserToken) {
+        this._selectedToken = value;
+        this.setAmount();
+    }
+
+    set maxAmount(value: BigNumber) {
+        this._maxAmount = value;
+        this.setAmount();
+    }
+
+    registerOnChange(fn: any) {
+        this.propagateChange = fn;
+    }
+
+    registerOnTouched(fn: any) {
+        this.propagateTouched = fn;
+    }
+
+    writeValue(obj: any) {
+        if (!obj || typeof obj !== 'string') {
             return;
         }
-        this.updateCheckboxState();
-    }
-
-    public get tokenAmountDecimals(): number {
-        return this.decimalInput ? this._decimals : 0;
-    }
-
-    private get decimalInput(): boolean {
-        const control = this.checkboxControl;
-        if (!control) {
-            return false;
-        }
-        return control.value;
-    }
-
-    public resetAmount() {
-        this.inputControl.reset(new BigNumber(0));
-    }
-
-    public step(): string {
-        if (this.decimalInput) {
-            return this.minimumAmount().toString();
-        } else {
-            return '1';
-        }
-    }
-
-    minimumAmount(): string {
-        return (1 / 10 ** this._decimals).toFixed(this._decimals);
-    }
-
-    convertFromDecimal() {
-        const amount: BigNumber = this.inputControl.value;
-        if (
-            this.decimalInput &&
-            BigNumber.isBigNumber(amount) &&
-            amount.decimalPlaces() <= this._decimals
-        ) {
-            this.inputControl.setValue(
-                amountFromDecimal(amount, this._decimals),
-                { emitModelToViewChange: false }
-            );
-        }
-    }
-
-    onCheckChange(event: MatCheckboxChange) {
-        const amount: BigNumber = this.inputControl.value;
-
-        if (!BigNumber.isBigNumber(amount) || amount.isNaN()) {
-            this.inputControl.setValue(new BigNumber(0));
-        } else if (event.checked) {
-            const decimalAmount = amountToDecimal(amount, this._decimals);
-            this.amountInput.nativeElement.value = decimalAmount.toFixed(
-                decimalAmount.decimalPlaces()
-            );
-        } else {
-            if (amount.decimalPlaces() > 0) {
-                this.inputControl.setValue(
-                    amountFromDecimal(amount, this._decimals)
-                );
-            } else {
-                this.amountInput.nativeElement.value = amount.toString();
-            }
-        }
-
-        this.inputControl.markAsTouched();
-    }
-
-    registerOnChange(fn: any): void {
-        this.inputControl.valueChanges.subscribe(fn);
-    }
-
-    registerOnTouched(fn: any): void {
-        this.inputControl.registerOnChange(fn);
-    }
-
-    registerOnValidatorChange(fn: () => void): void {}
-
-    setDisabledState(isDisabled: boolean): void {
-        if (isDisabled) {
-            this.inputControl.disable();
-        } else {
-            this.inputControl.enable();
-        }
+        this.inputElement.nativeElement.value = obj;
+        this.onChange();
     }
 
     validate(c: AbstractControl): ValidationErrors | null {
-        const value: BigNumber = this.inputControl.value;
-
-        if (!BigNumber.isBigNumber(value) || value.isNaN()) {
-            return {
-                notANumber: true
-            };
-        }
-        if (this.allowZero && value.isZero()) {
-            return null;
-        }
-        if (!value) {
-            return { empty: true };
-        }
-        return this.inputControl.errors;
+        return this.errors;
     }
 
-    writeValue(obj: any): void {
-        if (!obj) {
-            return;
-        }
-        this.inputControl.setValue(new BigNumber(obj), { emitEvent: false });
+    onChange() {
+        this.setAmount();
     }
 
-    onFocus(): void {
-        if (!this.inputControl.dirty) {
-            this.inputControl.setValue('');
-        }
+    onTouched() {
+        this.touched = true;
+        this.propagateTouched();
+    }
+
+    setAmountToMax() {
+        const max = amountToDecimal(this.maxAmount, this.decimals).toFixed();
+        this.inputElement.nativeElement.value = max;
+        this.onTouched();
+        this.onChange();
     }
 
     isLessThanThreshold(): boolean {
         return (
-            this.threshold &&
-            this.threshold.isGreaterThanOrEqualTo(this.inputControl.value)
+            this.selectedToken?.transferThreshold &&
+            this.selectedToken.transferThreshold.isGreaterThan(this.amount)
         );
     }
 
     formattedThreshold(): string {
-        return this.decimalInput
-            ? amountToDecimal(this.threshold, this.decimals).toString()
-            : this.threshold.toString();
+        return amountToDecimal(
+            this.selectedToken.transferThreshold,
+            this.decimals
+        ).toFixed();
     }
 
-    private amountValidator(): ValidatorFn {
-        return (control: AbstractControl) => {
-            const value: BigNumber = control.value;
+    private setAmount() {
+        const decimalAmount = new BigNumber(
+            this.inputElement.nativeElement.value
+        );
+        const amount = amountFromDecimal(decimalAmount, this.decimals);
 
-            if (!BigNumber.isBigNumber(value) || value.isNaN()) {
-                return {
-                    notANumber: true
-                };
-            } else if (value.decimalPlaces() > 0) {
-                return {
-                    tooManyDecimals: true
-                };
-            } else if (!this.allowZero && value.isZero()) {
-                return {
-                    invalidAmount: true
-                };
-            }
-            return undefined;
-        };
-    }
-
-    private updateCheckboxState() {
-        if (this._decimals === 0) {
-            this.checkboxControl.disable();
+        if (!BigNumber.isBigNumber(decimalAmount) || decimalAmount.isNaN()) {
+            this.errors = {
+                notANumber: true,
+            };
+        } else if (!this.allowZero && decimalAmount.isZero()) {
+            this.errors = {
+                zeroAmount: true,
+            };
+        } else if (decimalAmount.decimalPlaces() > this.decimals) {
+            this.errors = {
+                tooManyDecimals: true,
+            };
+        } else if (this.maxAmount && amount.isGreaterThan(this.maxAmount)) {
+            this.errors = {
+                insufficientFunds: true,
+            };
+        } else if (amount.isNegative()) {
+            this.errors = {
+                negativeAmount: true,
+            };
         } else {
-            this.checkboxControl.enable();
+            this.errors = undefined;
         }
+
+        this.amount = amount;
+        this.propagateChange(this.amount);
     }
 }

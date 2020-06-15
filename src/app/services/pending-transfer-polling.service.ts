@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { scan, switchMap, tap, shareReplay } from 'rxjs/operators';
+import { scan, switchMap, tap, shareReplay, startWith } from 'rxjs/operators';
 import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { backoff } from '../shared/backoff.operator';
@@ -8,9 +8,10 @@ import { NotificationService } from './notification.service';
 import { UiMessage } from '../models/notification';
 import { PendingTransfer } from '../models/pending-transfer';
 import { amountToDecimal } from '../utils/amount.converter';
+import { AddressBookService } from './address-book.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class PendingTransferPollingService {
     public readonly pendingTransfers$: Observable<PendingTransfer[]>;
@@ -22,7 +23,8 @@ export class PendingTransferPollingService {
     constructor(
         private raidenService: RaidenService,
         private notificationService: NotificationService,
-        private raidenConfig: RaidenConfig
+        private raidenConfig: RaidenConfig,
+        private addressBookService: AddressBookService
     ) {
         let timeout;
         this.pendingTransfers$ = this.pendingTransfersSubject.pipe(
@@ -51,6 +53,7 @@ export class PendingTransferPollingService {
                 },
                 []
             ),
+            startWith([]),
             backoff(
                 this.raidenConfig.config.error_poll_interval,
                 this.raidenService.globalRetry$
@@ -70,8 +73,8 @@ export class PendingTransferPollingService {
         newPendingTransfers: PendingTransfer[]
     ) {
         const pendingTransfers = newPendingTransfers.filter(
-            newPendingTransfer => {
-                return !oldPendingTransfers.find(oldPendingTransfer =>
+            (newPendingTransfer) => {
+                return !oldPendingTransfers.find((oldPendingTransfer) =>
                     this.isTheSamePendingTransfer(
                         oldPendingTransfer,
                         newPendingTransfer
@@ -86,21 +89,37 @@ export class PendingTransferPollingService {
                 pendingTransfer.locked_amount,
                 token.decimals
             ).toFixed();
+
             if (pendingTransfer.role === 'initiator') {
+                const targetAddress = pendingTransfer.target;
+                let targetLabel = this.addressBookService.get()[targetAddress];
+                if (!targetLabel) {
+                    targetLabel = '';
+                }
                 message = {
-                    title: 'Payment in flight',
-                    description: `A payment of ${formattedAmount} ${
-                        token.symbol
-                    } is being sent to ${pendingTransfer.target}`
+                    title: 'Transfer in flight',
+                    description: `${formattedAmount} ${token.symbol} to ${targetLabel} ${targetAddress}`,
+                    icon: 'sent',
+                    identiconAddress: targetAddress,
+                    userToken: token,
                 };
             } else {
+                const initiatorAddress = pendingTransfer.initiator;
+                let initiatorLabel = this.addressBookService.get()[
+                    initiatorAddress
+                ];
+                if (!initiatorLabel) {
+                    initiatorLabel = '';
+                }
                 message = {
-                    title: 'Payment incoming',
-                    description: `A payment of ${formattedAmount} ${
-                        token.symbol
-                    } is incoming from ${pendingTransfer.initiator}`
+                    title: 'Transfer incoming',
+                    description: `${formattedAmount} ${token.symbol} from ${initiatorLabel} ${initiatorAddress}`,
+                    icon: 'received',
+                    identiconAddress: initiatorAddress,
+                    userToken: token,
                 };
             }
+
             pendingTransfer.notificationIdentifier = this.notificationService.addPendingAction(
                 message
             );
@@ -112,8 +131,8 @@ export class PendingTransferPollingService {
         newPendingTransfers: PendingTransfer[]
     ) {
         const pendingTransfers = oldPendingTransfers.filter(
-            oldPendingTransfer => {
-                return !newPendingTransfers.find(newPendingTransfer => {
+            (oldPendingTransfer) => {
+                return !newPendingTransfers.find((newPendingTransfer) => {
                     const isTheSame = this.isTheSamePendingTransfer(
                         oldPendingTransfer,
                         newPendingTransfer

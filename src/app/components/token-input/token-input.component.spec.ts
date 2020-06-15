@@ -1,53 +1,39 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import {
     ErrorStateMatcher,
-    ShowOnDirtyErrorStateMatcher
+    ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-
 import { TokenInputComponent } from './token-input.component';
-import { TestProviders } from '../../../testing/test-providers';
-import { mockInput, errorMessage } from '../../../testing/interaction-helper';
-import { BigNumberConversionDirective } from '../../directives/big-number-conversion.directive';
+import { mockInput, clickElement } from '../../../testing/interaction-helper';
+import { createToken } from '../../../testing/test-data';
 import BigNumber from 'bignumber.js';
+import { DecimalPipe } from '../../pipes/decimal.pipe';
+import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 
 describe('TokenInputComponent', () => {
     let component: TokenInputComponent;
     let fixture: ComponentFixture<TokenInputComponent>;
 
     let input: HTMLInputElement;
-    let checkbox: HTMLInputElement;
-
-    function mockFormInput(inputValue: string, isStep: boolean = false) {
-        input.value = inputValue;
-        const event = new Event('input');
-        if (!isStep) {
-            Object.assign(event, { inputType: 'mock' });
-        }
-
-        input.dispatchEvent(event);
-        component.form.get('amount').markAsTouched();
-    }
+    const token = createToken();
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [TokenInputComponent, BigNumberConversionDirective],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                FormsModule,
-                ReactiveFormsModule
+            declarations: [
+                TokenInputComponent,
+                DecimalPipe,
+                DisplayDecimalsPipe,
             ],
             providers: [
-                TestProviders.HammerJSProvider(),
                 {
                     provide: ErrorStateMatcher,
-                    useClass: ShowOnDirtyErrorStateMatcher
-                }
-            ]
+                    useClass: ShowOnDirtyErrorStateMatcher,
+                },
+            ],
+            imports: [MaterialComponentsModule, NoopAnimationsModule],
         }).compileComponents();
     }));
 
@@ -55,237 +41,169 @@ describe('TokenInputComponent', () => {
         fixture = TestBed.createComponent(TokenInputComponent);
         component = fixture.componentInstance;
         component.placeholder = 'Amount';
-        component.errorPlaceholder = 'amount';
+        component.selectedToken = token;
         fixture.detectChanges();
 
-        const inputDebugElement = fixture.debugElement.query(
-            By.css('input[type=number]')
-        );
+        const inputDebugElement = fixture.debugElement.query(By.css('input'));
         input = inputDebugElement.nativeElement as HTMLInputElement;
-
-        const checkboxElement = fixture.debugElement.query(
-            By.css('input[type=checkbox]')
-        );
-        checkbox = checkboxElement.nativeElement as HTMLInputElement;
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should have decimal input active by default', () => {
-        expect(checkbox.checked).toBe(true);
+    it('should be empty by default', () => {
+        expect(input.value).toBe('');
+        expect(component.amount.isNaN()).toBe(true);
+        expect(component.errors).toBeTruthy();
     });
 
-    it('should default to 0 amount', () => {
-        expect(input.value).toBe('0');
-    });
-
-    it('should have decimal step when checkbox is not selected', () => {
-        component.decimals = 18;
-        expect(component.step()).toBe('0.000000000000000001');
-    });
-
-    it('should have integer step when checkbox not checked', async(() => {
-        component.decimals = 18;
-        component.form.get('decimals').setValue(false);
+    it('should convert the input to a BigNumber', () => {
+        mockInput(fixture.debugElement, 'input', '0.000000000000000010');
         fixture.detectChanges();
 
-        expect(component.step()).toBe('1');
-    }));
-
-    it('should have allow an integer amount if checkbox not selected', () => {
-        component.decimals = 18;
-        component.form.get('decimals').setValue(false);
-
-        mockFormInput('10');
-
-        fixture.detectChanges();
-        expect(component.form.get('amount').value.isEqualTo(10)).toBe(true);
-        expect(component.tokenAmountDecimals).toBe(0);
-    });
-
-    it('should allow a decimal amount if checkbox is selected', () => {
-        component.decimals = 18;
-
-        mockFormInput('0.000000000000000010');
-
-        fixture.detectChanges();
         expect(input.value).toBe('0.000000000000000010');
-        expect(component.form.get('amount').value.isEqualTo(10)).toBe(true);
-        expect(component.tokenAmountDecimals).toBe(18);
+        expect(component.amount.isEqualTo(10)).toBe(true);
+        expect(component.errors).toBeFalsy();
     });
 
     it('should not show an error without a user input', () => {
-        expect(errorMessage(fixture.debugElement)).toBeFalsy();
+        const errorsElement = fixture.debugElement.query(By.css('#errors'));
+        expect(errorsElement).toBeFalsy();
     });
 
     it('should show errors while the user types', () => {
-        mockInput(fixture.debugElement, 'input[type=number]', '0.1');
+        mockInput(fixture.debugElement, 'input', '0.0000000000000000101');
         fixture.detectChanges();
-        expect(component.form.get('amount').errors['tooManyDecimals']).toBe(
-            true
-        );
+        expect(component.errors['tooManyDecimals']).toBe(true);
     });
 
     it('should show error when input is empty', () => {
-        component.decimals = 18;
-
-        mockFormInput('');
+        mockInput(fixture.debugElement, 'input', '');
         fixture.detectChanges();
 
-        expect(component.form.get('amount').value.isNaN()).toBe(true);
-        expect(component.tokenAmountDecimals).toBe(18);
-        expect(component.form.get('amount').errors['notANumber']).toBe(true);
+        expect(component.amount.isNaN()).toBe(true);
+        expect(component.errors['notANumber']).toBe(true);
     });
 
     it('should show error when input is not a number', () => {
-        component.decimals = 18;
-
-        mockFormInput('1Hello');
+        mockInput(fixture.debugElement, 'input', '1Hello');
         fixture.detectChanges();
 
-        expect(component.form.get('amount').value.isNaN()).toBe(true);
-        expect(component.tokenAmountDecimals).toBe(18);
-        expect(component.form.get('amount').errors['notANumber']).toBe(true);
+        expect(component.amount.isNaN()).toBe(true);
+        expect(component.errors['notANumber']).toBe(true);
+    });
+
+    it('should show error when input value is negative', () => {
+        mockInput(fixture.debugElement, 'input', '-30');
+        fixture.detectChanges();
+        expect(component.errors['negativeAmount']).toBe(true);
     });
 
     it('should show error when input value is 0', () => {
-        component.decimals = 18;
-
-        mockFormInput('0');
+        mockInput(fixture.debugElement, 'input', '0');
         fixture.detectChanges();
 
-        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
-        expect(component.tokenAmountDecimals).toBe(18);
-        expect(component.form.get('amount').errors['invalidAmount']).toBe(true);
+        expect(component.amount.isEqualTo(0)).toBe(true);
+        expect(component.errors['zeroAmount']).toBe(true);
     });
 
     it('should show no error when input value is 0 and zero is allowed', () => {
-        component.decimals = 18;
         component.allowZero = true;
-
-        mockFormInput('0');
+        mockInput(fixture.debugElement, 'input', '0');
         fixture.detectChanges();
 
-        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
-        expect(component.tokenAmountDecimals).toBe(18);
-        expect(component.form.get('amount').errors).toBeNull();
+        expect(component.amount.isEqualTo(0)).toBe(true);
+        expect(component.errors).toBeFalsy();
     });
 
-    it('should automatically change the value integer value on checkbox change', () => {
-        component.decimals = 8;
-
-        mockFormInput('0.00000001');
-        checkbox.click();
+    it('should use 0 as decimals when no token selected', () => {
+        component.selectedToken = undefined;
+        mockInput(fixture.debugElement, 'input', '0.000000000000000010');
         fixture.detectChanges();
-
-        expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
-        expect(component.tokenAmountDecimals).toBe(0);
+        expect(component.decimals).toBe(0);
+        expect(component.errors['tooManyDecimals']).toBe(true);
     });
 
-    it('should automatically change to the decimal value on checkbox change', () => {
-        component.form.get('decimals').setValue(false);
-        component.decimals = 8;
+    it('should be able to set a value programmatically', () => {
+        component.writeValue('0.00003');
         fixture.detectChanges();
 
-        mockFormInput('1');
-
-        checkbox.click();
-        fixture.detectChanges();
-
-        expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
-        expect(input.value).toBe('0.00000001');
-        expect(component.tokenAmountDecimals).toBe(8);
+        expect(input.value).toBe('0.00003');
+        expect(component.amount.isEqualTo(30000000000000)).toBe(true);
+        expect(component.errors).toBeFalsy();
     });
 
-    it('should change the value to 0 for invalid inputs on checkbox change', () => {
-        component.decimals = 8;
-
-        mockFormInput('1Hello');
-
-        checkbox.click();
+    it('should not to set a wrongly typed value programmatically', () => {
+        component.writeValue(100);
         fixture.detectChanges();
 
-        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
-        expect(input.value).toBe('0');
-        expect(component.tokenAmountDecimals).toBe(0);
+        expect(input.value).toBe('');
+        expect(component.amount.isNaN()).toBe(true);
     });
 
-    it('should change the value to 0 for inputs with too many decimals on checkbox change', () => {
-        component.decimals = 8;
-
-        mockFormInput('0.000000001');
-
-        checkbox.click();
+    it('should show the available token amount', () => {
+        component.maxAmount = new BigNumber(7000000000000000);
         fixture.detectChanges();
-
-        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
-        expect(input.value).toBe('0');
-        expect(component.tokenAmountDecimals).toBe(0);
+        const maxAmountText = fixture.debugElement.query(By.css('#max-amount'));
+        expect(maxAmountText.nativeElement.innerText.trim()).toBe('0.007');
     });
 
-    it('should automatically convert between decimal and integer', () => {
-        component.form.get('decimals').setValue(false);
-        component.decimals = 8;
+    it('should show error when input value is greater than max amount', () => {
+        component.maxAmount = new BigNumber(7000000000000000);
+        mockInput(fixture.debugElement, 'input', '0.008');
         fixture.detectChanges();
 
-        mockFormInput('1');
-
-        checkbox.click();
-        fixture.detectChanges();
-
-        expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
-        expect(input.value).toBe('0.00000001');
-        expect(component.tokenAmountDecimals).toBe(8);
-
-        checkbox.click();
-        fixture.detectChanges();
-
-        expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
-        expect(input.value).toBe('1');
-        expect(component.tokenAmountDecimals).toBe(0);
+        expect(component.errors['insufficientFunds']).toBe(true);
     });
 
-    it('should be able to reset the amount', () => {
-        mockFormInput('1');
+    it('should set the input value to the max amount', () => {
+        component.maxAmount = new BigNumber(7000000000000000);
         fixture.detectChanges();
-        component.resetAmount();
-        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
-        expect(component.tokenAmountDecimals).toBe(0);
-    });
-
-    it('should clear input field on focus', () => {
-        expect(component.form.get('amount').value.isEqualTo(0)).toBe(true);
-        input.dispatchEvent(new Event('focus'));
-        expect(component.form.get('amount').value).toBe('');
-    });
-
-    it('should not clear input field a second time on focus', () => {
-        input.dispatchEvent(new Event('focus'));
-        mockFormInput('1');
-        input.dispatchEvent(new Event('focus'));
-        expect(component.form.get('amount').value.isEqualTo(1)).toBe(true);
-    });
-
-    it('should show a hint if amount is lower than threshold', () => {
-        component.threshold = new BigNumber(10);
-        fixture.detectChanges();
-        mockFormInput('1');
+        clickElement(fixture.debugElement, '.info-box__max-button');
         fixture.detectChanges();
 
+        expect(input.value).toBe('0.007');
+        expect(component.amount.isEqualTo(7000000000000000)).toBe(true);
+        expect(component.errors).toBeFalsy();
+    });
+
+    it('should show a warning if amount is lower than token transfer threshold', () => {
+        component.selectedToken = createToken({
+            transferThreshold: new BigNumber(100),
+        });
+        component.showTransferLimit = true;
+        mockInput(fixture.debugElement, 'input', '0.00000000000000001');
+        fixture.detectChanges();
         const hint = fixture.debugElement.query(By.css('#threshold-hint'));
         expect(hint).toBeTruthy();
     });
 
-    it('should format threshold depending on decimals checked', () => {
-        component.threshold = new BigNumber(10000);
-        component.decimals = 8;
+    it('should not show a warning if amount is greater than token transfer threshold', () => {
+        component.selectedToken = createToken({
+            transferThreshold: new BigNumber(100),
+        });
+        component.showTransferLimit = true;
+        mockInput(fixture.debugElement, 'input', '0.0000000000001');
         fixture.detectChanges();
-        expect(component.formattedThreshold()).toBe('0.0001');
+        const hint = fixture.debugElement.query(By.css('#threshold-hint'));
+        expect(hint).toBeFalsy();
+    });
 
-        checkbox.click();
+    it('should not show a low transfer amount warning if there is no threshold', () => {
+        component.showTransferLimit = true;
+        mockInput(fixture.debugElement, 'input', '0.00000000000000001');
         fixture.detectChanges();
-        expect(component.formattedThreshold()).toBe('10000');
+        const hint = fixture.debugElement.query(By.css('#threshold-hint'));
+        expect(hint).toBeFalsy();
+    });
+
+    it('should not show a low transfer amount warning if no token selected', () => {
+        component.selectedToken = undefined;
+        component.showTransferLimit = true;
+        mockInput(fixture.debugElement, 'input', '0.00000000000000001');
+        fixture.detectChanges();
+        const hint = fixture.debugElement.query(By.css('#threshold-hint'));
+        expect(hint).toBeFalsy();
     });
 });

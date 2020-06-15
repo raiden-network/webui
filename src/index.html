@@ -2,111 +2,56 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Raiden WebUI</title>
+        <title>Raiden</title>
         <base href="/" />
 
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <link href="assets/favicon.png" rel="icon" type="image/png" />
         <style>
             app-root .loading {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                height: 98vh;
+                height: 100vh;
+                width: 100vw;
+                background-color: #000000;
             }
 
-            app-root .loading div:last-child {
-                margin-top: 30px;
-                text-transform: uppercase;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-                    Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica,
-                    sans-serif;
-                font-size: 2rem;
+            app-root .loading img {
+                width: 120px;
+            }
+
+            app-root .loading .spinner {
+                margin-top: 100px;
+                border: 16px solid rgba(255, 255, 255, 0.06);
+                border-top: 16px solid #ffffff;
+                border-radius: 50%;
+                width: 120px;
+                height: 120px;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
             }
         </style>
     </head>
     <body>
         <app-root>
             <div class="loading">
-                <div>
-                    <svg
-                        height="183.5"
-                        id="svg3791"
-                        style="fill:none"
-                        version="1.1"
-                        viewBox="0 0 120 183.5"
-                        width="120"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <rect
-                            height="616"
-                            id="rect3775"
-                            style="fill:#000000;fill-opacity:0"
-                            width="403"
-                            x="0"
-                            y="-432.5"
-                        ></rect>
-                        <rect
-                            height="615.99847"
-                            id="rect3777"
-                            style="fill:#000000;fill-opacity:0;stroke-width:1.33333004"
-                            transform="scale(1,-1)"
-                            width="402.99899"
-                            x="0"
-                            y="-183.5"
-                        ></rect>
-                        <rect
-                            height="615.99847"
-                            id="rect3779"
-                            style="fill:#000000;fill-opacity:0;stroke-width:1.33333004"
-                            transform="scale(1,-1)"
-                            width="402.99899"
-                            x="0"
-                            y="-183.5"
-                        ></rect>
-                        <rect
-                            height="615.99847"
-                            id="rect3781"
-                            style="fill:#000000;fill-opacity:0;stroke-width:1.33333004"
-                            transform="scale(1,-1)"
-                            width="402.99899"
-                            x="0"
-                            y="-183.5"
-                        ></rect>
-                        <rect
-                            height="340.63382"
-                            id="rect3783"
-                            style="fill:#000000;fill-opacity:0;stroke-width:1.33333004"
-                            transform="scale(1,-1)"
-                            width="402.99899"
-                            x="0"
-                            y="91.865967"
-                        ></rect>
-                        <path
-                            d="m 81.766139,101.5056 c 0,0 8.447816,-63.1562 -81.766139,-101.4293 h 75.692021 c 0,0 46.463679,39.0337 44.229949,101.4293 z"
-                            id="path3785"
-                            style="fill:#000000;stroke-width:0.29776576"
-                        ></path>
-                        <rect
-                            height="390.15637"
-                            id="rect3787"
-                            style="fill:#000000;fill-opacity:0;stroke-width:1.33333004"
-                            transform="scale(1,-1)"
-                            width="159.75827"
-                            x="92.975098"
-                            y="-183.5"
-                        ></rect>
-                        <path
-                            d="M 27.684806,67.3246 V 183.5 l 47.570393,-30.4446 z"
-                            id="path3789"
-                            style="fill:#000000;stroke-width:0.29776576"
-                        ></path>
-                    </svg>
-                </div>
-                <div>
-                    WebUI is loading...
-                </div>
+                <img alt="Raiden logo" src="assets/logo.svg" />
+                <div class="spinner"></div>
             </div>
         </app-root>
         <noscript>

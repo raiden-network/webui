@@ -9,11 +9,12 @@ describe('TokenUtils', () => {
         name: 'Another Test Token',
         decimals: 0,
         balance: new BigNumber(100),
+        sumChannelBalances: new BigNumber(100),
         connected: {
             funds: new BigNumber(100),
             sum_deposits: new BigNumber(100),
-            channels: 1
-        }
+            channels: 1,
+        },
     };
 
     const connectedToken2: UserToken = {
@@ -22,11 +23,12 @@ describe('TokenUtils', () => {
         name: 'Another Test Token2',
         decimals: 0,
         balance: new BigNumber(50),
+        sumChannelBalances: new BigNumber(30),
         connected: {
             funds: new BigNumber(40),
             sum_deposits: new BigNumber(20),
-            channels: 2
-        }
+            channels: 2,
+        },
     };
 
     const unconnectedToken: UserToken = {
@@ -34,24 +36,44 @@ describe('TokenUtils', () => {
         symbol: 'ATT3',
         name: 'Another Test Token3',
         decimals: 0,
-        balance: new BigNumber(0)
+        balance: new BigNumber(0),
+    };
+
+    const unconnectedToken2: UserToken = {
+        address: '0xB9eF346D094864794a0666D6E84D7Ebd640B4EC5',
+        symbol: 'ATT4',
+        name: 'Another Test Token4',
+        decimals: 0,
+        balance: new BigNumber(50),
     };
 
     it('should give connected token a lower index', () => {
         expect(
-            TokenUtils.compareTokens(connectedToken, unconnectedToken)
+            TokenUtils.compareTokens(connectedToken, unconnectedToken, 0, 0)
         ).toEqual(-1);
     });
 
     it('should give unconnected token a higher index', () => {
         expect(
-            TokenUtils.compareTokens(unconnectedToken, connectedToken)
+            TokenUtils.compareTokens(unconnectedToken, connectedToken, 0, 0)
         ).toEqual(1);
     });
 
-    it('should compare tokens with same connection status depending on balance', () => {
+    it('should compare not connected tokens depending on balance', () => {
         expect(
-            TokenUtils.compareTokens(connectedToken, connectedToken2)
-        ).toEqual(-50);
+            TokenUtils.compareTokens(unconnectedToken, unconnectedToken2, 0, 0)
+        ).toEqual(50);
+    });
+
+    it('should compare connected tokens depending on sum channel balances', () => {
+        expect(
+            TokenUtils.compareTokens(connectedToken, connectedToken2, 0, 0)
+        ).toEqual(-70);
+    });
+
+    it('should compare tokens based on usage', () => {
+        expect(
+            TokenUtils.compareTokens(connectedToken, connectedToken2, 4, 1)
+        ).toEqual(-3);
     });
 });

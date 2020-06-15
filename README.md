@@ -64,19 +64,7 @@ The [Raiden Network](https://raiden.network/) is an off-chain scaling solution, 
 low-fee and scalable payments. It’s complementary to the Ethereum blockchain and works with any ERC20 compatible token.
 
 The Raiden client code is available [here](https://github.com/raiden-network/raiden) and has been
-[released for mainnet](https://medium.com/raiden-network/red-eyes-mainnet-release-announcement-d48235bbef3c) with a
-limited alpha release of the Raiden Network in December 2018.
-
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=ASWeFdHDK-E" target="_blank">
-    <img
-      width="824px"
-      alt="Raiden WebUI"
-      src="./webui.png"
-    />
-  </a>
-</p>
-
+[released for mainnet](https://medium.com/raiden-network/alderaan-mainnet-release-announcement-7f701e58c236) for the Alderaan release of the Raiden Network in May 2020.
 
 Raiden WebUI is built using the following technologies:
 
@@ -92,7 +80,7 @@ Raiden WebUI is built using the following technologies:
 If you haven't used Raiden before, you can:
 
 -   Checkout the [developer portal](http://developer.raiden.network)
--   Look at the [documentation](https://raiden-network.readthedocs.io/en/stable/index.html)
+-   Look at the [documentation](https://docs.raiden.network)
 -   Learn more by watching explanatory [videos](https://www.youtube.com/channel/UCoUP_hnjUddEvbxmtNCcApg)
 -   Read the blog posts on [Medium](https://medium.com/@raiden_network)
 
@@ -213,7 +201,7 @@ so by running:
 python setup.py build install
 ```
 
-In case you need to use the debug version of the WebUI with in your virtual environment you can also
+In case you need to use the debug version of the WebUI within your virtual environment you can also
 run:
 
 ```bash

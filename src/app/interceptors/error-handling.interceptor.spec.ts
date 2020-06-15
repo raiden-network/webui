@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import {
     HttpClientTestingModule,
-    HttpTestingController
+    HttpTestingController,
 } from '@angular/common/http/testing';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -10,7 +10,6 @@ import { Observable } from 'rxjs';
 import { ErrorHandlingInterceptor } from './error-handling.interceptor';
 import { TestProviders } from '../../testing/test-providers';
 import { NotificationService } from '../services/notification.service';
-import { UiMessage } from '../models/notification';
 import { RaidenService } from '../services/raiden.service';
 
 @Injectable()
@@ -29,9 +28,9 @@ describe('ErrorHandlingInterceptor', () => {
 
     beforeEach(() => {
         notificationService = jasmine.createSpyObj('NotificationService', [
-            'addErrorNotification'
+            'addErrorNotification',
         ]);
-        notificationService.apiError = null;
+        notificationService.apiError = undefined;
 
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
@@ -41,119 +40,94 @@ describe('ErrorHandlingInterceptor', () => {
                     provide: HTTP_INTERCEPTORS,
                     useClass: ErrorHandlingInterceptor,
                     deps: [NotificationService, RaidenService],
-                    multi: true
+                    multi: true,
                 },
                 TestProviders.MockRaidenConfigProvider(),
                 {
                     provide: NotificationService,
-                    useValue: notificationService
-                }
-            ]
+                    useValue: notificationService,
+                },
+                TestProviders.AddressBookStubProvider(),
+            ],
         });
 
-        service = TestBed.get(MockRequestingService);
-        httpMock = TestBed.get(HttpTestingController);
-        notificationService = TestBed.get(NotificationService);
+        service = TestBed.inject(MockRequestingService);
+        httpMock = TestBed.inject(HttpTestingController);
+        notificationService = TestBed.inject(NotificationService);
     });
 
     it('should handle Raiden API errors', () => {
+        const errorMessage = 'An Raiden API error occured.';
         service.getData().subscribe(
             () => {
                 fail('On next should not be called');
             },
-            error => {
-                expect(error).toBeTruthy('An error is expected');
+            (error) => {
+                expect(error).toBe(errorMessage);
             }
         );
 
         const request = httpMock.expectOne('localhost:5001/api');
 
-        const errorMessage = 'An Raiden API error occured.';
         const errorBody = {
-            errors: errorMessage
+            errors: errorMessage,
         };
 
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
-
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: errorMessage
-        };
-        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
-            1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     });
 
     it('should handle Raiden API errors with multiple messages', () => {
+        const errorMessage =
+            'An Raiden API error occurred.\nAnother error occurred.';
         service.getData().subscribe(
             () => {
                 fail('On next should not be called');
             },
-            error => {
-                expect(error).toBeTruthy('An error is expected');
+            (error) => {
+                expect(error).toBe(errorMessage);
             }
         );
 
         const request = httpMock.expectOne('localhost:5001/api');
 
         const errorBody = {
-            errors: ['An Raiden API error occured.', 'Another error occured.']
+            errors: [
+                'An Raiden API error occurred.',
+                'Another error occurred.',
+            ],
         };
 
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
-
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: 'An Raiden API error occured.\nAnother error occured.'
-        };
-        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
-            1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     });
 
     it('should handle Raiden API errors with no message', () => {
+        const errorMessage =
+            'Http failure response for localhost:5001/api: 400 ';
         service.getData().subscribe(
             () => {
                 fail('On next should not be called');
             },
-            error => {
-                expect(error).toBeTruthy('An error is expected');
+            (error) => {
+                expect(error).toBe(errorMessage);
             }
         );
 
         const request = httpMock.expectOne('localhost:5001/api');
 
         const errorBody = {
-            errors: ''
+            errors: '',
         };
 
         request.flush(errorBody, {
             status: 400,
-            statusText: ''
+            statusText: '',
         });
-
-        const notificationMessage: UiMessage = {
-            title: 'Raiden Error',
-            description: 'Http failure response for localhost:5001/api: 400 '
-        };
-        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
-            1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
-        );
     });
 
     it('should handle non-response Raiden API errors', () => {
@@ -161,7 +135,7 @@ describe('ErrorHandlingInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
@@ -172,26 +146,19 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 504,
-                statusText: ''
+                statusText: '',
             }
         );
 
-        const notificationMessage: UiMessage = {
-            title: 'API not available',
-            description: 'Could not connect to the Raiden API'
-        };
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
-        );
-        expect(notificationService.addErrorNotification).toHaveBeenCalledWith(
-            notificationMessage
         );
 
         service.getData().subscribe(
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
@@ -200,7 +167,7 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 0,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -214,7 +181,7 @@ describe('ErrorHandlingInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
@@ -225,7 +192,7 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 504,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -234,7 +201,7 @@ describe('ErrorHandlingInterceptor', () => {
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
@@ -243,7 +210,7 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 504,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -253,20 +220,18 @@ describe('ErrorHandlingInterceptor', () => {
     });
 
     it('should reset the error and refresh rpc connection when connection is back', () => {
-        const raidenService = TestBed.get(RaidenService);
-        const attemptSpy = spyOn(
+        const raidenService = TestBed.inject(RaidenService);
+        const attemptSpy = spyOn(raidenService, 'attemptRpcConnection');
+        const refreshSpy = spyOn(
             raidenService,
-            'attemptRpcConnection'
+            'reconnectSuccessful'
         ).and.callFake(() => {});
-        const refreshSpy = spyOn(raidenService, 'refreshAddress').and.callFake(
-            () => {}
-        );
 
         service.getData().subscribe(
             () => {
                 fail('On next should not be called');
             },
-            error => {
+            (error) => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
@@ -277,7 +242,7 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 504,
-                statusText: ''
+                statusText: '',
             }
         );
 
@@ -287,12 +252,12 @@ describe('ErrorHandlingInterceptor', () => {
             {},
             {
                 status: 200,
-                statusText: ''
+                statusText: '',
             }
         );
 
         expect(attemptSpy).toHaveBeenCalledTimes(1);
         expect(refreshSpy).toHaveBeenCalledTimes(1);
-        expect(notificationService.apiError).toBeNull();
+        expect(notificationService.apiError).toBeFalsy();
     });
 });

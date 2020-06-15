@@ -34,7 +34,7 @@ describe('DecimalPipe', () => {
         );
     });
 
-    it('should show 0.000000000000000008 when the value is 8 with 18 decimals', function() {
+    it('should show 0.000000000000000008 when the value is 8 with 18 decimals', function () {
         expect(pipe.transform(new BigNumber(8), 18)).toBe(
             '0.000000000000000008'
         );

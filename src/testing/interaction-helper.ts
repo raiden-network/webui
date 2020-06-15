@@ -27,43 +27,29 @@ export function mockInput(
     element: DebugElement,
     cssSelector: string,
     value: string
-): HTMLInputElement {
+) {
     const inputElement = element.query(By.css(cssSelector));
     const input = inputElement.nativeElement as HTMLInputElement;
     input.focus();
     input.value = value;
     input.dispatchEvent(mockEvent('focusin'));
     input.dispatchEvent(mockEvent('input'));
-    return input;
 }
 
-export function mockFormInput(
-    element: DebugElement,
-    formControlProperty: string,
-    value: string
-): HTMLInputElement {
-    const formControl = element.componentInstance[formControlProperty];
-    formControl.setValue(value);
-    formControl.markAsDirty();
-    formControl.markAsTouched();
-    const input = mockInput(element, 'input', value);
-    return input;
+export function mockOpenMatSelect(element: DebugElement) {
+    const selector = element.query(By.css('.mat-select-trigger'))
+        .nativeElement as HTMLElement;
+    selector.focus();
+    selector.click();
 }
 
-export function errorMessage(element: DebugElement): string {
-    const matErrorElement = element.query(By.directive(MatError));
-    if (!matErrorElement) {
-        return undefined;
-    }
-    const spanElement = matErrorElement.query(By.css('span'));
+export function mockMatSelectFirst(element: DebugElement) {
+    mockMatSelectByIndex(element, 0);
+}
 
-    let innerText: string;
-
-    if (spanElement) {
-        const span = spanElement.nativeElement as HTMLSpanElement;
-        innerText = span.innerText.trim();
-    } else {
-        innerText = matErrorElement.nativeElement.innerText.trim();
-    }
-    return innerText;
+export function mockMatSelectByIndex(element: DebugElement, index: number) {
+    const optionElements = element.queryAll(By.css('.mat-option'));
+    const option = optionElements[index].nativeElement as HTMLElement;
+    option.focus();
+    option.click();
 }

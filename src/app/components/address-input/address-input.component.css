@@ -1,17 +1,74 @@
-mat-error span {
-    white-space: nowrap;
+.input {
+    z-index: 1;
+    position: relative;
+    height: 32px;
+}
+
+.input--contact {
+    margin-top: 20px;
+}
+
+.input__field {
+    border-radius: 25px;
+    background-color: #e7e7e7;
+    border: none;
+    box-shadow: none;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    padding: 0 18px;
+    height: 100%;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.35px;
+    color: #000000;
+}
+
+.input__field:disabled {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.icon-box {
+    height: 100%;
+    margin: 0 auto;
+}
+
+.icon-box__identicon {
+    border-radius: 50%;
+    height: 100%;
+}
+
+.info-box {
+    min-height: 32px;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.35px;
+}
+
+.info-box__text {
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-left: 18px;
 }
 
-.blocky > * {
-    display: block;
-    line-height: 20px !important;
-    font-size: 14px;
+.info-box__text--error {
+    color: #f54b47;
 }
 
-.medium {
-    font-weight: 500;
-    color: rgba(0, 0, 0, 0.54);
-    font-size: 12px;
+.info-box__text--clickable {
+    color: #2c8f94;
+    cursor: pointer;
+}
+
+.info-box__text--clickable:hover {
+    color: #4aa7ab;
+}
+
+.options {
+    height: 100%;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+}
+
+.icon {
+    height: 20px;
+    line-height: 20px;
 }

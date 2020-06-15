@@ -1,66 +1,84 @@
-<div fxLayout="row" fxLayoutAlign="end" class="notification-header">
-    <button
-        class="notification-close"
-        mat-icon-button
-        (click)="close.emit(true)"
-    >
-        <mat-icon aria-label="Close notification panel icon">close</mat-icon>
-    </button>
-</div>
-<div fxLayout="column" class="notification-container" fxLayoutGap="40px">
+<div class="panel" ngClass.xs="panel--mobile" fxLayout="row">
     <div
+        class="panel__container"
+        fxFlex="0 0 100%"
         fxLayout="column"
-        fxLayoutAlign="center center"
-        *ngIf="hasNoItems()"
-        fxFlex
+        fxLayoutGap="40px"
     >
-        <mat-icon color="primary">info</mat-icon>
-        <h1 class="mat-h1 notification-title">No notifications</h1>
-    </div>
-
-    <div fxLayout="column" fxLayoutGap="10px" *ngIf="pendingActions.length > 0">
-        <h1 class="mat-h1 notification-title">Pending actions</h1>
+        <div
+            *ngIf="hasNoItems()"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+            class="no-items"
+            fxFlex="1 0 0"
+        >
+            No notifications
+        </div>
 
         <div
-            *ngFor="let pendingAction of pendingActions; trackBy: trackByFn"
-            [@flyInOut]="'in'"
+            fxLayout="column"
+            fxLayoutGap="20px"
+            *ngIf="pendingActions.length > 0"
+            class="notifications"
         >
-            <app-notification-item
-                [notification]="pendingAction"
-                [removable]="false"
+            <div class="notifications__label">Pending actions</div>
+            <div
+                *ngFor="let pendingAction of pendingActions; trackBy: trackByFn"
+                [@flyInOut]="'in'"
             >
-            </app-notification-item>
+                <app-notification-item
+                    [notification]="pendingAction"
+                    [removable]="false"
+                >
+                </app-notification-item>
+            </div>
+        </div>
+
+        <div
+            fxLayout="column"
+            fxLayoutGap="20px"
+            *ngIf="notifications.length > 0"
+            class="notifications"
+        >
+            <div
+                fxFlexOffset="9px"
+                fxFlayout="row"
+                fxLayoutAlign="start center"
+                fxLayoutGap="48px"
+            >
+                <div class="notifications__label">
+                    Notifications
+                </div>
+                <button
+                    mat-flat-button
+                    color="accent"
+                    (click)="clearNotifications()"
+                    id="clear-notifications"
+                    class="notifications__clear"
+                >
+                    Clear
+                </button>
+            </div>
+
+            <div
+                *ngFor="let notification of notifications; trackBy: trackByFn"
+                [@flyInOut]="'in'"
+            >
+                <app-notification-item
+                    [notification]="notification"
+                    (remove)="removeNotification(notification.identifier)"
+                >
+                </app-notification-item>
+            </div>
         </div>
     </div>
-
-    <div fxLayout="column" fxLayoutGap="10px" *ngIf="notifications.length > 0">
-        <div
-            fxFlayout="row"
-            fxLayoutAlign="start center"
-            fxLayoutGap="10px"
-            class="notification-title"
-        >
-            <h1 fxFlexAlign="start" class="mat-h1 notification-title-text">
-                Notifications
-            </h1>
-            <button
-                mat-button
-                (click)="clearNotifications()"
-                id="clear-notifications"
-            >
-                {{ 'Clear' | uppercase }}
-            </button>
-        </div>
-
-        <div
-            *ngFor="let notification of notifications; trackBy: trackByFn"
-            [@flyInOut]="'in'"
-        >
-            <app-notification-item
-                [notification]="notification"
-                (remove)="removeNotification(notification.identifier)"
-            >
-            </app-notification-item>
-        </div>
+    <div class="close">
+        <button mat-icon-button (click)="close.emit(true)">
+            <mat-icon
+                class="close__icon"
+                aria-label="Close notification panel icon"
+                svgIcon="close"
+            ></mat-icon>
+        </button>
     </div>
 </div>

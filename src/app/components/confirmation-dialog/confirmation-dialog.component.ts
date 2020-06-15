@@ -9,21 +9,25 @@ export interface ConfirmationDialogPayload {
 @Component({
     selector: 'app-confirmation-dialog',
     templateUrl: './confirmation-dialog.component.html',
-    styleUrls: ['./confirmation-dialog.component.css']
+    styleUrls: ['./confirmation-dialog.component.css'],
 })
 export class ConfirmationDialogComponent {
     readonly title: string;
     readonly message: string;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public payload: ConfirmationDialogPayload,
-        public dialogRef: MatDialogRef<ConfirmationDialogComponent>
+        @Inject(MAT_DIALOG_DATA) data: ConfirmationDialogPayload,
+        private dialogRef: MatDialogRef<ConfirmationDialogComponent>
     ) {
-        this.title = this.payload.title;
-        this.message = this.payload.message;
+        this.title = data.title;
+        this.message = data.message;
     }
 
-    confirm() {
+    accept() {
         this.dialogRef.close(true);
+    }
+
+    cancel() {
+        this.dialogRef.close();
     }
 }

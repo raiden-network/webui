@@ -14,7 +14,7 @@ describe('LosslessJsonConverter', () => {
     it('should stringify BigNumbers', () => {
         const stringified = losslessStringify({
             big: new BigNumber('18446744073709551616'),
-            text: 'Hello'
+            text: 'Hello',
         });
         expect(stringified).toBe(
             '{"big":"18446744073709551616","text":"Hello"}'
@@ -24,7 +24,7 @@ describe('LosslessJsonConverter', () => {
     it('should not use exponential notation', () => {
         const stringified = losslessStringify({
             big: new BigNumber('10000000000000000000000'),
-            text: 'Hello'
+            text: 'Hello',
         });
         expect(stringified).toBe(
             '{"big":"10000000000000000000000","text":"Hello"}'
@@ -34,7 +34,7 @@ describe('LosslessJsonConverter', () => {
     it('should stringify normal numbers', () => {
         const stringified = losslessStringify({
             number: 100,
-            text: 'Hello'
+            text: 'Hello',
         });
         expect(stringified).toBe('{"number":"100","text":"Hello"}');
     });

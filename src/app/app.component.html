@@ -1,205 +1,169 @@
-<mat-toolbar color="primary" class="toolbar">
-    <button
-        *ngIf="isMobile()"
-        type="button"
-        aria-label="Toggle navigation menu"
-        mat-icon-button
-        (click)="toggleMenu()"
-    >
-        <mat-icon aria-label="Toggle navigation menu icon">menu</mat-icon>
-    </button>
-    <span fxLayoutAlign="center center" fxFlex="70px" fxFlex.xs="30px">
-        <img
-            alt="Raiden logo"
-            src="assets/favicon.png"
-            class="inverted"
-            ngClass.xs="favicon-mobile"
-            ngClass="favicon"
-        />
-    </span>
-    <span *ngIf="!isMobile()" class="info-container" fxLayout="column">
-        <a class="rn" target="_blank" href="http://raiden.network/">
-            Raiden Network
-        </a>
-        <span class="network-info">
-            {{ (network$ | async)?.name }}
-            <span class="environment">{{
-                production ? 'production' : 'development'
-            }}</span>
-        </span>
-    </span>
-    <span class="toolbar-spacer"></span>
-    <div
-        fxLayout="row"
-        fxLayoutAlign="start center"
-        fxLayoutGap.gt-xs="8px"
-        class="header-content"
-    >
-        <div class="account-info" fxLayout="column" fxLayoutAlign="center end">
-            <span
-                class="truncate account"
-                [matTooltip]="raidenAddress"
-                matTooltipClass="expanded-tooltip"
-                matTooltipShowDelay="600"
-                matTooltipPosition="before"
+<div class="wrapper" fxLayout="column" fxLayoutAlign="center center">
+    <mat-sidenav-container class="container" ngClass.lt-lg="container--mobile">
+        <mat-sidenav
+            class="menu"
+            ngClass.xs="menu--mobile"
+            [mode]="isMobile() ? 'over' : 'side'"
+            [disableClose]="isMobile() ? false : true"
+            [opened]="isMobile() ? false : true"
+            role="navigation"
+            #menu_sidenav
+        >
+            <div
+                class="menu-inner"
+                fxLayout="column"
+                fxLayoutAlign="start center"
+                fxLayoutGap="28px"
             >
-                <span
-                    *ngIf="!isSmallScreen()"
-                    class="account-label"
-                    fxFlexAlign="start"
-                >
-                    Your account:
-                </span>
-                <span>{{ raidenAddress | shortenAddress }}</span>
-            </span>
-            <span class="balance-info" *ngIf="(balance$ | async) as balance">
-                <span
-                    *ngIf="!isMobile(); else mobile_balance"
-                    class="balance"
-                    [matTooltip]="
-                        (balance | displayDecimals) === balance ? '' : balance
-                    "
-                    >{{ balance | displayDecimals }}
-                    {{ (network$ | async)?.shortName | uppercase }}
-                </span>
-                <ng-template #mobile_balance>
-                    <span
-                        class="balance"
-                        [matTooltip]="
-                            (balance | displayDecimals: 3:true) === balance
-                                ? ''
-                                : balance
-                        "
-                        >{{ balance | displayDecimals: 3:true }}
-                        {{ (network$ | async)?.shortName | uppercase }}
-                    </span>
-                </ng-template>
-                <a
-                    *ngIf="(network$ | async)?.faucet"
-                    [href]="faucetLink$ | async"
-                    target="_blank"
-                    mat-icon-button
-                    class="faucet-button"
-                    matTooltip="Open ether faucet"
-                >
-                    <mat-icon aria-label="Open ether faucet">
-                        card_giftcard
-                    </mat-icon>
+                <a target="_blank" href="http://raiden.network/">
+                    <img
+                        alt="Raiden logo"
+                        src="assets/logo.svg"
+                        class="menu__logo"
+                    />
                 </a>
-            </span>
-        </div>
-        <button
-            mat-icon-button
-            ngxClipboard
-            [cbContent]="raidenAddress"
-            matTooltip="Copy address to clipboard"
+                <app-navigation-entry
+                    fxFlexOffset.gt-md="57px"
+                    (click)="closeMenu()"
+                    icon="home"
+                    text="Home"
+                    route="/home"
+                ></app-navigation-entry>
+                <app-navigation-entry
+                    (click)="closeMenu()"
+                    icon="channel"
+                    text="Channels"
+                    route="/channels"
+                ></app-navigation-entry>
+                <app-navigation-entry
+                    (click)="closeMenu()"
+                    icon="contacts"
+                    text="Contacts"
+                    route="/contacts"
+                ></app-navigation-entry>
+                <app-navigation-entry
+                    (click)="closeMenu()"
+                    icon="transfers"
+                    text="Transfers"
+                    route="/transfers"
+                ></app-navigation-entry>
+                <app-navigation-entry
+                    (click)="closeMenu()"
+                    icon="info"
+                    text="About"
+                    route="/about"
+                ></app-navigation-entry>
+                <div fxHide.xs="true" fxFlex="1 1 auto"></div>
+                <button
+                    mat-flat-button
+                    (click)="shutdownRaiden()"
+                    class="shutdown"
+                    fxLayout="row"
+                    fxLayoutAlign="start center"
+                >
+                    <mat-icon
+                        class="shutdown__icon"
+                        svgIcon="shutdown"
+                    ></mat-icon>
+                    <span>Shut down</span>
+                </button>
+            </div>
+        </mat-sidenav>
+
+        <mat-sidenav-content
+            class="sidenav-content"
+            ngClass.lt-lg="sidenav-content--mobile"
+            fxLayout="center start"
         >
-            <mat-icon aria-label="Copy address to clipboard">
-                content_copy
-            </mat-icon>
-        </button>
-        <button
-            mat-button
-            (click)="notification_sidenav.toggle()"
-            class="notification-button"
-            matTooltip="Open notification panel"
-            [style.background-color]="notificationBlink"
-        >
-            <span
-                [matBadge]="pendingRequests"
-                matBadgeOverlap="true"
-                matBadgeColor="primary"
-                matBadgePosition="after"
-                class="notification-button-container"
+            <div
+                class="toast-container"
+                ngClass.lt-lg="toast-container--mobile"
+                toastContainer
+            ></div>
+            <div
+                *ngIf="apiStatus?.status === 'ready'"
+                class="page"
+                fxLayout="column"
+                fxLayoutGap="32px"
             >
-                <img
-                    alt="User address identicon"
-                    class="round identicon"
-                    [src]="identicon(raidenAddress)"
-                />
-            </span>
-        </button>
+                <div
+                    *ngIf="showNetworkInfo"
+                    class="network-info"
+                    fxLayout="row"
+                    fxLayoutAlign="center center"
+                    [@easeInOut]="'in'"
+                >
+                    <span>
+                        You are running Raiden on
+                        {{ (network$ | async)?.name }} testnet
+                    </span>
+                    <button
+                        mat-icon-button
+                        class="network-info__close"
+                        (click)="hideNetworkInfo()"
+                    >
+                        <mat-icon
+                            aria-label="Close network info"
+                            svgIcon="close"
+                            class="network-info__close-icon"
+                        ></mat-icon>
+                    </button>
+                </div>
+                <app-header
+                    (toggleNotifications)="notification_sidenav.toggle()"
+                    (toggleMenu)="menu_sidenav.toggle()"
+                ></app-header>
+                <div class="content" ngClass.lt-lg="content--mobile">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </mat-sidenav-content>
+
+        <mat-sidenav
+            mode="over"
+            position="end"
+            [autoFocus]="false"
+            class="notification-sidenav"
+            ngClass.xs="notification-sidenav--mobile"
+            #notification_sidenav
+        >
+            <app-notification-panel
+                (close)="notification_sidenav.close()"
+            ></app-notification-panel>
+        </mat-sidenav>
+    </mat-sidenav-container>
+</div>
+
+<div
+    *ngIf="apiStatus && apiStatus.status !== 'ready'"
+    class="wrapper wrapper--black unavailable"
+    fxLayout="column"
+    fxLayoutAlign="center center"
+    fxLayoutGap="50px"
+>
+    <img alt="Raiden logo" src="assets/logo.svg" class="unavailable__logo" />
+    <span fxFlexOffset="50px">Raiden API unavailable</span>
+    <div
+        *ngIf="apiStatus.status === 'syncing'"
+        class="progress"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        fxLayoutGap="30px"
+    >
+        <progress class="progress__bar" [value]="syncingProgress" max="1">
+            {{ syncingProgress }}
+        </progress>
+        <span>{{ apiStatus.blocks_to_sync }} blocks to sync</span>
     </div>
-</mat-toolbar>
+</div>
 
-<mat-sidenav-container class="sidenav-container">
-    <mat-sidenav
-        [mode]="isMobile() ? 'over' : 'side'"
-        [disableClose]="isMobile() ? false : true"
-        [opened]="isMobile() ? false : true"
-        class="dark-theme"
-        role="navigation"
-        #menu_sidenav
-    >
-        <mat-nav-list>
-            <app-navigation-entry
-                (clicked)="closeMenu()"
-                icon="home"
-                text="Home"
-                route="/home"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (clicked)="closeMenu()"
-                icon="toll"
-                text="Tokens"
-                route="/tokens"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (clicked)="closeMenu()"
-                icon="compare_arrows"
-                text="Channels"
-                route="/channels"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (clicked)="closeMenu()"
-                icon="contacts"
-                text="Address Book"
-                route="/address-book"
-            ></app-navigation-entry>
-            <app-navigation-entry
-                (clicked)="closeMenu()"
-                icon="info"
-                text="About"
-                route="/about"
-            ></app-navigation-entry>
-        </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content class="container-content">
-        <router-outlet *ngIf="!hasError(); else api_error"></router-outlet>
-        <ng-template #api_error>
-            <app-error
-                *ngIf="hasApiError(); else rpc_error"
-                errorTitle="Raiden API connection error!"
-                errorDescription="A connection with the Raiden API could not be established. \n
-                    Please try again."
-                buttonText="Retry"
-                [errorContent]="getApiErrorMessage()"
-                (buttonClicked)="attemptApiConnection()"
-            ></app-error>
-        </ng-template>
-        <ng-template #rpc_error>
-            <app-error
-                errorTitle="JSON RPC connection error!"
-                errorDescription="A connection with the Web3 provider could not be established. \n
-                    Please try again."
-                buttonText="Retry"
-                [errorContent]="getRpcErrorTrace()"
-                (buttonClicked)="attemptRpcConnection()"
-            ></app-error>
-        </ng-template>
-    </mat-sidenav-content>
-    <mat-sidenav
-        mode="over"
-        position="end"
-        [autoFocus]="false"
-        ngClass.xs="notification-sidenav-mobile"
-        ngClass="notification-sidenav"
-        #notification_sidenav
-    >
-        <app-notification-panel
-            (close)="notification_sidenav.close()"
-        ></app-notification-panel>
-    </mat-sidenav>
-</mat-sidenav-container>
-
-<mat-toolbar fxHide fxShow.xs></mat-toolbar>
+<div
+    *ngIf="didShutdown"
+    class="wrapper wrapper--black unavailable"
+    fxLayout="column"
+    fxLayoutAlign="center center"
+    fxLayoutGap="100px"
+>
+    <img alt="Raiden logo" src="assets/logo.svg" class="unavailable__logo" />
+    <span>Shutdown successful. You can close this window.</span>
+</div>

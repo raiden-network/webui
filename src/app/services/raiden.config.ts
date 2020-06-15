@@ -1,8 +1,8 @@
 import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { EnvironmentType } from './enviroment-type.enum';
+import { EnvironmentType } from '../models/enviroment-type.enum';
 import { BatchManager } from './batch-manager';
-import { HttpProvider } from 'web3-providers/types';
+import { HttpProvider, provider } from 'web3-core';
 import Web3 from 'web3';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Network, NetworkInfo } from '../utils/network-info';
@@ -31,13 +31,13 @@ const default_config: RDNConfig = {
     http_timeout: 600000,
     settle_timeout: 500,
     reveal_timeout: 10,
-    environment_type: EnvironmentType.DEVELOPMENT
+    environment_type: EnvironmentType.DEVELOPMENT,
 };
 
+@Injectable()
 export class Web3Factory {
-    // noinspection JSMethodCanBeStatic
-    create(provider: HttpProvider): Web3 {
-        return new Web3(provider);
+    create(web3Provider: provider): Web3 {
+        return new Web3(web3Provider);
     }
 }
 
@@ -76,7 +76,7 @@ export class RaidenConfig {
         await this.loadConfiguration(url);
         try {
             await this.setupWeb3();
-            this.notificationService.rpcError = null;
+            this.notificationService.rpcError = undefined;
             return true;
         } catch (e) {
             console.error(e.message);
@@ -147,6 +147,6 @@ export class RaidenConfig {
     }
 
     private createBatchManager() {
-        this._batchManager = new BatchManager(this.web3);
+        this._batchManager = new BatchManager(this.web3.currentProvider);
     }
 }

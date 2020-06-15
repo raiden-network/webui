@@ -1,0 +1,190 @@
+<div
+    class="history"
+    ngClass.lt-lg="history--mobile"
+    fxLayout="column"
+    fxLayoutGap="20px"
+    [@flyInOutLeft]="'in'"
+>
+    <div class="label" fxLayout="row wrap" fxLayoutAlign="space-between end">
+        <span>Transfer history</span>
+        <a
+            *ngIf="!showAll; else navigation"
+            class="label__link"
+            routerLink="/transfers"
+        >
+            All
+        </a>
+        <ng-template #navigation>
+            <div
+                *ngIf="visibleHistory.length !== 0"
+                fxLayout="row"
+                fxLayoutAlign="start end"
+                fxLayoutGap="10px"
+            >
+                <span>Page {{ currentPage + 1 }} of {{ numberOfPages }}</span>
+                <button
+                    class="navigation"
+                    mat-icon-button
+                    [disabled]="currentPage <= 0"
+                    (click)="previousPage()"
+                    id="previous"
+                >
+                    <mat-icon
+                        class="navigation__icon"
+                        svgIcon="left"
+                        aria-label="Previous page"
+                    >
+                    </mat-icon>
+                </button>
+                <button
+                    class="navigation"
+                    mat-icon-button
+                    [disabled]="currentPage + 1 >= numberOfPages"
+                    (click)="nextPage()"
+                    id="next"
+                >
+                    <mat-icon
+                        class="navigation__icon"
+                        svgIcon="right"
+                        aria-label="Next page"
+                    >
+                    </mat-icon>
+                </button>
+            </div>
+        </ng-template>
+    </div>
+    <cdk-table
+        *ngIf="visibleHistory.length !== 0; else no_transfers"
+        class="table"
+        [dataSource]="visibleHistory"
+        [trackBy]="trackByFn"
+        fxLayout="column"
+        fxLayoutGap="17px"
+    >
+        <ng-container cdkColumnDef="event">
+            <cdk-cell *cdkCellDef="let event">
+                <div
+                    class="icon-box"
+                    fxLayout="column"
+                    fxLayoutAlign="center center"
+                >
+                    <mat-icon
+                        *ngIf="isReceivedEvent(event); else sent"
+                        class="icon-box__icon"
+                        svgIcon="received"
+                    ></mat-icon>
+                    <ng-template #sent>
+                        <mat-icon
+                            class="icon-box__icon"
+                            svgIcon="sent"
+                        ></mat-icon>
+                    </ng-template>
+                </div>
+            </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="main">
+            <cdk-cell *cdkCellDef="let event" class="table__main">
+                <div class="table__partner">
+                    <ng-container *ngIf="isReceivedEvent(event); else sent_to">
+                        Received from
+                    </ng-container>
+                    <ng-template #sent_to>
+                        Sent to
+                    </ng-template>
+                    <span
+                        *ngIf="partnerAddress(event) as address"
+                        matTooltip="{{ address }}
+                        (Click to copy)"
+                        ngxClipboard
+                        [cbContent]="address"
+                    >
+                        {{ paymentPartner(event) }}
+                    </span>
+                </div>
+                <div *ngIf="!event.pending" class="table__date">
+                    {{ getUTCTimeString(event) | date: 'dd-MM-yyy H:mm' }}
+                </div>
+            </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="spacer">
+            <cdk-cell *cdkCellDef="let event" fxFlex="1 1 auto"> </cdk-cell>
+        </ng-container>
+
+        <ng-container cdkColumnDef="amount">
+            <cdk-cell
+                *cdkCellDef="let event"
+                fxLayout="column"
+                fxLayoutAlign="start end"
+                fxFlex.xs="1 0 0"
+            >
+                <div
+                    *ngIf="getUserToken(event) as userToken"
+                    class="table__amount"
+                >
+                    <ng-container
+                        *ngIf="event.event !== 'EventPaymentSentFailed'"
+                    >
+                        <span
+                            *ngIf="
+                                event.amount
+                                    | decimal: userToken.decimals as amount
+                            "
+                            [matTooltip]="amount"
+                        >
+                            {{ isReceivedEvent(event) ? '+' : '-' }}
+                            {{ amount | displayDecimals: 3 }}
+                        </span>
+                    </ng-container>
+                    <span
+                        matTooltip="{{ userToken.name }}
+                            {{ userToken.address }}
+                            (Click to copy)"
+                        ngxClipboard
+                        [cbContent]="userToken.address"
+                    >
+                        {{ userToken.symbol }}
+                    </span>
+                </div>
+                <div>
+                    <ng-container *ngIf="event.pending; else confirmed">
+                        <div class="table__label table__label--pending">
+                            Pending
+                        </div>
+                    </ng-container>
+                    <ng-template #confirmed>
+                        <div
+                            *ngIf="
+                                event.event !== 'EventPaymentSentFailed';
+                                else failed
+                            "
+                            class="table__label"
+                        >
+                            Confirmed
+                        </div>
+                    </ng-template>
+                    <ng-template #failed>
+                        <div
+                            class="table__label table__label--failed"
+                            [matTooltip]="event.reason"
+                        >
+                            Failed
+                        </div>
+                    </ng-template>
+                </div>
+            </cdk-cell>
+        </ng-container>
+
+        <cdk-row
+            class="table__row"
+            *cdkRowDef="let row; columns: ['event', 'main', 'spacer', 'amount']"
+            fxLayout="row wrap"
+            fxLayoutAlign="start start"
+            fxLayoutGap="20px"
+        ></cdk-row>
+    </cdk-table>
+    <ng-template #no_transfers>
+        <div>No {{ selectedToken?.symbol }} transfers</div>
+    </ng-template>
+</div>

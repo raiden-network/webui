@@ -8,48 +8,26 @@ import Spy = jasmine.Spy;
 import { TestProviders } from '../../testing/test-providers';
 import { NotificationService } from './notification.service';
 import { PendingTransfer } from '../models/pending-transfer';
-import BigNumber from 'bignumber.js';
 import { from, of } from 'rxjs';
 import { UserToken } from '../models/usertoken';
+import { createPendingTransfer, createToken } from '../../testing/test-data';
+import { AddressBookService } from './address-book.service';
 
 describe('PendingTransferPollingService', () => {
     let notificationService: NotificationService;
     let raidenService: RaidenService;
     let getPendingTransfersSpy: Spy;
 
-    const token: UserToken = {
-        address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        symbol: 'TST',
-        name: 'Test Suite Token',
-        balance: new BigNumber(20),
-        decimals: 8
-    };
+    const token: UserToken = createToken();
 
-    const pendingTransfer1: PendingTransfer = {
-        channel_identifier: new BigNumber(255),
-        initiator: '0x5E1a3601538f94c9e6D2B40F7589030ac5885FE7',
-        locked_amount: new BigNumber(119),
-        payment_identifier: new BigNumber(1),
+    const pendingTransfer1 = createPendingTransfer({
         role: 'initiator',
-        target: '0x00AF5cBfc8dC76cd599aF623E60F763228906F3E',
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        token_network_address: '0x111157460c0F41EfD9107239B7864c062aA8B978',
-        transferred_amount: new BigNumber(331),
-        userToken: token
-    };
-
-    const pendingTransfer2: PendingTransfer = {
-        channel_identifier: new BigNumber(255),
-        initiator: '0x00AF5cBfc8dC76cd599aF623E60F763228906F3E',
-        locked_amount: new BigNumber(20),
-        payment_identifier: new BigNumber(155),
+        userToken: token,
+    });
+    const pendingTransfer2 = createPendingTransfer({
         role: 'target',
-        target: '0x5E1a3601538f94c9e6D2B40F7589030ac5885FE7',
-        token_address: '0x0f114A1E9Db192502E7856309cc899952b3db1ED',
-        token_network_address: '0x111157460c0F41EfD9107239B7864c062aA8B978',
-        transferred_amount: new BigNumber(3),
-        userToken: token
-    };
+        userToken: token,
+    });
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -58,14 +36,15 @@ describe('PendingTransferPollingService', () => {
                 PendingTransferPollingService,
                 RaidenService,
                 NotificationService,
-                TestProviders.MockRaidenConfigProvider()
-            ]
+                TestProviders.MockRaidenConfigProvider(),
+                TestProviders.AddressBookStubProvider(),
+            ],
         });
     });
 
     beforeEach(() => {
-        raidenService = TestBed.get(RaidenService);
-        notificationService = TestBed.get(NotificationService);
+        raidenService = TestBed.inject(RaidenService);
+        notificationService = TestBed.inject(NotificationService);
 
         getPendingTransfersSpy = spyOn(raidenService, 'getPendingTransfers');
         spyOn(notificationService, 'addInfoNotification');
@@ -85,35 +64,24 @@ describe('PendingTransferPollingService', () => {
     it('should show a notification if new pending transfers are detected', inject(
         [PendingTransferPollingService],
         (service: PendingTransferPollingService) => {
+            const mockAddressBookService = TestBed.inject(AddressBookService);
+            mockAddressBookService.get = () => {
+                return {
+                    [pendingTransfer1.target]: 'Test account 1',
+                    [pendingTransfer2.initiator]: 'Test account 2',
+                };
+            };
             getPendingTransfersSpy.and.returnValues(
                 from([
                     [],
                     [pendingTransfer1],
-                    [pendingTransfer1, pendingTransfer2]
+                    [pendingTransfer1, pendingTransfer2],
                 ])
             );
             service.pendingTransfers$.subscribe();
 
             expect(notificationService.addPendingAction).toHaveBeenCalledTimes(
                 2
-            );
-            // @ts-ignore
-            let payload = notificationService.addPendingAction.calls.first()
-                .args[0];
-            expect(payload.title).toBe('Payment in flight');
-            expect(payload.description).toBe(
-                `A payment of 0.00000119 ${token.symbol} is being sent to ${
-                    pendingTransfer1.target
-                }`
-            );
-            // @ts-ignore
-            payload = notificationService.addPendingAction.calls.mostRecent()
-                .args[0];
-            expect(payload.title).toBe('Payment incoming');
-            expect(payload.description).toBe(
-                `A payment of 0.0000002 ${token.symbol} is incoming from ${
-                    pendingTransfer2.initiator
-                }`
             );
         }
     ));

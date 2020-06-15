@@ -2,7 +2,7 @@ import {
     HttpClient,
     HttpRequest,
     HttpEventType,
-    HttpEvent
+    HttpEvent,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
@@ -12,7 +12,8 @@ import {
     of,
     zip,
     BehaviorSubject,
-    Subject
+    Subject,
+    throwError,
 } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
@@ -26,39 +27,43 @@ import {
     toArray,
     finalize,
     filter,
-    delay
+    delay,
+    catchError,
+    mapTo,
 } from 'rxjs/operators';
 import { Channel } from '../models/channel';
 import { Connections } from '../models/connection';
 import { PaymentEvent } from '../models/payment-event';
 import { UserToken } from '../models/usertoken';
 import { amountToDecimal } from '../utils/amount.converter';
-import { EnvironmentType } from './enviroment-type.enum';
+import { EnvironmentType } from '../models/enviroment-type.enum';
 import { RaidenConfig } from './raiden.config';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { environment } from '../../environments/environment';
 import { fromWei } from 'web3-utils';
 import { Network } from '../utils/network-info';
-import { DepositMode } from '../utils/helpers';
+import { DepositMode } from '../models/deposit-mode.enum';
 import { backoff } from '../shared/backoff.operator';
 import BigNumber from 'bignumber.js';
 import { NotificationService } from './notification.service';
 import { PendingTransfer } from '../models/pending-transfer';
 import { UiMessage } from '../models/notification';
+import { AddressBookService } from './address-book.service';
+import { Status } from '../models/status';
 
 interface PendingChannelsMap {
     [tokenAddress: string]: { [partnerAddress: string]: Channel };
 }
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class RaidenService {
     private paymentInitiatedSubject: BehaviorSubject<
         void
     > = new BehaviorSubject(null);
     private globalRetrySubject: Subject<void> = new Subject();
-    private addressRefreshSubject: BehaviorSubject<void> = new BehaviorSubject(
+    private reconnectedSubject: BehaviorSubject<void> = new BehaviorSubject(
         null
     );
     private pendingChannelsSubject = new BehaviorSubject<PendingChannelsMap>(
@@ -74,30 +79,35 @@ export class RaidenService {
     public readonly globalRetry$: Observable<
         void
     > = this.globalRetrySubject.asObservable();
+    public readonly reconnected$: Observable<
+        void
+    > = this.reconnectedSubject.asObservable();
+    public quickConnectPending: { [tokenAddress: string]: boolean } = {};
 
-    private userTokens: { [id: string]: UserToken | null } = {};
+    private userTokens: { [address: string]: UserToken | null } = {};
     private pendingChannels: PendingChannelsMap = {};
 
     constructor(
         private http: HttpClient,
         private raidenConfig: RaidenConfig,
         private tokenInfoRetriever: TokenInfoRetrieverService,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private addressBookService: AddressBookService
     ) {
-        this.raidenAddress$ = this.addressRefreshSubject.pipe(
+        this.raidenAddress$ = this.reconnectedSubject.pipe(
             switchMap(() =>
                 this.http.get<{ our_address: string }>(
                     `${this.raidenConfig.api}/address`
                 )
             ),
-            map(data => (this._raidenAddress = data.our_address)),
+            map((data) => (this._raidenAddress = data.our_address)),
             backoff(this.raidenConfig.config.error_poll_interval),
             shareReplay(1)
         );
 
         const fetch: () => Observable<string> = () => {
             return this.raidenAddress$.pipe(
-                flatMap(address =>
+                flatMap((address) =>
                     fromPromise(this.raidenConfig.web3.eth.getBalance(address))
                 )
             );
@@ -106,11 +116,23 @@ export class RaidenService {
         this.balance$ = interval(15000).pipe(
             startWith(fetch),
             flatMap(fetch),
-            map(value => fromWei(value, 'ether')),
+            map((value) => fromWei(value, 'ether')),
             share()
         );
 
         this.network$ = this.raidenConfig.network$;
+
+        this.network$.subscribe((network) => {
+            this.userTokens = {};
+            if (network.tokenConstants) {
+                network.tokenConstants.forEach((tokenInfo) => {
+                    this.userTokens[tokenInfo.address] = Object.assign(
+                        { balance: new BigNumber(0) },
+                        tokenInfo
+                    );
+                });
+            }
+        });
     }
 
     public get production(): boolean {
@@ -141,7 +163,7 @@ export class RaidenService {
     public getVersion(): Observable<string> {
         return this.http
             .get<{ version: string }>(`${this.raidenConfig.api}/version`)
-            .pipe(map(response => response.version));
+            .pipe(map((response) => response.version));
     }
 
     public getChannels(): Observable<Array<Channel>> {
@@ -184,7 +206,9 @@ export class RaidenService {
         return tokens$.pipe(flatMap(() => fetchChannels$));
     }
 
-    public getTokens(refresh: boolean = false): Observable<Array<UserToken>> {
+    public getTokens(
+        refreshConnections: boolean = false
+    ): Observable<Array<UserToken>> {
         const tokens$: Observable<{
             [address: string]: UserToken;
         }> = zip(
@@ -201,13 +225,13 @@ export class RaidenService {
                 )
             )
         );
-        const connections$: Observable<Connections | null> = refresh
+        const connections$: Observable<Connections | null> = refreshConnections
             ? this.http.get<Connections>(`${this.raidenConfig.api}/connections`)
             : of(null);
 
         return zip(tokens$, connections$).pipe(
             map(([userTokens, connections]) => {
-                Object.keys(userTokens).forEach(address => {
+                Object.keys(userTokens).forEach((address) => {
                     const token = userTokens[address];
                     if (connections) {
                         if (
@@ -243,9 +267,7 @@ export class RaidenService {
     ): Observable<Channel> {
         return this.http
             .get<Channel>(
-                `${
-                    this.raidenConfig.api
-                }/channels/${tokenAddress}/${partnerAddress}`
+                `${this.raidenConfig.api}/channels/${tokenAddress}/${partnerAddress}`
             )
             .pipe(
                 map((channel: Channel) => {
@@ -270,22 +292,24 @@ export class RaidenService {
             token_address: tokenAddress,
             partner_address: partnerAddress,
             settle_timeout: settleTimeout,
-            total_deposit: balance
+            total_deposit: balance,
         };
+        const token = this.getUserToken(tokenAddress);
+        const partnerLabel = this.getContactLabel(partnerAddress);
         let notificationIdentifier: number;
 
         return of(null).pipe(
             tap(() => {
-                const token = this.getUserToken(tokenAddress);
                 const formattedBalance = amountToDecimal(
                     balance,
                     token.decimals
                 ).toFixed();
                 const message: UiMessage = {
-                    title: 'Opening a channel',
-                    description: `A new channel with ${partnerAddress} and a balance of ${formattedBalance} ${
-                        token.symbol
-                    } will be opened in ${token.name} network`
+                    title: 'Opening channel',
+                    description: `with ${partnerLabel} ${partnerAddress} and ${formattedBalance} ${token.symbol} deposit`,
+                    icon: 'channel',
+                    identiconAddress: partnerAddress,
+                    userToken: token,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -296,7 +320,7 @@ export class RaidenService {
                 }
                 this.pendingChannels[tokenAddress][partnerAddress] = {
                     channel_identifier: new BigNumber(0),
-                    state: 'Waiting for open',
+                    state: 'waiting_for_open',
                     total_deposit: new BigNumber(0),
                     total_withdraw: new BigNumber(0),
                     balance: new BigNumber(0),
@@ -305,7 +329,7 @@ export class RaidenService {
                     token_address: tokenAddress,
                     partner_address: partnerAddress,
                     depositPending: true,
-                    userToken: token
+                    userToken: token,
                 };
                 this.pendingChannelsSubject.next(this.pendingChannels);
             }),
@@ -323,6 +347,16 @@ export class RaidenService {
                     (<unknown>channel.reveal_timeout)
                 )).toNumber();
                 return channel;
+            }),
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title: 'Open channel failed',
+                    description: error,
+                    icon: 'error-mark',
+                    identiconAddress: partnerAddress,
+                    userToken: token,
+                });
+                return throwError(error);
             }),
             finalize(() => {
                 this.notificationService.removePendingAction(
@@ -343,11 +377,12 @@ export class RaidenService {
         const identifier = paymentIdentifier
             ? paymentIdentifier
             : this.identifier;
+        const token = this.getUserToken(tokenAddress);
+        const targetLabel = this.getContactLabel(targetAddress);
+
         const request = new HttpRequest(
             'POST',
-            `${
-                this.raidenConfig.api
-            }/payments/${tokenAddress}/${targetAddress}`,
+            `${this.raidenConfig.api}/payments/${tokenAddress}/${targetAddress}`,
             { amount, identifier },
             { reportProgress: true }
         );
@@ -365,44 +400,58 @@ export class RaidenService {
                 (event: HttpEvent<any>) => event.type === HttpEventType.Response
             ),
             tap(() => {
-                const token = this.getUserToken(tokenAddress);
                 const formattedAmount = amountToDecimal(
                     amount,
                     token.decimals
                 ).toFixed();
                 const message: UiMessage = {
-                    title: 'Transfer successful',
-                    description: `A payment of ${formattedAmount} ${
-                        token.symbol
-                    } was successfully sent to ${targetAddress}`
+                    title: 'Sent transfer',
+                    description: `${formattedAmount} ${token.symbol} to ${targetLabel} ${targetAddress}`,
+                    icon: 'sent',
+                    identiconAddress: targetAddress,
+                    userToken: token,
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
-            map(() => null)
+            mapTo(null),
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title: 'Send transfer failed',
+                    description: error,
+                    icon: 'error-mark',
+                    identiconAddress: targetAddress,
+                    userToken: token,
+                });
+                return throwError(error);
+            })
         );
     }
 
     public getPaymentHistory(
-        tokenAddress: string,
-        targetAddress?: string
+        tokenAddress?: string,
+        partnerAddress?: string,
+        limit?: number,
+        offset?: number
     ): Observable<PaymentEvent[]> {
-        return this.http
-            .get<PaymentEvent[]>(
-                `${this.raidenConfig.api}/payments/${tokenAddress}`
-            )
-            .pipe(
-                map(events => {
-                    if (targetAddress) {
-                        return events.filter(
-                            event =>
-                                event.initiator === targetAddress ||
-                                event.target === targetAddress
-                        );
-                    } else {
-                        return events;
-                    }
-                })
-            );
+        let paymentsResource = `${this.raidenConfig.api}/payments`;
+        if (tokenAddress) {
+            paymentsResource += `/${tokenAddress}`;
+            if (partnerAddress) {
+                paymentsResource += `/${partnerAddress}`;
+            }
+        }
+
+        const params: { limit?: string; offset?: string } = {};
+        if (limit) {
+            params.limit = limit.toString();
+        }
+        if (offset) {
+            params.offset = offset.toString();
+        }
+
+        return this.http.get<PaymentEvent[]>(paymentsResource, {
+            params: params,
+        });
     }
 
     public modifyDeposit(
@@ -412,7 +461,6 @@ export class RaidenService {
         mode: DepositMode
     ): Observable<Channel> {
         let notificationIdentifier: number;
-        const action = mode === DepositMode.WITHDRAW ? 'Withdraw' : 'Deposit';
         const token = this.getUserToken(tokenAddress);
         const formattedAmount = amountToDecimal(
             amount,
@@ -420,31 +468,22 @@ export class RaidenService {
         ).toFixed();
 
         return this.getChannel(tokenAddress, partnerAddress).pipe(
-            tap(channel => {
-                let description;
-                if (mode === DepositMode.WITHDRAW) {
-                    description = `${formattedAmount} ${
-                        token.symbol
-                    } will be withdrawn from channel ${
-                        channel.channel_identifier
-                    } with ${partnerAddress}`;
-                } else {
-                    description = `${formattedAmount} ${
-                        token.symbol
-                    } will be deposited to channel ${
-                        channel.channel_identifier
-                    } with ${partnerAddress}`;
-                }
-
+            tap((channel) => {
                 const message: UiMessage = {
-                    title: action,
-                    description: description
+                    title:
+                        mode === DepositMode.WITHDRAW
+                            ? 'Withdrawing from channel'
+                            : 'Depositing to channel',
+                    description: `${formattedAmount} ${token.symbol}`,
+                    icon: 'channel',
+                    identiconAddress: partnerAddress,
+                    userToken: token,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
                 );
             }),
-            switchMap(channel => {
+            switchMap((channel) => {
                 const body: {
                     total_deposit?: BigNumber;
                     total_withdraw?: BigNumber;
@@ -456,9 +495,7 @@ export class RaidenService {
                 }
 
                 return this.http.patch<Channel>(
-                    `${
-                        this.raidenConfig.api
-                    }/channels/${tokenAddress}/${partnerAddress}`,
+                    `${this.raidenConfig.api}/channels/${tokenAddress}/${partnerAddress}`,
                     body
                 );
             }),
@@ -471,27 +508,31 @@ export class RaidenService {
                 )).toNumber();
                 return channel;
             }),
-            tap(response => {
-                let description;
-                if (mode === DepositMode.WITHDRAW) {
-                    description = `${formattedAmount} ${
-                        token.symbol
-                    } were withdrawn from channel ${
-                        response.channel_identifier
-                    } with ${partnerAddress}`;
-                } else {
-                    description = `${formattedAmount} ${
-                        token.symbol
-                    } were deposited to channel ${
-                        response.channel_identifier
-                    } with ${partnerAddress}`;
-                }
-
+            tap((response) => {
                 const message: UiMessage = {
-                    title: action,
-                    description: description
+                    title:
+                        mode === DepositMode.WITHDRAW
+                            ? 'Withdrew from channel'
+                            : 'Deposited to channel',
+                    description: `${formattedAmount} ${token.symbol}`,
+                    icon: 'channel',
+                    identiconAddress: partnerAddress,
+                    userToken: token,
                 };
-                this.notificationService.addInfoNotification(message);
+                this.notificationService.addSuccessNotification(message);
+            }),
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title:
+                        mode === DepositMode.WITHDRAW
+                            ? 'Withdraw from channel failed'
+                            : 'Deposit to channel failed',
+                    description: error,
+                    icon: 'error-mark',
+                    identiconAddress: partnerAddress,
+                    userToken: token,
+                });
+                return throwError(error);
             }),
             finalize(() =>
                 this.notificationService.removePendingAction(
@@ -509,14 +550,14 @@ export class RaidenService {
         const token = this.getUserToken(tokenAddress);
 
         return this.getChannel(tokenAddress, partnerAddress).pipe(
-            tap(channel => {
+            tap((channel) => {
+                const partnerLabel = this.getContactLabel(partnerAddress);
                 const message: UiMessage = {
-                    title: 'Closing a channel',
-                    description: `Channel ${
-                        channel.channel_identifier
-                    } with ${partnerAddress} in ${
-                        token.name
-                    } network will be closed`
+                    title: 'Closing channel',
+                    description: `${token.symbol} with ${partnerLabel} ${partnerAddress}`,
+                    icon: 'channel',
+                    identiconAddress: partnerAddress,
+                    userToken: token,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -524,9 +565,7 @@ export class RaidenService {
             }),
             switchMap(() =>
                 this.http.patch<Channel>(
-                    `${
-                        this.raidenConfig.api
-                    }/channels/${tokenAddress}/${partnerAddress}`,
+                    `${this.raidenConfig.api}/channels/${tokenAddress}/${partnerAddress}`,
                     { state: 'closed' }
                 )
             ),
@@ -539,14 +578,26 @@ export class RaidenService {
                 )).toNumber();
                 return channel;
             }),
-            tap(response => {
+            tap((response) => {
+                const partnerLabel = this.getContactLabel(partnerAddress);
                 const message: UiMessage = {
-                    title: 'Close',
-                    description: `Channel ${response.channel_identifier} with ${
-                        response.partner_address
-                    } in ${token.name} network was closed successfully`
+                    title: 'Closed channel',
+                    description: `${token.symbol} with ${partnerLabel} ${partnerAddress}`,
+                    icon: 'channel',
+                    identiconAddress: partnerAddress,
+                    userToken: token,
                 };
-                this.notificationService.addInfoNotification(message);
+                this.notificationService.addSuccessNotification(message);
+            }),
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title: 'Close channel failed',
+                    description: error,
+                    icon: 'error-mark',
+                    identiconAddress: partnerAddress,
+                    userToken: token,
+                });
+                return throwError(error);
             }),
             finalize(() =>
                 this.notificationService.removePendingAction(
@@ -563,7 +614,8 @@ export class RaidenService {
             tap(() => {
                 const message: UiMessage = {
                     title: 'Registering token',
-                    description: `Token ${tokenAddress} will be registered`
+                    description: tokenAddress,
+                    icon: 'add',
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -575,13 +627,22 @@ export class RaidenService {
                     {}
                 )
             ),
-            map(() => null),
+            mapTo(null),
             tap(() => {
                 const message: UiMessage = {
-                    title: 'Token registered',
-                    description: `Token ${tokenAddress} was successfully registered`
+                    title: 'Registered token',
+                    description: tokenAddress,
+                    icon: 'add',
                 };
                 this.notificationService.addSuccessNotification(message);
+            }),
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title: 'Register token failed',
+                    description: error,
+                    icon: 'error-mark',
+                });
+                return throwError(error);
             }),
             finalize(() =>
                 this.notificationService.removePendingAction(
@@ -593,8 +654,7 @@ export class RaidenService {
 
     public connectTokenNetwork(
         funds: BigNumber,
-        tokenAddress: string,
-        join: boolean
+        tokenAddress: string
     ): Observable<void> {
         let notificationIdentifier: number;
         const token = this.getUserToken(tokenAddress);
@@ -605,19 +665,12 @@ export class RaidenService {
 
         return of(null).pipe(
             tap(() => {
+                this.quickConnectPending[tokenAddress] = true;
                 const message: UiMessage = {
-                    title: join ? 'Joining token network' : 'Adding funds',
-                    description: join
-                        ? `${
-                              token.name
-                          } network will be joined with ${formattedAmount} ${
-                              token.symbol
-                          }`
-                        : `Funds for ${
-                              token.name
-                          } network will be changed to ${formattedAmount} ${
-                              token.symbol
-                          }`
+                    title: 'Quick connect',
+                    description: `${formattedAmount} ${token.symbol} funds`,
+                    icon: 'thunderbolt',
+                    userToken: token,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -627,33 +680,35 @@ export class RaidenService {
                 this.http.put(
                     `${this.raidenConfig.api}/connections/${tokenAddress}`,
                     {
-                        funds
+                        funds,
                     }
                 )
             ),
-            map(() => null),
+            mapTo(null),
             tap(() => {
                 const message: UiMessage = {
-                    title: join ? 'Joined token network' : 'Funds added',
-                    description: join
-                        ? `${
-                              token.name
-                          } network was joined successfully with ${formattedAmount} ${
-                              token.symbol
-                          }`
-                        : `Funds for ${
-                              token.name
-                          } network were successfully changed to ${formattedAmount} ${
-                              token.symbol
-                          }`
+                    title: 'Quick connect successful',
+                    description: `${formattedAmount} ${token.symbol} funds`,
+                    icon: 'thunderbolt',
+                    userToken: token,
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
-            finalize(() =>
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title: 'Quick connect failed',
+                    description: error,
+                    icon: 'error-mark',
+                    userToken: token,
+                });
+                return throwError(error);
+            }),
+            finalize(() => {
+                this.quickConnectPending[tokenAddress] = false;
                 this.notificationService.removePendingAction(
                     notificationIdentifier
-                )
-            )
+                );
+            })
         );
     }
 
@@ -664,9 +719,9 @@ export class RaidenService {
             tap(() => {
                 const message: UiMessage = {
                     title: 'Leaving token network',
-                    description: `All channels in ${
-                        userToken.name
-                    } network will be closed and settled`
+                    description: `${userToken.symbol}`,
+                    icon: 'close',
+                    userToken: userToken,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -677,15 +732,24 @@ export class RaidenService {
                     `${this.raidenConfig.api}/connections/${userToken.address}`
                 )
             ),
-            map(() => null),
+            mapTo(null),
             tap(() => {
                 const message: UiMessage = {
                     title: 'Left token network',
-                    description: `Successfully closed and settled all channels in ${
-                        userToken.name
-                    } network`
+                    description: `${userToken.symbol}`,
+                    icon: 'close',
+                    userToken: userToken,
                 };
                 this.notificationService.addSuccessNotification(message);
+            }),
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title: 'Leave token network failed',
+                    description: error,
+                    icon: 'error-mark',
+                    userToken: userToken,
+                });
+                return throwError(error);
             }),
             finalize(() =>
                 this.notificationService.removePendingAction(
@@ -729,15 +793,15 @@ export class RaidenService {
         amount: BigNumber
     ): Observable<void> {
         let notificationIdentifier: number;
-        const decimalValue = amountToDecimal(amount, token.decimals);
+        const formattedAmount = amountToDecimal(amount, token.decimals);
 
         return of(null).pipe(
             tap(() => {
                 const message: UiMessage = {
-                    title: 'Minting Token',
-                    description: `${decimalValue} ${
-                        token.symbol
-                    } will be minted`
+                    title: 'Minting',
+                    description: `${formattedAmount} ${token.symbol} on-chain`,
+                    icon: 'token',
+                    userToken: token,
                 };
                 notificationIdentifier = this.notificationService.addPendingAction(
                     message
@@ -745,22 +809,29 @@ export class RaidenService {
             }),
             switchMap(() =>
                 this.http.post(
-                    `${this.raidenConfig.api}/_testing/tokens/${
-                        token.address
-                    }/mint`,
+                    `${this.raidenConfig.api}/_testing/tokens/${token.address}/mint`,
                     { to: targetAddress, value: amount }
                 )
             ),
-            map(() => null),
+            mapTo(null),
             tap(() => {
                 const message: UiMessage = {
-                    title: 'Mint',
-                    description: `${decimalValue} ${
-                        token.symbol
-                    } were successfully minted`
+                    title: 'Minted',
+                    description: `${formattedAmount} ${token.symbol} on-chain`,
+                    icon: 'token',
+                    userToken: token,
                 };
 
                 this.notificationService.addSuccessNotification(message);
+            }),
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title: 'Mint failed',
+                    description: error,
+                    icon: 'error-mark',
+                    userToken: token,
+                });
+                return throwError(error);
             }),
             finalize(() =>
                 this.notificationService.removePendingAction(
@@ -770,11 +841,24 @@ export class RaidenService {
         );
     }
 
+    public getStatus(): Observable<Status> {
+        return this.http.get<Status>(`${this.raidenConfig.api}/status`).pipe(
+            map((status) => {
+                if (status.blocks_to_sync) {
+                    status.blocks_to_sync = (<BigNumber>(
+                        (<unknown>status.blocks_to_sync)
+                    )).toNumber();
+                }
+                return status;
+            })
+        );
+    }
+
     public getPendingChannels(): Observable<Channel[]> {
         return this.pendingChannelsSubject.pipe(
             map((pendingChannelsMap: PendingChannelsMap) => {
                 let pendingChannels: Channel[] = [];
-                Object.values(pendingChannelsMap).forEach(partnerMap => {
+                Object.values(pendingChannelsMap).forEach((partnerMap) => {
                     pendingChannels = pendingChannels.concat(
                         Object.values(partnerMap)
                     );
@@ -792,13 +876,15 @@ export class RaidenService {
         const onResult = (success: boolean) => {
             if (success) {
                 this.notificationService.addInfoNotification({
-                    title: 'JSON RPC Connection',
-                    description: 'JSON-RPC connection established successfully'
+                    title: 'JSON RPC',
+                    description: 'Connection successful',
+                    icon: 'info',
                 });
             } else {
                 this.notificationService.addErrorNotification({
-                    title: 'JSON RPC Connection',
-                    description: 'Could not establish a JSON-RPC connection'
+                    title: 'JSON RPC',
+                    description: 'Connection failure',
+                    icon: 'error-mark',
                 });
             }
         };
@@ -816,11 +902,25 @@ export class RaidenService {
         this.globalRetrySubject.next(null);
     }
 
-    public refreshAddress() {
-        this.addressRefreshSubject.next(null);
+    public shutdownRaiden(): Observable<void> {
+        return this.http
+            .post(`${this.raidenConfig.api}/shutdown`, {})
+            .pipe(mapTo(null));
+    }
+
+    public reconnectSuccessful() {
+        this.reconnectedSubject.next(null);
     }
 
     public resolveEnsName(name: string): Observable<string> {
         return fromPromise(this.raidenConfig.web3.eth.ens.getAddress(name));
+    }
+
+    private getContactLabel(address: string): string {
+        let contactLabel = this.addressBookService.get()[address];
+        if (!contactLabel) {
+            contactLabel = '';
+        }
+        return contactLabel;
     }
 }

@@ -1,0 +1,25 @@
+<app-raiden-dialog
+    [titleText]="editing ? 'Edit Contact' : 'New Contact'"
+    [acceptText]="editing ? 'Save' : 'Add'"
+    [acceptDisabled]="form.invalid"
+    [formGroup]="form"
+    (accept)="accept()"
+    (cancel)="cancel()"
+>
+    <app-address-input
+        formControlName="address"
+        placeholder="Contact"
+        [displayIdenticon]="true"
+    >
+    </app-address-input>
+    <div class="label-input" fxLayout="row">
+        <input
+            placeholder="Name"
+            aria-label="Contact name input"
+            formControlName="label"
+            class="label-input__field"
+            type="text"
+            spellcheck="false"
+        />
+    </div>
+</app-raiden-dialog>

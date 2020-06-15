@@ -3,12 +3,12 @@ version: 2.1
 templates:
   filter-tag-templates: &filter-version-regex
     tags:
-      only: /^v\d+\.\d+\.\d+$/
+      only: /^v\d+\.\d+\.\d+(\-[a-z]+\d+)?$/
     branches:
       ignore: /.*/
 
 
-var_1: &docker_image circleci/node:10.13.0-browsers
+var_1: &docker_image circleci/node:12.18.0-browsers
 var_2: &cache_key raiden-webui-{{ .Branch }}-{{ checksum "package-lock.json" }}
 
 anchor_1: &root_package_lock_key
@@ -62,6 +62,21 @@ jobs:
           root: .
           paths:
             - ./*
+
+  check_licenses:
+    executor: base-executor
+    working_directory: ~/
+    steps:
+      - attach_workspace: *attach_options
+      - run:
+          name: Update $PATH
+          command: echo 'export PATH=$PATH:/tmp/node_modules/.bin' >> $BASH_ENV
+      - run:
+          name: Install license checker
+          command: cd /tmp && npm install license-checker@25.0.1
+      - run:
+          name: Check Licenses
+          command: license-checker --production --onlyAllow 'MIT;BSD;Apache;MPL;LGPL;ZPL;ISC;WTFPL;Unlicense' --excludePackages 'uuid@2.0.1' --excludePrivatePackages # uuid@2.0.1 has an issue with the license information but it is licensed under MIT
 
   lint:
     executor: base-executor
@@ -149,6 +164,9 @@ workflows:
   default_workflow:
     jobs:
       - install
+      - check_licenses:
+          requires:
+            - install
       - lint:
           requires:
             - install

@@ -1,45 +1,35 @@
-import {
-    Component,
-    EventEmitter,
-    Input,
-    OnChanges,
-    Output,
-    SimpleChanges
-} from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ConnectionErrorType } from '../../models/connection-errors';
+import { RaidenService } from '../../services/raiden.service';
+
+export interface ErrorPayload {
+    type: ConnectionErrorType;
+    errorContent: string;
+}
 
 @Component({
     selector: 'app-error',
     templateUrl: './error.component.html',
-    styleUrls: ['./error.component.scss']
+    styleUrls: ['./error.component.css'],
 })
-export class ErrorComponent implements OnChanges {
-    @Input() errorTitle: string;
-    @Input() errorDescription: string;
-    @Input() buttonText: string;
-    @Input() errorContent: string;
-    @Input() showError = false;
-    @Output() buttonClicked: EventEmitter<any> = new EventEmitter();
+export class ErrorComponent {
+    showError = false;
 
-    private _descriptionRows: string[] = [];
+    constructor(
+        @Inject(MAT_DIALOG_DATA) public data: ErrorPayload,
+        private raidenService: RaidenService
+    ) {}
 
-    public get descriptionRows(): string[] {
-        return this._descriptionRows;
+    isRpcError(): boolean {
+        return this.data.type === ConnectionErrorType.RpcError;
     }
 
-    constructor() {}
-
-    clicked() {
-        this.buttonClicked.emit(true);
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes.hasOwnProperty('errorDescription')) {
-            const change: string = changes['errorDescription'].currentValue;
-            if (change) {
-                this._descriptionRows = change.split('\\n');
-            } else {
-                this._descriptionRows = [];
-            }
+    retry() {
+        if (this.isRpcError()) {
+            this.raidenService.attemptRpcConnection();
+        } else {
+            this.raidenService.attemptApiConnection();
         }
     }
 }

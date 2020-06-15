@@ -1,57 +1,13 @@
 <div
-    class="mat-typography match-parent-height"
-    fxLayout="column"
-    fxFlexAlign="center"
-    fxFlex="60"
-    fxFlex.gt-lg="40"
-    fxFlex.sm="70"
-    fxFlex.xs="90"
-    fxFlexOffset="20"
-    fxFlexOffset.gt-lg="30"
-    fxFlexOffset.sm="15"
-    fxFlexOffset.xs="5"
+    class="container"
+    fxLayout="row"
+    fxLayoutGap="30px"
+    fxLayout.lt-lg="column"
+    fxLayoutGap.lt-lg="32px"
 >
-    <div class="information">
-        <h1 ngClass="mat-display-2" ngClass.xs="headline">
-            Welcome to the Raiden WebUI
-        </h1>
-        <p>
-            The WebUI is a user interface which allows you to interact with a
-            Raiden node through the browser. The WebUI utilizes Raidens REST API
-            endpoints.
-        </p>
-        <h2>
-            Get started by:
-        </h2>
-        <ul>
-            <li>
-                <p>
-                    <a routerLink="/tokens">Joining a token network</a>
-                </p>
-            </li>
-            <li>
-                <p>
-                    <a
-                        target="_blank"
-                        href="https://docs.raiden.network/the-raiden-web-interface"
-                        >Checking out the WebUI tutorial</a
-                    >
-                </p>
-            </li>
-            <li>
-                <p>
-                    <a
-                        target="_blank"
-                        href="https://raiden-network.readthedocs.io/en/latest/"
-                        >Reading the full Raiden documentation</a
-                    >
-                </p>
-            </li>
-        </ul>
-        <p>
-            For more information, visit the
-            <a href="https://raiden.network/" target="_blank">Raiden website</a
-            >.
-        </p>
+    <div fxLayout="column" fxLayoutGap="32px" fxFlex.gt-md="555 0 0">
+        <app-token></app-token>
+        <app-history-table></app-history-table>
     </div>
+    <app-contact-list fxFlex.gt-md="334 0 0"></app-contact-list>
 </div>

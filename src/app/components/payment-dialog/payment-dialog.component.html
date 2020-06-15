@@ -1,41 +1,26 @@
-<h1 mat-dialog-title>{{ data.tokenAddress ? 'Pay' : 'Send Tokens' }}</h1>
-<div mat-dialog-content [formGroup]="form" (keyup.enter)="accept()">
+<app-raiden-dialog
+    titleText="Transfer"
+    acceptText="Send"
+    [acceptDisabled]="form.invalid"
+    [formGroup]="form"
+    (accept)="accept()"
+    (cancel)="cancel()"
+>
+    <app-token-network-selector
+        formControlName="token"
+        (tokenChanged)="tokenNetworkSelected($event)"
+        onlyConnectedTokens="true"
+    >
+    </app-token-network-selector>
     <app-address-input
         [displayIdenticon]="true"
         [userAccount]="true"
         formControlName="target_address"
-        placeholder="Receiver address"
-        errorPlaceholder="Receiver"
+        placeholder="Receiver"
     >
     </app-address-input>
-
-    <app-token-network-selector
-        formControlName="token"
-        (valueChanged)="tokenNetworkSelected($event)"
-        onlyConnectedTokens="true"
-    >
-    </app-token-network-selector>
     <app-token-input
-        [placeholder]="'Amount'"
-        [errorPlaceholder]="'payment amount'"
         formControlName="amount"
-    >
-    </app-token-input>
-    <app-payment-identifier-input formControlName="payment_identifier">
-    </app-payment-identifier-input>
-</div>
-<div mat-dialog-actions>
-    <button mat-button mat-dialog-close>Close</button>
-    <button mat-button id="reset" (click)="reset()" [disabled]="form.pristine">
-        Reset
-    </button>
-    <button
-        mat-button
-        id="send"
-        color="accent"
-        (click)="accept()"
-        [disabled]="form.invalid"
-    >
-        Send
-    </button>
-</div>
+        showTransferLimit="true"
+    ></app-token-input>
+</app-raiden-dialog>

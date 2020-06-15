@@ -1,54 +1,42 @@
-<div
-    class="error"
-    fxLayout="row"
-    fxLayout.lt-md="column"
-    fxLayoutGap="2rem"
-    fxLayoutAlign="center"
->
-    <div fxLayout="column" fxLayout.xs="row" fxLayoutAlign="start center">
-        <div class="icon">
-            <mat-icon>warning</mat-icon>
+<div fxLayout="column" fxLayoutGap="33px" fxLayoutAlign="center center">
+    <mat-icon class="icon" aria-hidden="true" svgIcon="error"></mat-icon>
+    <ng-container *ngIf="isRpcError(); else api_error">
+        <div class="title">JSON RPC connection error!</div>
+        <div class="description">
+            A connection with the Web3 provider could not be established. Please
+            try again.
+        </div>
+    </ng-container>
+    <ng-template #api_error>
+        <div class="title">Raiden API connection error!</div>
+        <div class="description">
+            A connection with the Raiden API could not be established. Please
+            try again.
+        </div>
+    </ng-template>
+    <div *ngIf="showError" class="content">
+        <div class="content__text">
+            {{ data.errorContent }}
         </div>
     </div>
-    <div
-        class="mat-typography error-container"
-        fxLayout="column"
-        fxLayoutGap="1.5rem"
-    >
-        <div fxLayout="row" class="title">
-            {{ errorTitle }}
-        </div>
-        <div class="description">
-            <div fxLayout="row" *ngFor="let row of descriptionRows">
-                {{ row }}
-            </div>
-        </div>
-
-        <div
-            *ngIf="errorContent && showError"
-            class="error-content"
-            fxLayout="row"
+    <div class="actions" fxLayout="row" fxLayoutAlign="space-between">
+        <button
+            class="actions__button actions__button--white"
+            id="show-error"
+            mat-flat-button
+            color="accent"
+            (click)="showError = !showError"
         >
-            <pre>{{ errorContent }}</pre>
-        </div>
-
-        <div fxLayout="row" *ngIf="buttonText">
-            <button
-                *ngIf="errorContent"
-                mat-button
-                color="accent"
-                (click)="showError = !showError"
-            >
-                {{ (showError ? 'Hide Error' : 'Show Error') | uppercase }}
-            </button>
-            <button
-                mat-stroked-button
-                color="accent"
-                (click)="clicked()"
-                id="retry"
-            >
-                {{ buttonText | uppercase }}
-            </button>
-        </div>
+            {{ showError ? 'Hide Error' : 'Show Error' }}
+        </button>
+        <button
+            class="actions__button actions__button--black"
+            id="retry"
+            mat-flat-button
+            color="primary"
+            (click)="retry()"
+        >
+            Retry
+        </button>
     </div>
 </div>

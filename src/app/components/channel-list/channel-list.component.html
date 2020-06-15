@@ -1,0 +1,93 @@
+<div
+    class="wrapper"
+    fxLayout="column"
+    fxLayoutAlign="start start"
+    fxLayoutGap="18px"
+>
+    <button
+        mat-flat-button
+        class="action"
+        (click)="openChannel()"
+        id="open-channel"
+    >
+        <mat-icon class="action__icon" svgIcon="add" aria-hidden="true">
+        </mat-icon>
+        <span> New channel</span>
+    </button>
+
+    <div fxFlex="1 0 0" class="list" fxLayout="column" fxLayoutGap="22px">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="label">
+                <ng-container *ngIf="selectedToken; else all_networks">
+                    Channels in {{ selectedToken.symbol }} network
+                </ng-container>
+                <ng-template #all_networks>
+                    Channels in all networks
+                </ng-template>
+            </div>
+            <mat-select
+                [(value)]="selectedToken"
+                (selectionChange)="onSelect($event.value)"
+                class="network-selector"
+                placeholder="Select network"
+                panelClass="network-selector__panel"
+            >
+                <mat-select-trigger>
+                    <ng-container *ngIf="!selectedToken; else change_network">
+                        Select Network
+                    </ng-container>
+                    <ng-template #change_network>Change Network</ng-template>
+                </mat-select-trigger>
+                <mat-option>
+                    All Networks
+                </mat-option>
+                <mat-option
+                    *ngFor="let option of tokens$ | async; trackBy: trackByFn"
+                    [value]="option"
+                    class="token-option"
+                >
+                    <span>
+                        {{
+                            option.sumChannelBalances
+                                | decimal: option.decimals
+                                | displayDecimals: 3
+                        }}
+                        {{ option.symbol }}
+                    </span>
+                    <span>{{ option.name }}</span>
+                    <span>{{ option.address }}</span>
+                </mat-option>
+            </mat-select>
+        </div>
+
+        <div *ngIf="visibleChannels.length === 0">
+            No {{ selectedToken?.symbol }} channels
+        </div>
+
+        <div fxFlex="1 0 0" class="channels">
+            <div
+                class="channels__items"
+                fxLayout="column"
+                fxLayoutGap="27px"
+                #channel_list
+            >
+                <div
+                    *ngFor="
+                        let channelsRow of visibleChannels | chunk: itemsPerRow;
+                        trackBy: rowTrackByFn
+                    "
+                    fxLayout="row"
+                    fxLayoutGap="37px"
+                >
+                    <app-channel
+                        *ngFor="let channel of channelsRow; trackBy: trackByFn"
+                        [channel]="channel"
+                        [@stretchInOut]="'in'"
+                        [style.width.px]="channelWidth"
+                    >
+                    </app-channel>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

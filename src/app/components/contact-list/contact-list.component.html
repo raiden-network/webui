@@ -1,0 +1,80 @@
+<div class="list" fxLayout="column" fxLayoutGap="30px">
+    <div class="list__labels" fxLayout="row" fxLayoutAlign="start center">
+        <span>
+            Contacts ・ {{ visibleContacts.length }} of
+            {{ totalContacts }}
+        </span>
+        <div fxFlex="1 1 auto"></div>
+        <button mat-icon-button [matMenuTriggerFor]="options" id="options">
+            <mat-icon svgIcon="more" aria-label="Options"></mat-icon>
+        </button>
+        <mat-menu
+            class="options"
+            #options="matMenu"
+            [overlapTrigger]="true"
+            xPosition="before"
+        >
+            <ng-container *ngIf="!showAll">
+                <a
+                    mat-menu-item
+                    routerLink="/contacts"
+                    fxLayout="column"
+                    fxLayoutAlign="center center"
+                    id="all-link"
+                >
+                    All
+                </a>
+                <div class="options__divider"></div>
+            </ng-container>
+            <input
+                #upload_select
+                class="options__file-input"
+                type="file"
+                accept="application/json, .json"
+                (change)="filesSelected($event.target.files)"
+            />
+            <button mat-menu-item (click)="upload_select.click()">
+                Import contacts
+            </button>
+            <div class="options__divider"></div>
+            <button mat-menu-item (click)="downloadContacts()" id="export">
+                Export contacts
+            </button>
+        </mat-menu>
+    </div>
+    <div fxFlex="1 0 0" class="contacts">
+        <div
+            class="contacts__items"
+            fxLayout="column"
+            fxLayoutGap="36px"
+            #contact_list
+        >
+            <div
+                *ngFor="
+                    let contactsRow of visibleContacts | chunk: itemsPerRow;
+                    trackBy: rowTrackByFn
+                "
+                fxLayout="row"
+                fxLayoutGap="22px"
+            >
+                <app-contact
+                    *ngFor="let contact of contactsRow; trackBy: trackByFn"
+                    [contact]="contact"
+                    [@stretchInOut]="'in'"
+                    [style.width.px]="contactWidth"
+                ></app-contact>
+            </div>
+        </div>
+    </div>
+    <button
+        mat-flat-button
+        class="button"
+        (click)="addContact()"
+        id="add"
+        fxFlexOffset="6px"
+    >
+        <mat-icon class="button__icon" svgIcon="add" aria-hidden="true">
+        </mat-icon>
+        <span> Add new contact</span>
+    </button>
+</div>

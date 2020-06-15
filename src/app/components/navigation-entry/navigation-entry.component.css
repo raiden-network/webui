@@ -1,24 +1,28 @@
-.mat-list-item {
-    min-height: 72px;
-}
-
-.mat-list-item-content {
-    height: 100% !important;
-}
-
-.navigation-entry {
+:host {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
 }
 
-.navigation-icon {
-    display: block;
-    max-height: 25px;
-    max-width: 25px;
-    height: auto;
-    width: auto;
+.entry {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #ffffff;
+    opacity: 0.5;
+    text-decoration: none;
+    font-size: 12px !important;
+    line-height: 14px !important;
+    padding: 11px 22px !important;
+    border-radius: 15px !important;
+    font-weight: 400 !important;
+    background: none;
+}
+
+.active {
+    opacity: 1;
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+.entry__icon {
+    width: 24px;
+    margin-right: 14px;
 }
