@@ -60,6 +60,7 @@ import { ChannelsPageComponent } from './components/channels-page/channels-page.
 import { ContactsPageComponent } from './components/contacts-page/contacts-page.component';
 import { TransfersPageComponent } from './components/transfers-page/transfers-page.component';
 import { ChunkPipe } from './pipes/chunk.pipe';
+import { SetHeadersInterceptor } from './interceptors/set-headers.interceptor';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -149,6 +150,11 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
             provide: HTTP_INTERCEPTORS,
             useClass: TimeoutInterceptor,
             deps: [RaidenConfig],
+            multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: SetHeadersInterceptor,
             multi: true,
         },
         RaidenConfig,
