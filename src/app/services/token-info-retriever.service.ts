@@ -1,25 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Contract } from 'web3-eth-contract';
 import { UserToken } from '../models/usertoken';
 import { RaidenConfig } from './raiden.config';
 import { tokenabi } from '../models/tokenabi';
-import Web3 from 'web3';
-import { BatchManager } from './batch-manager';
 import BigNumber from 'bignumber.js';
 
 @Injectable({
     providedIn: 'root',
 })
 export class TokenInfoRetrieverService {
-    private readonly web3: Web3;
-    private readonly tokenContract: Contract;
-    private readonly batchManager: BatchManager;
-
-    constructor(private raidenConfig: RaidenConfig) {
-        this.web3 = this.raidenConfig.web3;
-        this.tokenContract = new this.web3.eth.Contract(tokenabi);
-        this.batchManager = this.raidenConfig.batchManager;
-    }
+    constructor(private raidenConfig: RaidenConfig) {}
 
     private static createToken(address: string): UserToken {
         return {
@@ -36,7 +25,7 @@ export class TokenInfoRetrieverService {
         raidenAddress: string,
         userTokens: { [address: string]: UserToken | null }
     ): Promise<{ [address: string]: UserToken }> {
-        const batchManager = this.batchManager;
+        const batchManager = this.raidenConfig.batchManager;
 
         const map: {
             [index: number]: { method: string; address: string };
@@ -60,7 +49,7 @@ export class TokenInfoRetrieverService {
         }
 
         tokenAddresses.forEach((tokenAddress) => {
-            const contract = this.tokenContract;
+            const contract = new this.raidenConfig.web3.eth.Contract(tokenabi);
             contract.options.address = tokenAddress;
 
             const methods = contract.methods;
@@ -73,7 +62,7 @@ export class TokenInfoRetrieverService {
 
             const request = methods.balanceOf(raidenAddress).call.request();
 
-            const balanceIndex = this.batchManager.add({
+            const balanceIndex = batchManager.add({
                 request: request,
             });
 
@@ -83,7 +72,7 @@ export class TokenInfoRetrieverService {
             };
         });
 
-        const results = await this.batchManager.execute();
+        const results = await batchManager.execute();
 
         results.forEach((value, index) => {
             const element = map[index];
