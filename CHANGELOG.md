@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - [#476] Set Content-Type header of requests to application/json.
+- [#475] Retry connection to RPC provider when it failed initially.
 
 ## [1.0.0] - 2020-06-12
 ### Changed
@@ -166,6 +167,7 @@ token network.
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
 [#476]: https://github.com/raiden-network/webui/issues/476
+[#475]: https://github.com/raiden-network/webui/issues/475
 [#432]: https://github.com/raiden-network/webui/issues/432
 [#389]: https://github.com/raiden-network/webui/issues/389
 [#341]: https://github.com/raiden-network/webui/issues/341
