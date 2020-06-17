@@ -353,6 +353,30 @@ describe('RaidenService', () => {
         );
     }));
 
+    it('should not show a notification for successful rpc connection when flag set to false', fakeAsync(function () {
+        const config: RaidenConfig = TestBed.inject(RaidenConfig);
+        const loadSpy = spyOn(config, 'load');
+        loadSpy.and.returnValue(Promise.resolve(true));
+
+        service.attemptRpcConnection(false);
+        tick();
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            0
+        );
+    }));
+
+    it('should not show a notification for unsuccessful rpc connection when flag set to false', fakeAsync(function () {
+        const config = TestBed.inject(RaidenConfig);
+        const loadSpy = spyOn(config, 'load');
+        loadSpy.and.returnValue(Promise.resolve(false));
+
+        service.attemptRpcConnection(false);
+        tick();
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            0
+        );
+    }));
+
     it('should periodically poll the balance', fakeAsync(function () {
         let count = 0;
         const config = TestBed.inject(RaidenConfig);
