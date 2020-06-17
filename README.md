@@ -66,6 +66,8 @@ low-fee and scalable payments. It’s complementary to the Ethereum blockchain a
 The Raiden client code is available [here](https://github.com/raiden-network/raiden) and has been
 [released for mainnet](https://medium.com/raiden-network/alderaan-mainnet-release-announcement-7f701e58c236) for the Alderaan release of the Raiden Network in May 2020.
 
+![Raiden WebUI](webui.gif)
+
 Raiden WebUI is built using the following technologies:
 
 -   [Angular](https://angular.io/)
