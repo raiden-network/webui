@@ -91,7 +91,6 @@ export class AppComponent implements OnInit, OnDestroy {
             .pipe(
                 switchMap(() => this.raidenService.getStatus()),
                 tap((status) => {
-                    this.apiStatus = status;
                     switch (status.status) {
                         case 'syncing': {
                             if (this.initialBlocksToSync === undefined) {
@@ -105,10 +104,14 @@ export class AppComponent implements OnInit, OnDestroy {
                             break;
                         }
                         case 'ready': {
+                            if (this.notificationService.rpcError) {
+                                this.raidenService.attemptRpcConnection(false);
+                            }
                             this.startPolling();
                             break;
                         }
                     }
+                    this.apiStatus = status;
                 }),
                 takeUntil(this.ngUnsubscribe),
                 takeWhile((status) => status.status !== 'ready'),

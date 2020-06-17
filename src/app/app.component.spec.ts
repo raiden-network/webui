@@ -75,6 +75,7 @@ describe('AppComponent', () => {
         raidenServiceMock.shutdownRaiden = () => of(null);
         raidenServiceMock.getStatus = () => of({ status: 'ready' });
         raidenServiceMock.getUserToken = () => undefined;
+        raidenServiceMock.attemptRpcConnection = () => undefined;
 
         const pendingTransferPollingMock = stub<
             PendingTransferPollingService
@@ -371,6 +372,28 @@ describe('AppComponent', () => {
         expect(app.apiStatus).toEqual({ status: 'ready' });
         progressBar = fixture.debugElement.query(By.css('.progress__bar'));
         expect(progressBar).toBeFalsy();
+
+        tick(5000);
+        flush();
+    }));
+
+    it('should retry RPC connection when status is ready', fakeAsync(() => {
+        const error = new Error('RPC error occurred.');
+        notificationService.rpcError = error;
+
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'getStatus').and.returnValues(
+            of({ status: 'unavailable' }),
+            of({ status: 'ready' })
+        );
+        const attemptRpcSpy = spyOn(raidenService, 'attemptRpcConnection');
+        fixture.detectChanges();
+
+        expect(app.apiStatus).toEqual({ status: 'unavailable' });
+        expect(attemptRpcSpy).toHaveBeenCalledTimes(0);
+        tick(500);
+        expect(app.apiStatus).toEqual({ status: 'ready' });
+        expect(attemptRpcSpy).toHaveBeenCalledTimes(1);
 
         tick(5000);
         flush();

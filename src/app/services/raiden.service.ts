@@ -14,6 +14,7 @@ import {
     BehaviorSubject,
     Subject,
     throwError,
+    combineLatest,
 } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
@@ -30,6 +31,7 @@ import {
     delay,
     catchError,
     mapTo,
+    retryWhen,
 } from 'rxjs/operators';
 import { Channel } from '../models/channel';
 import { Connections } from '../models/connection';
@@ -66,6 +68,7 @@ export class RaidenService {
     private reconnectedSubject: BehaviorSubject<void> = new BehaviorSubject(
         null
     );
+    private rpcConnectedSubject: Subject<void> = new Subject();
     private pendingChannelsSubject = new BehaviorSubject<PendingChannelsMap>(
         {}
     );
@@ -109,6 +112,9 @@ export class RaidenService {
             return this.raidenAddress$.pipe(
                 flatMap((address) =>
                     fromPromise(this.raidenConfig.web3.eth.getBalance(address))
+                ),
+                retryWhen((errors) =>
+                    errors.pipe(switchMap(() => this.rpcConnectedSubject))
                 )
             );
         };
@@ -154,10 +160,6 @@ export class RaidenService {
             Math.floor(Date.now() / 1000) * 1000 +
             Math.floor(Math.random() * 1000)
         );
-    }
-
-    getBlockNumber(): Observable<number> {
-        return fromPromise(this.raidenConfig.web3.eth.getBlockNumber());
     }
 
     public getVersion(): Observable<string> {
@@ -223,6 +225,9 @@ export class RaidenService {
                         this.userTokens
                     )
                 )
+            ),
+            retryWhen((errors) =>
+                errors.pipe(switchMap(() => this.rpcConnectedSubject))
             )
         );
         const connections$: Observable<Connections | null> = refreshConnections
@@ -872,15 +877,18 @@ export class RaidenService {
         return this.userTokens[tokenAddress];
     }
 
-    public async attemptRpcConnection() {
+    public async attemptRpcConnection(showNotification = true) {
         const onResult = (success: boolean) => {
             if (success) {
-                this.notificationService.addInfoNotification({
-                    title: 'JSON RPC',
-                    description: 'Connection successful',
-                    icon: 'info',
-                });
-            } else {
+                if (showNotification) {
+                    this.notificationService.addInfoNotification({
+                        title: 'JSON RPC',
+                        description: 'Connection successful',
+                        icon: 'info',
+                    });
+                }
+                this.rpcConnectedSubject.next();
+            } else if (showNotification) {
                 this.notificationService.addErrorNotification({
                     title: 'JSON RPC',
                     description: 'Connection failure',
