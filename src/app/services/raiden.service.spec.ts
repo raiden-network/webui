@@ -419,6 +419,60 @@ describe('RaidenService', () => {
         config.web3.eth = eth;
     }));
 
+    it('should retry polling the balance when rpc connection attempt was successful', fakeAsync(() => {
+        let count = 0;
+        const raidenConfig = TestBed.inject(RaidenConfig);
+
+        const eth = raidenConfig.web3.eth;
+
+        // @ts-ignore
+        raidenConfig.web3.eth = {
+            getBalance(address: string): Promise<string> {
+                return Promise.reject();
+            },
+        };
+
+        tick(15000);
+
+        const subscription = service.balance$.subscribe((value) => {
+            expect(value).toEqual('2');
+            count++;
+        });
+
+        mockHttp
+            .expectOne({
+                url: `${endpoint}/address`,
+                method: 'GET',
+            })
+            .flush(
+                {
+                    our_address: raidenAddress,
+                },
+                {
+                    status: 200,
+                    statusText: '',
+                }
+            );
+
+        // @ts-ignore
+        raidenConfig.web3.eth = {
+            getBalance(address: string): Promise<string> {
+                return Promise.resolve(
+                    new BigNumber('2000000000000000000').toString()
+                );
+            },
+        };
+
+        const loadSpy = spyOn(raidenConfig, 'load');
+        loadSpy.and.returnValue(Promise.resolve(true));
+        service.attemptRpcConnection();
+
+        flush();
+        expect(count).toEqual(1);
+        subscription.unsubscribe();
+        raidenConfig.web3.eth = eth;
+    }));
+
     it('should notify the user when a deposit was complete successfully', fakeAsync(() => {
         const channel = createChannel({
             channel_identifier: new BigNumber(1),
