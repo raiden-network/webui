@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [1.0.1] - 2020-06-17
 ### Fixed
 - [#476] Set Content-Type header of requests to application/json.
 - [#475] Retry connection to RPC provider when it failed initially.
@@ -149,7 +151,8 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/raiden-network/webui/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/raiden-network/webui/compare/v0.11.0...v1.0.0
 [0.11.1]: https://github.com/raiden-network/webui/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/raiden-network/webui/compare/v0.10.4...v0.11.0
