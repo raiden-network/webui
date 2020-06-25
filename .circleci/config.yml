@@ -26,7 +26,7 @@ executors:
   python-executor:
     working_directory: ~/
     docker:
-      - image: circleci/python:3.7
+      - image: circleci/python:3.8
 
 
 commands:
