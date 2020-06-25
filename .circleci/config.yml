@@ -128,7 +128,7 @@ jobs:
   deploy-github-release:
     working_directory: ~/
     docker:
-      - image: cibuilds/github:0.10
+      - image: cibuilds/github:0.13
     steps:
       - attach_workspace: *attach_options
       - run:
