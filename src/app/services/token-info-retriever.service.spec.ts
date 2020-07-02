@@ -2,11 +2,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, TestBed } from '@angular/core/testing';
 import { RaidenConfig } from './raiden.config';
-
-import { TokenInfoRetrieverService } from './token-info-retriever.service';
-import { BatchManager } from './batch-manager';
+import {
+    TokenInfoRetrieverService,
+    BatchManagerFactory,
+} from './token-info-retriever.service';
 import { UserToken } from '../models/usertoken';
-import Spy = jasmine.Spy;
 import { TestProviders } from '../../testing/test-providers';
 import { AbiItem } from 'web3-utils/types';
 import { ContractOptions } from 'web3-eth-contract/types';
@@ -14,8 +14,18 @@ import BigNumber from 'bignumber.js';
 
 describe('TokenInfoRetriever', () => {
     let service: TokenInfoRetrieverService;
-    let batchManager: BatchManager;
-    let addSpy: Spy;
+    let batchManagerFactory: BatchManagerFactory;
+    let count: number;
+
+    function createBatchManagerSpy(result) {
+        const batchManager = jasmine.createSpyObj('BatchManager', [
+            'add',
+            'execute',
+        ]);
+        batchManager.execute.and.returnValue(result);
+        batchManager.add.and.callFake(() => count++);
+        return batchManager;
+    }
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -23,6 +33,7 @@ describe('TokenInfoRetriever', () => {
             providers: [
                 TokenInfoRetrieverService,
                 TestProviders.MockRaidenConfigProvider(),
+                BatchManagerFactory,
             ],
         });
 
@@ -59,10 +70,9 @@ describe('TokenInfoRetriever', () => {
             };
         };
 
-        let count = 1;
+        count = 1;
+        batchManagerFactory = TestBed.inject(BatchManagerFactory);
 
-        batchManager = config.batchManager;
-        addSpy = spyOn(batchManager, 'add').and.callFake(() => count++);
         service = TestBed.inject(TokenInfoRetrieverService);
     });
 
@@ -71,11 +81,12 @@ describe('TokenInfoRetriever', () => {
     }));
 
     it('should propagate an error when the batch manager promise fails', async () => {
-        spyOn(batchManager, 'execute').and.returnValue(
+        const batchManager = createBatchManagerSpy(
             new Promise((resolve, reject) => {
                 reject(new Error('Invalid JSON RPC response'));
             })
         );
+        spyOn(batchManagerFactory, 'create').and.returnValue(batchManager);
 
         const userTokens: { [address: string]: UserToken | null } = {};
 
@@ -92,11 +103,12 @@ describe('TokenInfoRetriever', () => {
     });
 
     it('should have add 4 requests the first time', async () => {
-        spyOn(batchManager, 'execute').and.returnValue(
+        const batchManager = createBatchManagerSpy(
             new Promise((resolve) => {
                 resolve(['TEST', 'TST', 18, 50]);
             })
         );
+        spyOn(batchManagerFactory, 'create').and.returnValue(batchManager);
 
         const userTokens: { [address: string]: UserToken | null } = {};
         const tokens = await service.createBatch(
@@ -105,12 +117,12 @@ describe('TokenInfoRetriever', () => {
             userTokens
         );
 
-        expect(addSpy).toHaveBeenCalledTimes(4);
+        expect(batchManager.add).toHaveBeenCalledTimes(4);
         expect(
             tokens['0x0f114A1E9Db192502E7856309cc899952b3db1ED']
         ).toBeTruthy();
 
-        const calls = addSpy.calls;
+        const calls = batchManager.add.calls;
 
         expect(calls.argsFor(0)[0].request).toBe('name');
         expect(calls.argsFor(1)[0].request).toBe('symbol');
@@ -129,11 +141,12 @@ describe('TokenInfoRetriever', () => {
     });
 
     it('should have only on request if token is already cached', async () => {
-        spyOn(batchManager, 'execute').and.returnValue(
+        const batchManager = createBatchManagerSpy(
             new Promise((resolve) => {
                 resolve([150]);
             })
         );
+        spyOn(batchManagerFactory, 'create').and.returnValue(batchManager);
 
         const userTokens: { [address: string]: UserToken | null } = {
             '0x0f114A1E9Db192502E7856309cc899952b3db1ED': {
@@ -150,12 +163,12 @@ describe('TokenInfoRetriever', () => {
             userTokens
         );
 
-        expect(addSpy).toHaveBeenCalledTimes(1);
+        expect(batchManager.add).toHaveBeenCalledTimes(1);
         expect(
             tokens['0x0f114A1E9Db192502E7856309cc899952b3db1ED']
         ).toBeTruthy();
 
-        const calls = addSpy.calls;
+        const calls = batchManager.add.calls;
 
         expect(calls.argsFor(0)[0].request).toBe('balanceOf');
 

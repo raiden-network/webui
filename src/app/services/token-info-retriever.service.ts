@@ -3,12 +3,26 @@ import { UserToken } from '../models/usertoken';
 import { RaidenConfig } from './raiden.config';
 import { tokenabi } from '../models/tokenabi';
 import BigNumber from 'bignumber.js';
+import { BatchManager } from './batch-manager';
+import { provider } from 'web3-core';
+
+@Injectable({
+    providedIn: 'root',
+})
+export class BatchManagerFactory {
+    create(web3Provider: provider): BatchManager {
+        return new BatchManager(web3Provider);
+    }
+}
 
 @Injectable({
     providedIn: 'root',
 })
 export class TokenInfoRetrieverService {
-    constructor(private raidenConfig: RaidenConfig) {}
+    constructor(
+        private raidenConfig: RaidenConfig,
+        private batchManagerFactory: BatchManagerFactory
+    ) {}
 
     private static createToken(address: string): UserToken {
         return {
@@ -25,7 +39,9 @@ export class TokenInfoRetrieverService {
         raidenAddress: string,
         userTokens: { [address: string]: UserToken | null }
     ): Promise<{ [address: string]: UserToken }> {
-        const batchManager = this.raidenConfig.batchManager;
+        const batchManager = this.batchManagerFactory.create(
+            this.raidenConfig.web3.currentProvider
+        );
 
         const map: {
             [index: number]: { method: string; address: string };
