@@ -1,7 +1,6 @@
 import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentType } from '../models/enviroment-type.enum';
-import { BatchManager } from './batch-manager';
 import { HttpProvider, provider } from 'web3-core';
 import Web3 from 'web3';
 import { Observable, ReplaySubject } from 'rxjs';
@@ -62,12 +61,6 @@ export class RaidenConfig {
         this.http = new HttpClient(handler);
     }
 
-    private _batchManager: BatchManager;
-
-    public get batchManager(): BatchManager {
-        return this._batchManager;
-    }
-
     private static isAbsolute(url: string) {
         return url.match(/^[a-zA-Z]+:\/\//);
     }
@@ -112,11 +105,9 @@ export class RaidenConfig {
         try {
             const id = await getNetworkId();
             this._network$.next(NetworkInfo.getNetwork(id));
-            this.createBatchManager();
         } catch (e) {
             this.config.web3 = this.config.web3_fallback;
             this.web3 = this.web3Factory.create(this.provider());
-            this.createBatchManager();
             const id = await getNetworkId();
             this._network$.next(NetworkInfo.getNetwork(id));
         }
@@ -144,9 +135,5 @@ export class RaidenConfig {
         }
 
         return new Web3.providers.HttpProvider(host);
-    }
-
-    private createBatchManager() {
-        this._batchManager = new BatchManager(this.web3.currentProvider);
     }
 }

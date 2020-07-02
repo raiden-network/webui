@@ -2,7 +2,6 @@ import Web3 from 'web3';
 import { Utils } from 'web3-utils';
 import { HttpProvider } from 'web3-core';
 import { RaidenConfig } from '../app/services/raiden.config';
-import { BatchManager } from '../app/services/batch-manager';
 import { HttpBackend } from '@angular/common/http';
 import { stub } from './stub';
 import { NotificationService } from '../app/services/notification.service';
@@ -51,18 +50,11 @@ const mockNetwork = createNetworkMock();
 @Injectable()
 export class MockConfig extends RaidenConfig {
     public web3: Web3 = mockProvider.web3;
-    private testBatchManager: BatchManager = new BatchManager(
-        this.web3.currentProvider
-    );
 
     constructor() {
         super(stub<HttpBackend>(), stub<NotificationService>(), mockProvider);
         // @ts-ignore
         this._network$.next(mockNetwork);
-    }
-
-    get batchManager(): BatchManager {
-        return this.testBatchManager;
     }
 
     private get mock(): MockWeb3 {
