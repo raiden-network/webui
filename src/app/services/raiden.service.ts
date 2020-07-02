@@ -14,7 +14,6 @@ import {
     BehaviorSubject,
     Subject,
     throwError,
-    combineLatest,
 } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
@@ -85,6 +84,9 @@ export class RaidenService {
     public readonly reconnected$: Observable<
         void
     > = this.reconnectedSubject.asObservable();
+    public readonly rpcConnected$: Observable<
+        void
+    > = this.rpcConnectedSubject.asObservable();
     public quickConnectPending: { [tokenAddress: string]: boolean } = {};
 
     private userTokens: { [address: string]: UserToken | null } = {};
@@ -97,7 +99,7 @@ export class RaidenService {
         private notificationService: NotificationService,
         private addressBookService: AddressBookService
     ) {
-        this.raidenAddress$ = this.reconnectedSubject.pipe(
+        this.raidenAddress$ = this.reconnected$.pipe(
             switchMap(() =>
                 this.http.get<{ our_address: string }>(
                     `${this.raidenConfig.api}/address`
@@ -108,22 +110,20 @@ export class RaidenService {
             shareReplay(1)
         );
 
-        const fetch: () => Observable<string> = () => {
-            return this.raidenAddress$.pipe(
-                flatMap((address) =>
-                    fromPromise(this.raidenConfig.web3.eth.getBalance(address))
-                ),
-                retryWhen((errors) =>
-                    errors.pipe(switchMap(() => this.rpcConnectedSubject))
-                )
-            );
-        };
+        const fetchBalance$: Observable<string> = this.raidenAddress$.pipe(
+            flatMap((address) =>
+                fromPromise(this.raidenConfig.web3.eth.getBalance(address))
+            ),
+            retryWhen((errors) =>
+                errors.pipe(switchMap(() => this.rpcConnected$))
+            )
+        );
 
         this.balance$ = interval(15000).pipe(
-            startWith(fetch),
-            flatMap(fetch),
+            startWith(0),
+            flatMap(() => fetchBalance$),
             map((value) => fromWei(value, 'ether')),
-            share()
+            shareReplay({ bufferSize: 1, refCount: true })
         );
 
         this.network$ = this.raidenConfig.network$;
@@ -227,7 +227,7 @@ export class RaidenService {
                 )
             ),
             retryWhen((errors) =>
-                errors.pipe(switchMap(() => this.rpcConnectedSubject))
+                errors.pipe(switchMap(() => this.rpcConnected$))
             )
         );
         const connections$: Observable<Connections | null> = refreshConnections
