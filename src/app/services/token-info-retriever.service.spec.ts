@@ -11,6 +11,7 @@ import { TestProviders } from '../../testing/test-providers';
 import { AbiItem } from 'web3-utils/types';
 import { ContractOptions } from 'web3-eth-contract/types';
 import BigNumber from 'bignumber.js';
+import Web3 from 'web3';
 
 describe('TokenInfoRetriever', () => {
     let service: TokenInfoRetrieverService;
@@ -183,5 +184,28 @@ describe('TokenInfoRetriever', () => {
         expect(userToken.balance).toEqual(new BigNumber(150));
         expect(typeof userToken.decimals).toBe('number');
         expect(BigNumber.isBigNumber(userToken.balance)).toBe(true);
+    });
+});
+
+describe('BatchManagerFactory', () => {
+    let batchManagerFactory: BatchManagerFactory;
+
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [BatchManagerFactory],
+        });
+
+        batchManagerFactory = TestBed.inject(BatchManagerFactory);
+    });
+
+    it('should be created', () => {
+        expect(batchManagerFactory).toBeTruthy();
+    });
+
+    it('should create a BatchManager instance', () => {
+        const batchManager = batchManagerFactory.create(
+            new Web3.providers.HttpProvider('http://localhost:8485')
+        );
+        expect(batchManager).toBeTruthy();
     });
 });

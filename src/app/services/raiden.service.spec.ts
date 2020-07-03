@@ -22,6 +22,7 @@ import {
     createToken,
     createNetworkMock,
     createAddress,
+    createContractsInfo,
 } from '../../testing/test-data';
 import Spy = jasmine.Spy;
 import { Connection } from '../models/connection';
@@ -1542,5 +1543,22 @@ describe('RaidenService', () => {
         expect(service.getUserToken(tokenInfo.address)).toEqual(
             Object.assign({ balance: new BigNumber(0) }, tokenInfo)
         );
+    });
+
+    it('should return the contracts addresses', () => {
+        const contractsInfo = createContractsInfo();
+        service
+            .getContractsInfo()
+            .subscribe((value) => expect(value).toEqual(contractsInfo));
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/contracts`,
+            method: 'GET',
+        });
+
+        request.flush(contractsInfo, {
+            status: 200,
+            statusText: '',
+        });
     });
 });
