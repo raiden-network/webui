@@ -19,7 +19,6 @@ import { fromPromise } from 'rxjs/internal-compatibility';
 import {
     flatMap,
     map,
-    share,
     shareReplay,
     startWith,
     switchMap,
@@ -31,6 +30,7 @@ import {
     catchError,
     mapTo,
     retryWhen,
+    switchMapTo,
 } from 'rxjs/operators';
 import { Channel } from '../models/channel';
 import { Connections } from '../models/connection';
@@ -51,6 +51,7 @@ import { PendingTransfer } from '../models/pending-transfer';
 import { UiMessage } from '../models/notification';
 import { AddressBookService } from './address-book.service';
 import { Status } from '../models/status';
+import { ContractsInfo } from '../models/contracts-info';
 
 interface PendingChannelsMap {
     [tokenAddress: string]: { [partnerAddress: string]: Channel };
@@ -111,17 +112,15 @@ export class RaidenService {
         );
 
         const fetchBalance$: Observable<string> = this.raidenAddress$.pipe(
-            flatMap((address) =>
+            switchMap((address) =>
                 fromPromise(this.raidenConfig.web3.eth.getBalance(address))
             ),
-            retryWhen((errors) =>
-                errors.pipe(switchMap(() => this.rpcConnected$))
-            )
+            retryWhen((errors) => errors.pipe(switchMapTo(this.rpcConnected$)))
         );
 
         this.balance$ = interval(15000).pipe(
             startWith(0),
-            flatMap(() => fetchBalance$),
+            switchMapTo(fetchBalance$),
             map((value) => fromWei(value, 'ether')),
             shareReplay({ bufferSize: 1, refCount: true })
         );
@@ -226,9 +225,7 @@ export class RaidenService {
                     )
                 )
             ),
-            retryWhen((errors) =>
-                errors.pipe(switchMap(() => this.rpcConnected$))
-            )
+            retryWhen((errors) => errors.pipe(switchMapTo(this.rpcConnected$)))
         );
         const connections$: Observable<Connections | null> = refreshConnections
             ? this.http.get<Connections>(`${this.raidenConfig.api}/connections`)
@@ -870,6 +867,12 @@ export class RaidenService {
                 });
                 return pendingChannels;
             })
+        );
+    }
+
+    public getContractsInfo(): Observable<ContractsInfo> {
+        return this.http.get<ContractsInfo>(
+            `${this.raidenConfig.api}/contracts`
         );
     }
 

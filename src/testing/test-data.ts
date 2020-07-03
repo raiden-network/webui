@@ -6,6 +6,7 @@ import { Network } from '../app/utils/network-info';
 import { UserToken } from '../app/models/usertoken';
 import { PaymentEvent } from '../app/models/payment-event';
 import { PendingTransfer } from '../app/models/pending-transfer';
+import { ContractsInfo } from '../app/models/contracts-info';
 
 const web3 = new Web3('http://localhost:8545');
 
@@ -170,4 +171,17 @@ export function createPendingTransfer(obj: any = {}): PendingTransfer {
         transferred_amount: new BigNumber(0),
     };
     return Object.assign(pendingTransfer, obj);
+}
+
+export function createContractsInfo(obj: any = {}): ContractsInfo {
+    const contracts: ContractsInfo = {
+        contracts_version: '0.37.0',
+        token_network_registry_address: createAddress(),
+        secret_registry_address: createAddress(),
+        service_registry_address: createAddress(),
+        user_deposit_address: createAddress(),
+        monitoring_service_address: createAddress(),
+        one_to_n_address: createAddress(),
+    };
+    return Object.assign(contracts, obj);
 }

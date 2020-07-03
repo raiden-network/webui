@@ -1,10 +1,10 @@
 import { pipe, timer, UnaryFunction, Observable, EMPTY, merge } from 'rxjs';
 import { retryWhen, switchMap, first } from 'rxjs/operators';
 
-export function backoff(
+export function backoff<T>(
     milliseconds: number,
     refreshObservable$?: Observable<void>
-): UnaryFunction<Observable<any>, Observable<any>> {
+): UnaryFunction<Observable<T>, Observable<T>> {
     let refresh$: Observable<any> = refreshObservable$;
     if (!refreshObservable$) {
         refresh$ = EMPTY;
