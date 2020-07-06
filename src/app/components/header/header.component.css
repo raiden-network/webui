@@ -13,6 +13,10 @@
     letter-spacing: 1px;
 }
 
+.header__symbol {
+    letter-spacing: 1px;
+}
+
 .header__label {
     font-size: 10px;
     line-height: 12px;
@@ -62,6 +66,44 @@
     height: 36px;
     width: 1px;
     background-color: rgba(255, 255, 255, 0.1);
+}
+
+.balances-button {
+    border: 1px solid #979797;
+    border-radius: 8px !important;
+    background: none;
+    font-weight: 500 !important;
+    font-size: 8px !important;
+    line-height: 9px !important;
+    letter-spacing: 0.5px;
+    color: #979797;
+    white-space: normal;
+    text-transform: uppercase;
+    height: 32px;
+    width: 56px;
+}
+
+.balances-overlay {
+    background-color: #000000;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 30px;
+    color: #ffffff;
+    padding: 12px 16px;
+    width: 93px;
+    height: 170px;
+    overflow-y: scroll;
+}
+
+.balances-overlay__item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.balances-overlay__item:last-child {
+    border-bottom: none;
 }
 
 .account-button {

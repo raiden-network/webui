@@ -80,6 +80,7 @@
                     (Click to copy)"
                         ngxClipboard
                         [cbContent]="servicesToken.address"
+                        class="header__symbol"
                     >
                         {{ servicesToken.symbol }}
                     </span>
@@ -96,39 +97,93 @@
                     Deposited in UDC
                 </span>
             </div>
-            <ng-container
-                *ngFor="
-                    let token of tokens$ | async | slice: 0:2;
-                    trackBy: tokenTrackByFn
-                "
-            >
-                <div class="divider"></div>
-                <div fxLayout="column" fxLayoutGap="4px">
-                    <span>
-                        <span
-                            *ngIf="
-                                token.balance
-                                    | decimal: token.decimals as tokenBalance
-                            "
-                            [matTooltip]="tokenBalance"
-                            class="header__balance"
-                        >
-                            {{ tokenBalance | displayDecimals: 3 }}
+            <ng-container *ngIf="tokens$ | async as tokens">
+                <ng-container
+                    *ngFor="
+                        let token of tokens
+                            | slice: 0:(tokens.length > 2 ? 1 : 2);
+                        trackBy: tokenTrackByFn
+                    "
+                >
+                    <div class="divider"></div>
+                    <div fxLayout="column" fxLayoutGap="4px">
+                        <span>
+                            <span
+                                *ngIf="
+                                    token.balance
+                                        | decimal
+                                            : token.decimals as tokenBalance
+                                "
+                                [matTooltip]="tokenBalance"
+                                class="header__balance"
+                            >
+                                {{ tokenBalance | displayDecimals: 3 }}
+                            </span>
+                            <span
+                                matTooltip="{{ token.name }}
+                                {{ token.address }}
+                                (Click to copy)"
+                                ngxClipboard
+                                [cbContent]="token.address"
+                            >
+                                {{ token.symbol }}
+                            </span>
                         </span>
-                        <span
-                            matTooltip="{{ token.name }}
-                        {{ token.address }}
-                        (Click to copy)"
-                            ngxClipboard
-                            [cbContent]="token.address"
-                        >
-                            {{ token.symbol }}
+                        <span class="header__label">
+                            On-Chain
                         </span>
-                    </span>
-                    <span class="header__label">
-                        On-Chain
-                    </span>
-                </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="tokens.length > 2">
+                    <div class="divider"></div>
+                    <button
+                        mat-flat-button
+                        class="balances-button"
+                        (click)="tokenBalancesOpen = !tokenBalancesOpen"
+                        stopClickPropagation
+                        cdkOverlayOrigin
+                        #tokenBalancesTrigger="cdkOverlayOrigin"
+                    >
+                        On-chain balances
+                    </button>
+                    <ng-template
+                        cdkConnectedOverlay
+                        [cdkConnectedOverlayOrigin]="tokenBalancesTrigger"
+                        [cdkConnectedOverlayOpen]="tokenBalancesOpen"
+                    >
+                        <div #token_balances_list class="balances-overlay">
+                            <div
+                                *ngFor="
+                                    let token of tokens;
+                                    trackBy: tokenTrackByFn
+                                "
+                                class="balances-overlay__item"
+                            >
+                                <span
+                                    *ngIf="
+                                        token.balance
+                                            | decimal
+                                                : token.decimals as tokenBalance
+                                    "
+                                    [matTooltip]="tokenBalance"
+                                    class="header__balance"
+                                >
+                                    {{ tokenBalance | displayDecimals: 3 }}
+                                </span>
+                                <span
+                                    matTooltip="{{ token.name }}
+                                    {{ token.address }}
+                                    (Click to copy)"
+                                    ngxClipboard
+                                    [cbContent]="token.address"
+                                    class="header__symbol"
+                                >
+                                    {{ token.symbol }}
+                                </span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ng-container>
             </ng-container>
         </div>
 

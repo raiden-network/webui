@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkTableModule } from '@angular/cdk/table';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
     exports: [
@@ -27,6 +28,7 @@ import { CdkTableModule } from '@angular/cdk/table';
         MatAutocompleteModule,
         MatSidenavModule,
         CdkTableModule,
+        OverlayModule,
     ],
     imports: [CommonModule],
     declarations: [],
