@@ -4,6 +4,8 @@ import {
     OnDestroy,
     EventEmitter,
     Output,
+    ViewChild,
+    ElementRef,
 } from '@angular/core';
 import { Animations } from '../../animations/animations';
 import { RaidenService } from '../../services/raiden.service';
@@ -18,6 +20,7 @@ import { MediaObserver } from '@angular/flex-layout';
 import { UserDepositService } from '../../services/user-deposit.service';
 import { UserToken } from '../../models/usertoken';
 import { TokenPollingService } from '../../services/token-polling.service';
+import { SharedService } from '../../services/shared.service';
 
 @Component({
     selector: 'app-header',
@@ -29,6 +32,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     @Output() toggleNotifications: EventEmitter<boolean> = new EventEmitter();
     @Output() toggleMenu: EventEmitter<boolean> = new EventEmitter();
 
+    @ViewChild('token_balances_list', { static: false })
+    private tokenBalancesElement: ElementRef;
+
     raidenAddress: string;
     readonly network$: Observable<Network>;
     readonly balance$: Observable<string>;
@@ -39,6 +45,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     readonly servicesToken$: Observable<UserToken>;
     readonly zeroUdcBalance$: Observable<boolean>;
     readonly tokens$: Observable<UserToken[]>;
+    tokenBalancesOpen = false;
 
     private ngUnsubscribe = new Subject();
 
@@ -48,7 +55,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private dialog: MatDialog,
         private mediaObserver: MediaObserver,
         private userDepositService: UserDepositService,
-        private tokenPollingService: TokenPollingService
+        private tokenPollingService: TokenPollingService,
+        private sharedService: SharedService
     ) {
         this.network$ = raidenService.network$;
         this.balance$ = raidenService.balance$;
@@ -86,6 +94,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.raidenService.raidenAddress$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((address) => (this.raidenAddress = address));
+
+        this.sharedService.globalClickTarget$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((target) => {
+                if (
+                    this.tokenBalancesElement &&
+                    !this.tokenBalancesElement.nativeElement.contains(target)
+                ) {
+                    this.tokenBalancesOpen = false;
+                }
+            });
     }
 
     ngOnDestroy() {

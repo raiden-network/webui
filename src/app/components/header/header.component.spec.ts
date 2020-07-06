@@ -31,6 +31,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { UserDepositService } from '../../services/user-deposit.service';
 import BigNumber from 'bignumber.js';
+import { SharedService } from '../../services/shared.service';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -88,6 +89,7 @@ describe('HeaderComponent', () => {
                 TestProviders.MockMatDialog(),
                 TestProviders.AddressBookStubProvider(),
                 { provide: UserDepositService, useValue: userDepositMock },
+                SharedService,
             ],
             imports: [
                 MaterialComponentsModule,
@@ -184,5 +186,31 @@ describe('HeaderComponent', () => {
         );
         const balanceText = balanceElement.nativeElement.innerText.trim();
         expect(balanceText).toBe('0.75');
+    });
+
+    it('should show the token on-chain balances in an overlay', () => {
+        clickElement(fixture.debugElement, '.balances-button');
+        fixture.detectChanges();
+        expect(component.tokenBalancesOpen).toBe(true);
+    });
+
+    it('should close the balances overlay when clicked elsewhere', () => {
+        const sharedService = TestBed.inject(SharedService);
+        clickElement(fixture.debugElement, '.balances-button');
+        fixture.detectChanges();
+        sharedService.newGlobalClick(document.createElement('div'));
+        fixture.detectChanges();
+        expect(component.tokenBalancesOpen).toBe(false);
+    });
+
+    it('should not close the balances overlay when global click emits itself as target', () => {
+        const sharedService = TestBed.inject(SharedService);
+        clickElement(fixture.debugElement, '.balances-button');
+        fixture.detectChanges();
+        const overlay = fixture.debugElement.query(By.css('.balances-overlay'))
+            .nativeElement;
+        sharedService.newGlobalClick(overlay);
+        fixture.detectChanges();
+        expect(component.tokenBalancesOpen).toBe(true);
     });
 });
