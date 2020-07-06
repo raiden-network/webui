@@ -28,7 +28,11 @@ import { NotificationItemComponent } from './components/notification/notificatio
 import { HttpErrorResponse } from '@angular/common/http';
 import { RaidenIconsModule } from './modules/raiden-icons/raiden-icons.module';
 import { stub } from '../testing/stub';
-import { createNetworkMock, createAddress } from '../testing/test-data';
+import {
+    createNetworkMock,
+    createAddress,
+    createToken,
+} from '../testing/test-data';
 import { PendingTransferPollingService } from './services/pending-transfer-polling.service';
 import { PaymentHistoryPollingService } from './services/payment-history-polling.service';
 import { SharedService } from './services/shared.service';
@@ -49,6 +53,9 @@ import {
 import { By } from '@angular/platform-browser';
 import { ToastrModule } from 'ngx-toastr';
 import { MatSidenav } from '@angular/material/sidenav';
+import { UserDepositService } from './services/user-deposit.service';
+import BigNumber from 'bignumber.js';
+import { DecimalPipe } from './pipes/decimal.pipe';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -72,6 +79,8 @@ describe('AppComponent', () => {
         raidenServiceMock.balance$ = of('0');
         // @ts-ignore
         raidenServiceMock.raidenAddress$ = of(createAddress());
+        // @ts-ignore
+        raidenServiceMock.reconnected$ = NEVER;
         raidenServiceMock.shutdownRaiden = () => of(null);
         raidenServiceMock.getStatus = () => of({ status: 'ready' });
         raidenServiceMock.getUserToken = () => undefined;
@@ -95,6 +104,12 @@ describe('AppComponent', () => {
         // @ts-ignore
         tokenPollingMock.tokens$ = of([]);
 
+        const userDepositMock = stub<UserDepositService>();
+        // @ts-ignore
+        userDepositMock.balance$ = of(new BigNumber('750000000000000000'));
+        // @ts-ignore
+        userDepositMock.servicesToken$ = of(createToken());
+
         TestBed.configureTestingModule({
             declarations: [
                 AppComponent,
@@ -104,6 +119,7 @@ describe('AppComponent', () => {
                 HeaderComponent,
                 SearchFieldComponent,
                 DisplayDecimalsPipe,
+                DecimalPipe,
             ],
             providers: [
                 {
@@ -135,6 +151,7 @@ describe('AppComponent', () => {
                     provide: TokenPollingService,
                     useValue: tokenPollingMock,
                 },
+                { provide: UserDepositService, useValue: userDepositMock },
             ],
             imports: [
                 MaterialComponentsModule,

@@ -15,6 +15,9 @@ import BigNumber from 'bignumber.js';
 import { QrCodePayload, QrCodeComponent } from '../qr-code/qr-code.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaObserver } from '@angular/flex-layout';
+import { UserDepositService } from '../../services/user-deposit.service';
+import { UserToken } from '../../models/usertoken';
+import { TokenPollingService } from '../../services/token-polling.service';
 
 @Component({
     selector: 'app-header',
@@ -32,6 +35,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     readonly zeroBalance$: Observable<boolean>;
     readonly faucetLink$: Observable<string>;
     readonly numberOfNotifications$: Observable<number>;
+    readonly udcBalance$: Observable<BigNumber>;
+    readonly servicesToken$: Observable<UserToken>;
+    readonly zeroUdcBalance$: Observable<boolean>;
+    readonly tokens$: Observable<UserToken[]>;
 
     private ngUnsubscribe = new Subject();
 
@@ -39,7 +46,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private raidenService: RaidenService,
         private notificationService: NotificationService,
         private dialog: MatDialog,
-        private mediaObserver: MediaObserver
+        private mediaObserver: MediaObserver,
+        private userDepositService: UserDepositService,
+        private tokenPollingService: TokenPollingService
     ) {
         this.network$ = raidenService.network$;
         this.balance$ = raidenService.balance$;
@@ -57,6 +66,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
             )
         );
         this.numberOfNotifications$ = this.notificationService.numberOfNotifications$;
+        this.udcBalance$ = this.userDepositService.balance$;
+        this.servicesToken$ = this.userDepositService.servicesToken$;
+        this.zeroUdcBalance$ = this.userDepositService.balance$.pipe(
+            map((balance) => {
+                return balance.isZero();
+            })
+        );
+        this.tokens$ = this.tokenPollingService.tokens$.pipe(
+            map((tokens) =>
+                tokens.filter(
+                    (token) => !!token.connected || !token.balance.isZero()
+                )
+            )
+        );
     }
 
     ngOnInit() {
@@ -82,5 +105,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
             data: payload,
             width: '360px',
         });
+    }
+
+    tokenTrackByFn(token: UserToken): string {
+        return token.address;
     }
 }

@@ -15,6 +15,7 @@ import { TokenPollingService } from '../../services/token-polling.service';
 import { matchesToken, matchesContact } from '../../shared/keyword-matcher';
 import { RaidenService } from '../../services/raiden.service';
 import { SelectedTokenService } from '../../services/selected-token.service';
+import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
     selector: 'app-search-field',
@@ -36,7 +37,8 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         private addressBookService: AddressBookService,
         private tokenPollingService: TokenPollingService,
         private raidenService: RaidenService,
-        private selectedTokenService: SelectedTokenService
+        private selectedTokenService: SelectedTokenService,
+        private mediaObserver: MediaObserver
     ) {}
 
     ngOnInit() {
@@ -90,6 +92,10 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         if (searchedToken) {
             this.selectedTokenService.resetToken();
         }
+    }
+
+    isMobile(): boolean {
+        return this.mediaObserver.isActive('xs');
     }
 
     private setupFiltering() {

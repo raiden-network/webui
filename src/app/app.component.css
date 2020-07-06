@@ -26,7 +26,7 @@
 
 .container {
     width: 1272px;
-    height: 818px;
+    height: 862px;
     border-radius: 25px;
 }
 
@@ -37,7 +37,7 @@
 }
 
 .sidenav-content {
-    padding: 47px 82px 0 0;
+    padding: 64px 82px 0 0;
 }
 
 .sidenav-content--mobile {
@@ -50,7 +50,7 @@
 
 .content {
     height: 100%;
-    margin-bottom: 47px;
+    margin-bottom: 64px;
 }
 
 .content--mobile {
@@ -69,7 +69,7 @@
 
 .menu-inner {
     height: 100%;
-    padding: 77px 60px 68px 60px;
+    padding: 77px 60px 65px 60px;
 }
 
 .menu__logo {

@@ -18,6 +18,7 @@ import {
     createTestChannels,
     createTestTokens,
     createAddress,
+    createToken,
 } from '../../../testing/test-data';
 import { stub } from '../../../testing/stub';
 import { Network } from '../../utils/network-info';
@@ -27,6 +28,9 @@ import { QrCodePayload, QrCodeComponent } from '../qr-code/qr-code.component';
 import { SearchFieldComponent } from '../search-field/search-field.component';
 import { ToastrModule } from 'ngx-toastr';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { DecimalPipe } from '../../pipes/decimal.pipe';
+import { UserDepositService } from '../../services/user-deposit.service';
+import BigNumber from 'bignumber.js';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -59,11 +63,18 @@ describe('HeaderComponent', () => {
         // @ts-ignore
         channelPollingMock.channels$ = of(channels);
 
+        const userDepositMock = stub<UserDepositService>();
+        // @ts-ignore
+        userDepositMock.balance$ = of(new BigNumber('750000000000000000'));
+        // @ts-ignore
+        userDepositMock.servicesToken$ = of(createToken());
+
         TestBed.configureTestingModule({
             declarations: [
                 HeaderComponent,
                 DisplayDecimalsPipe,
                 SearchFieldComponent,
+                DecimalPipe,
             ],
             providers: [
                 NotificationService,
@@ -76,6 +87,7 @@ describe('HeaderComponent', () => {
                 TestProviders.MockRaidenConfigProvider(),
                 TestProviders.MockMatDialog(),
                 TestProviders.AddressBookStubProvider(),
+                { provide: UserDepositService, useValue: userDepositMock },
             ],
             imports: [
                 MaterialComponentsModule,
@@ -142,13 +154,13 @@ describe('HeaderComponent', () => {
         balanceSubject.next('0');
         fixture.detectChanges();
         expect(
-            fixture.debugElement.query(By.css('.header__alert-box'))
+            fixture.debugElement.query(By.css('#balance-alert'))
         ).toBeTruthy();
     });
 
     it('should not show a warning if balance is greater than zero', () => {
         expect(
-            fixture.debugElement.query(By.css('.header__alert-box'))
+            fixture.debugElement.query(By.css('#balance-alert'))
         ).toBeFalsy();
     });
 
@@ -164,5 +176,13 @@ describe('HeaderComponent', () => {
         });
         fixture.detectChanges();
         expect(fixture.debugElement.query(By.css('#badge'))).toBeTruthy();
+    });
+
+    it('should show the UDC balance', () => {
+        const balanceElement = fixture.debugElement.query(
+            By.css('#udc-balance')
+        );
+        const balanceText = balanceElement.nativeElement.innerText.trim();
+        expect(balanceText).toBe('0.75');
     });
 });
