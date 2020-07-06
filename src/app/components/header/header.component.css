@@ -1,47 +1,67 @@
 .header {
-    height: 50px;
+    height: 60px;
     font-size: 12px;
-    line-height: 20px;
-    letter-spacing: 1px;
+    line-height: 14px;
 }
 
 .header--mobile {
     height: unset;
 }
 
-.header__label {
+.header__balance {
     text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.header__label--secondary {
-    opacity: 0.7;
+.header__label {
+    font-size: 10px;
+    line-height: 12px;
+    font-weight: 500;
+    opacity: 0.5;
 }
 
 .header__box {
-    height: 50px;
-    background-color: rgba(255, 255, 255, 0.06);
-    padding: 0 12px;
+    height: 60px;
+    background-color: #121212;
+    padding: 0 16px;
     border-radius: 15px;
 }
 
-.header__alert-box {
-    background-color: rgba(255, 0, 0, 0.3);
-    border-radius: 9px;
-    padding: 0 12px;
-    font-size: 10px;
-    line-height: 18px;
-    letter-spacing: 0.5px;
-    text-align: center;
-    color: #ff0000;
-}
-
 .header__address {
-    width: 70px;
-    font-size: 13px;
+    width: 90px;
     letter-spacing: 1.07px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.header__user-icon {
+    height: 16px;
+    width: 16px;
+}
+
+.alert {
+    background-color: rgba(255, 0, 0, 0.3);
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    text-align: center;
+    color: #ff0000;
+    margin-left: 6px;
+}
+
+.alert__icon {
+    height: 8px;
+    width: 8px;
+    display: block;
+    margin: auto;
+}
+
+.divider {
+    height: 36px;
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .account-button {
@@ -50,17 +70,24 @@
     border: 2px solid #ffffff;
 }
 
-.account-button__icon {
+.account-button__icon-faucet {
     height: 15px !important;
     line-height: 15px !important;
 }
 
+.account-button__icon-qr {
+    height: 13px !important;
+    line-height: 13px !important;
+}
+
 .notification-panel-button {
-    height: 50px !important;
-    width: 50px !important;
-    background-color: rgba(255, 255, 255, 0.06);
+    height: 60px !important;
+    width: 60px !important;
+    background-color: #121212;
 }
 
 .notification-panel-button__icon {
     color: #888888;
+    height: 26px !important;
+    width: 24px !important;
 }

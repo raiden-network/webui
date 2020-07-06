@@ -7,6 +7,7 @@ import { UserToken } from '../app/models/usertoken';
 import { PaymentEvent } from '../app/models/payment-event';
 import { PendingTransfer } from '../app/models/pending-transfer';
 import { ContractsInfo } from '../app/models/contracts-info';
+import { Connection } from '../app/models/connection';
 
 const web3 = new Web3('http://localhost:8545');
 
@@ -42,7 +43,7 @@ export function createToken(obj: any = {}): UserToken {
 export function createTestTokens(count: number = 3): UserToken[] {
     const tokens: UserToken[] = [];
     for (let i = 0; i < count; i++) {
-        let connected;
+        let connected: Connection;
         if (i % 2 === 0) {
             connected = {
                 channels: 1,

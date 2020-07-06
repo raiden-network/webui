@@ -35,6 +35,8 @@
     <mat-autocomplete
         #auto="matAutocomplete"
         (optionSelected)="onInput($event.option.value)"
+        autoActiveFirstOption
+        [panelWidth]="isMobile() ? '200px' : '300px'"
     >
         <div class="options">
             <mat-option

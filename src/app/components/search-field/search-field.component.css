@@ -1,8 +1,9 @@
 .search {
     color: rgba(255, 255, 255, 0.5);
-    border-radius: 25px;
-    background-color: rgba(255, 255, 255, 0.06);
+    border-radius: 50px;
+    background-color: #121212;
     position: relative;
+    height: 100%;
 }
 
 .search__icon {
@@ -29,7 +30,7 @@
 .search__input {
     width: 100%;
     min-width: 0;
-    height: 50px;
+    height: 100%;
     padding: 0 38px;
     background: none;
     border: none;

@@ -18,95 +18,188 @@
     <div
         fxLayout="row"
         fxLayoutAlign="space-between start"
-        fxLayoutGap="0"
+        fxLayoutGap="16px"
         fxFlex.gt-md="555 0 0"
         fxLayout.xs="column"
         fxLayoutGap.xs="30px"
     >
         <div
-            *ngIf="balance$ | async as balance"
             class="header__box"
             fxLayout="row"
             fxLayoutAlign="start center"
-            fxLayoutGap="12px"
+            fxLayoutGap="16px"
         >
-            <div class="header__label">
-                <span [matTooltip]="balance"
-                    >{{ balance | displayDecimals: 3 }}
-                    {{ (network$ | async)?.shortName }}
-                </span>
-                <span class="header__label header__label--secondary"
-                    >on-chain</span
-                >
-            </div>
             <div
-                *ngIf="zeroBalance$ | async"
-                class="header__label header__alert-box"
-            >
-                Funds needed
-            </div>
-            <a
-                *ngIf="(network$ | async)?.faucet"
-                [href]="faucetLink$ | async"
-                target="_blank"
-                mat-icon-button
-                class="account-button"
-                matTooltip="Open ether faucet"
+                *ngIf="balance$ | async as balance"
                 fxLayout="column"
-                fxLayoutAlign="center center"
-                id="faucet-button"
+                fxLayoutGap="4px"
             >
-                <mat-icon
-                    class="account-button__icon"
-                    svgIcon="faucet"
-                    aria-label="Open ether faucet"
-                >
-                </mat-icon>
-            </a>
+                <span>
+                    <span [matTooltip]="balance" class="header__balance">
+                        {{ balance | displayDecimals: 3 }}
+                    </span>
+                    <span class="header__balance">
+                        {{ (network$ | async)?.shortName }}
+                    </span>
+                    <span *ngIf="zeroBalance$ | async" class="alert">
+                        <mat-icon
+                            svgIcon="down-arrow"
+                            aria-hidden="true"
+                            class="alert__icon"
+                            matTooltip="Funds needed"
+                            id="balance-alert"
+                        ></mat-icon>
+                    </span>
+                </span>
+                <span class="header__label">
+                    On-Chain
+                </span>
+            </div>
+            <div class="divider"></div>
+            <div
+                *ngIf="servicesToken$ | async as servicesToken"
+                fxLayout="column"
+                fxLayoutGap="4px"
+            >
+                <span>
+                    <span
+                        *ngIf="
+                            udcBalance$
+                                | async
+                                | decimal: servicesToken.decimals as udcBalance
+                        "
+                        [matTooltip]="udcBalance"
+                        class="header__balance"
+                        id="udc-balance"
+                    >
+                        {{ udcBalance | displayDecimals: 3 }}
+                    </span>
+                    <span
+                        matTooltip="{{ servicesToken.name }}
+                    {{ servicesToken.address }}
+                    (Click to copy)"
+                        ngxClipboard
+                        [cbContent]="servicesToken.address"
+                    >
+                        {{ servicesToken.symbol }}
+                    </span>
+                    <span *ngIf="zeroUdcBalance$ | async" class="alert">
+                        <mat-icon
+                            svgIcon="down-arrow"
+                            aria-hidden="true"
+                            class="alert__icon"
+                            matTooltip="Funds needed"
+                        ></mat-icon>
+                    </span>
+                </span>
+                <span class="header__label">
+                    Deposited in UDC
+                </span>
+            </div>
+            <ng-container
+                *ngFor="
+                    let token of tokens$ | async | slice: 0:2;
+                    trackBy: tokenTrackByFn
+                "
+            >
+                <div class="divider"></div>
+                <div fxLayout="column" fxLayoutGap="4px">
+                    <span>
+                        <span
+                            *ngIf="
+                                token.balance
+                                    | decimal: token.decimals as tokenBalance
+                            "
+                            [matTooltip]="tokenBalance"
+                            class="header__balance"
+                        >
+                            {{ tokenBalance | displayDecimals: 3 }}
+                        </span>
+                        <span
+                            matTooltip="{{ token.name }}
+                        {{ token.address }}
+                        (Click to copy)"
+                            ngxClipboard
+                            [cbContent]="token.address"
+                        >
+                            {{ token.symbol }}
+                        </span>
+                    </span>
+                    <span class="header__label">
+                        On-Chain
+                    </span>
+                </div>
+            </ng-container>
         </div>
 
         <div
             fxLayout="row"
-            fxLayoutGap="12px"
+            fxLayoutGap="4px"
             fxLayoutAlign="start center"
             class="header__box"
+            fxFlex.gt-md="1 0 0"
         >
-            <div class="header__label header__label--secondary">
-                Address
-            </div>
+            <mat-icon
+                svgIcon="user"
+                aria-hidden="true"
+                class="header__user-icon"
+            ></mat-icon>
             <span
                 class="header__address"
-                matTooltip="{{ raidenAddress }}
+                matTooltip="Your account
+                {{ raidenAddress }}
             (Click to copy)"
                 ngxClipboard
                 [cbContent]="raidenAddress"
-                >{{ raidenAddress }}</span
+                fxFlex="1 0 0"
             >
-            <button
-                mat-icon-button
-                matTooltip="Show QR code to scan your address"
-                (click)="showOwnAddressQrCode()"
-                class="account-button"
-                fxLayout="column"
-                fxLayoutAlign="center center"
-                id="qr-button"
-            >
-                <mat-icon
-                    class="account-button__icon"
-                    svgIcon="qr"
-                    aria-label="Show QR code to scan your address"
-                >
-                </mat-icon>
-            </button>
+                {{ raidenAddress }}
+            </span>
         </div>
     </div>
 
     <div
         fxLayout="row"
-        fxLayoutAlign="space-between center"
-        fxLayoutGap="22px"
+        fxLayoutAlign="start"
+        fxLayoutGap="16px"
         fxFlex.gt-md="334 0 0"
     >
+        <a
+            *ngIf="(network$ | async)?.faucet"
+            [href]="faucetLink$ | async"
+            target="_blank"
+            mat-icon-button
+            class="account-button"
+            matTooltip="Open ether faucet"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+            fxFlexAlign="center"
+            id="faucet-button"
+        >
+            <mat-icon
+                class="account-button__icon-faucet"
+                svgIcon="faucet"
+                aria-label="Open ether faucet"
+            >
+            </mat-icon>
+        </a>
+        <button
+            mat-icon-button
+            matTooltip="Show QR code to scan your address"
+            (click)="showOwnAddressQrCode()"
+            class="account-button"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+            fxFlexAlign="center"
+            id="qr-button"
+        >
+            <mat-icon
+                class="account-button__icon-qr"
+                svgIcon="qr"
+                aria-label="Show QR code to scan your address"
+            >
+            </mat-icon>
+        </button>
         <app-search-field
             fxFlex="1 0 0"
             fxFlex.lt-lg="0 1 233px"
