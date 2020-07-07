@@ -99,7 +99,7 @@ describe('TokenNetworkSelectorComponent', () => {
         fixture.detectChanges();
 
         expect(component.value).toBe(connectedToken);
-        expect(touchedSpy).toHaveBeenCalledTimes(1);
+        expect(touchedSpy).toHaveBeenCalled();
         expect(changeSpy).toHaveBeenCalledTimes(1);
         expect(changeSpy).toHaveBeenCalledWith(connectedToken.address);
         expect(tokenChangedSpy).toHaveBeenCalledTimes(1);

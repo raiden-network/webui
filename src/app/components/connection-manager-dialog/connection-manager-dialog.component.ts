@@ -5,7 +5,7 @@ import { TokenInputComponent } from '../token-input/token-input.component';
 import BigNumber from 'bignumber.js';
 import { UserToken } from '../../models/usertoken';
 import { Subject } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { TokenPollingService } from '../../services/token-polling.service';
 
 export interface ConnectionManagerDialogPayload {

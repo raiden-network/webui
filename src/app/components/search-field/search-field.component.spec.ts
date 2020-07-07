@@ -149,7 +149,7 @@ describe('SearchFieldComponent', () => {
 
     it('should show all autocomplete options with an empty input', () => {
         const input = fixture.debugElement.query(By.css('input')).nativeElement;
-        input.focus();
+        input.dispatchEvent(new Event('focusin'));
         input.click();
         fixture.detectChanges();
 
@@ -159,7 +159,7 @@ describe('SearchFieldComponent', () => {
 
     it('should be able to select an autocomplete option', () => {
         const input = fixture.debugElement.query(By.css('input')).nativeElement;
-        input.focus();
+        input.dispatchEvent(new Event('focusin'));
         input.click();
         fixture.detectChanges();
 

@@ -248,7 +248,7 @@ describe('AddressInputComponent', () => {
         });
 
         it('should show all options with an empty input', () => {
-            input.focus();
+            input.dispatchEvent(new Event('focusin'));
             input.click();
             fixture.detectChanges();
 
@@ -259,7 +259,7 @@ describe('AddressInputComponent', () => {
         });
 
         it('should be able to select an option and show the label as a hint', () => {
-            input.focus();
+            input.dispatchEvent(new Event('focusin'));
             input.click();
             fixture.detectChanges();
 
