@@ -32,6 +32,7 @@ import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { UserDepositService } from '../../services/user-deposit.service';
 import BigNumber from 'bignumber.js';
 import { SharedService } from '../../services/shared.service';
+import { UserToken } from '../../models/usertoken';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -40,6 +41,7 @@ describe('HeaderComponent', () => {
     let notificationService: NotificationService;
     let networkSubject: BehaviorSubject<Network>;
     let balanceSubject: BehaviorSubject<string>;
+    let tokensSubject: BehaviorSubject<UserToken[]>;
     const raidenAddress = createAddress();
     const channels = createTestChannels();
     const tokens = createTestTokens();
@@ -57,8 +59,9 @@ describe('HeaderComponent', () => {
         raidenServiceMock.getUserToken = () => undefined;
 
         const tokenPollingMock = stub<TokenPollingService>();
+        tokensSubject = new BehaviorSubject(tokens);
         // @ts-ignore
-        tokenPollingMock.tokens$ = of(tokens);
+        tokenPollingMock.tokens$ = tokensSubject.asObservable();
 
         const channelPollingMock = stub<ChannelPollingService>();
         // @ts-ignore
@@ -188,7 +191,21 @@ describe('HeaderComponent', () => {
         expect(balanceText).toBe('0.75');
     });
 
-    it('should show the token on-chain balances in an overlay', () => {
+    it('should show the token on-chain balances inside the header for two tokens', () => {
+        const twoTokens = createTestTokens(2);
+        tokensSubject.next(twoTokens);
+        fixture.detectChanges();
+
+        expect(
+            fixture.debugElement.query(By.css('.balances-button'))
+        ).toBeFalsy();
+        const balances = fixture.debugElement.queryAll(
+            By.css('.header__balance')
+        );
+        expect(balances.length).toBe(5);
+    });
+
+    it('should show the token on-chain balances in an overlay for more than two tokens', () => {
         clickElement(fixture.debugElement, '.balances-button');
         fixture.detectChanges();
         expect(component.tokenBalancesOpen).toBe(true);
