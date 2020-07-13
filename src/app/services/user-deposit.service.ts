@@ -33,22 +33,26 @@ export class UserDepositService {
         private tokenInfoRetriever: TokenInfoRetrieverService,
         private raidenConfig: RaidenConfig
     ) {
-        const userDepositContract$ = this.raidenService.reconnected$.pipe(
-            switchMap(() => this.raidenService.getContractsInfo()),
-            map(
-                (contracts) =>
-                    new this.raidenConfig.web3.eth.Contract(
-                        userDepositAbi,
-                        contracts.user_deposit_address
-                    )
-            ),
-            backoff(this.raidenConfig.config.error_poll_interval),
-            shareReplay(1)
-        );
+        const userDepositContract$ = this.getUserDepositContractObservable();
 
         this.balance$ = this.getBalanceObservable(userDepositContract$);
         this.servicesToken$ = this.getServicesTokenObservable(
             userDepositContract$
+        );
+    }
+
+    private getUserDepositContractObservable(): Observable<Contract> {
+        return this.raidenService.reconnected$.pipe(
+            switchMap(() => this.raidenService.getContractsInfo()),
+            map(
+                (contractsInfo) =>
+                    new this.raidenConfig.web3.eth.Contract(
+                        userDepositAbi,
+                        contractsInfo.user_deposit_address
+                    )
+            ),
+            backoff(this.raidenConfig.config.error_poll_interval),
+            shareReplay(1)
         );
     }
 
@@ -59,9 +63,9 @@ export class UserDepositService {
             this.raidenService.raidenAddress$,
             userDepositContract$
         ).pipe(
-            switchMap(([raidenAddress, contract]) =>
+            switchMap(([raidenAddress, userDepositContract]) =>
                 fromPromise<string>(
-                    contract.methods.balances(raidenAddress).call()
+                    userDepositContract.methods.balances(raidenAddress).call()
                 )
             ),
             map((value) => new BigNumber(value)),
@@ -81,8 +85,8 @@ export class UserDepositService {
         userDepositContract$: Observable<Contract>
     ): Observable<UserToken> {
         const servicesTokenAddress$ = userDepositContract$.pipe(
-            switchMap((contract) =>
-                fromPromise<string>(contract.methods.token().call())
+            switchMap((userDepositContract) =>
+                fromPromise<string>(userDepositContract.methods.token().call())
             ),
             tap(() => {
                 this.servicesToken = undefined;
