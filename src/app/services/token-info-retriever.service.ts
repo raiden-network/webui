@@ -37,7 +37,7 @@ export class TokenInfoRetrieverService {
     async createBatch(
         tokenAddresses: string[],
         raidenAddress: string,
-        userTokens: { [address: string]: UserToken | null }
+        userTokens: { [address: string]: UserToken | null } = {}
     ): Promise<{ [address: string]: UserToken }> {
         const batchManager = this.batchManagerFactory.create(
             this.raidenConfig.web3.currentProvider

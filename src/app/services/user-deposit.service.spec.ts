@@ -17,17 +17,19 @@ import { ContractOptions } from 'web3-eth-contract/types';
 import { AbiItem } from 'web3-utils/types';
 import Spy = jasmine.Spy;
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
+import { UserToken } from '../models/usertoken';
 
 describe('UserDepositService', () => {
     let service: UserDepositService;
     let reconnectedSubject: BehaviorSubject<void>;
     let rpcConnectedSubject: Subject<void>;
-    let tokenResult: Promise<string>;
+    let tokenAddressResult: Promise<string>;
     let balanceResult: Promise<string>;
+    let tokenBalanceResult: Promise<string>;
     let tokenRetrieverSpy: Spy;
 
     const balance = '40000000';
-    const token = createToken();
+    let token: UserToken;
 
     beforeEach(() => {
         const raidenServiceMock = stub<RaidenService>();
@@ -54,22 +56,37 @@ describe('UserDepositService', () => {
         });
         const raidenConfig = TestBed.inject(RaidenConfig);
 
-        tokenResult = Promise.resolve(token.address);
+        token = createToken();
+        tokenAddressResult = Promise.resolve(token.address);
         balanceResult = Promise.resolve(balance);
+        tokenBalanceResult = Promise.resolve(token.balance.toString());
 
         // @ts-ignore
         raidenConfig.web3.eth.Contract = function (
-            jsonInterface: AbiItem[] | AbiItem,
+            jsonInterface: AbiItem[],
             address?: string,
             options?: ContractOptions
         ) {
-            return {
+            const contractMock = {
                 address: address,
                 options: {},
-                methods: {
+                methods: {},
+            };
+            if (
+                jsonInterface.find((item: AbiItem) => item.name === 'balanceOf')
+            ) {
+                contractMock.methods = {
+                    balanceOf: () => {
+                        return {
+                            call: () => tokenBalanceResult,
+                        };
+                    },
+                };
+            } else {
+                contractMock.methods = {
                     token: () => {
                         return {
-                            call: () => tokenResult,
+                            call: () => tokenAddressResult,
                         };
                     },
                     balances: () => {
@@ -77,8 +94,9 @@ describe('UserDepositService', () => {
                             call: () => balanceResult,
                         };
                     },
-                },
-            };
+                };
+            }
+            return contractMock;
         };
 
         tokenRetrieverSpy = spyOn(
@@ -123,13 +141,17 @@ describe('UserDepositService', () => {
         tokenRetrieverSpy.and.returnValue(
             Promise.resolve({ [token.address]: token })
         );
+        tokenBalanceResult = Promise.resolve('999999');
+        const tokenWithFetchedBalance = Object.assign({}, token, {
+            balance: new BigNumber('999999'),
+        });
 
         const spy = jasmine.createSpy();
         const subscription = service.servicesToken$.subscribe(spy);
 
         tick(15000);
         expect(spy).toHaveBeenCalledTimes(2);
-        expect(spy).toHaveBeenCalledWith(token);
+        expect(spy).toHaveBeenCalledWith(tokenWithFetchedBalance);
         flush();
         subscription.unsubscribe();
     }));
@@ -140,10 +162,10 @@ describe('UserDepositService', () => {
         );
 
         const spy = jasmine.createSpy();
-        tokenResult = Promise.reject();
+        tokenAddressResult = Promise.reject();
         const subscription = service.servicesToken$.subscribe(spy);
 
-        tokenResult = Promise.resolve(token.address);
+        tokenAddressResult = Promise.resolve(token.address);
         rpcConnectedSubject.next();
 
         tick();
