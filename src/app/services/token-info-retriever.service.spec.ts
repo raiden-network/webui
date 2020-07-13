@@ -12,6 +12,7 @@ import { AbiItem } from 'web3-utils/types';
 import { ContractOptions } from 'web3-eth-contract/types';
 import BigNumber from 'bignumber.js';
 import Web3 from 'web3';
+import { BatchManager } from './batch-manager';
 
 describe('TokenInfoRetriever', () => {
     let service: TokenInfoRetrieverService;
@@ -206,6 +207,6 @@ describe('BatchManagerFactory', () => {
         const batchManager = batchManagerFactory.create(
             new Web3.providers.HttpProvider('http://localhost:8485')
         );
-        expect(batchManager).toBeTruthy();
+        expect(batchManager).toBeInstanceOf(BatchManager);
     });
 });
