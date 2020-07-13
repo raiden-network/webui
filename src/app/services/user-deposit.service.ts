@@ -44,6 +44,7 @@ export class UserDepositService {
     private getUserDepositContractObservable(): Observable<Contract> {
         return this.raidenService.reconnected$.pipe(
             switchMap(() => this.raidenService.getContractsInfo()),
+            backoff(this.raidenConfig.config.error_poll_interval),
             map(
                 (contractsInfo) =>
                     new this.raidenConfig.web3.eth.Contract(
@@ -51,7 +52,6 @@ export class UserDepositService {
                         contractsInfo.user_deposit_address
                     )
             ),
-            backoff(this.raidenConfig.config.error_poll_interval),
             shareReplay(1)
         );
     }
