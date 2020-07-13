@@ -13,6 +13,7 @@ import { ContractOptions } from 'web3-eth-contract/types';
 import BigNumber from 'bignumber.js';
 import Web3 from 'web3';
 import { BatchManager } from './batch-manager';
+import { createAddress } from '../../testing/test-data';
 
 describe('TokenInfoRetriever', () => {
     let service: TokenInfoRetrieverService;
@@ -185,6 +186,39 @@ describe('TokenInfoRetriever', () => {
         expect(userToken.balance).toEqual(new BigNumber(150));
         expect(typeof userToken.decimals).toBe('number');
         expect(BigNumber.isBigNumber(userToken.balance)).toBe(true);
+    });
+
+    it('should have add 4 requests when nothing is cached', async () => {
+        const batchManager = createBatchManagerSpy(
+            new Promise((resolve) => {
+                resolve(['TEST', 'TST', 18, 50]);
+            })
+        );
+        spyOn(batchManagerFactory, 'create').and.returnValue(batchManager);
+
+        const tokenAddress = createAddress();
+        const tokens = await service.createBatch(
+            [tokenAddress],
+            createAddress()
+        );
+
+        expect(batchManager.add).toHaveBeenCalledTimes(4);
+        expect(tokens[tokenAddress]).toBeTruthy();
+
+        const calls = batchManager.add.calls;
+
+        expect(calls.argsFor(0)[0].request).toBe('name');
+        expect(calls.argsFor(1)[0].request).toBe('symbol');
+        expect(calls.argsFor(2)[0].request).toBe('decimals');
+        expect(calls.argsFor(3)[0].request).toBe('balanceOf');
+
+        const userToken = tokens[tokenAddress];
+
+        expect(userToken.name).toBe('TEST');
+        expect(userToken.symbol).toBe('TST');
+        expect(userToken.address).toBe(tokenAddress);
+        expect(userToken.decimals).toBe(18);
+        expect(userToken.balance).toEqual(new BigNumber(50));
     });
 });
 
