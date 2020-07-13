@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RaidenService } from './raiden.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
-import { Observable, zip, interval } from 'rxjs';
+import { Observable, zip, interval, of } from 'rxjs';
 import { UserToken } from '../models/usertoken';
 import {
     switchMap,
@@ -10,7 +10,6 @@ import {
     startWith,
     retryWhen,
     switchMapTo,
-    tap,
 } from 'rxjs/operators';
 import { backoff } from '../shared/backoff.operator';
 import { RaidenConfig } from './raiden.config';
@@ -18,6 +17,7 @@ import { userDepositAbi } from '../models/userDepositAbi';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import BigNumber from 'bignumber.js';
 import { Contract } from 'web3-eth-contract';
+import { tokenabi } from '../models/tokenabi';
 
 @Injectable({
     providedIn: 'root',
@@ -25,8 +25,6 @@ import { Contract } from 'web3-eth-contract';
 export class UserDepositService {
     readonly balance$: Observable<BigNumber>;
     readonly servicesToken$: Observable<UserToken>;
-
-    private servicesToken: UserToken;
 
     constructor(
         private raidenService: RaidenService,
@@ -87,17 +85,10 @@ export class UserDepositService {
         const servicesTokenAddress$ = userDepositContract$.pipe(
             switchMap((userDepositContract) =>
                 fromPromise<string>(userDepositContract.methods.token().call())
-            ),
-            tap(() => {
-                this.servicesToken = undefined;
-            }),
-            retryWhen((errors) =>
-                errors.pipe(switchMapTo(this.raidenService.rpcConnected$))
-            ),
-            shareReplay(1)
+            )
         );
 
-        const fetchTokenInfo$ = zip(
+        const servicesTokenInfo$ = zip(
             this.raidenService.raidenAddress$,
             servicesTokenAddress$
         ).pipe(
@@ -105,14 +96,36 @@ export class UserDepositService {
                 fromPromise(
                     this.tokenInfoRetriever.createBatch(
                         [tokenAddress],
-                        raidenAddress,
-                        { [tokenAddress]: this.servicesToken }
+                        raidenAddress
                     )
                 )
             ),
             map((result) => Object.values(result)[0]),
-            tap((token) => {
-                this.servicesToken = token;
+            retryWhen((errors) =>
+                errors.pipe(switchMapTo(this.raidenService.rpcConnected$))
+            ),
+            shareReplay(1)
+        );
+
+        const fetchTokenBalance$ = zip(
+            this.raidenService.raidenAddress$,
+            servicesTokenInfo$
+        ).pipe(
+            switchMap(([raidenAddress, servicesTokenInfo]) => {
+                const tokenContract = new this.raidenConfig.web3.eth.Contract(
+                    tokenabi,
+                    servicesTokenInfo.address
+                );
+                return zip(
+                    of(servicesTokenInfo),
+                    fromPromise<string>(
+                        tokenContract.methods.balanceOf(raidenAddress).call()
+                    )
+                );
+            }),
+            map(([servicesTokenInfo, balance]) => {
+                servicesTokenInfo.balance = new BigNumber(balance);
+                return servicesTokenInfo;
             }),
             retryWhen((errors) =>
                 errors.pipe(switchMapTo(this.raidenService.rpcConnected$))
@@ -121,7 +134,7 @@ export class UserDepositService {
 
         return interval(15000).pipe(
             startWith(0),
-            switchMapTo(fetchTokenInfo$),
+            switchMapTo(fetchTokenBalance$),
             shareReplay({ bufferSize: 1, refCount: true })
         );
     }
