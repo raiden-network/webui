@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [1.0.2] - 2020-07-14
 ### Added
 - [#485] Header shows the RDN tokens deposited to the UDC and token on-chain balances.
 
@@ -153,7 +155,8 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/raiden-network/webui/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/raiden-network/webui/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/raiden-network/webui/compare/v0.11.0...v1.0.0
 [0.11.1]: https://github.com/raiden-network/webui/compare/v0.11.0...v0.11.1
