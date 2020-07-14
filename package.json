@@ -37,7 +37,7 @@
     "jasmine": "3.5.0",
     "material-design-icons": "3.0.1",
     "ngx-clipboard": "13.0.1",
-    "ngx-toastr": "12.1.0",
+    "ngx-toastr": "13.0.0",
     "qrcode": "1.4.4",
     "rxjs": "6.5.5",
     "tslib": "^2.0.0",
