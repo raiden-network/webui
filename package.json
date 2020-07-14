@@ -14,7 +14,8 @@
     "lint": "ng lint",
     "prettier": "prettier --write --config ./.prettierrc './**/*.{ts,tsx,html,css,scss,json,js}'",
     "prettier:check": "prettier --check --config ./.prettierrc './**/*.{ts,tsx,html,css,scss,json,js}'",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "ngcc"
   },
   "private": true,
   "dependencies": {
