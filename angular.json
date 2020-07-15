@@ -25,7 +25,29 @@
                             "src/styles.css",
                             "src/webui-app-theme.scss"
                         ],
-                        "scripts": []
+                        "scripts": [],
+                        "allowedCommonJsDependencies": [
+                            "bignumber.js",
+                            "qrcode",
+                            "ajv",
+                            "web3",
+                            "web3-utils",
+                            "web3-core",
+                            "web3-core-helpers",
+                            "web3-core-requestmanager",
+                            "web3-eth-personal",
+                            "web3-net",
+                            "web3-eth",
+                            "web3-bzz",
+                            "web3-shh",
+                            "web3-providers-http",
+                            "web3-providers-ws",
+                            "web3-providers-ipc",
+                            "randombytes",
+                            "underscore",
+                            "ethjs-unit",
+                            "elliptic"
+                        ]
                     },
                     "configurations": {
                         "production": {
