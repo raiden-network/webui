@@ -89,9 +89,9 @@
     font-size: 12px;
     line-height: 30px;
     color: #ffffff;
-    padding: 12px 16px;
+    padding: 12px 16px 0 16px;
     width: 93px;
-    height: 170px;
+    max-height: 170px;
     overflow-y: scroll;
 }
 
@@ -104,6 +104,7 @@
 
 .balances-overlay__item:last-child {
     border-bottom: none;
+    padding-bottom: 12px;
 }
 
 .account-button {
