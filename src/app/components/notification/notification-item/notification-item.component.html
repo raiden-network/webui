@@ -30,22 +30,11 @@
                 class="remove__icon"
             ></mat-icon>
         </button>
-        <div
+        <app-address-identicon
             *ngIf="notification.identiconAddress"
-            class="identicon-box"
-            fxLayout="column"
-        >
-            <img
-                class="identicon-box__image"
-                [src]="identicon(notification.identiconAddress)"
-                alt="Channel partner identicon"
-                matTooltip="{{ addressLabel(notification.identiconAddress) }}
-                    {{ notification.identiconAddress }}
-                    (Click to copy)"
-                ngxClipboard
-                [cbContent]="notification.identiconAddress"
-            />
-        </div>
+            size="32px"
+            [address]="notification.identiconAddress"
+        ></app-address-identicon>
         <div
             *ngIf="notification.userToken"
             class="side__token-symbol"

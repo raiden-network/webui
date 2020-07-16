@@ -3,7 +3,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
 import Spy = jasmine.Spy;
-
 import { NotificationPanelComponent } from './notification-panel.component';
 import { NotificationItemComponent } from '../notification-item/notification-item.component';
 import { MaterialComponentsModule } from '../../../modules/material-components/material-components.module';

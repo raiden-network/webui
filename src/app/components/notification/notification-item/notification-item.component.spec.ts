@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-
 import { NotificationItemComponent } from './notification-item.component';
 import { TestProviders } from '../../../../testing/test-providers';
 import { MaterialComponentsModule } from '../../../modules/material-components/material-components.module';
@@ -11,6 +10,7 @@ import { RaidenIconsModule } from '../../../modules/raiden-icons/raiden-icons.mo
 import { ClipboardModule } from 'ngx-clipboard';
 import { IdenticonCacheService } from '../../../services/identicon-cache.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { AddressIdenticonComponent } from '../../address-identicon/address-identicon.component';
 
 describe('NotificationItemComponent', () => {
     let component: NotificationItemComponent;
@@ -28,9 +28,11 @@ describe('NotificationItemComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [NotificationItemComponent],
+            declarations: [
+                NotificationItemComponent,
+                AddressIdenticonComponent,
+            ],
             providers: [
-                NoopAnimationsModule,
                 TestProviders.AddressBookStubProvider(),
                 IdenticonCacheService,
             ],
@@ -39,6 +41,7 @@ describe('NotificationItemComponent', () => {
                 RaidenIconsModule,
                 ClipboardModule,
                 HttpClientTestingModule,
+                NoopAnimationsModule,
             ],
         }).compileComponents();
     }));

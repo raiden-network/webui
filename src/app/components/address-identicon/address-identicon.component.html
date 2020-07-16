@@ -1,0 +1,13 @@
+<div class="container" [style.width]="size" [style.height]="size">
+    <img
+        class="container__identicon"
+        [src]="identicon(address)"
+        alt="Channel partner identicon"
+        matTooltip="{{ addressLabel(address) }}
+            {{ address }}
+            (Click to copy)"
+        ngxClipboard
+        [cbContent]="address"
+        stopClickPropagation
+    />
+</div>

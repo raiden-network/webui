@@ -12,6 +12,7 @@ import { clickElement } from '../../../testing/interaction-helper';
 import { SharedService } from '../../services/shared.service';
 import { TestProviders } from '../../../testing/test-providers';
 import { By } from '@angular/platform-browser';
+import { AddressIdenticonComponent } from '../address-identicon/address-identicon.component';
 
 describe('ContactComponent', () => {
     let component: ContactComponent;
@@ -24,7 +25,11 @@ describe('ContactComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ContactComponent, ContactActionsComponent],
+            declarations: [
+                ContactComponent,
+                ContactActionsComponent,
+                AddressIdenticonComponent,
+            ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 SharedService,

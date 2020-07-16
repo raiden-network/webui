@@ -30,16 +30,6 @@
     opacity: 0.17;
 }
 
-.icon-box {
-    width: 35px;
-    height: 35px;
-}
-
-.icon-box__identicon {
-    border-radius: 50%;
-    height: 100%;
-}
-
 .info__state {
     font-size: 9px;
     line-height: 11px;

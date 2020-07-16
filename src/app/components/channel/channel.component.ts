@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Channel } from '../../models/channel';
 import { AddressBookService } from '../../services/address-book.service';
-import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { DepositMode } from '../../models/deposit-mode.enum';
 import {
     ConfirmationDialogPayload,
@@ -29,7 +28,6 @@ export class ChannelComponent implements OnInit {
 
     constructor(
         private addressBookService: AddressBookService,
-        private identiconCache: IdenticonCacheService,
         private dialog: MatDialog,
         private channelPollingService: ChannelPollingService,
         private tokenPollingService: TokenPollingService,
@@ -37,14 +35,6 @@ export class ChannelComponent implements OnInit {
     ) {}
 
     ngOnInit() {}
-
-    identicon(address: string) {
-        return this.identiconCache.getIdenticon(address);
-    }
-
-    addressLabel(address: string): string | undefined {
-        return this.addressBookService.get()[address];
-    }
 
     deposit() {
         this.openDeposit(DepositMode.DEPOSIT);

@@ -32,6 +32,7 @@ import {
     ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
+import { AddressIdenticonComponent } from '../address-identicon/address-identicon.component';
 
 describe('ChannelComponent', () => {
     let component: ChannelComponent;
@@ -53,6 +54,7 @@ describe('ChannelComponent', () => {
                 DecimalPipe,
                 DisplayDecimalsPipe,
                 BalanceWithSymbolComponent,
+                AddressIdenticonComponent,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
