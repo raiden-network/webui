@@ -31,6 +31,7 @@ import {
     ConfirmationDialogPayload,
     ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
+import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 
 describe('ChannelComponent', () => {
     let component: ChannelComponent;
@@ -47,7 +48,12 @@ describe('ChannelComponent', () => {
         addressBookMock.get = () => contacts;
 
         TestBed.configureTestingModule({
-            declarations: [ChannelComponent, DecimalPipe, DisplayDecimalsPipe],
+            declarations: [
+                ChannelComponent,
+                DecimalPipe,
+                DisplayDecimalsPipe,
+                BalanceWithSymbolComponent,
+            ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 RaidenService,

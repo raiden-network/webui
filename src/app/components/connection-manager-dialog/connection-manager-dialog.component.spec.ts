@@ -28,6 +28,8 @@ import { TokenNetworkSelectorComponent } from '../token-network-selector/token-n
 import { TokenPollingService } from '../../services/token-polling.service';
 import { of } from 'rxjs';
 import { stub } from '../../../testing/stub';
+import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
+import { ClipboardModule } from 'ngx-clipboard';
 
 describe('ConnectionManagerDialogComponent', () => {
     let component: ConnectionManagerDialogComponent;
@@ -63,6 +65,7 @@ describe('ConnectionManagerDialogComponent', () => {
                 DecimalPipe,
                 DisplayDecimalsPipe,
                 TokenNetworkSelectorComponent,
+                BalanceWithSymbolComponent,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
@@ -77,6 +80,7 @@ describe('ConnectionManagerDialogComponent', () => {
                 NoopAnimationsModule,
                 RaidenIconsModule,
                 HttpClientTestingModule,
+                ClipboardModule,
             ],
         }).compileComponents();
     }));

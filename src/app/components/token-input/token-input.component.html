@@ -49,14 +49,10 @@
             </span>
             <span *ngIf="errors['insufficientFunds']">
                 There are only
-                <span
-                    *ngIf="maxAmount | decimal: selectedToken.decimals as max"
-                >
-                    <span [matTooltip]="max">
-                        {{ max | displayDecimals: 3 }}
-                    </span>
-                    {{ selectedToken?.symbol }} available
-                </span>
+                <app-balance-with-symbol
+                    [balance]="maxAmount"
+                    [token]="selectedToken"
+                ></app-balance-with-symbol>
             </span>
         </div>
         <ng-template #low_transfer_amount>
@@ -85,14 +81,12 @@
         </ng-template>
         <ng-template #max_amount>
             <div *ngIf="maxAmount && selectedToken" class="info-box__text">
-                <span
-                    *ngIf="maxAmount | decimal: selectedToken.decimals as max"
-                    [matTooltip]="max"
+                <app-balance-with-symbol
+                    [balance]="maxAmount"
+                    [token]="selectedToken"
                     id="max-amount"
-                >
-                    {{ max | displayDecimals: 3 }}
-                </span>
-                {{ selectedToken?.symbol }} available
+                ></app-balance-with-symbol>
+                available
                 <span *ngIf="onChainInput">on-chain</span>
             </div>
         </ng-template>

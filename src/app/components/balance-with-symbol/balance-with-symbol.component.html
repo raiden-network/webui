@@ -1,0 +1,15 @@
+<span
+    *ngIf="balance | decimal: token.decimals as decimalBalance"
+    [matTooltip]="decimalBalance"
+>
+    {{ decimalBalance | displayDecimals: 3 }}
+</span>
+<span
+    matTooltip="{{ token.name }}
+        {{ token.address }}
+        (Click to copy)"
+    ngxClipboard
+    [cbContent]="token.address"
+>
+    {{ token.symbol }}
+</span>

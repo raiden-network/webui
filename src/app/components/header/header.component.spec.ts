@@ -33,6 +33,7 @@ import { UserDepositService } from '../../services/user-deposit.service';
 import BigNumber from 'bignumber.js';
 import { SharedService } from '../../services/shared.service';
 import { UserToken } from '../../models/usertoken';
+import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -45,6 +46,7 @@ describe('HeaderComponent', () => {
     const raidenAddress = createAddress();
     const channels = createTestChannels();
     const tokens = createTestTokens();
+    const servicesToken = createToken();
 
     beforeEach(async(() => {
         const raidenServiceMock = stub<RaidenService>();
@@ -71,7 +73,7 @@ describe('HeaderComponent', () => {
         // @ts-ignore
         userDepositMock.balance$ = of(new BigNumber('750000000000000000'));
         // @ts-ignore
-        userDepositMock.servicesToken$ = of(createToken());
+        userDepositMock.servicesToken$ = of(servicesToken);
 
         TestBed.configureTestingModule({
             declarations: [
@@ -79,6 +81,7 @@ describe('HeaderComponent', () => {
                 DisplayDecimalsPipe,
                 SearchFieldComponent,
                 DecimalPipe,
+                BalanceWithSymbolComponent,
             ],
             providers: [
                 NotificationService,
@@ -188,7 +191,7 @@ describe('HeaderComponent', () => {
             By.css('#udc-balance')
         );
         const balanceText = balanceElement.nativeElement.innerText.trim();
-        expect(balanceText).toBe('0.75');
+        expect(balanceText).toBe(`0.75 ${servicesToken.symbol}`);
     });
 
     it('should show the token on-chain balances inside the header for two tokens', () => {
@@ -200,9 +203,9 @@ describe('HeaderComponent', () => {
             fixture.debugElement.query(By.css('.balances-button'))
         ).toBeFalsy();
         const balances = fixture.debugElement.queryAll(
-            By.css('.header__balance')
+            By.css('.header__token-balance')
         );
-        expect(balances.length).toBe(5);
+        expect(balances.length).toBe(2);
     });
 
     it('should show the token on-chain balances in an overlay for more than two tokens', () => {

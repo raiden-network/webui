@@ -47,6 +47,7 @@ import { AddressBookService } from '../../services/address-book.service';
 import { Contacts } from '../../models/contact';
 import { stub } from '../../../testing/stub';
 import { ChunkPipe } from '../../pipes/chunk.pipe';
+import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 
 describe('ChannelListComponent', () => {
     let component: ChannelListComponent;
@@ -74,6 +75,7 @@ describe('ChannelListComponent', () => {
                 DecimalPipe,
                 DisplayDecimalsPipe,
                 ChunkPipe,
+                BalanceWithSymbolComponent,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),

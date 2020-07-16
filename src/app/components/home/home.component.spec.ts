@@ -14,6 +14,7 @@ import { ContactComponent } from '../contact/contact.component';
 import { ContactActionsComponent } from '../contact/contact-actions/contact-actions.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ChunkPipe } from '../../pipes/chunk.pipe';
+import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 
 describe('HomeComponent', () => {
     let component: HomeComponent;
@@ -31,6 +32,7 @@ describe('HomeComponent', () => {
                 ContactComponent,
                 ContactActionsComponent,
                 ChunkPipe,
+                BalanceWithSymbolComponent,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),

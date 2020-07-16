@@ -61,30 +61,16 @@
             </div>
             <div
                 *ngFor="
-                    let token of (tokens$ | async).slice(0, 3);
+                    let token of tokens$ | async | slice: 0:3;
                     trackBy: trackByFn
                 "
                 fxFlex="7 0 0"
                 class="overview__item"
             >
-                <span
-                    *ngIf="
-                        token.sumChannelBalances
-                            | decimal: token.decimals as sumChannelBalances
-                    "
-                    [matTooltip]="sumChannelBalances"
-                >
-                    {{ sumChannelBalances | displayDecimals: 3 }}
-                </span>
-                <span
-                    matTooltip="{{ token.name }}
-                {{ token.address }}
-                (Click to copy)"
-                    ngxClipboard
-                    [cbContent]="token.address"
-                >
-                    {{ token.symbol }}
-                </span>
+                <app-balance-with-symbol
+                    [balance]="token.sumChannelBalances"
+                    [token]="token"
+                ></app-balance-with-symbol>
             </div>
         </div>
     </div>
@@ -190,24 +176,10 @@
 
     <div class="card__network" fxLayout="row">
         <div *ngIf="!isAllNetworksView; else all_networks">
-            <span
-                *ngIf="
-                    selectedToken.sumChannelBalances
-                        | decimal: selectedToken.decimals as sumChannelBalances
-                "
-                [matTooltip]="sumChannelBalances"
-            >
-                {{ sumChannelBalances | displayDecimals: 3 }}
-            </span>
-            <span
-                matTooltip="{{ selectedToken.name }}
-                    {{ selectedToken.address }}
-                    (Click to copy)"
-                ngxClipboard
-                [cbContent]="selectedToken.address"
-            >
-                {{ selectedToken.symbol }}
-            </span>
+            <app-balance-with-symbol
+                [balance]="selectedToken.sumChannelBalances"
+                [token]="selectedToken"
+            ></app-balance-with-symbol>
         </div>
         <ng-template #all_networks>
             All Networks

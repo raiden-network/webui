@@ -12,6 +12,8 @@ import { createToken } from '../../../testing/test-data';
 import BigNumber from 'bignumber.js';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
+import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
+import { ClipboardModule } from 'ngx-clipboard';
 
 describe('TokenInputComponent', () => {
     let component: TokenInputComponent;
@@ -26,6 +28,7 @@ describe('TokenInputComponent', () => {
                 TokenInputComponent,
                 DecimalPipe,
                 DisplayDecimalsPipe,
+                BalanceWithSymbolComponent,
             ],
             providers: [
                 {
@@ -33,7 +36,11 @@ describe('TokenInputComponent', () => {
                     useClass: ShowOnDirtyErrorStateMatcher,
                 },
             ],
-            imports: [MaterialComponentsModule, NoopAnimationsModule],
+            imports: [
+                MaterialComponentsModule,
+                NoopAnimationsModule,
+                ClipboardModule,
+            ],
         }).compileComponents();
     }));
 
@@ -146,7 +153,9 @@ describe('TokenInputComponent', () => {
         component.maxAmount = new BigNumber(7000000000000000);
         fixture.detectChanges();
         const maxAmountText = fixture.debugElement.query(By.css('#max-amount'));
-        expect(maxAmountText.nativeElement.innerText.trim()).toBe('0.007');
+        expect(maxAmountText.nativeElement.innerText.trim()).toBe(
+            `0.007 ${token.symbol}`
+        );
     });
 
     it('should show error when input value is greater than max amount', () => {
