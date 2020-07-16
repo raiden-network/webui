@@ -18,6 +18,7 @@ import { ChannelPollingService } from '../../services/channel-polling.service';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { RaidenService } from '../../services/raiden.service';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
+import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 
 describe('TransfersPageComponent', () => {
     let component: TransfersPageComponent;
@@ -32,6 +33,7 @@ describe('TransfersPageComponent', () => {
                 DisplayDecimalsPipe,
                 TokenComponent,
                 BalanceWithSymbolComponent,
+                TokenNetworkSelectorComponent,
             ],
             providers: [
                 TestProviders.AddressBookStubProvider(),

@@ -45,6 +45,7 @@ import { ChannelPollingService } from '../../services/channel-polling.service';
 import { stub } from '../../../testing/stub';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
+import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 
 describe('TokenComponent', () => {
     let component: TokenComponent;
@@ -76,6 +77,7 @@ describe('TokenComponent', () => {
                 DecimalPipe,
                 DisplayDecimalsPipe,
                 BalanceWithSymbolComponent,
+                TokenNetworkSelectorComponent,
             ],
             providers: [
                 RaidenService,
@@ -137,47 +139,6 @@ describe('TokenComponent', () => {
 
             expect(setTokenSpy).toHaveBeenCalledTimes(1);
             expect(setTokenSpy).toHaveBeenCalledWith(tokens[0]);
-        });
-
-        it('should open register dialog', () => {
-            const tokenAddress = createAddress();
-            const dialogSpy = spyOn(dialog, 'open').and.callThrough();
-            dialog.returns = () => tokenAddress;
-            const registerSpy = spyOn(
-                raidenService,
-                'registerToken'
-            ).and.returnValue(of(null));
-
-            mockOpenMatSelect(fixture.debugElement);
-            fixture.detectChanges();
-
-            mockMatSelectByIndex(fixture.debugElement, 0);
-            fixture.detectChanges();
-
-            expect(dialogSpy).toHaveBeenCalledTimes(1);
-            expect(dialogSpy).toHaveBeenCalledWith(RegisterDialogComponent, {
-                width: '360px',
-            });
-            expect(registerSpy).toHaveBeenCalledTimes(1);
-            expect(registerSpy).toHaveBeenCalledWith(tokenAddress);
-        });
-
-        it('should not register token if dialog is cancelled', () => {
-            const dialogSpy = spyOn(dialog, 'open').and.callThrough();
-            dialog.returns = () => null;
-            const registerSpy = spyOn(
-                raidenService,
-                'registerToken'
-            ).and.returnValue(of(null));
-
-            mockOpenMatSelect(fixture.debugElement);
-            fixture.detectChanges();
-
-            mockMatSelectByIndex(fixture.debugElement, 0);
-            fixture.detectChanges();
-
-            expect(dialogSpy).toHaveBeenCalledTimes(1);
-            expect(registerSpy).toHaveBeenCalledTimes(0);
         });
 
         it('should open payment dialog with no token network selected', () => {

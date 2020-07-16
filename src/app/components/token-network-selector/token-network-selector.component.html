@@ -2,12 +2,40 @@
     [(value)]="value"
     (selectionChange)="onChange($event.value)"
     (focus)="onTouched()"
-    placeholder="Token Network"
+    [placeholder]="placeholder"
     fxFlex="0 1 161px"
+    [class]="selectorClass"
+    [panelClass]="panelClass"
+    #selector
 >
-    <mat-select-trigger *ngIf="value">
-        {{ value.symbol }} {{ value.name }} {{ value.address }}
+    <mat-select-trigger>
+        <ng-container *ngIf="setSelectedToken; else token_info">
+            Change Network
+        </ng-container>
+        <ng-template #token_info>
+            <ng-container *ngIf="!!value">
+                {{ value.symbol }} {{ value.name }} {{ value.address }}
+            </ng-container>
+        </ng-template>
     </mat-select-trigger>
+    <button
+        *ngIf="showRegisterButton"
+        mat-flat-button
+        class="mat-option register-button"
+        (click)="selector.close(); register()"
+        fxLayout="row"
+    >
+        <mat-icon
+            class="register-button__icon"
+            svgIcon="add"
+            aria-label="Add token"
+        >
+        </mat-icon>
+        <span>Add new Network</span>
+    </button>
+    <mat-option *ngIf="setSelectedToken">
+        All Networks
+    </mat-option>
     <mat-option
         *ngFor="let option of tokens$ | async; trackBy: trackByFn"
         [value]="option"
@@ -17,6 +45,13 @@
             <ng-container *ngIf="showOnChainBalance">
                 {{
                     option.balance
+                        | decimal: option.decimals
+                        | displayDecimals: 3
+                }}
+            </ng-container>
+            <ng-container *ngIf="showChannelBalance">
+                {{
+                    option.sumChannelBalances
                         | decimal: option.decimals
                         | displayDecimals: 3
                 }}

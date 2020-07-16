@@ -17,6 +17,7 @@ import { SelectedTokenService } from '../../services/selected-token.service';
 import { SharedService } from '../../services/shared.service';
 import { ChunkPipe } from '../../pipes/chunk.pipe';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
+import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 
 describe('ChannelsPageComponent', () => {
     let component: ChannelsPageComponent;
@@ -32,6 +33,7 @@ describe('ChannelsPageComponent', () => {
                 DisplayDecimalsPipe,
                 ChunkPipe,
                 BalanceWithSymbolComponent,
+                TokenNetworkSelectorComponent,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),

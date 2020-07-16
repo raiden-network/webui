@@ -44,7 +44,6 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
     itemsPerRow = 0;
     channelWidth = 0;
     selectedToken: UserToken;
-    tokens$: Observable<UserToken[]>;
 
     private channels: Channel[] = [];
     private searchFilter = '';
@@ -59,9 +58,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
         private selectedTokenService: SelectedTokenService,
         private sharedService: SharedService,
         private addressBookService: AddressBookService
-    ) {
-        this.tokens$ = this.tokenPollingService.tokens$;
-    }
+    ) {}
 
     ngOnInit() {
         this.channelPollingService.channels$
@@ -117,10 +114,6 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     trackByFn(index, item: Channel) {
         return `${item.token_address}_${item.partner_address}`;
-    }
-
-    onSelect(item: UserToken) {
-        this.selectedTokenService.setToken(item);
     }
 
     openChannel() {

@@ -6,11 +6,14 @@ import {
     Input,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, share } from 'rxjs/operators';
+import { Observable, EMPTY } from 'rxjs';
+import { map, share, flatMap } from 'rxjs/operators';
 import { UserToken } from '../../models/usertoken';
 import { RaidenService } from '../../services/raiden.service';
 import { TokenPollingService } from '../../services/token-polling.service';
+import { MatDialog } from '@angular/material/dialog';
+import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
+import { SelectedTokenService } from '../../services/selected-token.service';
 
 @Component({
     selector: 'app-token-network-selector',
@@ -27,6 +30,12 @@ import { TokenPollingService } from '../../services/token-polling.service';
 export class TokenNetworkSelectorComponent implements ControlValueAccessor {
     @Input() onlyConnectedTokens = false;
     @Input() showOnChainBalance = false;
+    @Input() showChannelBalance = false;
+    @Input() showRegisterButton = false;
+    @Input() setSelectedToken = false;
+    @Input() placeholder = 'Token Network';
+    @Input() selectorClass = '';
+    @Input() panelClass = '';
     @Output() tokenChanged = new EventEmitter<UserToken>();
 
     value: UserToken;
@@ -37,7 +46,9 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
 
     constructor(
         private tokenPollingService: TokenPollingService,
-        private raidenService: RaidenService
+        private raidenService: RaidenService,
+        private dialog: MatDialog,
+        private selectedTokenService: SelectedTokenService
     ) {
         this.tokens$ = this.tokenPollingService.tokens$.pipe(
             map((value) =>
@@ -66,9 +77,12 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
         this.tokenChanged.emit(token);
     }
 
-    onChange(value: any) {
-        this.propagateChange(value.address);
+    onChange(value: UserToken) {
+        this.propagateChange(value?.address);
         this.tokenChanged.emit(value);
+        if (this.setSelectedToken) {
+            this.selectedTokenService.setToken(value);
+        }
     }
 
     onTouched() {
@@ -77,5 +91,26 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
 
     trackByFn(token: UserToken): string {
         return token.address;
+    }
+
+    register() {
+        const dialog = this.dialog.open(RegisterDialogComponent, {
+            width: '360px',
+        });
+
+        dialog
+            .afterClosed()
+            .pipe(
+                flatMap((tokenAddress: string) => {
+                    if (!tokenAddress) {
+                        return EMPTY;
+                    }
+
+                    return this.raidenService.registerToken(tokenAddress);
+                })
+            )
+            .subscribe(() => {
+                this.tokenPollingService.refresh();
+            });
     }
 }

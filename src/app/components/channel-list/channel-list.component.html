@@ -25,39 +25,15 @@
                     Channels in all networks
                 </ng-template>
             </div>
-            <mat-select
-                [(value)]="selectedToken"
-                (selectionChange)="onSelect($event.value)"
+            <app-token-network-selector
+                [showChannelBalance]="true"
+                [setSelectedToken]="true"
+                placeholder="Select Network"
+                selectorClass="mat-select--dark"
+                panelClass="mat-select-panel--dark"
                 class="network-selector"
-                placeholder="Select network"
-                panelClass="network-selector__panel"
             >
-                <mat-select-trigger>
-                    <ng-container *ngIf="!selectedToken; else change_network">
-                        Select Network
-                    </ng-container>
-                    <ng-template #change_network>Change Network</ng-template>
-                </mat-select-trigger>
-                <mat-option>
-                    All Networks
-                </mat-option>
-                <mat-option
-                    *ngFor="let option of tokens$ | async; trackBy: trackByFn"
-                    [value]="option"
-                    class="token-option"
-                >
-                    <span>
-                        {{
-                            option.sumChannelBalances
-                                | decimal: option.decimals
-                                | displayDecimals: 3
-                        }}
-                        {{ option.symbol }}
-                    </span>
-                    <span>{{ option.name }}</span>
-                    <span>{{ option.address }}</span>
-                </mat-option>
-            </mat-select>
+            </app-token-network-selector>
         </div>
 
         <div *ngIf="visibleChannels.length === 0">

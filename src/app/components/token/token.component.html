@@ -83,55 +83,15 @@
     fxLayoutGap="22px"
 >
     <div class="card__top" fxLayout="row" fxLayoutAlign="center">
-        <mat-select
-            [(value)]="selectedToken"
-            (selectionChange)="onSelect($event.value)"
-            class="network-selector"
-            placeholder="Select network"
-            panelClass="network-selector__panel"
-            #selector
+        <app-token-network-selector
+            [showChannelBalance]="true"
+            [setSelectedToken]="true"
+            [showRegisterButton]="!production"
+            placeholder="Select Network"
+            selectorClass="mat-select--dark"
+            panelClass="mat-select-panel--dark"
         >
-            <mat-select-trigger>
-                <ng-container *ngIf="isAllNetworksView; else change_network"
-                    >Select Network</ng-container
-                >
-                <ng-template #change_network>Change Network</ng-template>
-            </mat-select-trigger>
-            <button
-                *ngIf="!production"
-                mat-flat-button
-                class="mat-option register-button"
-                (click)="selector.close(); register()"
-                fxLayout="row"
-            >
-                <mat-icon
-                    class="register-button__icon"
-                    svgIcon="add"
-                    aria-label="Add token"
-                >
-                </mat-icon>
-                <span>Add new Network</span>
-            </button>
-            <mat-option>
-                All Networks
-            </mat-option>
-            <mat-option
-                *ngFor="let option of tokens$ | async; trackBy: trackByFn"
-                [value]="option"
-                class="token-option"
-            >
-                <span>
-                    {{
-                        option.sumChannelBalances
-                            | decimal: option.decimals
-                            | displayDecimals: 3
-                    }}
-                    {{ option.symbol }}
-                </span>
-                <span>{{ option.name }}</span>
-                <span>{{ option.address }}</span>
-            </mat-option>
-        </mat-select>
+        </app-token-network-selector>
         <ng-container
             *ngIf="!isAllNetworksView && (!onMainnet || openChannels > 0)"
         >

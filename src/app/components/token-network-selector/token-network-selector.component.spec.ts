@@ -14,7 +14,12 @@ import { stub } from '../../../testing/stub';
 import {
     mockMatSelectFirst,
     mockOpenMatSelect,
+    mockMatSelectByIndex,
 } from '../../../testing/interaction-helper';
+import { MatDialog } from '@angular/material/dialog';
+import { MockMatDialog } from '../../../testing/mock-mat-dialog';
+import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
+import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 
 describe('TokenNetworkSelectorComponent', () => {
     let component: TokenNetworkSelectorComponent;
@@ -42,6 +47,7 @@ describe('TokenNetworkSelectorComponent', () => {
         const tokenPollingMock = stub<TokenPollingService>();
         // @ts-ignore
         tokenPollingMock.tokens$ = of(tokens);
+        tokenPollingMock.refresh = () => {};
 
         TestBed.configureTestingModule({
             declarations: [TokenNetworkSelectorComponent],
@@ -50,11 +56,13 @@ describe('TokenNetworkSelectorComponent', () => {
                 { provide: TokenPollingService, useValue: tokenPollingMock },
                 RaidenService,
                 TestProviders.AddressBookStubProvider(),
+                TestProviders.MockMatDialog(),
             ],
             imports: [
                 MaterialComponentsModule,
                 HttpClientTestingModule,
                 NoopAnimationsModule,
+                RaidenIconsModule,
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
@@ -123,5 +131,56 @@ describe('TokenNetworkSelectorComponent', () => {
         fixture.detectChanges();
 
         expect(component.value).toBe(undefined);
+    });
+
+    it('should open register dialog', () => {
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const raidenService = TestBed.inject(RaidenService);
+        const tokenAddress = createAddress();
+        const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+        dialog.returns = () => tokenAddress;
+        const registerSpy = spyOn(
+            raidenService,
+            'registerToken'
+        ).and.returnValue(of(null));
+
+        component.showRegisterButton = true;
+        fixture.detectChanges();
+
+        mockOpenMatSelect(fixture.debugElement);
+        fixture.detectChanges();
+
+        mockMatSelectByIndex(fixture.debugElement, 0);
+        fixture.detectChanges();
+
+        expect(dialogSpy).toHaveBeenCalledTimes(1);
+        expect(dialogSpy).toHaveBeenCalledWith(RegisterDialogComponent, {
+            width: '360px',
+        });
+        expect(registerSpy).toHaveBeenCalledTimes(1);
+        expect(registerSpy).toHaveBeenCalledWith(tokenAddress);
+    });
+
+    it('should not register token if dialog is cancelled', () => {
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const raidenService = TestBed.inject(RaidenService);
+        const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+        dialog.returns = () => null;
+        const registerSpy = spyOn(
+            raidenService,
+            'registerToken'
+        ).and.returnValue(of(null));
+
+        component.showRegisterButton = true;
+        fixture.detectChanges();
+
+        mockOpenMatSelect(fixture.debugElement);
+        fixture.detectChanges();
+
+        mockMatSelectByIndex(fixture.debugElement, 0);
+        fixture.detectChanges();
+
+        expect(dialogSpy).toHaveBeenCalledTimes(1);
+        expect(registerSpy).toHaveBeenCalledTimes(0);
     });
 });

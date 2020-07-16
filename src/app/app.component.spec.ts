@@ -57,6 +57,7 @@ import { UserDepositService } from './services/user-deposit.service';
 import BigNumber from 'bignumber.js';
 import { DecimalPipe } from './pipes/decimal.pipe';
 import { BalanceWithSymbolComponent } from './components/balance-with-symbol/balance-with-symbol.component';
+import { TokenNetworkSelectorComponent } from './components/token-network-selector/token-network-selector.component';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -122,6 +123,7 @@ describe('AppComponent', () => {
                 DisplayDecimalsPipe,
                 DecimalPipe,
                 BalanceWithSymbolComponent,
+                TokenNetworkSelectorComponent,
             ],
             providers: [
                 {
