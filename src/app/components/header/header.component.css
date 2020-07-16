@@ -10,11 +10,6 @@
 
 .header__balance {
     text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.header__symbol {
-    letter-spacing: 1px;
 }
 
 .header__label {

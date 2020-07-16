@@ -39,6 +39,8 @@ import { TokenPollingService } from '../../services/token-polling.service';
 import { AddressBookService } from '../../services/address-book.service';
 import { Contacts } from '../../models/contact';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
+import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
+import { ClipboardModule } from 'ngx-clipboard';
 
 describe('PaymentDialogComponent', () => {
     let component: PaymentDialogComponent;
@@ -108,6 +110,7 @@ describe('PaymentDialogComponent', () => {
                 AddressInputComponent,
                 TokenNetworkSelectorComponent,
                 RaidenDialogComponent,
+                BalanceWithSymbolComponent,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
@@ -127,6 +130,7 @@ describe('PaymentDialogComponent', () => {
                 ReactiveFormsModule,
                 HttpClientTestingModule,
                 RaidenIconsModule,
+                ClipboardModule,
             ],
         }).compileComponents();
     }));

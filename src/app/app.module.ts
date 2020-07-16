@@ -61,6 +61,7 @@ import { ContactsPageComponent } from './components/contacts-page/contacts-page.
 import { TransfersPageComponent } from './components/transfers-page/transfers-page.component';
 import { ChunkPipe } from './pipes/chunk.pipe';
 import { SetHeadersInterceptor } from './interceptors/set-headers.interceptor';
+import { BalanceWithSymbolComponent } from './components/balance-with-symbol/balance-with-symbol.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -114,6 +115,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ContactsPageComponent,
         TransfersPageComponent,
         ChunkPipe,
+        BalanceWithSymbolComponent,
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

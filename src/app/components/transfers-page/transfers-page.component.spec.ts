@@ -17,6 +17,7 @@ import { HistoryTableComponent } from '../history-table/history-table.component'
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { RaidenService } from '../../services/raiden.service';
+import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 
 describe('TransfersPageComponent', () => {
     let component: TransfersPageComponent;
@@ -30,6 +31,7 @@ describe('TransfersPageComponent', () => {
                 DecimalPipe,
                 DisplayDecimalsPipe,
                 TokenComponent,
+                BalanceWithSymbolComponent,
             ],
             providers: [
                 TestProviders.AddressBookStubProvider(),

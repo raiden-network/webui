@@ -44,6 +44,7 @@ import { Channel } from '../../models/channel';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { stub } from '../../../testing/stub';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
+import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 
 describe('TokenComponent', () => {
     let component: TokenComponent;
@@ -70,7 +71,12 @@ describe('TokenComponent', () => {
         channelPollingMock.refresh = () => {};
 
         TestBed.configureTestingModule({
-            declarations: [TokenComponent, DecimalPipe, DisplayDecimalsPipe],
+            declarations: [
+                TokenComponent,
+                DecimalPipe,
+                DisplayDecimalsPipe,
+                BalanceWithSymbolComponent,
+            ],
             providers: [
                 RaidenService,
                 TestProviders.MockRaidenConfigProvider(),

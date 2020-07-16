@@ -23,6 +23,8 @@ import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
+import { ClipboardModule } from 'ngx-clipboard';
+import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 
 describe('DepositWithdrawDialogComponent', () => {
     let component: DepositWithdrawDialogComponent;
@@ -59,6 +61,7 @@ describe('DepositWithdrawDialogComponent', () => {
                 RaidenDialogComponent,
                 DecimalPipe,
                 DisplayDecimalsPipe,
+                BalanceWithSymbolComponent,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
@@ -77,6 +80,7 @@ describe('DepositWithdrawDialogComponent', () => {
                 ReactiveFormsModule,
                 HttpClientTestingModule,
                 RaidenIconsModule,
+                ClipboardModule,
             ],
         }).compileComponents();
     }));

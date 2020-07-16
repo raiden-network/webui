@@ -28,6 +28,8 @@ import { of } from 'rxjs';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
+import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
+import { ClipboardModule } from 'ngx-clipboard';
 
 describe('OpenDialogComponent', () => {
     let component: OpenDialogComponent;
@@ -84,6 +86,7 @@ describe('OpenDialogComponent', () => {
                 RaidenDialogComponent,
                 DecimalPipe,
                 DisplayDecimalsPipe,
+                BalanceWithSymbolComponent,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
@@ -98,6 +101,7 @@ describe('OpenDialogComponent', () => {
                 ReactiveFormsModule,
                 HttpClientTestingModule,
                 RaidenIconsModule,
+                ClipboardModule,
             ],
         }).compileComponents();
     }));

@@ -62,28 +62,11 @@
                 fxLayoutGap="4px"
             >
                 <span>
-                    <span
-                        *ngIf="
-                            udcBalance$
-                                | async
-                                | decimal: servicesToken.decimals as udcBalance
-                        "
-                        [matTooltip]="udcBalance"
-                        class="header__balance"
+                    <app-balance-with-symbol
+                        [balance]="udcBalance$ | async"
+                        [token]="servicesToken"
                         id="udc-balance"
-                    >
-                        {{ udcBalance | displayDecimals: 3 }}
-                    </span>
-                    <span
-                        matTooltip="{{ servicesToken.name }}
-                    {{ servicesToken.address }}
-                    (Click to copy)"
-                        ngxClipboard
-                        [cbContent]="servicesToken.address"
-                        class="header__symbol"
-                    >
-                        {{ servicesToken.symbol }}
-                    </span>
+                    ></app-balance-with-symbol>
                     <span *ngIf="zeroUdcBalance$ | async" class="alert">
                         <mat-icon
                             svgIcon="down-arrow"
@@ -106,29 +89,15 @@
                     "
                 >
                     <div class="divider"></div>
-                    <div fxLayout="column" fxLayoutGap="4px">
-                        <span>
-                            <span
-                                *ngIf="
-                                    token.balance
-                                        | decimal
-                                            : token.decimals as tokenBalance
-                                "
-                                [matTooltip]="tokenBalance"
-                                class="header__balance"
-                            >
-                                {{ tokenBalance | displayDecimals: 3 }}
-                            </span>
-                            <span
-                                matTooltip="{{ token.name }}
-                                {{ token.address }}
-                                (Click to copy)"
-                                ngxClipboard
-                                [cbContent]="token.address"
-                            >
-                                {{ token.symbol }}
-                            </span>
-                        </span>
+                    <div
+                        fxLayout="column"
+                        fxLayoutGap="4px"
+                        class="header__token-balance"
+                    >
+                        <app-balance-with-symbol
+                            [balance]="token.balance"
+                            [token]="token"
+                        ></app-balance-with-symbol>
                         <span class="header__label">
                             On-Chain
                         </span>
@@ -159,27 +128,10 @@
                                 "
                                 class="balances-overlay__item"
                             >
-                                <span
-                                    *ngIf="
-                                        token.balance
-                                            | decimal
-                                                : token.decimals as tokenBalance
-                                    "
-                                    [matTooltip]="tokenBalance"
-                                    class="header__balance"
-                                >
-                                    {{ tokenBalance | displayDecimals: 3 }}
-                                </span>
-                                <span
-                                    matTooltip="{{ token.name }}
-                                    {{ token.address }}
-                                    (Click to copy)"
-                                    ngxClipboard
-                                    [cbContent]="token.address"
-                                    class="header__symbol"
-                                >
-                                    {{ token.symbol }}
-                                </span>
+                                <app-balance-with-symbol
+                                    [balance]="token.balance"
+                                    [token]="token"
+                                ></app-balance-with-symbol>
                             </div>
                         </div>
                     </ng-template>

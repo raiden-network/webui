@@ -56,6 +56,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { UserDepositService } from './services/user-deposit.service';
 import BigNumber from 'bignumber.js';
 import { DecimalPipe } from './pipes/decimal.pipe';
+import { BalanceWithSymbolComponent } from './components/balance-with-symbol/balance-with-symbol.component';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -120,6 +121,7 @@ describe('AppComponent', () => {
                 SearchFieldComponent,
                 DisplayDecimalsPipe,
                 DecimalPipe,
+                BalanceWithSymbolComponent,
             ],
             providers: [
                 {

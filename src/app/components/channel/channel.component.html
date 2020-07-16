@@ -64,24 +64,10 @@
             </ng-container>
         </div>
         <div class="info__balance">
-            <ng-container *ngIf="!channel.depositPending">
-                <span
-                    *ngIf="
-                        channel.balance
-                            | decimal: channel.userToken.decimals as balance
-                    "
-                    [matTooltip]="balance"
-                    >{{ balance | displayDecimals: 3 }}
-                </span>
-            </ng-container>
-            <span
-                matTooltip="{{ channel.userToken.name }}
-                {{ channel.userToken.address }}
-                (Click to copy)"
-                ngxClipboard
-                [cbContent]="channel.userToken.address"
-                >{{ channel.userToken.symbol }}</span
-            >
+            <app-balance-with-symbol
+                [balance]="channel.balance"
+                [token]="channel.userToken"
+            ></app-balance-with-symbol>
         </div>
     </div>
 
