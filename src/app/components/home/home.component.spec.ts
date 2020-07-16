@@ -15,6 +15,7 @@ import { ContactActionsComponent } from '../contact/contact-actions/contact-acti
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ChunkPipe } from '../../pipes/chunk.pipe';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
+import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 
 describe('HomeComponent', () => {
     let component: HomeComponent;
@@ -33,6 +34,7 @@ describe('HomeComponent', () => {
                 ContactActionsComponent,
                 ChunkPipe,
                 BalanceWithSymbolComponent,
+                TokenNetworkSelectorComponent,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),

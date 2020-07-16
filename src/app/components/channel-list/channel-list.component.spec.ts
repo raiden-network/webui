@@ -48,6 +48,7 @@ import { Contacts } from '../../models/contact';
 import { stub } from '../../../testing/stub';
 import { ChunkPipe } from '../../pipes/chunk.pipe';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
+import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 
 describe('ChannelListComponent', () => {
     let component: ChannelListComponent;
@@ -76,6 +77,7 @@ describe('ChannelListComponent', () => {
                 DisplayDecimalsPipe,
                 ChunkPipe,
                 BalanceWithSymbolComponent,
+                TokenNetworkSelectorComponent,
             ],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),

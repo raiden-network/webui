@@ -96,10 +96,6 @@ export class TokenComponent implements OnInit, OnDestroy {
         }
     }
 
-    onSelect(item: UserToken) {
-        this.selectedTokenService.setToken(item);
-    }
-
     trackByFn(index, item: UserToken) {
         return item?.address ?? '0';
     }
@@ -193,27 +189,6 @@ export class TokenComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 this.tokenPollingService.refresh();
                 this.channelPollingService.refresh();
-            });
-    }
-
-    register() {
-        const dialog = this.dialog.open(RegisterDialogComponent, {
-            width: '360px',
-        });
-
-        dialog
-            .afterClosed()
-            .pipe(
-                flatMap((tokenAddress: string) => {
-                    if (!tokenAddress) {
-                        return EMPTY;
-                    }
-
-                    return this.raidenService.registerToken(tokenAddress);
-                })
-            )
-            .subscribe(() => {
-                this.tokenPollingService.refresh();
             });
     }
 
