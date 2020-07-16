@@ -48,16 +48,6 @@
     height: 16px !important;
 }
 
-.identicon-box {
-    width: 32px;
-    height: 32px;
-}
-
-.identicon-box__image {
-    border-radius: 50%;
-    height: 100%;
-}
-
 .side__token-symbol {
     width: 32px;
     height: 32px;

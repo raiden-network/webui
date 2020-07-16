@@ -1,0 +1,5 @@
+.container__identicon {
+    border-radius: 50%;
+    height: 100%;
+    cursor: default;
+}

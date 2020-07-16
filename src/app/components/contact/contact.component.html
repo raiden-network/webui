@@ -8,18 +8,7 @@
     (click)="selected = !selected"
     #card
 >
-    <div class="icon-box" fxLayout="column">
-        <img
-            class="icon-box__identicon"
-            [src]="identicon(contact.address)"
-            alt="Contact identicon"
-            stopClickPropagation
-            matTooltip="{{ contact.address }}
-                (Click to copy)"
-            ngxClipboard
-            [cbContent]="contact.address"
-        />
-    </div>
+    <app-address-identicon [address]="contact.address"></app-address-identicon>
     <div class="contact" fxLayout="row" fxLayoutAlign="start" fxFlex>
         <div
             *ngIf="!selected; else actions"

@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { Contact } from '../../models/contact';
 import { Animations } from '../../animations/animations';
-import { IdenticonCacheService } from '../../services/identicon-cache.service';
 import { SharedService } from '../../services/shared.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -29,10 +28,7 @@ export class ContactComponent implements OnInit, OnDestroy {
 
     private ngUnsubscribe = new Subject();
 
-    constructor(
-        private identiconCache: IdenticonCacheService,
-        private sharedService: SharedService
-    ) {}
+    constructor(private sharedService: SharedService) {}
 
     ngOnInit() {
         this.sharedService.globalClickTarget$
@@ -47,9 +43,5 @@ export class ContactComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
-    }
-
-    identicon(address: string) {
-        return this.identiconCache.getIdenticon(address);
     }
 }

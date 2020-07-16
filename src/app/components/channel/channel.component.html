@@ -8,18 +8,9 @@
     fxLayoutAlign="space-between start"
 >
     <div class="card__top" fxLayout="row" fxLayoutAlign="start center">
-        <div class="icon-box" fxLayout="column">
-            <img
-                class="icon-box__identicon"
-                [src]="identicon(channel.partner_address)"
-                alt="Channel partner identicon"
-                matTooltip="{{ addressLabel(channel.partner_address) }}
-                    {{ channel.partner_address }}
-                    (Click to copy)"
-                ngxClipboard
-                [cbContent]="channel.partner_address"
-            />
-        </div>
+        <app-address-identicon
+            [address]="channel.partner_address"
+        ></app-address-identicon>
         <div fxFlex="1 1 auto"></div>
         <button
             *ngIf="channel.state === 'opened'"

@@ -12,17 +12,6 @@
     padding: 0 15px;
 }
 
-.icon-box {
-    width: 35px;
-    height: 35px;
-}
-
-.icon-box__identicon {
-    border-radius: 50%;
-    height: 100%;
-    cursor: default;
-}
-
 .contact {
     overflow: hidden;
 }
