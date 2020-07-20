@@ -1,6 +1,13 @@
+@import '../../../sass/fonts';
+
 .input {
     z-index: 1;
     position: relative;
+    height: 32px;
+}
+
+.input--contact {
+    margin-top: 20px;
 }
 
 .input__field {
@@ -8,24 +15,31 @@
     background-color: #e7e7e7;
     border: none;
     box-shadow: none;
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    font-family: $main-font;
     padding: 0 18px;
-    height: 32px;
+    height: 100%;
     font-size: 13px;
     line-height: 15px;
     letter-spacing: 0.35px;
     color: #000000;
 }
 
-.input__symbol {
+.input__field:disabled {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.icon-box {
+    height: 100%;
     margin: 0 auto;
-    font-size: 13px;
-    line-height: 15px;
-    letter-spacing: 0.35px;
+}
+
+.icon-box__identicon {
+    border-radius: 50%;
+    height: 100%;
 }
 
 .info-box {
-    height: 32px;
+    min-height: 32px;
     font-size: 13px;
     line-height: 15px;
     letter-spacing: 0.35px;
@@ -41,20 +55,22 @@
     color: #f54b47;
 }
 
-.info-box__max-button {
+.info-box__text--clickable {
     color: #2c8f94;
     cursor: pointer;
 }
 
-.info-box__max-button:hover {
+.info-box__text--clickable:hover {
     color: #4aa7ab;
 }
 
-.info-link {
-    color: #2c8f94;
-    text-decoration: none;
+.options {
+    height: 100%;
+    overflow-y: auto;
+    overflow-wrap: break-word;
 }
 
-.info-link:hover {
-    color: #4aa7ab;
+.icon {
+    height: 20px;
+    line-height: 20px;
 }

@@ -1,15 +1,17 @@
-.label-input {
+@import '../../../sass/fonts';
+
+.timeout-input {
     z-index: 1;
     position: relative;
     height: 32px;
 }
 
-.label-input__field {
+.timeout-input__field {
     border-radius: 25px;
     background-color: #e7e7e7;
     border: none;
     box-shadow: none;
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    font-family: $main-font;
     padding: 0 18px;
     height: 100%;
     font-size: 13px;
@@ -17,4 +19,13 @@
     letter-spacing: 0.35px;
     color: #000000;
     width: 100%;
+}
+
+.error {
+    height: 32px;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.35px;
+    padding-left: 18px;
+    color: #f54b47;
 }

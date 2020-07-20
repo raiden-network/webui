@@ -24,7 +24,7 @@ import { Animations } from '../../animations/animations';
 @Component({
     selector: 'app-token-input',
     templateUrl: './token-input.component.html',
-    styleUrls: ['./token-input.component.css'],
+    styleUrls: ['./token-input.component.scss'],
     animations: Animations.fallDown,
     providers: [
         {
