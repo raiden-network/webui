@@ -1,3 +1,5 @@
+@import '../../../sass/fonts';
+
 :host {
     overflow-y: scroll;
     position: relative;
@@ -48,7 +50,7 @@
 
 .section__version {
     opacity: 0.51;
-    font-family: 'Roboto Mono', 'Helvetica Neue', sans-serif;
+    font-family: $mono-font;
 }
 
 .section__icon {

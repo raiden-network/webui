@@ -32,7 +32,7 @@ export interface OpenDialogResult {
 @Component({
     selector: 'app-open-dialog',
     templateUrl: './open-dialog.component.html',
-    styleUrls: ['./open-dialog.component.css'],
+    styleUrls: ['./open-dialog.component.scss'],
     animations: Animations.fallDown,
 })
 export class OpenDialogComponent implements OnDestroy {

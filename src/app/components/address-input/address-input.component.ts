@@ -47,7 +47,7 @@ import { matchesContact } from '../../shared/keyword-matcher';
 @Component({
     selector: 'app-address-input',
     templateUrl: './address-input.component.html',
-    styleUrls: ['./address-input.component.css'],
+    styleUrls: ['./address-input.component.scss'],
     animations: Animations.fallDown,
     providers: [
         {

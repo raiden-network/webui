@@ -12,7 +12,7 @@ export interface AddEditContactDialogPayload {
 @Component({
     selector: 'app-add-edit-contact-dialog',
     templateUrl: './add-edit-contact-dialog.component.html',
-    styleUrls: ['./add-edit-contact-dialog.component.css'],
+    styleUrls: ['./add-edit-contact-dialog.component.scss'],
 })
 export class AddEditContactDialogComponent implements OnInit {
     readonly form: FormGroup;
