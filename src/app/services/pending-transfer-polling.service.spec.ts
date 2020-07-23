@@ -12,6 +12,7 @@ import { from, of } from 'rxjs';
 import { UserToken } from '../models/usertoken';
 import { createPendingTransfer, createToken } from '../../testing/test-data';
 import { AddressBookService } from './address-book.service';
+import { skip } from 'rxjs/operators';
 
 describe('PendingTransferPollingService', () => {
     let notificationService: NotificationService;
@@ -116,6 +117,7 @@ describe('PendingTransferPollingService', () => {
             let notificationIdentifier: number;
             let emittedTimes = 0;
             service.pendingTransfers$
+                .pipe(skip(1))
                 .subscribe((pendingTransfers: PendingTransfer[]) => {
                     if (emittedTimes === 1) {
                         notificationIdentifier =
