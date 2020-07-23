@@ -57,9 +57,15 @@ describe('PaymentHistoryPollingService', () => {
         [PaymentHistoryPollingService],
         fakeAsync((service: PaymentHistoryPollingService) => {
             getPaymentHistorySpy.and.returnValue(of([receivedEvent]));
-            service.newPaymentEvents$.subscribe((value) =>
-                expect(value).toEqual([receivedEvent])
-            );
+            let emissions = 0;
+            service.newPaymentEvents$.subscribe((value) => {
+                if (emissions === 0) {
+                    expect(value).toEqual([]);
+                } else {
+                    expect(value).toEqual([receivedEvent]);
+                }
+                emissions++;
+            });
             const refreshSpy = spyOn(service, 'refresh');
             tick(5000);
             expect(refreshSpy).toHaveBeenCalledTimes(1);

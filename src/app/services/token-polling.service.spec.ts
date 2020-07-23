@@ -11,6 +11,7 @@ import { ChannelPollingService } from './channel-polling.service';
 import { stub } from '../../testing/stub';
 import { Channel } from '../models/channel';
 import { PaymentHistoryPollingService } from './payment-history-polling.service';
+import { skip } from 'rxjs/operators';
 
 describe('TokenPollingService', () => {
     let raidenService: RaidenService;
@@ -93,9 +94,15 @@ describe('TokenPollingService', () => {
             const tokenSpy = spyOn(raidenService, 'getTokens').and.returnValue(
                 of([token])
             );
+            let emissions = 0;
             const subscription = service.tokens$.subscribe(
                 (tokens: UserToken[]) => {
-                    expect(tokens).toEqual([token]);
+                    if (emissions === 0) {
+                        expect(tokens).toEqual([]);
+                    } else {
+                        expect(tokens).toEqual([token]);
+                    }
+                    emissions++;
                 }
             );
             expect(tokenSpy).toHaveBeenCalledTimes(1);
@@ -122,6 +129,7 @@ describe('TokenPollingService', () => {
             let emittedTimes = 0;
             const subscription = service
                 .getTokenUpdates(token.address)
+                .pipe(skip(1))
                 .subscribe((newToken) => {
                     if (emittedTimes < 2) {
                         expect(newToken).toEqual(token);
@@ -143,7 +151,7 @@ describe('TokenPollingService', () => {
             spyOn(raidenService, 'getTokens').and.returnValue(
                 of(connectedTokens)
             );
-            service.tokens$.subscribe((tokens: UserToken[]) => {
+            service.tokens$.pipe(skip(1)).subscribe((tokens: UserToken[]) => {
                 expect(tokens[0].sumChannelBalances).toEqual(new BigNumber(50));
                 expect(tokens[1].sumChannelBalances).toEqual(new BigNumber(20));
             });
@@ -169,7 +177,7 @@ describe('TokenPollingService', () => {
                 of(connectedTokens.concat([usedToken, token, notOwnedToken]))
             );
 
-            service.tokens$.subscribe((tokens: UserToken[]) => {
+            service.tokens$.pipe(skip(1)).subscribe((tokens: UserToken[]) => {
                 expect(tokens[0].address).toBe(usedToken.address);
                 expect(tokens[1].address).toBe(connectedTokens[0].address);
                 expect(tokens[2].address).toBe(connectedTokens[1].address);
