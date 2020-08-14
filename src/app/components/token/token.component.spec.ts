@@ -43,7 +43,6 @@ import { SelectedTokenService } from '../../services/selected-token.service';
 import { Channel } from '../../models/channel';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { stub } from '../../../testing/stub';
-import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
 
@@ -112,13 +111,10 @@ describe('TokenComponent', () => {
 
         dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
         raidenService = TestBed.inject(RaidenService);
+        fixture.detectChanges();
     });
 
     describe('as all networks view', () => {
-        beforeEach(() => {
-            fixture.detectChanges();
-        });
-
         it('should create', () => {
             expect(component).toBeTruthy();
             fixture.destroy();
@@ -227,7 +223,11 @@ describe('TokenComponent', () => {
 
         beforeEach(() => {
             selectedTokenService = TestBed.inject(SelectedTokenService);
-            selectedTokenService.setToken(connectedToken);
+
+            mockOpenMatSelect(fixture.debugElement);
+            fixture.detectChanges();
+
+            mockMatSelectByIndex(fixture.debugElement, 2);
             fixture.detectChanges();
         });
 
@@ -248,9 +248,7 @@ describe('TokenComponent', () => {
             mockMatSelectByIndex(fixture.debugElement, 1);
             fixture.detectChanges();
 
-            // A bug in Angular Material leads to calling the function twice
-            // See https://github.com/angular/components/issues/13579
-            expect(setTokenSpy).toHaveBeenCalledTimes(2);
+            expect(setTokenSpy).toHaveBeenCalledTimes(1);
             expect(setTokenSpy).toHaveBeenCalledWith(undefined);
         });
 
