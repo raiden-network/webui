@@ -22,7 +22,6 @@ import {
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { SelectedTokenService } from '../../services/selected-token.service';
-import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
 
 @Component({
