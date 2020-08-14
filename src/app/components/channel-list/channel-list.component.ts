@@ -18,7 +18,7 @@ import {
 } from '../open-dialog/open-dialog.component';
 import { RaidenConfig } from '../../services/raiden.config';
 import { RaidenService } from '../../services/raiden.service';
-import { flatMap, map, takeUntil, debounceTime } from 'rxjs/operators';
+import { mergeMap, map, takeUntil, debounceTime } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Animations } from '../../animations/animations';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -133,7 +133,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
         dialog
             .afterClosed()
             .pipe(
-                flatMap((result: OpenDialogResult) => {
+                mergeMap((result: OpenDialogResult) => {
                     if (!result) {
                         return EMPTY;
                     }

@@ -6,7 +6,7 @@ import {
     ConfirmationDialogPayload,
     ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
-import { flatMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import {
     DepositWithdrawDialogPayload,
@@ -66,7 +66,7 @@ export class ChannelComponent implements OnInit {
         dialog
             .afterClosed()
             .pipe(
-                flatMap((result) => {
+                mergeMap((result) => {
                     if (!result) {
                         return EMPTY;
                     }
@@ -97,7 +97,7 @@ export class ChannelComponent implements OnInit {
         dialog
             .afterClosed()
             .pipe(
-                flatMap((deposit?: DepositWithdrawDialogResult) => {
+                mergeMap((deposit?: DepositWithdrawDialogResult) => {
                     if (!deposit) {
                         return EMPTY;
                     }

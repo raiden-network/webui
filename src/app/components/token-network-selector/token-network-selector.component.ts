@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable, EMPTY } from 'rxjs';
-import { map, share, flatMap } from 'rxjs/operators';
+import { map, share, mergeMap } from 'rxjs/operators';
 import { UserToken } from '../../models/usertoken';
 import { RaidenService } from '../../services/raiden.service';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -101,7 +101,7 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
         dialog
             .afterClosed()
             .pipe(
-                flatMap((tokenAddress: string) => {
+                mergeMap((tokenAddress: string) => {
                     if (!tokenAddress) {
                         return EMPTY;
                     }

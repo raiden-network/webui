@@ -7,7 +7,7 @@ import {
     OnDestroy,
 } from '@angular/core';
 import { Contact } from '../../../models/contact';
-import { flatMap, takeUntil } from 'rxjs/operators';
+import { mergeMap, takeUntil } from 'rxjs/operators';
 import { ChannelPollingService } from '../../../services/channel-polling.service';
 import { PendingTransferPollingService } from '../../../services/pending-transfer-polling.service';
 import {
@@ -106,7 +106,7 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
         dialog
             .afterClosed()
             .pipe(
-                flatMap((result?: PaymentDialogPayload) => {
+                mergeMap((result?: PaymentDialogPayload) => {
                     if (!result) {
                         return EMPTY;
                     }

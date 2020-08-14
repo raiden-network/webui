@@ -29,7 +29,7 @@ import {
     takeUntil,
     tap,
     delay,
-    flatMap,
+    mergeMap,
     switchMap,
     takeWhile,
 } from 'rxjs/operators';
@@ -176,7 +176,7 @@ export class AppComponent implements OnInit, OnDestroy {
         dialog
             .afterClosed()
             .pipe(
-                flatMap((result) => {
+                mergeMap((result) => {
                     if (!result) {
                         return EMPTY;
                     }
