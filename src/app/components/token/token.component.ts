@@ -9,7 +9,7 @@ import {
     ConfirmationDialogComponent,
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { flatMap, takeUntil, map } from 'rxjs/operators';
+import { mergeMap, takeUntil, map } from 'rxjs/operators';
 import { EMPTY, Subject, Observable } from 'rxjs';
 import {
     PaymentDialogPayload,
@@ -123,7 +123,7 @@ export class TokenComponent implements OnInit, OnDestroy {
         dialog
             .afterClosed()
             .pipe(
-                flatMap((result?: PaymentDialogPayload) => {
+                mergeMap((result?: PaymentDialogPayload) => {
                     if (!result) {
                         return EMPTY;
                     }
@@ -177,7 +177,7 @@ export class TokenComponent implements OnInit, OnDestroy {
         dialog
             .afterClosed()
             .pipe(
-                flatMap((result) => {
+                mergeMap((result) => {
                     if (!result) {
                         return EMPTY;
                     }
@@ -224,7 +224,7 @@ export class TokenComponent implements OnInit, OnDestroy {
         dialog
             .afterClosed()
             .pipe(
-                flatMap((result: ConnectionManagerDialogPayload) => {
+                mergeMap((result: ConnectionManagerDialogPayload) => {
                     if (!result) {
                         return EMPTY;
                     }

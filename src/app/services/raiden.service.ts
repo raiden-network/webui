@@ -17,7 +17,7 @@ import {
 } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
-    flatMap,
+    mergeMap,
     map,
     shareReplay,
     startWith,
@@ -178,7 +178,7 @@ export class RaidenService {
         const fetchChannels$ = this.http
             .get<Array<Channel>>(`${this.raidenConfig.api}/channels`)
             .pipe(
-                flatMap((channels: Array<Channel>) => from(channels)),
+                mergeMap((channels: Array<Channel>) => from(channels)),
                 map((channel: Channel) => {
                     channel.settle_timeout = (<BigNumber>(
                         (<unknown>channel.settle_timeout)
@@ -204,7 +204,7 @@ export class RaidenService {
                 toArray()
             );
 
-        return tokens$.pipe(flatMap(() => fetchChannels$));
+        return tokens$.pipe(mergeMap(() => fetchChannels$));
     }
 
     public getTokens(
@@ -216,7 +216,7 @@ export class RaidenService {
             this.http.get<Array<string>>(`${this.raidenConfig.api}/tokens`),
             this.raidenAddress$
         ).pipe(
-            flatMap(([tokenAddresses, raidenAddress]) =>
+            mergeMap(([tokenAddresses, raidenAddress]) =>
                 fromPromise(
                     this.tokenInfoRetriever.createBatch(
                         tokenAddresses,
@@ -390,7 +390,7 @@ export class RaidenService {
         );
 
         return this.http.request(request).pipe(
-            flatMap((event: HttpEvent<any>) =>
+            mergeMap((event: HttpEvent<any>) =>
                 event.type === HttpEventType.Sent
                     ? of(event).pipe(
                           delay(500),
@@ -774,7 +774,7 @@ export class RaidenService {
                 `${this.raidenConfig.api}/pending_transfers`
             )
             .pipe(
-                flatMap((pendingTransfers: PendingTransfer[]) =>
+                mergeMap((pendingTransfers: PendingTransfer[]) =>
                     from(pendingTransfers)
                 ),
                 map((pendingTransfer: PendingTransfer) => {
@@ -786,7 +786,7 @@ export class RaidenService {
                 toArray()
             );
 
-        return tokens$.pipe(flatMap(() => fetchPendingTransfers$));
+        return tokens$.pipe(mergeMap(() => fetchPendingTransfers$));
     }
 
     public mintToken(
