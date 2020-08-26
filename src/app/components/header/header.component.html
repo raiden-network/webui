@@ -51,9 +51,7 @@
                         ></mat-icon>
                     </span>
                 </span>
-                <span class="header__label">
-                    On-Chain
-                </span>
+                <span class="header__label">On-Chain</span>
             </div>
             <div class="divider"></div>
             <div
@@ -76,9 +74,7 @@
                         ></mat-icon>
                     </span>
                 </span>
-                <span class="header__label">
-                    Deposited in UDC
-                </span>
+                <span class="header__label">Deposited in UDC</span>
             </div>
             <ng-container *ngIf="tokens$ | async as tokens">
                 <ng-container
@@ -98,9 +94,7 @@
                             [balance]="token.balance"
                             [token]="token"
                         ></app-balance-with-symbol>
-                        <span class="header__label">
-                            On-Chain
-                        </span>
+                        <span class="header__label">On-Chain</span>
                     </div>
                 </ng-container>
                 <ng-container *ngIf="tokens.length > 2">

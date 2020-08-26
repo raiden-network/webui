@@ -89,9 +89,7 @@
                     <ng-container *ngIf="isReceivedEvent(event); else sent_to">
                         Received from
                     </ng-container>
-                    <ng-template #sent_to>
-                        Sent to
-                    </ng-template>
+                    <ng-template #sent_to>Sent to</ng-template>
                     <span
                         *ngIf="partnerAddress(event) as address"
                         matTooltip="{{ address }}
