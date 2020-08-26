@@ -33,9 +33,7 @@
         </mat-icon>
         <span>Add new Network</span>
     </button>
-    <mat-option *ngIf="setSelectedToken">
-        All Networks
-    </mat-option>
+    <mat-option *ngIf="setSelectedToken">All Networks</mat-option>
     <mat-option
         *ngFor="let option of tokens$ | async; trackBy: trackByFn"
         [value]="option"

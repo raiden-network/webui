@@ -18,9 +18,7 @@
     >
         <mat-icon class="action__icon" svgIcon="transfer" aria-label="Transfer">
         </mat-icon>
-        <span>
-            Transfer
-        </span>
+        <span>Transfer</span>
     </button>
     <ng-template #connecting>
         <div
@@ -35,9 +33,7 @@
                 aria-hidden="true"
             >
             </mat-icon>
-            <span>
-                Quick connect pending
-            </span>
+            <span>Quick connect pending</span>
             <mat-progress-spinner
                 diameter="24"
                 mode="indeterminate"
@@ -55,9 +51,7 @@
             class="overview"
         >
             <div fxFlex="10 0 0" class="overview__item overview__item--label">
-                <div>
-                    Top Networks
-                </div>
+                <div>Top Networks</div>
             </div>
             <div
                 *ngFor="
@@ -141,9 +135,7 @@
                 [token]="selectedToken"
             ></app-balance-with-symbol>
         </div>
-        <ng-template #all_networks>
-            All Networks
-        </ng-template>
+        <ng-template #all_networks>All Networks</ng-template>
     </div>
 
     <div *ngIf="!isAllNetworksView" class="card__values">

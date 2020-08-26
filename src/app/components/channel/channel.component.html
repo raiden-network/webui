@@ -44,9 +44,7 @@
 
     <div class="info">
         <div class="info__state" [ngSwitch]="channel.state">
-            <ng-container *ngSwitchCase="'closed'">
-                Closed
-            </ng-container>
+            <ng-container *ngSwitchCase="'closed'">Closed</ng-container>
             <ng-container *ngSwitchCase="'waiting_for_close'">
                 Waiting for close
             </ng-container>
@@ -62,7 +60,5 @@
         </div>
     </div>
 
-    <div class="label" *ngIf="channel.depositPending">
-        awaiting Balance
-    </div>
+    <div class="label" *ngIf="channel.depositPending">awaiting Balance</div>
 </div>
