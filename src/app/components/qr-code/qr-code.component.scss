@@ -1,3 +1,5 @@
+@import '../../../sass/colors';
+
 .title {
     font-size: 19px;
     line-height: 23px;
@@ -5,7 +7,7 @@
 }
 
 .address-field {
-    background-color: #e7e7e7;
+    background-color: $light-grey;
     border-radius: 25px;
     font-size: 13px;
     letter-spacing: 1.07px;
@@ -25,5 +27,5 @@
     height: 32px !important;
     width: 100px;
     letter-spacing: 0.35px;
-    border: 2px solid #000000;
+    border: 2px solid $black;
 }

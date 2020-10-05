@@ -27,7 +27,7 @@ import { PaymentHistoryPollingService } from '../../services/payment-history-pol
 @Component({
     selector: 'app-token',
     templateUrl: './token.component.html',
-    styleUrls: ['./token.component.css'],
+    styleUrls: ['./token.component.scss'],
 })
 export class TokenComponent implements OnInit, OnDestroy {
     tokens$: Observable<UserToken[]>;

@@ -15,7 +15,7 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
     selector: 'app-contact',
     templateUrl: './contact.component.html',
-    styleUrls: ['./contact.component.css'],
+    styleUrls: ['./contact.component.scss'],
     animations: Animations.flyInOut,
 })
 export class ContactComponent implements OnInit, OnDestroy {

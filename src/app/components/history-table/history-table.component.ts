@@ -20,7 +20,7 @@ export interface HistoryEvent extends PaymentEvent {
 @Component({
     selector: 'app-history-table',
     templateUrl: './history-table.component.html',
-    styleUrls: ['./history-table.component.css'],
+    styleUrls: ['./history-table.component.scss'],
     animations: Animations.flyInOut,
 })
 export class HistoryTableComponent implements OnInit, OnDestroy {

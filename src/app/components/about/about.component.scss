@@ -1,4 +1,5 @@
 @import '../../../sass/fonts';
+@import '../../../sass/colors';
 
 :host {
     overflow-y: scroll;
@@ -44,7 +45,7 @@
 .section__box {
     height: 100px;
     padding: 22px 39px;
-    background-color: rgba(216, 216, 216, 0.1);
+    background-color: $bg-dark-grey;
     border-radius: 20px;
 }
 

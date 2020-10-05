@@ -31,7 +31,7 @@ import { Contact } from '../../models/contact';
 @Component({
     selector: 'app-channel-list',
     templateUrl: './channel-list.component.html',
-    styleUrls: ['./channel-list.component.css'],
+    styleUrls: ['./channel-list.component.scss'],
     animations: Animations.stretchInOut,
 })
 export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {

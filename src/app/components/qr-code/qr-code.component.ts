@@ -16,7 +16,7 @@ export interface QrCodePayload {
 @Component({
     selector: 'app-qr-code',
     templateUrl: './qr-code.component.html',
-    styleUrls: ['./qr-code.component.css'],
+    styleUrls: ['./qr-code.component.scss'],
 })
 export class QrCodeComponent implements OnInit, AfterViewInit {
     @ViewChild('canvas', { static: true }) private canvas: ElementRef;

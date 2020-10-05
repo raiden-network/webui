@@ -1,4 +1,5 @@
 @import '../../../sass/fonts';
+@import '../../../sass/colors';
 
 .input {
     z-index: 1;
@@ -12,7 +13,7 @@
 
 .input__field {
     border-radius: 25px;
-    background-color: #e7e7e7;
+    background-color: $light-grey;
     border: none;
     box-shadow: none;
     font-family: $main-font;
@@ -21,11 +22,11 @@
     font-size: 13px;
     line-height: 15px;
     letter-spacing: 0.35px;
-    color: #000000;
+    color: $black;
 }
 
 .input__field:disabled {
-    color: rgba(0, 0, 0, 0.5);
+    color: $text-grey;
 }
 
 .icon-box {
@@ -52,16 +53,16 @@
 }
 
 .info-box__text--error {
-    color: #f54b47;
+    color: $red;
 }
 
 .info-box__text--clickable {
-    color: #2c8f94;
+    color: $blue;
     cursor: pointer;
 }
 
 .info-box__text--clickable:hover {
-    color: #4aa7ab;
+    color: $light-blue;
 }
 
 .options {

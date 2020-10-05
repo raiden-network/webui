@@ -18,7 +18,7 @@ import { SelectedTokenService } from '../../services/selected-token.service';
 @Component({
     selector: 'app-token-network-selector',
     templateUrl: './token-network-selector.component.html',
-    styleUrls: ['./token-network-selector.component.css'],
+    styleUrls: ['./token-network-selector.component.scss'],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,

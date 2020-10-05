@@ -1,9 +1,10 @@
 @import '../../../sass/fonts';
+@import '../../../sass/colors';
 
 .search {
-    color: rgba(255, 255, 255, 0.5);
+    color: $text-grey;
     border-radius: 50px;
-    background-color: #121212;
+    background-color: $bg-dark-grey;
     position: relative;
     height: 100%;
 }
@@ -40,25 +41,25 @@
     font-family: $main-font;
     font-size: 13px;
     line-height: 15px;
-    color: #000000;
+    color: $black;
 }
 
 .search__input::placeholder,
 .search__input::-webkit-input-placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: $text-grey;
 }
 
 .search:focus-within,
 .search--focused {
-    color: #000000;
-    background-color: #e7e7e7;
+    color: $black;
+    background-color: $light-grey;
 }
 
 .search:focus-within .search__input::placeholder,
 .search:focus-within .search__input::-webkit-input-placeholder,
 .search--focused .search__input::placeholder,
 .search--focused .search__input::-webkit-input-placeholder {
-    color: #000000;
+    color: $black;
 }
 
 .options {

@@ -14,7 +14,7 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
     selector: 'app-notification-panel',
     templateUrl: './notification-panel.component.html',
-    styleUrls: ['./notification-panel.component.css'],
+    styleUrls: ['./notification-panel.component.scss'],
     animations: Animations.flyInOut,
 })
 export class NotificationPanelComponent implements OnInit, OnDestroy {

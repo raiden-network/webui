@@ -1,4 +1,5 @@
 @import './sass/fonts';
+@import './sass/colors';
 
 /* roboto-300 - latin */
 @font-face {
@@ -121,7 +122,7 @@
 body {
     font-family: $main-font;
     font-weight: 400;
-    scrollbar-color: #393939 rgba(0, 0, 0, 0);
+    scrollbar-color: $scrollbar-grey $transparent;
     scrollbar-width: 10px;
 }
 
@@ -138,8 +139,8 @@ body {
 
 .mat-flat-button:disabled,
 .mat-icon-button:disabled {
-    border: 2px solid #979797;
-    color: #979797 !important;
+    border: 2px solid $dark-grey;
+    color: $dark-grey !important;
     opacity: 0.32;
     background: none !important;
 }
@@ -168,7 +169,7 @@ body {
 .mat-menu-panel {
     box-shadow: none !important;
     border-radius: 20px !important;
-    background-color: #ffffff !important;
+    background-color: $white !important;
     min-height: 38px !important;
 }
 
@@ -181,12 +182,12 @@ body {
     line-height: 15px !important;
     height: 38px !important;
     padding: 0 20px !important;
-    color: #000000 !important;
+    color: $black !important;
 }
 
 .mat-dialog-container {
-    background-color: #ffffff !important;
-    color: #000000 !important;
+    background-color: $white !important;
+    color: $black !important;
     border-radius: 15px !important;
     padding: 32px 27px 27px 27px !important;
     box-shadow: none !important;
@@ -198,7 +199,7 @@ body {
 
 .mat-select {
     border-radius: 25px;
-    background-color: #e7e7e7;
+    background-color: $light-grey;
     height: 32px;
     padding: 0 18px;
     font-size: 13px;
@@ -213,7 +214,7 @@ body {
 
 .mat-select-value {
     vertical-align: middle;
-    color: #000000 !important;
+    color: $black !important;
 }
 
 .mat-select-arrow {
@@ -221,39 +222,39 @@ body {
 }
 
 .mat-select-placeholder {
-    color: rgb(184, 184, 184) !important;
+    color: $placeholder-grey !important;
 }
 
 .mat-select-panel,
 .mat-autocomplete-panel {
     box-shadow: none !important;
     border-radius: 5px !important;
-    background-color: #e7e7e7 !important;
+    background-color: $light-grey !important;
 }
 
 .mat-select--dark .mat-select-placeholder,
 .mat-select--dark .mat-select-value {
-    color: #ffffff !important;
+    color: $white !important;
 }
 
 .mat-select-panel--dark {
-    background-color: #000000 !important;
+    background-color: $black !important;
 }
 
 .mat-select-panel--dark .mat-option {
     background: none !important;
-    color: #ffffff !important;
+    color: $white !important;
 }
 
 ::placeholder,
 ::-webkit-input-placeholder {
-    color: rgb(184, 184, 184);
+    color: $placeholder-grey;
     opacity: 1;
 }
 
 .mat-option {
-    color: #000000 !important;
-    background-color: #e7e7e7 !important;
+    color: $black !important;
+    background-color: $light-grey !important;
     font-size: 13px !important;
     line-height: 15px !important;
     height: 60px !important;
@@ -286,7 +287,7 @@ input:focus {
 }
 
 a {
-    outline-color: #ffffff;
+    outline-color: $white;
 }
 
 ::-webkit-scrollbar {
@@ -294,6 +295,6 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #393939;
+    background: $scrollbar-grey;
     border-radius: 10px;
 }
