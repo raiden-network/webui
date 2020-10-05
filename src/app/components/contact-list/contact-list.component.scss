@@ -1,5 +1,7 @@
+@import '../../../sass/colors';
+
 .list {
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: $bg-dark-grey;
     border-radius: 15px;
     padding: 10px 20px 25px 20px;
     height: 100%;
@@ -35,8 +37,8 @@
 
 .button {
     padding: 0 25px !important;
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.06);
+    color: $white;
+    background-color: $bg-grey;
     height: 80px;
     z-index: 1;
     font-size: 16px !important;
@@ -59,6 +61,6 @@
     height: 1px;
     width: 84%;
     margin: 0 auto;
-    background-color: #000000;
+    background-color: $black;
     opacity: 0.17;
 }

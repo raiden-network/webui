@@ -11,7 +11,7 @@ import {
 @Component({
     selector: 'app-raiden-toast',
     templateUrl: './raiden-toast.component.html',
-    styleUrls: ['./raiden-toast.component.css'],
+    styleUrls: ['./raiden-toast.component.scss'],
     animations: [
         trigger('flyInOut', [
             state('inactive', style({ opacity: 0 })),

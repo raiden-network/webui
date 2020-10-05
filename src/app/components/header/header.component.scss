@@ -1,3 +1,5 @@
+@import '../../../sass/colors';
+
 .header {
     height: 60px;
     font-size: 12px;
@@ -21,7 +23,7 @@
 
 .header__box {
     height: 60px;
-    background-color: #121212;
+    background-color: $bg-dark-grey;
     padding: 0 16px;
     border-radius: 15px;
 }
@@ -40,13 +42,13 @@
 }
 
 .alert {
-    background-color: rgba(255, 0, 0, 0.3);
+    background-color: $bg-label-red;
     display: inline-block;
     width: 14px;
     height: 14px;
     border-radius: 50%;
     text-align: center;
-    color: #ff0000;
+    color: $label-red;
     margin-left: 6px;
 }
 
@@ -60,18 +62,18 @@
 .divider {
     height: 36px;
     width: 1px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: $light-divider;
 }
 
 .balances-button {
-    border: 1px solid #979797;
+    border: 1px solid $dark-grey;
     border-radius: 8px !important;
     background: none;
     font-weight: 500 !important;
     font-size: 8px !important;
     line-height: 9px !important;
     letter-spacing: 0.5px;
-    color: #979797;
+    color: $dark-grey;
     white-space: normal;
     text-transform: uppercase;
     height: 32px;
@@ -79,11 +81,11 @@
 }
 
 .balances-overlay {
-    background-color: #000000;
+    background-color: $black;
     border-radius: 8px;
     font-size: 12px;
     line-height: 30px;
-    color: #ffffff;
+    color: $white;
     padding: 12px 16px 0 16px;
     width: 93px;
     max-height: 170px;
@@ -94,7 +96,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid $light-divider;
 }
 
 .balances-overlay__item:last-child {
@@ -105,7 +107,7 @@
 .account-button {
     height: 29px !important;
     width: 29px !important;
-    border: 2px solid #ffffff;
+    border: 2px solid $white;
 }
 
 .account-button__icon-faucet {
@@ -121,11 +123,11 @@
 .notification-panel-button {
     height: 60px !important;
     width: 60px !important;
-    background-color: #121212;
+    background-color: $bg-dark-grey;
 }
 
 .notification-panel-button__icon {
-    color: #888888;
+    color: $text-grey;
     height: 26px !important;
     width: 24px !important;
 }

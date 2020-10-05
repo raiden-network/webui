@@ -44,7 +44,7 @@ import { ToastContainerDirective, ToastrService } from 'ngx-toastr';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
+    styleUrls: ['./app.component.scss'],
     animations: Animations.easeInOut,
 })
 export class AppComponent implements OnInit, OnDestroy {

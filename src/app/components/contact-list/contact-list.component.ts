@@ -28,7 +28,7 @@ import { PaymentHistoryPollingService } from '../../services/payment-history-pol
 @Component({
     selector: 'app-contact-list',
     templateUrl: './contact-list.component.html',
-    styleUrls: ['./contact-list.component.css'],
+    styleUrls: ['./contact-list.component.scss'],
     animations: Animations.stretchInOut,
 })
 export class ContactListComponent implements OnInit, OnDestroy, AfterViewInit {

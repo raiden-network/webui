@@ -25,7 +25,7 @@ import { SharedService } from '../../services/shared.service';
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
-    styleUrls: ['./header.component.css'],
+    styleUrls: ['./header.component.scss'],
     animations: Animations.easeInOut,
 })
 export class HeaderComponent implements OnInit, OnDestroy {

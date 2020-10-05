@@ -1,3 +1,5 @@
+@import '../../../sass/colors';
+
 .dialog {
     position: relative;
 }
@@ -17,15 +19,15 @@
 }
 
 .dialog__button--white {
-    border: 2px solid #000000;
+    border: 2px solid $black;
 }
 
 .dialog__button--black {
-    color: #ffffff;
+    color: $white;
 }
 
 .dialog__button--black:disabled {
-    color: #979797;
+    color: $dark-grey;
 }
 
 .dialog__close-button {

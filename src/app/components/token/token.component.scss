@@ -1,9 +1,11 @@
+@import '../../../sass/colors';
+
 .card {
     height: 188px;
     padding: 22px 0;
     font-size: 16px;
     line-height: 19px;
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: $bg-dark-grey;
     border-radius: 15px;
     width: 100%;
 }
@@ -32,14 +34,14 @@
     height: 1px;
     width: 84%;
     margin: 0 auto;
-    background-color: #000000;
+    background-color: $black;
     opacity: 0.17;
 }
 
 .overview {
     width: 100%;
     height: 50px;
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: $bg-dark-grey;
     border-radius: 15px;
 }
 
@@ -47,7 +49,7 @@
     text-align: center;
     font-size: 12px;
     line-height: 22px;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid $light-divider;
 }
 
 .overview__item:last-child {
@@ -69,7 +71,7 @@
 .action {
     font-size: 16px !important;
     line-height: 19px !important;
-    background-color: #cccccc;
+    background-color: $bg-light-grey;
 }
 
 .action--connect {
@@ -79,7 +81,7 @@
     font-size: 13px !important;
     line-height: 15px !important;
     font-weight: 400 !important;
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: $bg-dark-grey;
 }
 
 .action__icon {

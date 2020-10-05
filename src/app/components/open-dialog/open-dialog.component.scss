@@ -1,4 +1,5 @@
 @import '../../../sass/fonts';
+@import '../../../sass/colors';
 
 .timeout-input {
     z-index: 1;
@@ -8,7 +9,7 @@
 
 .timeout-input__field {
     border-radius: 25px;
-    background-color: #e7e7e7;
+    background-color: $light-grey;
     border: none;
     box-shadow: none;
     font-family: $main-font;
@@ -17,7 +18,7 @@
     font-size: 13px;
     line-height: 15px;
     letter-spacing: 0.35px;
-    color: #000000;
+    color: $black;
     width: 100%;
 }
 
@@ -27,5 +28,5 @@
     line-height: 15px;
     letter-spacing: 0.35px;
     padding-left: 18px;
-    color: #f54b47;
+    color: $red;
 }

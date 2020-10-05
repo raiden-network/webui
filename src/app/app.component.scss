@@ -1,3 +1,5 @@
+@import '../sass/colors';
+
 .wrapper {
     position: absolute;
     top: 0;
@@ -6,11 +8,11 @@
     bottom: 0;
     width: 100%;
     height: 100%;
-    background-color: #121212;
+    background-color: $bg-dark-grey;
 }
 
 .wrapper--black {
-    background-color: #000000;
+    background-color: $black;
 }
 
 .toast-container {
@@ -59,7 +61,7 @@
 
 .menu {
     width: 272px;
-    background-color: #000000;
+    background-color: $black;
     border: none;
 }
 
@@ -78,7 +80,7 @@
 
 .notification-sidenav {
     width: 582px;
-    background-color: #000000;
+    background-color: $black;
 }
 
 .notification-sidenav--mobile {
@@ -89,8 +91,8 @@
     width: 480px;
     height: 42px;
     border-radius: 15px;
-    background-color: #ffffff;
-    color: #000000;
+    background-color: $white;
+    color: $black;
     font-size: 16px;
     line-height: 32px;
     position: fixed;
@@ -114,7 +116,7 @@
     width: 100%;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #ffffff;
+    color: $white;
     opacity: 0.5;
     font-size: 12px !important;
     line-height: 14px !important;
@@ -134,7 +136,7 @@
     line-height: 59px;
     font-weight: 300;
     letter-spacing: -0.76px;
-    color: #ffffff;
+    color: $white;
     text-align: center;
     z-index: 1000000;
 }
@@ -155,21 +157,21 @@
     width: 100%;
     border-radius: 15px;
     border: none;
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: $bg-dark-grey;
 }
 
 .progress__bar::-webkit-progress-bar {
     border-radius: 15px;
     border: none;
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: $bg-dark-grey;
 }
 .progress__bar::-webkit-progress-value {
     border-radius: 15px;
     border: none;
-    background-color: #ffffff;
+    background-color: $white;
 }
 .progress__bar::-moz-progress-bar {
     border-radius: 15px;
     border: none;
-    background-color: #ffffff;
+    background-color: $white;
 }

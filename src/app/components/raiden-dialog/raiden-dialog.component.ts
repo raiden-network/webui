@@ -3,7 +3,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 @Component({
     selector: 'app-raiden-dialog',
     templateUrl: './raiden-dialog.component.html',
-    styleUrls: ['./raiden-dialog.component.css'],
+    styleUrls: ['./raiden-dialog.component.scss'],
 })
 export class RaidenDialogComponent implements OnInit {
     @Input() titleText: string;

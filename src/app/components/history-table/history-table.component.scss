@@ -1,3 +1,5 @@
+@import '../../../sass/colors';
+
 :host {
     height: 100%;
 }
@@ -5,7 +7,7 @@
 .history {
     font-size: 16px;
     line-height: 19px;
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: $bg-dark-grey;
     border-radius: 15px;
     padding: 12px 20px 22px 20px;
     height: 100%;
@@ -27,12 +29,12 @@
 .label__link {
     text-decoration: underline;
     text-transform: capitalize;
-    color: #ffffff;
+    color: $white;
 }
 
 .table__row {
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid $light-divider;
 }
 
 .table__row:last-child {
@@ -73,30 +75,30 @@
     line-height: 18px;
     letter-spacing: 0.5px;
     text-align: center;
-    background-color: rgba(29, 197, 18, 0.3);
-    color: #1dc512;
+    background-color: $bg-label-green;
+    color: $label-green;
     margin-top: 4px;
 }
 
 .table__label--pending {
-    background-color: rgba(253, 211, 39, 0.3);
-    color: #fdd327;
+    background-color: $bg-label-yellow;
+    color: $label-yellow;
 }
 
 .table__label--failed {
-    background-color: rgba(255, 0, 0, 0.3);
-    color: #ff0000;
+    background-color: $bg-label-red;
+    color: $label-red;
 }
 
 .icon-box {
     width: 35px;
     height: 35px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #414141;
 }
 
 .icon-box__icon {
-    color: #000000;
+    color: $black;
     width: 14px;
 }
 
