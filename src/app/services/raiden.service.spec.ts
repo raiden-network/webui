@@ -956,7 +956,6 @@ describe('RaidenService', () => {
     it('should set a payment identifier for a payment when none is passed', fakeAsync(() => {
         const targetAddress = '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359';
         const amount = new BigNumber(10);
-        spyOnProperty(service, 'identifier', 'get').and.returnValue(50);
         service
             .initiatePayment(token.address, targetAddress, amount)
             .subscribe();
@@ -966,10 +965,10 @@ describe('RaidenService', () => {
             url: `${endpoint}/payments/${token.address}/${targetAddress}`,
             method: 'POST',
         });
-        expect(losslessParse(request.request.body)).toEqual({
-            amount,
-            identifier: new BigNumber(50),
-        });
+        const data = losslessParse(request.request.body);
+        expect(data.amount).toEqual(amount);
+        expect(BigNumber.isBigNumber(data.identifier)).toBe(true);
+        expect(data.identifier.isGreaterThan(0)).toBe(true);
         flush();
     }));
 
