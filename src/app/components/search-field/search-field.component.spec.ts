@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SearchFieldComponent } from './search-field.component';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -30,28 +30,33 @@ describe('SearchFieldComponent', () => {
     const contacts: Contact[] = createTestContacts(1);
     const token = createToken();
 
-    beforeEach(async(() => {
-        const tokenPollingMock = stub<TokenPollingService>();
-        // @ts-ignore
-        tokenPollingMock.tokens$ = of([token]);
+    beforeEach(
+        waitForAsync(() => {
+            const tokenPollingMock = stub<TokenPollingService>();
+            // @ts-ignore
+            tokenPollingMock.tokens$ = of([token]);
 
-        TestBed.configureTestingModule({
-            declarations: [SearchFieldComponent],
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-                SharedService,
-                { provide: TokenPollingService, useValue: tokenPollingMock },
-                RaidenService,
-                SelectedTokenService,
-            ],
-            imports: [
-                MaterialComponentsModule,
-                HttpClientTestingModule,
-                RaidenIconsModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [SearchFieldComponent],
+                providers: [
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                    SharedService,
+                    {
+                        provide: TokenPollingService,
+                        useValue: tokenPollingMock,
+                    },
+                    RaidenService,
+                    SelectedTokenService,
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    HttpClientTestingModule,
+                    RaidenIconsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(SearchFieldComponent);

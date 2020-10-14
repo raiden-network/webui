@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BalanceWithSymbolComponent } from './balance-with-symbol.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -14,20 +14,22 @@ describe('BalanceWithSymbolComponent', () => {
 
     const token = createToken({ decimals: 4, balance: new BigNumber(1000) });
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                BalanceWithSymbolComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-            ],
-            imports: [
-                ClipboardModule,
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [
+                    BalanceWithSymbolComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                ],
+                imports: [
+                    ClipboardModule,
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(BalanceWithSymbolComponent);

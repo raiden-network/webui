@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AboutComponent } from './about.component';
 import { RaidenService } from '../../services/raiden.service';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -20,30 +20,33 @@ describe('AboutComponent', () => {
 
     const network: Network = createNetworkMock();
 
-    beforeEach(async(() => {
-        const raidenServiceMock = stub<RaidenService>();
-        // @ts-ignore
-        raidenServiceMock.network$ = of(network);
-        raidenServiceMock.getVersion = () => of('0.100.5a1.dev157+geb2af878d');
-        // @ts-ignore
-        raidenServiceMock.production = true;
+    beforeEach(
+        waitForAsync(() => {
+            const raidenServiceMock = stub<RaidenService>();
+            // @ts-ignore
+            raidenServiceMock.network$ = of(network);
+            raidenServiceMock.getVersion = () =>
+                of('0.100.5a1.dev157+geb2af878d');
+            // @ts-ignore
+            raidenServiceMock.production = true;
 
-        TestBed.configureTestingModule({
-            declarations: [AboutComponent],
-            providers: [
-                {
-                    provide: RaidenService,
-                    useValue: raidenServiceMock,
-                },
-            ],
-            imports: [
-                MaterialComponentsModule,
-                ClipboardModule,
-                HttpClientTestingModule,
-                RaidenIconsModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [AboutComponent],
+                providers: [
+                    {
+                        provide: RaidenService,
+                        useValue: raidenServiceMock,
+                    },
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    ClipboardModule,
+                    HttpClientTestingModule,
+                    RaidenIconsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AboutComponent);

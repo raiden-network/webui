@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -43,30 +43,35 @@ describe('TokenNetworkSelectorComponent', () => {
     });
     const tokens = [connectedToken, ownedToken, notOwnedToken];
 
-    beforeEach(async(() => {
-        const tokenPollingMock = stub<TokenPollingService>();
-        // @ts-ignore
-        tokenPollingMock.tokens$ = of(tokens);
-        tokenPollingMock.refresh = () => {};
+    beforeEach(
+        waitForAsync(() => {
+            const tokenPollingMock = stub<TokenPollingService>();
+            // @ts-ignore
+            tokenPollingMock.tokens$ = of(tokens);
+            tokenPollingMock.refresh = () => {};
 
-        TestBed.configureTestingModule({
-            declarations: [TokenNetworkSelectorComponent],
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                { provide: TokenPollingService, useValue: tokenPollingMock },
-                RaidenService,
-                TestProviders.AddressBookStubProvider(),
-                TestProviders.MockMatDialog(),
-            ],
-            imports: [
-                MaterialComponentsModule,
-                HttpClientTestingModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-            ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [TokenNetworkSelectorComponent],
+                providers: [
+                    TestProviders.MockRaidenConfigProvider(),
+                    {
+                        provide: TokenPollingService,
+                        useValue: tokenPollingMock,
+                    },
+                    RaidenService,
+                    TestProviders.AddressBookStubProvider(),
+                    TestProviders.MockMatDialog(),
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    HttpClientTestingModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                ],
+                schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TokenNetworkSelectorComponent);

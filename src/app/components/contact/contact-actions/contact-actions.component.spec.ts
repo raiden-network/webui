@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ContactActionsComponent } from './contact-actions.component';
 import { MaterialComponentsModule } from '../../../modules/material-components/material-components.module';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -50,26 +50,28 @@ describe('ContactActionsComponent', () => {
     };
     const token = createToken();
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [ContactActionsComponent],
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-                TestProviders.MockMatDialog(),
-                PendingTransferPollingService,
-                RaidenService,
-                SelectedTokenService,
-                ChannelPollingService,
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-                HttpClientTestingModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [ContactActionsComponent],
+                providers: [
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                    TestProviders.MockMatDialog(),
+                    PendingTransferPollingService,
+                    RaidenService,
+                    SelectedTokenService,
+                    ChannelPollingService,
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                    HttpClientTestingModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ContactActionsComponent);

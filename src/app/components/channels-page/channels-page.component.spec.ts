@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChannelsPageComponent } from './channels-page.component';
 import { ChannelListComponent } from '../channel-list/channel-list.component';
 import { ChannelComponent } from '../channel/channel.component';
@@ -23,37 +23,39 @@ describe('ChannelsPageComponent', () => {
     let component: ChannelsPageComponent;
     let fixture: ComponentFixture<ChannelsPageComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                ChannelsPageComponent,
-                ChannelListComponent,
-                ChannelComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-                ChunkPipe,
-                BalanceWithSymbolComponent,
-                TokenNetworkSelectorComponent,
-            ],
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                RaidenService,
-                TokenPollingService,
-                TestProviders.MockMatDialog(),
-                ChannelPollingService,
-                SelectedTokenService,
-                TestProviders.AddressBookStubProvider(),
-                SharedService,
-            ],
-            imports: [
-                MaterialComponentsModule,
-                ClipboardModule,
-                HttpClientTestingModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [
+                    ChannelsPageComponent,
+                    ChannelListComponent,
+                    ChannelComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                    ChunkPipe,
+                    BalanceWithSymbolComponent,
+                    TokenNetworkSelectorComponent,
+                ],
+                providers: [
+                    TestProviders.MockRaidenConfigProvider(),
+                    RaidenService,
+                    TokenPollingService,
+                    TestProviders.MockMatDialog(),
+                    ChannelPollingService,
+                    SelectedTokenService,
+                    TestProviders.AddressBookStubProvider(),
+                    SharedService,
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    ClipboardModule,
+                    HttpClientTestingModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ChannelsPageComponent);

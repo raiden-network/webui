@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { QrCodeComponent, QrCodePayload } from './qr-code.component';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -19,25 +19,27 @@ describe('QrCodeComponent', () => {
     const content = createAddress();
     let qrCodeSpy: Spy;
 
-    beforeEach(async(() => {
-        const payload: QrCodePayload = {
-            content: content,
-        };
+    beforeEach(
+        waitForAsync(() => {
+            const payload: QrCodePayload = {
+                content: content,
+            };
 
-        TestBed.configureTestingModule({
-            declarations: [QrCodeComponent, RaidenDialogComponent],
-            providers: [
-                TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
-            ],
-            imports: [
-                ClipboardModule,
-                RaidenIconsModule,
-                MaterialComponentsModule,
-                HttpClientTestingModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [QrCodeComponent, RaidenDialogComponent],
+                providers: [
+                    TestProviders.MockMatDialogData(payload),
+                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                ],
+                imports: [
+                    ClipboardModule,
+                    RaidenIconsModule,
+                    MaterialComponentsModule,
+                    HttpClientTestingModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         qrCodeSpy = spyOn(QRCode, 'toCanvas');

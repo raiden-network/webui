@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TokenComponent } from './token.component';
 import { RaidenService } from '../../services/raiden.service';
 import { TokenPollingService } from '../../services/token-polling.service';
@@ -58,52 +58,56 @@ describe('TokenComponent', () => {
     const unconnectedToken = tokens[1];
     let channelsSubject: BehaviorSubject<Channel[]>;
 
-    beforeEach(async(() => {
-        const tokenPollingMock = stub<TokenPollingService>();
-        // @ts-ignore
-        tokenPollingMock.tokens$ = of(tokens);
-        tokenPollingMock.refresh = () => {};
+    beforeEach(
+        waitForAsync(() => {
+            const tokenPollingMock = stub<TokenPollingService>();
+            // @ts-ignore
+            tokenPollingMock.tokens$ = of(tokens);
+            tokenPollingMock.refresh = () => {};
 
-        const channelPollingMock = stub<ChannelPollingService>();
-        channelsSubject = new BehaviorSubject(createTestChannels(1, tokens[0]));
-        // @ts-ignore
-        channelPollingMock.channels$ = channelsSubject.asObservable();
-        channelPollingMock.refresh = () => {};
+            const channelPollingMock = stub<ChannelPollingService>();
+            channelsSubject = new BehaviorSubject(
+                createTestChannels(1, tokens[0])
+            );
+            // @ts-ignore
+            channelPollingMock.channels$ = channelsSubject.asObservable();
+            channelPollingMock.refresh = () => {};
 
-        TestBed.configureTestingModule({
-            declarations: [
-                TokenComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-                BalanceWithSymbolComponent,
-                TokenNetworkSelectorComponent,
-            ],
-            providers: [
-                RaidenService,
-                TestProviders.MockRaidenConfigProvider(),
-                PendingTransferPollingService,
-                TestProviders.MockMatDialog(),
-                TestProviders.AddressBookStubProvider(),
-                {
-                    provide: ChannelPollingService,
-                    useValue: channelPollingMock,
-                },
-                {
-                    provide: TokenPollingService,
-                    useValue: tokenPollingMock,
-                },
-                SelectedTokenService,
-                TestProviders.MockRaidenConfigProvider(),
-            ],
-            imports: [
-                RaidenIconsModule,
-                MaterialComponentsModule,
-                HttpClientTestingModule,
-                NoopAnimationsModule,
-                ClipboardModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    TokenComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                    BalanceWithSymbolComponent,
+                    TokenNetworkSelectorComponent,
+                ],
+                providers: [
+                    RaidenService,
+                    TestProviders.MockRaidenConfigProvider(),
+                    PendingTransferPollingService,
+                    TestProviders.MockMatDialog(),
+                    TestProviders.AddressBookStubProvider(),
+                    {
+                        provide: ChannelPollingService,
+                        useValue: channelPollingMock,
+                    },
+                    {
+                        provide: TokenPollingService,
+                        useValue: tokenPollingMock,
+                    },
+                    SelectedTokenService,
+                    TestProviders.MockRaidenConfigProvider(),
+                ],
+                imports: [
+                    RaidenIconsModule,
+                    MaterialComponentsModule,
+                    HttpClientTestingModule,
+                    NoopAnimationsModule,
+                    ClipboardModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TokenComponent);

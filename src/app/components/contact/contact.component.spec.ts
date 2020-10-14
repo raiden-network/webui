@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ContactComponent } from './contact.component';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -23,27 +23,29 @@ describe('ContactComponent', () => {
         label: 'Test account',
     };
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                ContactComponent,
-                ContactActionsComponent,
-                AddressIdenticonComponent,
-            ],
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                SharedService,
-                TestProviders.AddressBookStubProvider(),
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-                HttpClientTestingModule,
-                ClipboardModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [
+                    ContactComponent,
+                    ContactActionsComponent,
+                    AddressIdenticonComponent,
+                ],
+                providers: [
+                    TestProviders.MockRaidenConfigProvider(),
+                    SharedService,
+                    TestProviders.AddressBookStubProvider(),
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                    HttpClientTestingModule,
+                    ClipboardModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ContactComponent);

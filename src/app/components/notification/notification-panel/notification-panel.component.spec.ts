@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
@@ -41,42 +41,48 @@ describe('NotificationPanelComponent', () => {
         timestamp: new Date().toISOString(),
     };
 
-    beforeEach(async(() => {
-        notificationsSubject = new BehaviorSubject<NotificationMessage[]>([]);
-        pendingActionsSubject = new BehaviorSubject<NotificationMessage[]>([]);
-        notificationService = {
-            notifications$: notificationsSubject.asObservable(),
-            pendingActions$: pendingActionsSubject.asObservable(),
-            clearNotifications: () => {},
-            removeNotification: () => {},
-        };
-        removeSpy = spyOn(notificationService, 'removeNotification');
-        clearSpy = spyOn(notificationService, 'clearNotifications');
+    beforeEach(
+        waitForAsync(() => {
+            notificationsSubject = new BehaviorSubject<NotificationMessage[]>(
+                []
+            );
+            pendingActionsSubject = new BehaviorSubject<NotificationMessage[]>(
+                []
+            );
+            notificationService = {
+                notifications$: notificationsSubject.asObservable(),
+                pendingActions$: pendingActionsSubject.asObservable(),
+                clearNotifications: () => {},
+                removeNotification: () => {},
+            };
+            removeSpy = spyOn(notificationService, 'removeNotification');
+            clearSpy = spyOn(notificationService, 'clearNotifications');
 
-        TestBed.configureTestingModule({
-            declarations: [
-                NotificationPanelComponent,
-                NotificationItemComponent,
-            ],
-            providers: [
-                PendingTransferPollingService,
-                {
-                    provide: NotificationService,
-                    useValue: notificationService,
-                },
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-            ],
-            imports: [
-                MaterialComponentsModule,
-                HttpClientTestingModule,
-                NoopAnimationsModule,
-                ClipboardModule,
-                RaidenIconsModule,
-                NoopAnimationsModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    NotificationPanelComponent,
+                    NotificationItemComponent,
+                ],
+                providers: [
+                    PendingTransferPollingService,
+                    {
+                        provide: NotificationService,
+                        useValue: notificationService,
+                    },
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    HttpClientTestingModule,
+                    NoopAnimationsModule,
+                    ClipboardModule,
+                    RaidenIconsModule,
+                    NoopAnimationsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(NotificationPanelComponent);

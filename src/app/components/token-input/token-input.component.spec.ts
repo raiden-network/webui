@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -22,27 +22,29 @@ describe('TokenInputComponent', () => {
     let input: HTMLInputElement;
     const token = createToken();
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                TokenInputComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-                BalanceWithSymbolComponent,
-            ],
-            providers: [
-                {
-                    provide: ErrorStateMatcher,
-                    useClass: ShowOnDirtyErrorStateMatcher,
-                },
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                ClipboardModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [
+                    TokenInputComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                    BalanceWithSymbolComponent,
+                ],
+                providers: [
+                    {
+                        provide: ErrorStateMatcher,
+                        useClass: ShowOnDirtyErrorStateMatcher,
+                    },
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    ClipboardModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TokenInputComponent);

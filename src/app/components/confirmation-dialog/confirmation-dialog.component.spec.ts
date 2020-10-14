@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import {
@@ -15,26 +15,31 @@ describe('ConfirmationDialogComponent', () => {
     let component: ConfirmationDialogComponent;
     let fixture: ComponentFixture<ConfirmationDialogComponent>;
 
-    beforeEach(async(() => {
-        const payload: ConfirmationDialogPayload = {
-            title: 'Test confirm',
-            message: 'Do you want to confirm this test?',
-        };
+    beforeEach(
+        waitForAsync(() => {
+            const payload: ConfirmationDialogPayload = {
+                title: 'Test confirm',
+                message: 'Do you want to confirm this test?',
+            };
 
-        TestBed.configureTestingModule({
-            declarations: [ConfirmationDialogComponent, RaidenDialogComponent],
-            providers: [
-                TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
-            ],
-            imports: [
-                MaterialComponentsModule,
-                ReactiveFormsModule,
-                RaidenIconsModule,
-                HttpClientTestingModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    ConfirmationDialogComponent,
+                    RaidenDialogComponent,
+                ],
+                providers: [
+                    TestProviders.MockMatDialogData(payload),
+                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    ReactiveFormsModule,
+                    RaidenIconsModule,
+                    HttpClientTestingModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ConfirmationDialogComponent);

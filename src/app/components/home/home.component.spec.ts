@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeComponent } from './home.component';
 import { ContactListComponent } from '../contact-list/contact-list.component';
 import { HistoryTableComponent } from '../history-table/history-table.component';
@@ -21,34 +21,36 @@ describe('HomeComponent', () => {
     let component: HomeComponent;
     let fixture: ComponentFixture<HomeComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                HomeComponent,
-                ContactListComponent,
-                HistoryTableComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-                TokenComponent,
-                ContactComponent,
-                ContactActionsComponent,
-                ChunkPipe,
-                BalanceWithSymbolComponent,
-                TokenNetworkSelectorComponent,
-            ],
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-            ],
-            imports: [
-                MaterialComponentsModule,
-                ClipboardModule,
-                HttpClientTestingModule,
-                RaidenIconsModule,
-                NoopAnimationsModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [
+                    HomeComponent,
+                    ContactListComponent,
+                    HistoryTableComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                    TokenComponent,
+                    ContactComponent,
+                    ContactActionsComponent,
+                    ChunkPipe,
+                    BalanceWithSymbolComponent,
+                    TokenNetworkSelectorComponent,
+                ],
+                providers: [
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    ClipboardModule,
+                    HttpClientTestingModule,
+                    RaidenIconsModule,
+                    NoopAnimationsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(HomeComponent);

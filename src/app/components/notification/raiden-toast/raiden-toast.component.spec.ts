@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { RaidenToastComponent } from './raiden-toast.component';
@@ -18,13 +18,17 @@ describe('RaidenToastComponent', () => {
         toastRef: new ToastRef(null),
     };
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [RaidenToastComponent],
-            providers: [{ provide: ToastPackage, useValue: toastPackageMock }],
-            imports: [NoopAnimationsModule, ToastrModule.forRoot()],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [RaidenToastComponent],
+                providers: [
+                    { provide: ToastPackage, useValue: toastPackageMock },
+                ],
+                imports: [NoopAnimationsModule, ToastrModule.forRoot()],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(RaidenToastComponent);

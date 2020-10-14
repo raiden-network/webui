@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -65,46 +65,51 @@ describe('OpenDialogComponent', () => {
         fixture.detectChanges();
     }
 
-    beforeEach(async(() => {
-        const payload: OpenDialogPayload = {
-            tokenAddress: token.address,
-            defaultSettleTimeout: defaultSettleTimeout,
-            revealTimeout: revealTimeout,
-        };
+    beforeEach(
+        waitForAsync(() => {
+            const payload: OpenDialogPayload = {
+                tokenAddress: token.address,
+                defaultSettleTimeout: defaultSettleTimeout,
+                revealTimeout: revealTimeout,
+            };
 
-        const tokenPollingMock = stub<TokenPollingService>();
-        // @ts-ignore
-        tokenPollingMock.tokens$ = of([token]);
-        tokenPollingMock.getTokenUpdates = () => of(token);
+            const tokenPollingMock = stub<TokenPollingService>();
+            // @ts-ignore
+            tokenPollingMock.tokens$ = of([token]);
+            tokenPollingMock.getTokenUpdates = () => of(token);
 
-        TestBed.configureTestingModule({
-            declarations: [
-                OpenDialogComponent,
-                TokenInputComponent,
-                AddressInputComponent,
-                TokenNetworkSelectorComponent,
-                RaidenDialogComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-                BalanceWithSymbolComponent,
-            ],
-            providers: [
-                TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-                { provide: TokenPollingService, useValue: tokenPollingMock },
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                ReactiveFormsModule,
-                HttpClientTestingModule,
-                RaidenIconsModule,
-                ClipboardModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    OpenDialogComponent,
+                    TokenInputComponent,
+                    AddressInputComponent,
+                    TokenNetworkSelectorComponent,
+                    RaidenDialogComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                    BalanceWithSymbolComponent,
+                ],
+                providers: [
+                    TestProviders.MockMatDialogData(payload),
+                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                    {
+                        provide: TokenPollingService,
+                        useValue: tokenPollingMock,
+                    },
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    ReactiveFormsModule,
+                    HttpClientTestingModule,
+                    RaidenIconsModule,
+                    ClipboardModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(OpenDialogComponent);

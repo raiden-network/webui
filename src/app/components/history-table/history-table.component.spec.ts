@@ -1,5 +1,5 @@
 import {
-    async,
+    waitForAsync,
     ComponentFixture,
     TestBed,
     fakeAsync,
@@ -73,41 +73,43 @@ describe('HistoryTableComponent', () => {
         return event;
     }
 
-    beforeEach(async(() => {
-        const pendingTransferPollingMock = stub<
-            PendingTransferPollingService
-        >();
-        pendingTransfersSubject = new BehaviorSubject(pendingTransfers);
-        // @ts-ignore
-        pendingTransferPollingMock.pendingTransfers$ = pendingTransfersSubject.asObservable();
+    beforeEach(
+        waitForAsync(() => {
+            const pendingTransferPollingMock = stub<
+                PendingTransferPollingService
+            >();
+            pendingTransfersSubject = new BehaviorSubject(pendingTransfers);
+            // @ts-ignore
+            pendingTransferPollingMock.pendingTransfers$ = pendingTransfersSubject.asObservable();
 
-        TestBed.configureTestingModule({
-            declarations: [
-                HistoryTableComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-            ],
-            providers: [
-                TestProviders.AddressBookStubProvider(),
-                SelectedTokenService,
-                PaymentHistoryPollingService,
-                SharedService,
-                TestProviders.MockRaidenConfigProvider(),
-                {
-                    provide: PendingTransferPollingService,
-                    useValue: pendingTransferPollingMock,
-                },
-                RaidenService,
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-                HttpClientTestingModule,
-                ClipboardModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    HistoryTableComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                ],
+                providers: [
+                    TestProviders.AddressBookStubProvider(),
+                    SelectedTokenService,
+                    PaymentHistoryPollingService,
+                    SharedService,
+                    TestProviders.MockRaidenConfigProvider(),
+                    {
+                        provide: PendingTransferPollingService,
+                        useValue: pendingTransferPollingMock,
+                    },
+                    RaidenService,
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                    HttpClientTestingModule,
+                    ClipboardModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(HistoryTableComponent);

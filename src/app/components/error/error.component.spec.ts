@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ErrorComponent, ErrorPayload } from './error.component';
 import { By } from '@angular/platform-browser';
 import { RaidenService } from '../../services/raiden.service';
@@ -13,27 +13,29 @@ describe('ErrorComponent', () => {
     let component: ErrorComponent;
     let fixture: ComponentFixture<ErrorComponent>;
 
-    beforeEach(async(() => {
-        const payload: ErrorPayload = {
-            type: ConnectionErrorType.ApiError,
-            errorContent: 'API error!',
-        };
+    beforeEach(
+        waitForAsync(() => {
+            const payload: ErrorPayload = {
+                type: ConnectionErrorType.ApiError,
+                errorContent: 'API error!',
+            };
 
-        TestBed.configureTestingModule({
-            declarations: [ErrorComponent],
-            providers: [
-                TestProviders.MockMatDialogData(payload),
-                RaidenService,
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-            ],
-            imports: [
-                RaidenIconsModule,
-                MaterialComponentsModule,
-                HttpClientTestingModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [ErrorComponent],
+                providers: [
+                    TestProviders.MockMatDialogData(payload),
+                    RaidenService,
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                ],
+                imports: [
+                    RaidenIconsModule,
+                    MaterialComponentsModule,
+                    HttpClientTestingModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ErrorComponent);
