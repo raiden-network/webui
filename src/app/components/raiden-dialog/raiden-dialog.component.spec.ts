@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RaidenDialogComponent } from './raiden-dialog.component';
 import { By } from '@angular/platform-browser';
 import { clickElement } from '../../../testing/interaction-helper';
@@ -10,16 +10,18 @@ describe('RaidenDialogComponent', () => {
     let component: RaidenDialogComponent;
     let fixture: ComponentFixture<RaidenDialogComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [RaidenDialogComponent],
-            imports: [
-                RaidenIconsModule,
-                MaterialComponentsModule,
-                HttpClientTestingModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [RaidenDialogComponent],
+                imports: [
+                    RaidenIconsModule,
+                    MaterialComponentsModule,
+                    HttpClientTestingModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(RaidenDialogComponent);

@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -101,55 +101,62 @@ describe('PaymentDialogComponent', () => {
         );
     }
 
-    beforeEach(async(() => {
-        const payload: PaymentDialogPayload = {
-            tokenAddress: '',
-            amount: undefined,
-            targetAddress: '',
-        };
+    beforeEach(
+        waitForAsync(() => {
+            const payload: PaymentDialogPayload = {
+                tokenAddress: '',
+                amount: undefined,
+                targetAddress: '',
+            };
 
-        const tokenPollingMock = stub<TokenPollingService>();
-        // @ts-ignore
-        tokenPollingMock.tokens$ = of([token]);
+            const tokenPollingMock = stub<TokenPollingService>();
+            // @ts-ignore
+            tokenPollingMock.tokens$ = of([token]);
 
-        const pendingTransferPollingMock = stub<
-            PendingTransferPollingService
-        >();
-        // @ts-ignore
-        pendingTransferPollingMock.pendingTransfers$ = of([pendingTransfer]);
+            const pendingTransferPollingMock = stub<
+                PendingTransferPollingService
+            >();
+            // @ts-ignore
+            pendingTransferPollingMock.pendingTransfers$ = of([
+                pendingTransfer,
+            ]);
 
-        TestBed.configureTestingModule({
-            declarations: [
-                PaymentDialogComponent,
-                TokenInputComponent,
-                AddressInputComponent,
-                TokenNetworkSelectorComponent,
-                RaidenDialogComponent,
-                BalanceWithSymbolComponent,
-                PaymentIdentifierInputComponent,
-            ],
-            providers: [
-                TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-                TestProviders.MockMatDialog(),
-                { provide: TokenPollingService, useValue: tokenPollingMock },
-                {
-                    provide: PendingTransferPollingService,
-                    useValue: pendingTransferPollingMock,
-                },
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                ReactiveFormsModule,
-                HttpClientTestingModule,
-                RaidenIconsModule,
-                ClipboardModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    PaymentDialogComponent,
+                    TokenInputComponent,
+                    AddressInputComponent,
+                    TokenNetworkSelectorComponent,
+                    RaidenDialogComponent,
+                    BalanceWithSymbolComponent,
+                    PaymentIdentifierInputComponent,
+                ],
+                providers: [
+                    TestProviders.MockMatDialogData(payload),
+                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                    TestProviders.MockMatDialog(),
+                    {
+                        provide: TokenPollingService,
+                        useValue: tokenPollingMock,
+                    },
+                    {
+                        provide: PendingTransferPollingService,
+                        useValue: pendingTransferPollingMock,
+                    },
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    ReactiveFormsModule,
+                    HttpClientTestingModule,
+                    RaidenIconsModule,
+                    ClipboardModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(PaymentDialogComponent);

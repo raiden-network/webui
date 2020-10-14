@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NotificationItemComponent } from './notification-item.component';
 import { TestProviders } from '../../../../testing/test-providers';
@@ -26,25 +26,27 @@ describe('NotificationItemComponent', () => {
         userToken: createToken(),
     };
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                NotificationItemComponent,
-                AddressIdenticonComponent,
-            ],
-            providers: [
-                TestProviders.AddressBookStubProvider(),
-                IdenticonCacheService,
-            ],
-            imports: [
-                MaterialComponentsModule,
-                RaidenIconsModule,
-                ClipboardModule,
-                HttpClientTestingModule,
-                NoopAnimationsModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [
+                    NotificationItemComponent,
+                    AddressIdenticonComponent,
+                ],
+                providers: [
+                    TestProviders.AddressBookStubProvider(),
+                    IdenticonCacheService,
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    RaidenIconsModule,
+                    ClipboardModule,
+                    HttpClientTestingModule,
+                    NoopAnimationsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(NotificationItemComponent);

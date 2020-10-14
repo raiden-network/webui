@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
 import { ChannelComponent } from './channel.component';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -44,39 +44,41 @@ describe('ChannelComponent', () => {
     const channel = createChannel({ userToken: token });
     let contacts: Contacts;
 
-    beforeEach(async(() => {
-        const addressBookMock = stub<AddressBookService>();
-        addressBookMock.get = () => contacts;
+    beforeEach(
+        waitForAsync(() => {
+            const addressBookMock = stub<AddressBookService>();
+            addressBookMock.get = () => contacts;
 
-        TestBed.configureTestingModule({
-            declarations: [
-                ChannelComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-                BalanceWithSymbolComponent,
-                AddressIdenticonComponent,
-            ],
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                RaidenService,
-                TokenPollingService,
-                TestProviders.MockMatDialog(),
-                ChannelPollingService,
-                IdenticonCacheService,
-                {
-                    provide: AddressBookService,
-                    useValue: addressBookMock,
-                },
-            ],
-            imports: [
-                MaterialComponentsModule,
-                ClipboardModule,
-                HttpClientTestingModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    ChannelComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                    BalanceWithSymbolComponent,
+                    AddressIdenticonComponent,
+                ],
+                providers: [
+                    TestProviders.MockRaidenConfigProvider(),
+                    RaidenService,
+                    TokenPollingService,
+                    TestProviders.MockMatDialog(),
+                    ChannelPollingService,
+                    IdenticonCacheService,
+                    {
+                        provide: AddressBookService,
+                        useValue: addressBookMock,
+                    },
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    ClipboardModule,
+                    HttpClientTestingModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ChannelComponent);

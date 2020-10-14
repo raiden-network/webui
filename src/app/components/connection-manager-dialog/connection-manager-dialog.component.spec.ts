@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -46,44 +46,49 @@ describe('ConnectionManagerDialogComponent', () => {
         },
     });
 
-    beforeEach(async(() => {
-        const payload: ConnectionManagerDialogPayload = {
-            funds: undefined,
-            token: token,
-        };
+    beforeEach(
+        waitForAsync(() => {
+            const payload: ConnectionManagerDialogPayload = {
+                funds: undefined,
+                token: token,
+            };
 
-        const tokenPollingMock = stub<TokenPollingService>();
-        // @ts-ignore
-        tokenPollingMock.tokens$ = of([token]);
-        tokenPollingMock.getTokenUpdates = () => of(token);
+            const tokenPollingMock = stub<TokenPollingService>();
+            // @ts-ignore
+            tokenPollingMock.tokens$ = of([token]);
+            tokenPollingMock.getTokenUpdates = () => of(token);
 
-        TestBed.configureTestingModule({
-            declarations: [
-                ConnectionManagerDialogComponent,
-                TokenInputComponent,
-                RaidenDialogComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-                TokenNetworkSelectorComponent,
-                BalanceWithSymbolComponent,
-            ],
-            providers: [
-                TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
-                TestProviders.MockRaidenConfigProvider(),
-                { provide: TokenPollingService, useValue: tokenPollingMock },
-                TestProviders.AddressBookStubProvider(),
-            ],
-            imports: [
-                MaterialComponentsModule,
-                ReactiveFormsModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-                HttpClientTestingModule,
-                ClipboardModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    ConnectionManagerDialogComponent,
+                    TokenInputComponent,
+                    RaidenDialogComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                    TokenNetworkSelectorComponent,
+                    BalanceWithSymbolComponent,
+                ],
+                providers: [
+                    TestProviders.MockMatDialogData(payload),
+                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    TestProviders.MockRaidenConfigProvider(),
+                    {
+                        provide: TokenPollingService,
+                        useValue: tokenPollingMock,
+                    },
+                    TestProviders.AddressBookStubProvider(),
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    ReactiveFormsModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                    HttpClientTestingModule,
+                    ClipboardModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     describe('with token payload', () => {
         beforeEach(() => {

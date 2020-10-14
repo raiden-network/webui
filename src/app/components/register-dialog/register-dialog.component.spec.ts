@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -18,28 +18,30 @@ describe('RegisterDialogComponent', () => {
 
     const addressInput = createAddress();
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                RegisterDialogComponent,
-                AddressInputComponent,
-                RaidenDialogComponent,
-            ],
-            providers: [
-                TestProviders.MockMatDialogData(),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                ReactiveFormsModule,
-                HttpClientTestingModule,
-                RaidenIconsModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [
+                    RegisterDialogComponent,
+                    AddressInputComponent,
+                    RaidenDialogComponent,
+                ],
+                providers: [
+                    TestProviders.MockMatDialogData(),
+                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    ReactiveFormsModule,
+                    HttpClientTestingModule,
+                    RaidenIconsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(RegisterDialogComponent);

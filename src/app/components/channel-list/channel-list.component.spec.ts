@@ -1,5 +1,5 @@
 import {
-    async,
+    waitForAsync,
     ComponentFixture,
     TestBed,
     tick,
@@ -63,44 +63,46 @@ describe('ChannelListComponent', () => {
         createChannel({ userToken: token2, state: 'closed' }),
     ]);
 
-    beforeEach(async(() => {
-        const tokenPollingMock = stub<TokenPollingService>();
-        // @ts-ignore
-        tokenPollingMock.tokens$ = of([token1, token2]);
-        tokenPollingMock.refresh = () => {};
+    beforeEach(
+        waitForAsync(() => {
+            const tokenPollingMock = stub<TokenPollingService>();
+            // @ts-ignore
+            tokenPollingMock.tokens$ = of([token1, token2]);
+            tokenPollingMock.refresh = () => {};
 
-        TestBed.configureTestingModule({
-            declarations: [
-                ChannelListComponent,
-                ChannelComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-                ChunkPipe,
-                BalanceWithSymbolComponent,
-                TokenNetworkSelectorComponent,
-            ],
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                RaidenService,
-                {
-                    provide: TokenPollingService,
-                    useValue: tokenPollingMock,
-                },
-                TestProviders.MockMatDialog(),
-                ChannelPollingService,
-                SelectedTokenService,
-                TestProviders.AddressBookStubProvider(),
-                SharedService,
-            ],
-            imports: [
-                MaterialComponentsModule,
-                ClipboardModule,
-                HttpClientTestingModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    ChannelListComponent,
+                    ChannelComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                    ChunkPipe,
+                    BalanceWithSymbolComponent,
+                    TokenNetworkSelectorComponent,
+                ],
+                providers: [
+                    TestProviders.MockRaidenConfigProvider(),
+                    RaidenService,
+                    {
+                        provide: TokenPollingService,
+                        useValue: tokenPollingMock,
+                    },
+                    TestProviders.MockMatDialog(),
+                    ChannelPollingService,
+                    SelectedTokenService,
+                    TestProviders.AddressBookStubProvider(),
+                    SharedService,
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    ClipboardModule,
+                    HttpClientTestingModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ChannelListComponent);

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
     AddEditContactDialogComponent,
     AddEditContactDialogPayload,
@@ -38,34 +38,36 @@ describe('AddEditContactDialogComponent', () => {
         fixture.detectChanges();
     }
 
-    beforeEach(async(() => {
-        const payload: AddEditContactDialogPayload = {
-            address: '',
-            label: '',
-            edit: false,
-        };
+    beforeEach(
+        waitForAsync(() => {
+            const payload: AddEditContactDialogPayload = {
+                address: '',
+                label: '',
+                edit: false,
+            };
 
-        TestBed.configureTestingModule({
-            declarations: [
-                AddEditContactDialogComponent,
-                AddressInputComponent,
-                RaidenDialogComponent,
-            ],
-            providers: [
-                TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                ReactiveFormsModule,
-                HttpClientTestingModule,
-                RaidenIconsModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    AddEditContactDialogComponent,
+                    AddressInputComponent,
+                    RaidenDialogComponent,
+                ],
+                providers: [
+                    TestProviders.MockMatDialogData(payload),
+                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    ReactiveFormsModule,
+                    HttpClientTestingModule,
+                    RaidenIconsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     describe('as add dialog', () => {
         beforeEach(() => {

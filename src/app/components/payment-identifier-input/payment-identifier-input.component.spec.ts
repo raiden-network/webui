@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
     ErrorStateMatcher,
@@ -17,23 +17,25 @@ describe('PaymentIdentifierInputComponent', () => {
     let component: PaymentIdentifierInputComponent;
     let fixture: ComponentFixture<PaymentIdentifierInputComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [PaymentIdentifierInputComponent],
-            providers: [
-                {
-                    provide: ErrorStateMatcher,
-                    useClass: ShowOnDirtyErrorStateMatcher,
-                },
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                HttpClientTestingModule,
-                RaidenIconsModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [PaymentIdentifierInputComponent],
+                providers: [
+                    {
+                        provide: ErrorStateMatcher,
+                        useClass: ShowOnDirtyErrorStateMatcher,
+                    },
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    HttpClientTestingModule,
+                    RaidenIconsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(PaymentIdentifierInputComponent);

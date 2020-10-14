@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TransfersPageComponent } from './transfers-page.component';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { TestProviders } from '../../../testing/test-providers';
@@ -24,38 +24,40 @@ describe('TransfersPageComponent', () => {
     let component: TransfersPageComponent;
     let fixture: ComponentFixture<TransfersPageComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                TransfersPageComponent,
-                HistoryTableComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-                TokenComponent,
-                BalanceWithSymbolComponent,
-                TokenNetworkSelectorComponent,
-            ],
-            providers: [
-                TestProviders.AddressBookStubProvider(),
-                SelectedTokenService,
-                PaymentHistoryPollingService,
-                SharedService,
-                TestProviders.MockRaidenConfigProvider(),
-                PendingTransferPollingService,
-                ChannelPollingService,
-                TokenPollingService,
-                TestProviders.MockMatDialog(),
-                RaidenService,
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-                HttpClientTestingModule,
-                ClipboardModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [
+                    TransfersPageComponent,
+                    HistoryTableComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                    TokenComponent,
+                    BalanceWithSymbolComponent,
+                    TokenNetworkSelectorComponent,
+                ],
+                providers: [
+                    TestProviders.AddressBookStubProvider(),
+                    SelectedTokenService,
+                    PaymentHistoryPollingService,
+                    SharedService,
+                    TestProviders.MockRaidenConfigProvider(),
+                    PendingTransferPollingService,
+                    ChannelPollingService,
+                    TokenPollingService,
+                    TestProviders.MockMatDialog(),
+                    RaidenService,
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                    HttpClientTestingModule,
+                    ClipboardModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TransfersPageComponent);

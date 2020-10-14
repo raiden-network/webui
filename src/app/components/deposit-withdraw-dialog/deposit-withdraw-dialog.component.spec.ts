@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../modules/material-components/material-components.module';
@@ -40,50 +40,55 @@ describe('DepositWithdrawDialogComponent', () => {
         balance: new BigNumber(57),
     });
 
-    beforeEach(async(() => {
-        const payload: DepositWithdrawDialogPayload = {
-            channel: channel,
-            depositMode: DepositMode.DEPOSIT,
-        };
+    beforeEach(
+        waitForAsync(() => {
+            const payload: DepositWithdrawDialogPayload = {
+                channel: channel,
+                depositMode: DepositMode.DEPOSIT,
+            };
 
-        const tokenPollingMock = stub<TokenPollingService>();
-        // @ts-ignore
-        tokenPollingMock.tokens$ = of([token]);
-        tokenPollingMock.getTokenUpdates = () => of(token);
+            const tokenPollingMock = stub<TokenPollingService>();
+            // @ts-ignore
+            tokenPollingMock.tokens$ = of([token]);
+            tokenPollingMock.getTokenUpdates = () => of(token);
 
-        const channelPollingMock = stub<ChannelPollingService>();
-        channelPollingMock.getChannelUpdates = () => of(channel);
+            const channelPollingMock = stub<ChannelPollingService>();
+            channelPollingMock.getChannelUpdates = () => of(channel);
 
-        TestBed.configureTestingModule({
-            declarations: [
-                DepositWithdrawDialogComponent,
-                TokenInputComponent,
-                RaidenDialogComponent,
-                DecimalPipe,
-                DisplayDecimalsPipe,
-                BalanceWithSymbolComponent,
-            ],
-            providers: [
-                TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
-                { provide: TokenPollingService, useValue: tokenPollingMock },
-                {
-                    provide: ChannelPollingService,
-                    useValue: channelPollingMock,
-                },
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                ReactiveFormsModule,
-                HttpClientTestingModule,
-                RaidenIconsModule,
-                ClipboardModule,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    DepositWithdrawDialogComponent,
+                    TokenInputComponent,
+                    RaidenDialogComponent,
+                    DecimalPipe,
+                    DisplayDecimalsPipe,
+                    BalanceWithSymbolComponent,
+                ],
+                providers: [
+                    TestProviders.MockMatDialogData(payload),
+                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    {
+                        provide: TokenPollingService,
+                        useValue: tokenPollingMock,
+                    },
+                    {
+                        provide: ChannelPollingService,
+                        useValue: channelPollingMock,
+                    },
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    ReactiveFormsModule,
+                    HttpClientTestingModule,
+                    RaidenIconsModule,
+                    ClipboardModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     describe('as deposit dialog', () => {
         beforeEach(() => {

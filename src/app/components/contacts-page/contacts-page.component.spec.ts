@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ContactsPageComponent } from './contacts-page.component';
 import { ContactListComponent } from '../contact-list/contact-list.component';
 import { ContactComponent } from '../contact/contact.component';
@@ -18,32 +18,34 @@ describe('ContactsPageComponent', () => {
     let component: ContactsPageComponent;
     let fixture: ComponentFixture<ContactsPageComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                ContactsPageComponent,
-                ContactListComponent,
-                ContactComponent,
-                ContactActionsComponent,
-                ChunkPipe,
-            ],
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-                TestProviders.MockMatDialog(),
-                NotificationService,
-                SharedService,
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-                HttpClientTestingModule,
-                ToastrModule.forRoot(),
-                ClipboardModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [
+                    ContactsPageComponent,
+                    ContactListComponent,
+                    ContactComponent,
+                    ContactActionsComponent,
+                    ChunkPipe,
+                ],
+                providers: [
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                    TestProviders.MockMatDialog(),
+                    NotificationService,
+                    SharedService,
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                    HttpClientTestingModule,
+                    ToastrModule.forRoot(),
+                    ClipboardModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ContactsPageComponent);

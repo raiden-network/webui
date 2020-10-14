@@ -1,5 +1,5 @@
 import {
-    async,
+    waitForAsync,
     ComponentFixture,
     TestBed,
     fakeAsync,
@@ -77,32 +77,34 @@ describe('ContactListComponent', () => {
     let addressBookService: AddressBookService;
     const contacts = createTestContacts();
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                ContactListComponent,
-                ContactComponent,
-                ContactActionsComponent,
-                ChunkPipe,
-            ],
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-                TestProviders.MockMatDialog(),
-                NotificationService,
-                SharedService,
-                PaymentHistoryPollingService,
-            ],
-            imports: [
-                MaterialComponentsModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-                HttpClientTestingModule,
-                ToastrModule.forRoot(),
-                ClipboardModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [
+                    ContactListComponent,
+                    ContactComponent,
+                    ContactActionsComponent,
+                    ChunkPipe,
+                ],
+                providers: [
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                    TestProviders.MockMatDialog(),
+                    NotificationService,
+                    SharedService,
+                    PaymentHistoryPollingService,
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                    HttpClientTestingModule,
+                    ToastrModule.forRoot(),
+                    ClipboardModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ContactListComponent);

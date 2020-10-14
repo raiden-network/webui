@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {
-    async,
+    waitForAsync,
     ComponentFixture,
     fakeAsync,
     flush,
@@ -45,27 +45,29 @@ describe('AddressInputComponent', () => {
     let mockAddressBookService: AddressBookService;
     let input: HTMLInputElement;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [AddressInputComponent],
-            providers: [
-                TestProviders.MockRaidenConfigProvider(),
-                TestProviders.AddressBookStubProvider(),
-                {
-                    provide: ErrorStateMatcher,
-                    useClass: ShowOnDirtyErrorStateMatcher,
-                },
-                RaidenService,
-            ],
-            imports: [
-                MaterialComponentsModule,
-                HttpClientTestingModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-                ReactiveFormsModule,
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [AddressInputComponent],
+                providers: [
+                    TestProviders.MockRaidenConfigProvider(),
+                    TestProviders.AddressBookStubProvider(),
+                    {
+                        provide: ErrorStateMatcher,
+                        useClass: ShowOnDirtyErrorStateMatcher,
+                    },
+                    RaidenService,
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    HttpClientTestingModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                    ReactiveFormsModule,
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AddressInputComponent);

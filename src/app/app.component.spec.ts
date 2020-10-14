@@ -4,7 +4,7 @@ import {
     TestBed,
     fakeAsync,
     tick,
-    async,
+    waitForAsync,
     flush,
 } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -70,104 +70,108 @@ describe('AppComponent', () => {
     const paymentHistorySubject = new BehaviorSubject([]);
     const pendingTransfersSubject = new BehaviorSubject([]);
 
-    beforeEach(async(() => {
-        const raidenServiceMock = stub<RaidenService>();
-        networkSubject = new BehaviorSubject(createNetworkMock());
-        // @ts-ignore
-        raidenServiceMock.network$ = networkSubject.asObservable();
-        // @ts-ignore
-        raidenServiceMock.paymentInitiated$ = NEVER;
-        // @ts-ignore
-        raidenServiceMock.balance$ = of('0');
-        // @ts-ignore
-        raidenServiceMock.raidenAddress$ = of(createAddress());
-        // @ts-ignore
-        raidenServiceMock.reconnected$ = NEVER;
-        raidenServiceMock.shutdownRaiden = () => of(null);
-        raidenServiceMock.getStatus = () => of({ status: 'ready' });
-        raidenServiceMock.getUserToken = () => undefined;
-        raidenServiceMock.attemptRpcConnection = () => undefined;
+    beforeEach(
+        waitForAsync(() => {
+            const raidenServiceMock = stub<RaidenService>();
+            networkSubject = new BehaviorSubject(createNetworkMock());
+            // @ts-ignore
+            raidenServiceMock.network$ = networkSubject.asObservable();
+            // @ts-ignore
+            raidenServiceMock.paymentInitiated$ = NEVER;
+            // @ts-ignore
+            raidenServiceMock.balance$ = of('0');
+            // @ts-ignore
+            raidenServiceMock.raidenAddress$ = of(createAddress());
+            // @ts-ignore
+            raidenServiceMock.reconnected$ = NEVER;
+            raidenServiceMock.shutdownRaiden = () => of(null);
+            raidenServiceMock.getStatus = () => of({ status: 'ready' });
+            raidenServiceMock.getUserToken = () => undefined;
+            raidenServiceMock.attemptRpcConnection = () => undefined;
 
-        const pendingTransferPollingMock = stub<
-            PendingTransferPollingService
-        >();
-        // @ts-ignore
-        pendingTransferPollingMock.pendingTransfers$ = pendingTransfersSubject.asObservable();
+            const pendingTransferPollingMock = stub<
+                PendingTransferPollingService
+            >();
+            // @ts-ignore
+            pendingTransferPollingMock.pendingTransfers$ = pendingTransfersSubject.asObservable();
 
-        const paymentHistoryPollingMock = stub<PaymentHistoryPollingService>();
-        // @ts-ignore
-        paymentHistoryPollingMock.newPaymentEvents$ = paymentHistorySubject.asObservable();
+            const paymentHistoryPollingMock = stub<
+                PaymentHistoryPollingService
+            >();
+            // @ts-ignore
+            paymentHistoryPollingMock.newPaymentEvents$ = paymentHistorySubject.asObservable();
 
-        const channelPollingMock = stub<ChannelPollingService>();
-        // @ts-ignore
-        channelPollingMock.channels$ = channelsSubject.asObservable();
+            const channelPollingMock = stub<ChannelPollingService>();
+            // @ts-ignore
+            channelPollingMock.channels$ = channelsSubject.asObservable();
 
-        const tokenPollingMock = stub<TokenPollingService>();
-        // @ts-ignore
-        tokenPollingMock.tokens$ = of([]);
+            const tokenPollingMock = stub<TokenPollingService>();
+            // @ts-ignore
+            tokenPollingMock.tokens$ = of([]);
 
-        const userDepositMock = stub<UserDepositService>();
-        // @ts-ignore
-        userDepositMock.balance$ = of(new BigNumber('750000000000000000'));
-        // @ts-ignore
-        userDepositMock.servicesToken$ = of(createToken());
+            const userDepositMock = stub<UserDepositService>();
+            // @ts-ignore
+            userDepositMock.balance$ = of(new BigNumber('750000000000000000'));
+            // @ts-ignore
+            userDepositMock.servicesToken$ = of(createToken());
 
-        TestBed.configureTestingModule({
-            declarations: [
-                AppComponent,
-                NotificationPanelComponent,
-                NotificationItemComponent,
-                NavigationEntryComponent,
-                HeaderComponent,
-                SearchFieldComponent,
-                DisplayDecimalsPipe,
-                DecimalPipe,
-                BalanceWithSymbolComponent,
-                TokenNetworkSelectorComponent,
-            ],
-            providers: [
-                {
-                    provide: RaidenConfig,
-                    useClass: MockConfig,
-                },
-                {
-                    provide: RaidenService,
-                    useValue: raidenServiceMock,
-                },
-                {
-                    provide: PendingTransferPollingService,
-                    useValue: pendingTransferPollingMock,
-                },
-                {
-                    provide: PaymentHistoryPollingService,
-                    useValue: paymentHistoryPollingMock,
-                },
-                NotificationService,
-                ChannelPollingService,
-                {
-                    provide: ChannelPollingService,
-                    useValue: channelPollingMock,
-                },
-                TestProviders.MockMatDialog(),
-                SharedService,
-                TestProviders.AddressBookStubProvider(),
-                {
-                    provide: TokenPollingService,
-                    useValue: tokenPollingMock,
-                },
-                { provide: UserDepositService, useValue: userDepositMock },
-            ],
-            imports: [
-                MaterialComponentsModule,
-                RouterTestingModule,
-                HttpClientTestingModule,
-                NoopAnimationsModule,
-                RaidenIconsModule,
-                ClipboardModule,
-                ToastrModule.forRoot({ timeOut: 50, easeTime: 0 }),
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [
+                    AppComponent,
+                    NotificationPanelComponent,
+                    NotificationItemComponent,
+                    NavigationEntryComponent,
+                    HeaderComponent,
+                    SearchFieldComponent,
+                    DisplayDecimalsPipe,
+                    DecimalPipe,
+                    BalanceWithSymbolComponent,
+                    TokenNetworkSelectorComponent,
+                ],
+                providers: [
+                    {
+                        provide: RaidenConfig,
+                        useClass: MockConfig,
+                    },
+                    {
+                        provide: RaidenService,
+                        useValue: raidenServiceMock,
+                    },
+                    {
+                        provide: PendingTransferPollingService,
+                        useValue: pendingTransferPollingMock,
+                    },
+                    {
+                        provide: PaymentHistoryPollingService,
+                        useValue: paymentHistoryPollingMock,
+                    },
+                    NotificationService,
+                    ChannelPollingService,
+                    {
+                        provide: ChannelPollingService,
+                        useValue: channelPollingMock,
+                    },
+                    TestProviders.MockMatDialog(),
+                    SharedService,
+                    TestProviders.AddressBookStubProvider(),
+                    {
+                        provide: TokenPollingService,
+                        useValue: tokenPollingMock,
+                    },
+                    { provide: UserDepositService, useValue: userDepositMock },
+                ],
+                imports: [
+                    MaterialComponentsModule,
+                    RouterTestingModule,
+                    HttpClientTestingModule,
+                    NoopAnimationsModule,
+                    RaidenIconsModule,
+                    ClipboardModule,
+                    ToastrModule.forRoot({ timeOut: 50, easeTime: 0 }),
+                ],
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AppComponent);
