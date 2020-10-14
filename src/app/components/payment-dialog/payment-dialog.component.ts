@@ -22,6 +22,7 @@ export interface PaymentDialogPayload {
     tokenAddress: string;
     targetAddress: string;
     amount: BigNumber;
+    paymentIdentifier?: BigNumber;
 }
 
 @Component({
@@ -48,6 +49,7 @@ export class PaymentDialogComponent implements OnInit {
             target_address: [data.targetAddress, Validators.required],
             amount: ['', Validators.required],
             token: [data.tokenAddress, Validators.required],
+            payment_identifier: '',
         });
     }
 
@@ -55,11 +57,17 @@ export class PaymentDialogComponent implements OnInit {
 
     accept() {
         const value = this.form.value;
+        const paymentIdentifier = value['payment_identifier'];
 
         const payload: PaymentDialogPayload = {
             tokenAddress: value['token'],
             targetAddress: value['target_address'],
             amount: value['amount'],
+            paymentIdentifier:
+                BigNumber.isBigNumber(paymentIdentifier) &&
+                !paymentIdentifier.isNaN()
+                    ? paymentIdentifier
+                    : undefined,
         };
 
         this.checkPendingPayments(payload).subscribe(
@@ -94,7 +102,11 @@ export class PaymentDialogComponent implements OnInit {
                         pendingTransfer.locked_amount.isEqualTo(
                             payload.amount
                         ) &&
-                        pendingTransfer.target === payload.targetAddress
+                        pendingTransfer.target === payload.targetAddress &&
+                        (payload.paymentIdentifier?.isEqualTo(
+                            pendingTransfer.payment_identifier
+                        ) ??
+                            true)
                 );
 
                 if (samePendingPayment) {

@@ -1,0 +1,64 @@
+@import '../../../sass/fonts';
+@import '../../../sass/colors';
+
+.input {
+    z-index: 1;
+    position: relative;
+    height: 32px;
+
+    &__field {
+        border-radius: 25px;
+        background-color: $light-grey;
+        border: none;
+        box-shadow: none;
+        font-family: $main-font;
+        padding: 0 18px;
+        height: 100%;
+        font-size: 13px;
+        line-height: 15px;
+        letter-spacing: 0.35px;
+        color: $black;
+    }
+
+    &__button {
+        height: 100%;
+        margin: 0 auto;
+    }
+
+    &__icon {
+        height: 24px !important;
+        line-height: 24px;
+        color: $action-blue;
+    }
+}
+
+.info-box {
+    height: 32px;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.35px;
+
+    &__text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-left: 18px;
+        color: $red;
+    }
+}
+
+.expansion {
+    height: 15px;
+
+    &__text {
+        font-weight: 500;
+        font-size: 10px;
+        line-height: 12px;
+        color: $dark-grey;
+        vertical-align: top;
+        cursor: pointer;
+
+        &:hover {
+            color: $grey;
+        }
+    }
+}

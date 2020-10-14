@@ -114,6 +114,7 @@ describe('ContactActionsComponent', () => {
             tokenAddress: token.address,
             targetAddress: contact.address,
             amount: new BigNumber(10),
+            paymentIdentifier: undefined,
         };
         dialog.returns = () => dialogResult;
         const initiatePaymentSpy = spyOn(
@@ -136,7 +137,8 @@ describe('ContactActionsComponent', () => {
         expect(initiatePaymentSpy).toHaveBeenCalledWith(
             dialogResult.tokenAddress,
             dialogResult.targetAddress,
-            dialogResult.amount
+            dialogResult.amount,
+            dialogResult.paymentIdentifier
         );
     });
 

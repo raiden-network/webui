@@ -103,5 +103,24 @@ export class Animations {
                 ),
             ]),
         ]),
+        trigger('stretchVertically', [
+            state('in', style({ opacity: 1 })),
+            transition('void => *', [
+                style({
+                    height: 0,
+                    opacity: 0,
+                }),
+                animate('0.3s ease-in'),
+            ]),
+            transition('* => void', [
+                animate(
+                    '0.3s ease-out',
+                    style({
+                        height: 0,
+                        opacity: 0,
+                    })
+                ),
+            ]),
+        ]),
     ];
 }

@@ -143,6 +143,7 @@ describe('TokenComponent', () => {
                 tokenAddress: connectedToken.address,
                 targetAddress: createAddress(),
                 amount: new BigNumber(10),
+                paymentIdentifier: undefined,
             };
             dialog.returns = () => dialogResult;
             const initiatePaymentSpy = spyOn(
@@ -165,7 +166,8 @@ describe('TokenComponent', () => {
             expect(initiatePaymentSpy).toHaveBeenCalledWith(
                 dialogResult.tokenAddress,
                 dialogResult.targetAddress,
-                dialogResult.amount
+                dialogResult.amount,
+                dialogResult.paymentIdentifier
             );
         });
 
@@ -258,6 +260,7 @@ describe('TokenComponent', () => {
                 tokenAddress: connectedToken.address,
                 targetAddress: createAddress(),
                 amount: new BigNumber(10),
+                paymentIdentifier: undefined,
             };
             dialog.returns = () => dialogResult;
             const initiatePaymentSpy = spyOn(
@@ -280,7 +283,8 @@ describe('TokenComponent', () => {
             expect(initiatePaymentSpy).toHaveBeenCalledWith(
                 dialogResult.tokenAddress,
                 dialogResult.targetAddress,
-                dialogResult.amount
+                dialogResult.amount,
+                dialogResult.paymentIdentifier
             );
         });
 

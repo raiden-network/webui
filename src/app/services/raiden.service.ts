@@ -153,14 +153,6 @@ export class RaidenService {
         return this._raidenAddress;
     }
 
-    // noinspection JSMethodCanBeStatic
-    get identifier(): number {
-        return (
-            Math.floor(Date.now() / 1000) * 1000 +
-            Math.floor(Math.random() * 1000)
-        );
-    }
-
     public getVersion(): Observable<string> {
         return this.http
             .get<{ version: string }>(`${this.raidenConfig.api}/version`)
@@ -376,9 +368,8 @@ export class RaidenService {
         amount: BigNumber,
         paymentIdentifier?: BigNumber
     ): Observable<void> {
-        const identifier = paymentIdentifier
-            ? paymentIdentifier
-            : this.identifier;
+        const identifier =
+            paymentIdentifier ?? this.generatePaymentIdentifier();
         const token = this.getUserToken(tokenAddress);
         const targetLabel = this.getContactLabel(targetAddress);
 
@@ -933,5 +924,12 @@ export class RaidenService {
             contactLabel = '';
         }
         return contactLabel;
+    }
+
+    private generatePaymentIdentifier(): number {
+        return (
+            Math.floor(Date.now() / 1000) * 1000 +
+            Math.floor(Math.random() * 1000)
+        );
     }
 }

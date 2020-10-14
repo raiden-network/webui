@@ -114,7 +114,8 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
                     return this.raidenService.initiatePayment(
                         result.tokenAddress,
                         result.targetAddress,
-                        result.amount
+                        result.amount,
+                        result.paymentIdentifier
                     );
                 })
             )

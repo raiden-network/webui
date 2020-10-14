@@ -63,6 +63,7 @@ import { ChunkPipe } from './pipes/chunk.pipe';
 import { SetHeadersInterceptor } from './interceptors/set-headers.interceptor';
 import { BalanceWithSymbolComponent } from './components/balance-with-symbol/balance-with-symbol.component';
 import { AddressIdenticonComponent } from './components/address-identicon/address-identicon.component';
+import { PaymentIdentifierInputComponent } from './components/payment-identifier-input/payment-identifier-input.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -118,6 +119,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ChunkPipe,
         BalanceWithSymbolComponent,
         AddressIdenticonComponent,
+        PaymentIdentifierInputComponent,
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

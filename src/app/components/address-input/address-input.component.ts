@@ -48,7 +48,7 @@ import { matchesContact } from '../../shared/keyword-matcher';
     selector: 'app-address-input',
     templateUrl: './address-input.component.html',
     styleUrls: ['./address-input.component.scss'],
-    animations: Animations.fallDown,
+    animations: [...Animations.fallDown, ...Animations.stretchInOut],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -70,7 +70,7 @@ export class AddressInputComponent
     @ViewChild('input', { static: true }) private inputElement: ElementRef;
 
     address = '';
-    errors: ValidationErrors | null = { empty: true };
+    errors: ValidationErrors = { empty: true };
     touched = false;
     searching = false;
     filteredOptions$: Observable<Contact[]>;

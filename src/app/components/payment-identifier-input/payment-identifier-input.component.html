@@ -1,0 +1,54 @@
+<div *ngIf="showInputField" [@stretchVertically]="'in'">
+    <div class="input" fxLayout="row" fxLayoutAlign="start center">
+        <input
+            placeholder="Identifier"
+            aria-label="Identifier input"
+            class="input__field"
+            type="text"
+            (input)="onChange()"
+            (focus)="onTouched()"
+            fxFlex="0 1 226px"
+            #input
+        />
+
+        <button
+            *ngIf="clipboardApiSupported()"
+            class="input__button"
+            mat-icon-button
+            matTooltip="Paste identifier from clipboard"
+            (click)="onPaste()"
+        >
+            <mat-icon
+                class="input__icon"
+                svgIcon="paste"
+                aria-label="Paste identifier from clipboard"
+            >
+            </mat-icon>
+        </button>
+    </div>
+
+    <div class="info-box" fxLayout="column" fxLayoutAlign="center">
+        <span
+            *ngIf="errors && touched && input.value.length > 0"
+            [@fallDown]="'in'"
+            class="info-box__text"
+        >
+            <span *ngIf="errors['notANumber']">
+                The identifier should be a number
+            </span>
+            <span *ngIf="errors['negativeIdentifier']">
+                The identifier should be a positive number
+            </span>
+        </span>
+    </div>
+</div>
+
+<div class="expansion">
+    <span
+        class="expansion__text"
+        (click)="toggleInputField()"
+        id="show-identifier"
+    >
+        {{ showInputField ? '-' : '+' }} Identifier
+    </span>
+</div>
