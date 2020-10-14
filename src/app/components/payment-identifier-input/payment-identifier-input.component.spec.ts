@@ -11,6 +11,7 @@ import { MaterialComponentsModule } from '../../modules/material-components/mate
 import { mockInput, clickElement } from '../../../testing/interaction-helper';
 import { RaidenIconsModule } from 'app/modules/raiden-icons/raiden-icons.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import BigNumber from 'bignumber.js';
 
 describe('PaymentIdentifierInputComponent', () => {
     let component: PaymentIdentifierInputComponent;
@@ -83,6 +84,14 @@ describe('PaymentIdentifierInputComponent', () => {
         expect(component.errors['negativeIdentifier']).toBe(true);
     });
 
+    it('should show an error when input value has decimal places', () => {
+        clickElement(fixture.debugElement, '#toggle-identifier');
+        fixture.detectChanges();
+        mockInput(fixture.debugElement, 'input', '0.03');
+        fixture.detectChanges();
+
+        expect(component.errors['decimalValue']).toBe(true);
+    });
     it('should reset the input when it is closed', () => {
         clickElement(fixture.debugElement, '#toggle-identifier');
         fixture.detectChanges();
@@ -94,5 +103,14 @@ describe('PaymentIdentifierInputComponent', () => {
         const inputElement = fixture.debugElement.query(By.css('input'));
         expect(inputElement).toBeFalsy();
         expect(component.identifier.isNaN()).toBe(true);
+    });
+
+    it('should be able to set a value programmatically', () => {
+        const value = '9999999999';
+        component.writeValue(value);
+        fixture.detectChanges();
+
+        expect(component.identifier).toEqual(new BigNumber(value));
+        expect(component.errors).toBeFalsy();
     });
 });

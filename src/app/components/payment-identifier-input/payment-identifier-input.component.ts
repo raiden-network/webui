@@ -1,4 +1,10 @@
-import { Component, ElementRef, forwardRef, ViewChild } from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    forwardRef,
+    ViewChild,
+} from '@angular/core';
 import {
     ControlValueAccessor,
     AbstractControl,
@@ -40,7 +46,7 @@ export class PaymentIdentifierInputComponent
     private propagateTouched = () => {};
     private propagateChange = (amount: BigNumber) => {};
 
-    constructor() {}
+    constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
     registerOnChange(fn: any) {
         this.propagateChange = fn;
@@ -53,6 +59,10 @@ export class PaymentIdentifierInputComponent
     writeValue(obj: any) {
         if (!obj || typeof obj !== 'string') {
             return;
+        }
+        if (!this.showInputField) {
+            this.showInputField = true;
+            this.changeDetectorRef.detectChanges();
         }
         this.inputElement.nativeElement.value = obj;
         this.onChange();
@@ -79,6 +89,10 @@ export class PaymentIdentifierInputComponent
             this.errors = {
                 negativeIdentifier: true,
             };
+        } else if (this.identifier.decimalPlaces() > 0) {
+            this.errors = {
+                decimalValue: true,
+            };
         } else {
             this.errors = undefined;
         }
@@ -99,10 +113,12 @@ export class PaymentIdentifierInputComponent
         this.onChange();
     }
 
+    /* istanbul ignore next */
     clipboardApiSupported() {
         return window.navigator.clipboard?.readText;
     }
 
+    /* istanbul ignore next */
     async onPaste() {
         const value = await window.navigator.clipboard.readText();
         this.inputElement.nativeElement.value = value;
