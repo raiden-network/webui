@@ -32,6 +32,7 @@
             *ngIf="errors && touched && input.value.length > 0"
             [@fallDown]="'in'"
             class="info-box__text"
+            id="errors"
         >
             <span *ngIf="errors['notANumber']">
                 The identifier should be a number
@@ -47,7 +48,7 @@
     <span
         class="expansion__text"
         (click)="toggleInputField()"
-        id="show-identifier"
+        id="toggle-identifier"
     >
         {{ showInputField ? '-' : '+' }} Identifier
     </span>

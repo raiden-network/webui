@@ -41,6 +41,7 @@ import { Contacts } from '../../models/contact';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 import { ClipboardModule } from 'ngx-clipboard';
+import { PaymentIdentifierInputComponent } from '../payment-identifier-input/payment-identifier-input.component';
 
 describe('PaymentDialogComponent', () => {
     let component: PaymentDialogComponent;
@@ -58,11 +59,13 @@ describe('PaymentDialogComponent', () => {
     });
     const addressInput = createAddress();
     const amountInput = '10';
+    const identifierInput = '543210';
     const pendingTransfer = createPendingTransfer();
     const identicalPendingTransfer = createPendingTransfer({
         target: addressInput,
         token_address: token.address,
         locked_amount: new BigNumber(amountInput),
+        payment_identifier: new BigNumber(identifierInput),
     });
 
     function mockAllInputs() {
@@ -75,6 +78,16 @@ describe('PaymentDialogComponent', () => {
             fixture.debugElement.query(By.directive(TokenInputComponent)),
             'input',
             amountInput
+        );
+
+        clickElement(fixture.debugElement, '#toggle-identifier');
+        fixture.detectChanges();
+        mockInput(
+            fixture.debugElement.query(
+                By.directive(PaymentIdentifierInputComponent)
+            ),
+            'input',
+            identifierInput
         );
 
         const networkSelectorElement = fixture.debugElement.query(
@@ -111,6 +124,7 @@ describe('PaymentDialogComponent', () => {
                 TokenNetworkSelectorComponent,
                 RaidenDialogComponent,
                 BalanceWithSymbolComponent,
+                PaymentIdentifierInputComponent,
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
@@ -165,6 +179,7 @@ describe('PaymentDialogComponent', () => {
             tokenAddress: token.address,
             targetAddress: addressInput,
             amount: new BigNumber(amountInput),
+            paymentIdentifier: new BigNumber(identifierInput),
         });
     });
 
@@ -207,6 +222,7 @@ describe('PaymentDialogComponent', () => {
             tokenAddress: token.address,
             targetAddress: addressInput,
             amount: new BigNumber(amountInput),
+            paymentIdentifier: new BigNumber(identifierInput),
         });
     });
 
