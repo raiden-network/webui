@@ -17,6 +17,7 @@
             mat-icon-button
             matTooltip="Paste identifier from clipboard"
             (click)="onPaste()"
+            id="paste"
         >
             <mat-icon
                 class="input__icon"
@@ -39,6 +40,9 @@
             </span>
             <span *ngIf="errors['negativeIdentifier']">
                 The identifier should be a positive number
+            </span>
+            <span *ngIf="errors['decimalValue']">
+                The identifier should be an integer value
             </span>
         </span>
     </div>
