@@ -35,6 +35,7 @@ export class RaidenIconsModule {
         'notification-with-badge',
         'user',
         'down-arrow',
+        'paste',
     ];
 
     constructor(

@@ -222,7 +222,7 @@ body {
 }
 
 .mat-select-placeholder {
-    color: $placeholder-grey !important;
+    color: $dark-grey !important;
 }
 
 .mat-select-panel,
@@ -248,7 +248,7 @@ body {
 
 ::placeholder,
 ::-webkit-input-placeholder {
-    color: $placeholder-grey;
+    color: $dark-grey;
     opacity: 1;
 }
 
