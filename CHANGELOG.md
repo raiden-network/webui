@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- [#345] Adds the input field for a payment identifier to the transfer dialog again (was removed in the redesign).
 
 ## [1.0.2] - 2020-07-14
 ### Added
@@ -179,6 +181,7 @@ token network.
 [#475]: https://github.com/raiden-network/webui/issues/475
 [#432]: https://github.com/raiden-network/webui/issues/432
 [#389]: https://github.com/raiden-network/webui/issues/389
+[#345]: https://github.com/raiden-network/webui/issues/345
 [#341]: https://github.com/raiden-network/webui/issues/341
 [#339]: https://github.com/raiden-network/webui/issues/339
 [#297]: https://github.com/raiden-network/webui/issues/297
