@@ -80,16 +80,6 @@ describe('PaymentDialogComponent', () => {
             amountInput
         );
 
-        clickElement(fixture.debugElement, '#toggle-identifier');
-        fixture.detectChanges();
-        mockInput(
-            fixture.debugElement.query(
-                By.directive(PaymentIdentifierInputComponent)
-            ),
-            'input',
-            identifierInput
-        );
-
         const networkSelectorElement = fixture.debugElement.query(
             By.directive(TokenNetworkSelectorComponent)
         );
@@ -97,6 +87,18 @@ describe('PaymentDialogComponent', () => {
         fixture.detectChanges();
         mockMatSelectFirst(fixture.debugElement);
         fixture.detectChanges();
+    }
+
+    function mockPaymentIdentifier(value = identifierInput) {
+        clickElement(fixture.debugElement, '#toggle-identifier');
+        fixture.detectChanges();
+        mockInput(
+            fixture.debugElement.query(
+                By.directive(PaymentIdentifierInputComponent)
+            ),
+            'input',
+            value
+        );
     }
 
     beforeEach(async(() => {
@@ -179,6 +181,23 @@ describe('PaymentDialogComponent', () => {
             tokenAddress: token.address,
             targetAddress: addressInput,
             amount: new BigNumber(amountInput),
+            paymentIdentifier: undefined,
+        });
+    });
+
+    it('should include the payment identifier in the result', () => {
+        mockAllInputs();
+        mockPaymentIdentifier();
+        // @ts-ignore
+        const closeSpy = spyOn(component.dialogRef, 'close');
+        clickElement(fixture.debugElement, '#accept');
+        fixture.detectChanges();
+
+        expect(closeSpy).toHaveBeenCalledTimes(1);
+        expect(closeSpy).toHaveBeenCalledWith({
+            tokenAddress: token.address,
+            targetAddress: addressInput,
+            amount: new BigNumber(amountInput),
             paymentIdentifier: new BigNumber(identifierInput),
         });
     });
@@ -203,6 +222,7 @@ describe('PaymentDialogComponent', () => {
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         mockAllInputs();
+        mockPaymentIdentifier();
         // @ts-ignore
         const close = spyOn(component.dialogRef, 'close');
         clickElement(fixture.debugElement, '#accept');
@@ -271,5 +291,31 @@ describe('PaymentDialogComponent', () => {
 
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(close).toHaveBeenCalledTimes(0);
+    });
+
+    it('should not open the confirmation dialog if the identifier is different on the pending payment', () => {
+        // @ts-ignore
+        pendingTransferPollingService.pendingTransfers$ = of([
+            identicalPendingTransfer,
+        ]);
+        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+
+        const differentIdentifier = pendingTransfer.payment_identifier.plus(1);
+        mockAllInputs();
+        mockPaymentIdentifier(differentIdentifier.toString());
+        // @ts-ignore
+        const closeSpy = spyOn(component.dialogRef, 'close');
+        clickElement(fixture.debugElement, '#accept');
+        fixture.detectChanges();
+
+        expect(dialogSpy).toHaveBeenCalledTimes(0);
+        expect(closeSpy).toHaveBeenCalledTimes(1);
+        expect(closeSpy).toHaveBeenCalledWith({
+            tokenAddress: token.address,
+            targetAddress: addressInput,
+            amount: new BigNumber(amountInput),
+            paymentIdentifier: differentIdentifier,
+        });
     });
 });
