@@ -5,7 +5,7 @@ import { AddressBookService } from '../../services/address-book.service';
 @Component({
     selector: 'app-address-identicon',
     templateUrl: './address-identicon.component.html',
-    styleUrls: ['./address-identicon.component.css'],
+    styleUrls: ['./address-identicon.component.scss'],
 })
 export class AddressIdenticonComponent implements OnInit {
     @Input() address: string;

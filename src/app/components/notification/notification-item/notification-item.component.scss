@@ -18,41 +18,41 @@
 
 .content {
     overflow-x: hidden;
-}
 
-.content__title {
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    opacity: 0.7;
-}
+    &__title {
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        opacity: 0.7;
+    }
 
-.content__description {
-    font-size: 16px;
-    line-height: 19px;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-}
+    &__description {
+        font-size: 16px;
+        line-height: 19px;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+    }
 
-.content__date {
-    opacity: 0.7;
+    &__date {
+        opacity: 0.7;
+    }
 }
 
 .side {
     width: 32px;
+
+    &__token-symbol {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: $black;
+    }
 }
 
 .remove {
     margin-top: -8px;
-}
 
-.remove__icon {
-    width: 16px !important;
-    height: 16px !important;
-}
-
-.side__token-symbol {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: $black;
+    &__icon {
+        width: 16px !important;
+        height: 16px !important;
+    }
 }

@@ -11,10 +11,10 @@
     border-radius: 15px;
     padding: 12px 20px 22px 20px;
     height: 100%;
-}
 
-.history--mobile {
-    min-height: 340px;
+    &--mobile {
+        min-height: 340px;
+    }
 }
 
 .label {
@@ -24,70 +24,72 @@
     letter-spacing: 1px;
     text-transform: uppercase;
     opacity: 0.75;
+
+    &__link {
+        text-decoration: underline;
+        text-transform: capitalize;
+        color: $white;
+    }
 }
 
-.label__link {
-    text-decoration: underline;
-    text-transform: capitalize;
-    color: $white;
-}
+.table {
+    &__row {
+        padding-bottom: 12px;
+        border-bottom: 1px solid $light-divider;
 
-.table__row {
-    padding-bottom: 12px;
-    border-bottom: 1px solid $light-divider;
-}
+        &:last-child {
+            padding: 0;
+            border: none;
+        }
+    }
 
-.table__row:last-child {
-    padding: 0;
-    border: none;
-}
+    &__main {
+        max-width: 200px;
+        height: 41px;
+    }
 
-.table__main {
-    max-width: 200px;
-    height: 41px;
-}
+    &__partner {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-.table__partner {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+    &__date {
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 14px;
+        text-transform: uppercase;
+        opacity: 0.5;
+        margin-top: 4px;
+    }
 
-.table__date {
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 14px;
-    text-transform: uppercase;
-    opacity: 0.5;
-    margin-top: 4px;
-}
+    &__amount {
+        text-align: right;
+        font-weight: 700;
+    }
 
-.table__amount {
-    text-align: right;
-    font-weight: 700;
-}
+    &__label {
+        text-transform: uppercase;
+        border-radius: 9px;
+        padding: 0 12px;
+        font-size: 10px;
+        line-height: 18px;
+        letter-spacing: 0.5px;
+        text-align: center;
+        background-color: $bg-label-green;
+        color: $label-green;
+        margin-top: 4px;
 
-.table__label {
-    text-transform: uppercase;
-    border-radius: 9px;
-    padding: 0 12px;
-    font-size: 10px;
-    line-height: 18px;
-    letter-spacing: 0.5px;
-    text-align: center;
-    background-color: $bg-label-green;
-    color: $label-green;
-    margin-top: 4px;
-}
+        &--pending {
+            background-color: $bg-label-yellow;
+            color: $label-yellow;
+        }
 
-.table__label--pending {
-    background-color: $bg-label-yellow;
-    color: $label-yellow;
-}
-
-.table__label--failed {
-    background-color: $bg-label-red;
-    color: $label-red;
+        &--failed {
+            background-color: $bg-label-red;
+            color: $label-red;
+        }
+    }
 }
 
 .icon-box {
@@ -95,18 +97,20 @@
     height: 35px;
     border-radius: 50%;
     background-color: #414141;
+
+    &__icon {
+        color: $black;
+        width: 14px;
+    }
 }
 
-.icon-box__icon {
-    color: $black;
-    width: 14px;
-}
+.navigation {
+    &:disabled {
+        border: none;
+    }
 
-.navigation:disabled {
-    border: none;
-}
-
-.navigation__icon {
-    height: 100% !important;
-    width: unset !important;
+    &__icon {
+        height: 100% !important;
+        width: unset !important;
+    }
 }

@@ -34,7 +34,7 @@ import { TokenPollingService } from '../../../services/token-polling.service';
 @Component({
     selector: 'app-contact-actions',
     templateUrl: './contact-actions.component.html',
-    styleUrls: ['./contact-actions.component.css'],
+    styleUrls: ['./contact-actions.component.scss'],
 })
 export class ContactActionsComponent implements OnInit, OnDestroy {
     @Input() contact: Contact;

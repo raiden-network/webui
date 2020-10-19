@@ -5,17 +5,17 @@
     border-radius: 15px;
     background-color: $bg-grey;
     padding: 17px;
-}
 
-.card--transparent {
-    background: none;
-    border: 1px solid $bg-grey;
-    color: #c4c4c4;
-}
+    &--transparent {
+        background: none;
+        border: 1px solid $bg-grey;
+        color: #c4c4c4;
+    }
 
-.card__top {
-    width: 100%;
-    position: relative;
+    &__top {
+        width: 100%;
+        position: relative;
+    }
 }
 
 .options-button {
@@ -32,19 +32,21 @@
     opacity: 0.17;
 }
 
-.info__state {
-    font-size: 9px;
-    line-height: 11px;
-    text-transform: uppercase;
-    color: $orange;
-}
+.info {
+    &__state {
+        font-size: 9px;
+        line-height: 11px;
+        text-transform: uppercase;
+        color: $orange;
+    }
 
-.info__balance {
-    font-size: 15px;
-    line-height: 18px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    &__balance {
+        font-size: 15px;
+        line-height: 18px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .label {

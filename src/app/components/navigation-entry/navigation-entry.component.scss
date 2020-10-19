@@ -16,15 +16,15 @@
     border-radius: 15px !important;
     font-weight: 400 !important;
     background: none;
+
+    &__icon {
+        width: 24px;
+        margin-right: 14px;
+    }
 }
 
 .active {
     opacity: 1;
     font-weight: 500;
     background-color: $bg-dark-grey;
-}
-
-.entry__icon {
-    width: 24px;
-    margin-right: 14px;
 }

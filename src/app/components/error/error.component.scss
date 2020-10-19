@@ -29,32 +29,32 @@
     text-align: center;
     opacity: 0.65;
     overflow: hidden;
-}
 
-.content__text {
-    min-height: 30px;
-    max-height: 200px;
-    overflow-y: auto;
-    overflow-wrap: break-word;
+    &__text {
+        min-height: 30px;
+        max-height: 200px;
+        overflow-y: auto;
+        overflow-wrap: break-word;
+    }
 }
 
 .actions {
     height: 40px;
     width: 68%;
-}
 
-.actions__button {
-    height: 100%;
-    width: 140px;
-    font-size: 13px;
-    line-height: 15px;
-}
+    &__button {
+        height: 100%;
+        width: 140px;
+        font-size: 13px;
+        line-height: 15px;
 
-.actions__button--white {
-    border: 2px solid $black;
-    background: none;
-}
+        &--white {
+            border: 2px solid $black;
+            background: none;
+        }
 
-.actions__button--black {
-    color: $white;
+        --black {
+            color: $white;
+        }
+    }
 }

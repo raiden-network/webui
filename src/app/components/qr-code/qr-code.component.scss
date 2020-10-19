@@ -15,12 +15,12 @@
     width: 100%;
     height: 32px;
     padding: 0 18px;
-}
 
-.address-field__content {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    &__content {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .close-button {
