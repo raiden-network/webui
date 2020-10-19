@@ -5,38 +5,38 @@
     z-index: 1;
     position: relative;
     height: 32px;
-}
 
-.input--contact {
-    margin-top: 20px;
-}
+    &--contact {
+        margin-top: 20px;
+    }
 
-.input__field {
-    border-radius: 25px;
-    background-color: $light-grey;
-    border: none;
-    box-shadow: none;
-    font-family: $main-font;
-    padding: 0 18px;
-    height: 100%;
-    font-size: 13px;
-    line-height: 15px;
-    letter-spacing: 0.35px;
-    color: $black;
-}
+    &__field {
+        border-radius: 25px;
+        background-color: $light-grey;
+        border: none;
+        box-shadow: none;
+        font-family: $main-font;
+        padding: 0 18px;
+        height: 100%;
+        font-size: 13px;
+        line-height: 15px;
+        letter-spacing: 0.35px;
+        color: $black;
 
-.input__field:disabled {
-    color: $text-grey;
+        &:disabled {
+            color: $text-grey;
+        }
+    }
 }
 
 .icon-box {
     height: 100%;
     margin: 0 auto;
-}
 
-.icon-box__identicon {
-    border-radius: 50%;
-    height: 100%;
+    &__identicon {
+        border-radius: 50%;
+        height: 100%;
+    }
 }
 
 .info-box {
@@ -44,25 +44,25 @@
     font-size: 13px;
     line-height: 15px;
     letter-spacing: 0.35px;
-}
 
-.info-box__text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-left: 18px;
-}
+    &__text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-left: 18px;
 
-.info-box__text--error {
-    color: $red;
-}
+        &--error {
+            color: $red;
+        }
 
-.info-box__text--clickable {
-    color: $action-blue;
-    cursor: pointer;
-}
+        &--clickable {
+            color: $action-blue;
+            cursor: pointer;
 
-.info-box__text--clickable:hover {
-    color: $action-light-blue;
+            &:hover {
+                color: $action-light-blue;
+            }
+        }
+    }
 }
 
 .options {

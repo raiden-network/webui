@@ -28,38 +28,38 @@
 .section {
     font-size: 16px;
     line-height: 25px;
-}
 
-.section__descriptor {
-    font-weight: 500;
-}
+    &__descriptor {
+        font-weight: 500;
+    }
 
-.section__text {
-    margin-top: 0;
-}
+    &__text {
+        margin-top: 0;
 
-.section__text--small {
-    font-size: 13px;
-}
+        &--small {
+            font-size: 13px;
+        }
+    }
 
-.section__box {
-    height: 100px;
-    padding: 22px 39px;
-    background-color: $bg-dark-grey;
-    border-radius: 20px;
-}
+    &__box {
+        height: 100px;
+        padding: 22px 39px;
+        background-color: $bg-dark-grey;
+        border-radius: 20px;
+    }
 
-.section__version {
-    opacity: 0.51;
-    font-family: $mono-font;
-}
+    &__version {
+        opacity: 0.51;
+        font-family: $mono-font;
+    }
 
-.section__icon {
-    height: 20px;
-    width: 20px;
-    line-height: 20px;
-}
+    &__icon {
+        height: 20px;
+        width: 20px;
+        line-height: 20px;
+    }
 
-.section__box-offset {
-    margin-top: 22px;
+    &__box-offset {
+        margin-top: 22px;
+    }
 }

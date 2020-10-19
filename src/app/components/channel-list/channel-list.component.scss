@@ -30,27 +30,27 @@
     margin-right: 22px;
     margin-bottom: 22px;
     min-height: 259px;
-}
 
-.channels__items {
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin-right: 22px;
+    &__items {
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin-right: 22px;
+    }
 }
 
 .action {
     padding: 0 20px !important;
     background-color: $bg-grey;
-}
 
-.action__icon {
-    height: 20px;
-    line-height: 20px;
-    margin-right: 7px;
+    &__icon {
+        height: 20px;
+        line-height: 20px;
+        margin-right: 7px;
+    }
 }
 
 .network-selector {

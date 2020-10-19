@@ -4,27 +4,27 @@
 .input {
     z-index: 1;
     position: relative;
-}
 
-.input__field {
-    border-radius: 25px;
-    background-color: $light-grey;
-    border: none;
-    box-shadow: none;
-    font-family: $main-font;
-    padding: 0 18px;
-    height: 32px;
-    font-size: 13px;
-    line-height: 15px;
-    letter-spacing: 0.35px;
-    color: $black;
-}
+    &__field {
+        border-radius: 25px;
+        background-color: $light-grey;
+        border: none;
+        box-shadow: none;
+        font-family: $main-font;
+        padding: 0 18px;
+        height: 32px;
+        font-size: 13px;
+        line-height: 15px;
+        letter-spacing: 0.35px;
+        color: $black;
+    }
 
-.input__symbol {
-    margin: 0 auto;
-    font-size: 13px;
-    line-height: 15px;
-    letter-spacing: 0.35px;
+    &__symbol {
+        margin: 0 auto;
+        font-size: 13px;
+        line-height: 15px;
+        letter-spacing: 0.35px;
+    }
 }
 
 .info-box {
@@ -32,32 +32,32 @@
     font-size: 13px;
     line-height: 15px;
     letter-spacing: 0.35px;
-}
 
-.info-box__text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-left: 18px;
-}
+    &__text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-left: 18px;
 
-.info-box__text--error {
-    color: $red;
-}
+        &--error {
+            color: $red;
+        }
+    }
 
-.info-box__max-button {
-    color: $action-blue;
-    cursor: pointer;
-}
+    &__max-button {
+        color: $action-blue;
+        cursor: pointer;
 
-.info-box__max-button:hover {
-    color: $action-light-blue;
+        &:hover {
+            color: $action-light-blue;
+        }
+    }
 }
 
 .info-link {
     color: $action-blue;
     text-decoration: none;
-}
 
-.info-link:hover {
-    color: $action-light-blue;
+    &:hover {
+        color: $action-light-blue;
+    }
 }

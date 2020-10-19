@@ -137,22 +137,22 @@ body {
     box-shadow: none !important;
 }
 
+.mat-icon-button {
+    height: 32px !important;
+    width: 32px !important;
+    line-height: 32px !important;
+
+    .mat-icon {
+        height: 22px !important;
+    }
+}
+
 .mat-flat-button:disabled,
 .mat-icon-button:disabled {
     border: 2px solid $dark-grey;
     color: $dark-grey !important;
     opacity: 0.32;
     background: none !important;
-}
-
-.mat-icon-button {
-    height: 32px !important;
-    width: 32px !important;
-    line-height: 32px !important;
-}
-
-.mat-icon-button .mat-icon {
-    height: 22px !important;
 }
 
 .mat-tooltip {
@@ -239,11 +239,11 @@ body {
 
 .mat-select-panel--dark {
     background-color: $black !important;
-}
 
-.mat-select-panel--dark .mat-option {
-    background: none !important;
-    color: $white !important;
+    .mat-option {
+        background: none !important;
+        color: $white !important;
+    }
 }
 
 ::placeholder,
@@ -263,15 +263,17 @@ body {
 
 .mat-option-text > span {
     margin-left: 22px;
+
+    &:first-child {
+        margin-left: 0;
+    }
 }
 
-.mat-option-text > span:first-child {
-    margin-left: 0;
-}
-
-.token-option > .mat-option-text > span:first-child,
-.token-option > .mat-option-text > span:last-child {
-    opacity: 0.5;
+.token-option > .mat-option-text > span {
+    &:first-child,
+    &:last-child {
+        opacity: 0.5;
+    }
 }
 
 .contact-option > .mat-option-text > span:last-child {

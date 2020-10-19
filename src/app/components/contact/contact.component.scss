@@ -8,10 +8,10 @@
     font-size: 16px;
     line-height: 19px;
     cursor: pointer;
-}
 
-.card--mobile {
-    padding: 0 15px;
+    &--mobile {
+        padding: 0 15px;
+    }
 }
 
 .contact {
@@ -21,13 +21,13 @@
 .contact-info {
     overflow: hidden;
     width: 100%;
-}
 
-.contact-info__label {
-    color: $white;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    &__label {
+        color: $white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .card__go-icon {

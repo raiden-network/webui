@@ -16,7 +16,7 @@ export interface ConnectionManagerDialogPayload {
 @Component({
     selector: 'app-join-dialog',
     templateUrl: './connection-manager-dialog.component.html',
-    styleUrls: ['./connection-manager-dialog.component.css'],
+    styleUrls: ['./connection-manager-dialog.component.scss'],
 })
 export class ConnectionManagerDialogComponent implements OnInit, OnDestroy {
     @ViewChild(TokenInputComponent, { static: true })
