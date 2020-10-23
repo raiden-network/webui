@@ -37,6 +37,7 @@ import { ErrorHandlingInterceptor } from '../interceptors/error-handling.interce
 import { PaymentEvent } from '../models/payment-event';
 import { MockConfig } from '../../testing/mock-config';
 import { TokenInfo } from '../models/usertoken';
+import { Settings } from '../models/settings';
 
 describe('RaidenService', () => {
     const token = createToken();
@@ -1556,6 +1557,26 @@ describe('RaidenService', () => {
         });
 
         request.flush(contractsInfo, {
+            status: 200,
+            statusText: '',
+        });
+    });
+
+    it('should return the settings', () => {
+        const settings: Settings = {
+            pathfinding_service_address:
+                'https://pfs.demo001.env.raiden.network',
+        };
+        service
+            .getSettings()
+            .subscribe((value) => expect(value).toEqual(settings));
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/settings`,
+            method: 'GET',
+        });
+
+        request.flush(settings, {
             status: 200,
             statusText: '',
         });
