@@ -1581,4 +1581,21 @@ describe('RaidenService', () => {
             statusText: '',
         });
     });
+
+    it('should return the token network address for a token', () => {
+        const tokenNetworkAddress = createAddress();
+        service
+            .getTokenNetworkAddress(token.address)
+            .subscribe((value) => expect(value).toEqual(tokenNetworkAddress));
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/tokens/${token.address}`,
+            method: 'GET',
+        });
+
+        request.flush(`"${tokenNetworkAddress}"`, {
+            status: 200,
+            statusText: '',
+        });
+    });
 });
