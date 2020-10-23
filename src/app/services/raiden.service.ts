@@ -52,6 +52,7 @@ import { UiMessage } from '../models/notification';
 import { AddressBookService } from './address-book.service';
 import { Status } from '../models/status';
 import { ContractsInfo } from '../models/contracts-info';
+import { Settings } from '../models/settings';
 
 interface PendingChannelsMap {
     [tokenAddress: string]: { [partnerAddress: string]: Channel };
@@ -865,6 +866,10 @@ export class RaidenService {
         return this.http.get<ContractsInfo>(
             `${this.raidenConfig.api}/contracts`
         );
+    }
+
+    public getSettings(): Observable<Settings> {
+        return this.http.get<Settings>(`${this.raidenConfig.api}/settings`);
     }
 
     public getUserToken(tokenAddress: string): UserToken | null {
