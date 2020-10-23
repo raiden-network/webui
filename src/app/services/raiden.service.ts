@@ -872,6 +872,12 @@ export class RaidenService {
         return this.http.get<Settings>(`${this.raidenConfig.api}/settings`);
     }
 
+    public getTokenNetworkAddress(tokenAddress: string): Observable<string> {
+        return this.http.get<string>(
+            `${this.raidenConfig.api}/tokens/${tokenAddress}`
+        );
+    }
+
     public getUserToken(tokenAddress: string): UserToken | null {
         return this.userTokens[tokenAddress];
     }
