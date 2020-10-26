@@ -14,6 +14,7 @@ import { DecimalPipe } from '../../pipes/decimal.pipe';
 import { DisplayDecimalsPipe } from '../../pipes/display-decimals.pipe';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 import { ClipboardModule } from 'ngx-clipboard';
+import { amountToDecimal } from 'app/utils/amount.converter';
 
 describe('TokenInputComponent', () => {
     let component: TokenInputComponent;
@@ -134,12 +135,24 @@ describe('TokenInputComponent', () => {
         expect(component.errors['tooManyDecimals']).toBe(true);
     });
 
-    it('should be able to set a value programmatically', () => {
+    it('should be able to set a string value programmatically', () => {
         component.writeValue('0.00003');
         fixture.detectChanges();
 
         expect(input.value).toBe('0.00003');
         expect(component.amount.isEqualTo(30000000000000)).toBe(true);
+        expect(component.errors).toBeFalsy();
+    });
+
+    it('should be able to set a BigNumber value programmatically', () => {
+        const value = new BigNumber(500000000000000);
+        component.writeValue(value);
+        fixture.detectChanges();
+
+        expect(input.value).toBe(
+            amountToDecimal(value, token.decimals).toFixed()
+        );
+        expect(component.amount.isEqualTo(value)).toBe(true);
         expect(component.errors).toBeFalsy();
     });
 
