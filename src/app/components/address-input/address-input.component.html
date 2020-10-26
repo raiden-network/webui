@@ -32,7 +32,12 @@
         </div>
     </mat-autocomplete>
 
-    <div class="icon-box" *ngIf="displayIdenticon">
+    <div
+        fxFlex="0 1 80px"
+        fxLayoutAlign="center"
+        class="icon-box"
+        *ngIf="displayIdenticon"
+    >
         <img
             class="icon-box__identicon"
             *ngIf="address; else placeholder"

@@ -36,6 +36,7 @@ export class RaidenIconsModule {
         'user',
         'down-arrow',
         'paste',
+        'help',
     ];
 
     constructor(
