@@ -91,11 +91,16 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     }
 
     writeValue(obj: any) {
-        if (!obj || typeof obj !== 'string') {
+        if (!obj) {
             return;
+        } else if (typeof obj === 'string') {
+            this.inputElement.nativeElement.value = obj;
+            this.onChange();
+        } else if (BigNumber.isBigNumber(obj)) {
+            const value = amountToDecimal(obj, this.decimals).toFixed();
+            this.inputElement.nativeElement.value = value;
+            this.onChange();
         }
-        this.inputElement.nativeElement.value = obj;
-        this.onChange();
     }
 
     validate(c: AbstractControl): ValidationErrors | null {
