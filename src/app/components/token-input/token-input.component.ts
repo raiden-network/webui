@@ -43,6 +43,8 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     @Input() allowZero = false;
     @Input() infoText = '';
     @Input() placeholder = 'Amount';
+    @Input() width = '226';
+    @Input() showInfoBox = true;
     @Input() onChainInput = false;
     @Input() showTransferLimit = false;
     @ViewChild('input', { static: true }) private inputElement: ElementRef;
@@ -117,9 +119,8 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     }
 
     isLessThanThreshold(): boolean {
-        return (
-            this.selectedToken?.transferThreshold &&
-            this.selectedToken.transferThreshold.isGreaterThan(this.amount)
+        return !!this.selectedToken?.transferThreshold?.isGreaterThan(
+            this.amount
         );
     }
 

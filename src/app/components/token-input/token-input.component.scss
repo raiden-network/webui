@@ -1,29 +1,46 @@
 @import '../../../sass/fonts';
 @import '../../../sass/colors';
 
-.input {
+.amount {
     z-index: 1;
     position: relative;
 
+    &__help {
+        color: $action-blue;
+    }
+}
+
+.input {
+    position: relative;
+    border-radius: 25px;
+    background-color: $light-grey;
+    height: 32px;
+    color: $black;
+
     &__field {
-        border-radius: 25px;
-        background-color: $light-grey;
+        width: 100%;
+        min-width: 0;
+        padding: 0 52px 0 18px;
+        background: none;
         border: none;
         box-shadow: none;
         font-family: $main-font;
-        padding: 0 18px;
-        height: 32px;
         font-size: 13px;
         line-height: 15px;
         letter-spacing: 0.35px;
-        color: $black;
     }
 
     &__symbol {
-        margin: 0 auto;
+        position: absolute;
+        right: 0;
+        margin-right: 10px;
         font-size: 13px;
         line-height: 15px;
         letter-spacing: 0.35px;
+        max-width: 40px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 }
 
