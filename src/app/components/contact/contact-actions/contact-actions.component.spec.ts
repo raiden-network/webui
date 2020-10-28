@@ -113,7 +113,7 @@ describe('ContactActionsComponent', () => {
     it('should open payment dialog', () => {
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const dialogResult: PaymentDialogPayload = {
-            tokenAddress: token.address,
+            token: token,
             targetAddress: contact.address,
             amount: new BigNumber(10),
             paymentIdentifier: undefined,
@@ -126,7 +126,7 @@ describe('ContactActionsComponent', () => {
         clickElement(fixture.debugElement, '#transfer');
 
         const payload: PaymentDialogPayload = {
-            tokenAddress: '',
+            token: undefined,
             targetAddress: contact.address,
             amount: undefined,
         };
@@ -136,7 +136,7 @@ describe('ContactActionsComponent', () => {
         });
         expect(initiatePaymentSpy).toHaveBeenCalledTimes(1);
         expect(initiatePaymentSpy).toHaveBeenCalledWith(
-            dialogResult.tokenAddress,
+            dialogResult.token.address,
             dialogResult.targetAddress,
             dialogResult.amount,
             dialogResult.paymentIdentifier
@@ -172,7 +172,7 @@ describe('ContactActionsComponent', () => {
         clickElement(fixture.debugElement, '#transfer');
 
         const payload: PaymentDialogPayload = {
-            tokenAddress: connectedToken.address,
+            token: connectedToken,
             targetAddress: contact.address,
             amount: undefined,
         };

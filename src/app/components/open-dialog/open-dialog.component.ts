@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, OnDestroy } from '@angular/core';
+import { Component, Inject, ViewChild, OnDestroy, OnInit } from '@angular/core';
 import {
     AbstractControl,
     FormBuilder,
@@ -14,19 +14,19 @@ import BigNumber from 'bignumber.js';
 import { Animations } from '../../animations/animations';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
 
 export interface OpenDialogPayload {
-    readonly tokenAddress: string;
+    readonly token: UserToken;
     readonly defaultSettleTimeout: number;
     readonly revealTimeout: number;
 }
 
 export interface OpenDialogResult {
-    tokenAddress: string;
-    partnerAddress: string;
-    settleTimeout: number;
-    balance: BigNumber;
+    readonly token: UserToken;
+    readonly partnerAddress: string;
+    readonly settleTimeout: number;
+    readonly balance: BigNumber;
 }
 
 @Component({
@@ -35,7 +35,7 @@ export interface OpenDialogResult {
     styleUrls: ['./open-dialog.component.scss'],
     animations: Animations.fallDown,
 })
-export class OpenDialogComponent implements OnDestroy {
+export class OpenDialogComponent implements OnInit, OnDestroy {
     @ViewChild(TokenInputComponent, { static: true })
     private tokenInput: TokenInputComponent;
 
@@ -53,7 +53,7 @@ export class OpenDialogComponent implements OnDestroy {
         this.revealTimeout = data.revealTimeout;
         this.form = this.fb.group({
             address: ['', Validators.required],
-            token: [data.tokenAddress, Validators.required],
+            token: [data.token, Validators.required],
             amount: ['', Validators.required],
             settle_timeout: [
                 data.defaultSettleTimeout,
@@ -66,6 +66,23 @@ export class OpenDialogComponent implements OnDestroy {
         });
     }
 
+    ngOnInit() {
+        this.form.controls.token.valueChanges
+            .pipe(
+                tap((token) => (this.tokenInput.selectedToken = token)),
+                switchMap((token) =>
+                    this.tokenPollingService.getTokenUpdates(
+                        token?.address ?? ''
+                    )
+                ),
+                takeUntil(this.ngUnsubscribe)
+            )
+            .subscribe((updatedToken) => {
+                this.tokenInput.maxAmount = updatedToken?.balance;
+            });
+        this.form.controls.token.updateValueAndValidity();
+    }
+
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
@@ -74,7 +91,7 @@ export class OpenDialogComponent implements OnDestroy {
     accept() {
         const value = this.form.value;
         const result: OpenDialogResult = {
-            tokenAddress: value.token,
+            token: value.token,
             partnerAddress: value.address,
             settleTimeout: value.settle_timeout,
             balance: value.amount,
@@ -85,21 +102,6 @@ export class OpenDialogComponent implements OnDestroy {
 
     cancel() {
         this.dialogRef.close();
-    }
-
-    tokenNetworkSelected(token: UserToken) {
-        this.tokenInput.selectedToken = token;
-        this.subscribeToTokenUpdates(token.address);
-    }
-
-    subscribeToTokenUpdates(tokenAddress: string) {
-        this.ngUnsubscribe.next();
-        this.tokenPollingService
-            .getTokenUpdates(tokenAddress)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((updatedToken: UserToken) => {
-                this.tokenInput.maxAmount = updatedToken.balance;
-            });
     }
 
     private settleTimeoutValidator(): ValidatorFn {

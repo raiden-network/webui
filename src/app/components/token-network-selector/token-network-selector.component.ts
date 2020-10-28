@@ -1,10 +1,4 @@
-import {
-    Component,
-    EventEmitter,
-    forwardRef,
-    Output,
-    Input,
-} from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable, EMPTY } from 'rxjs';
 import { map, share, mergeMap } from 'rxjs/operators';
@@ -36,13 +30,12 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
     @Input() placeholder = 'Token Network';
     @Input() selectorClass = '';
     @Input() panelClass = '';
-    @Output() tokenChanged = new EventEmitter<UserToken>();
 
     value: UserToken;
     tokens$: Observable<UserToken[]>;
 
     private propagateTouched = () => {};
-    private propagateChange = (tokenAddress: string) => {};
+    private propagateChange = (token: UserToken) => {};
 
     constructor(
         private tokenPollingService: TokenPollingService,
@@ -69,17 +62,15 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
     }
 
     writeValue(obj: any) {
-        const token = this.raidenService.getUserToken(obj);
-        if (!token) {
+        if (!obj || !obj.address) {
             return;
         }
-        this.value = token;
-        this.tokenChanged.emit(token);
+        this.value = obj;
+        this.onChange(obj);
     }
 
     onChange(value: UserToken) {
-        this.propagateChange(value?.address);
-        this.tokenChanged.emit(value);
+        this.propagateChange(value);
         if (this.setSelectedToken) {
             this.selectedTokenService.setToken(value);
         }

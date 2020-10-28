@@ -104,7 +104,7 @@ describe('PaymentDialogComponent', () => {
     beforeEach(
         waitForAsync(() => {
             const payload: PaymentDialogPayload = {
-                tokenAddress: '',
+                token: undefined,
                 amount: undefined,
                 targetAddress: '',
             };
@@ -185,7 +185,7 @@ describe('PaymentDialogComponent', () => {
 
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith({
-            tokenAddress: token.address,
+            token: token,
             targetAddress: addressInput,
             amount: new BigNumber(amountInput),
             paymentIdentifier: undefined,
@@ -202,7 +202,7 @@ describe('PaymentDialogComponent', () => {
 
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith({
-            tokenAddress: token.address,
+            token: token,
             targetAddress: addressInput,
             amount: new BigNumber(amountInput),
             paymentIdentifier: new BigNumber(identifierInput),
@@ -245,7 +245,7 @@ describe('PaymentDialogComponent', () => {
         });
         expect(close).toHaveBeenCalledTimes(1);
         expect(close).toHaveBeenCalledWith({
-            tokenAddress: token.address,
+            token: token,
             targetAddress: addressInput,
             amount: new BigNumber(amountInput),
             paymentIdentifier: new BigNumber(identifierInput),
@@ -317,7 +317,7 @@ describe('PaymentDialogComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(0);
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith({
-            tokenAddress: token.address,
+            token: token,
             targetAddress: addressInput,
             amount: new BigNumber(amountInput),
             paymentIdentifier: differentIdentifier,

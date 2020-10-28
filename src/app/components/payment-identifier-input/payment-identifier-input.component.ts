@@ -44,7 +44,7 @@ export class PaymentIdentifierInputComponent
     showInputField = false;
 
     private propagateTouched = () => {};
-    private propagateChange = (amount: BigNumber) => {};
+    private propagateChange = (identifier: BigNumber) => {};
 
     constructor(private changeDetectorRef: ChangeDetectorRef) {}
 

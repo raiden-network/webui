@@ -7,7 +7,7 @@ import {
     AfterViewInit,
 } from '@angular/core';
 import { Channel } from '../../models/channel';
-import { EMPTY, Subject, Observable, fromEvent } from 'rxjs';
+import { EMPTY, Subject, fromEvent } from 'rxjs';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { amountToDecimal } from '../../utils/amount.converter';
 import { UserToken } from '../../models/usertoken';
@@ -120,7 +120,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
         const rdnConfig = this.raidenConfig.config;
 
         const payload: OpenDialogPayload = {
-            tokenAddress: this.selectedToken ? this.selectedToken.address : '',
+            token: this.selectedToken,
             revealTimeout: rdnConfig.reveal_timeout,
             defaultSettleTimeout: rdnConfig.settle_timeout,
         };
@@ -138,7 +138,7 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
 
                     return this.raidenService.openChannel(
-                        result.tokenAddress,
+                        result.token.address,
                         result.partnerAddress,
                         result.settleTimeout,
                         result.balance
