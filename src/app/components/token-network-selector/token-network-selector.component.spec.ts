@@ -99,10 +99,8 @@ describe('TokenNetworkSelectorComponent', () => {
     it('should select a token network', () => {
         const changeSpy = jasmine.createSpy('onChange');
         const touchedSpy = jasmine.createSpy('onTouched');
-        const tokenChangedSpy = jasmine.createSpy('tokenChanged');
         component.registerOnChange(changeSpy);
         component.registerOnTouched(touchedSpy);
-        component.tokenChanged.subscribe(tokenChangedSpy);
         fixture.detectChanges();
 
         mockOpenMatSelect(fixture.debugElement);
@@ -114,27 +112,18 @@ describe('TokenNetworkSelectorComponent', () => {
         expect(component.value).toBe(connectedToken);
         expect(touchedSpy).toHaveBeenCalled();
         expect(changeSpy).toHaveBeenCalledTimes(1);
-        expect(changeSpy).toHaveBeenCalledWith(connectedToken.address);
-        expect(tokenChangedSpy).toHaveBeenCalledTimes(1);
-        expect(tokenChangedSpy).toHaveBeenCalledWith(connectedToken);
+        expect(changeSpy).toHaveBeenCalledWith(connectedToken);
     });
 
     it('should be able to set a value programmatically', () => {
-        const raidenService = TestBed.inject(RaidenService);
-        spyOn(raidenService, 'getUserToken').and.returnValue(notOwnedToken);
-        const address = notOwnedToken.address;
-        component.writeValue(address);
+        component.writeValue(notOwnedToken);
         fixture.detectChanges();
-
         expect(component.value).toBe(notOwnedToken);
     });
 
-    it('should not to set an unregistered token programmatically', () => {
-        const raidenService = TestBed.inject(RaidenService);
-        spyOn(raidenService, 'getUserToken').and.returnValue(undefined);
-        component.writeValue(createAddress());
+    it('should not to set a non token object programmatically', () => {
+        component.writeValue('');
         fixture.detectChanges();
-
         expect(component.value).toBe(undefined);
     });
 

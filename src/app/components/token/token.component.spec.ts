@@ -144,7 +144,7 @@ describe('TokenComponent', () => {
         it('should open payment dialog with no token network selected', () => {
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             const dialogResult: PaymentDialogPayload = {
-                tokenAddress: connectedToken.address,
+                token: connectedToken,
                 targetAddress: createAddress(),
                 amount: new BigNumber(10),
                 paymentIdentifier: undefined,
@@ -157,7 +157,7 @@ describe('TokenComponent', () => {
             clickElement(fixture.debugElement, '#transfer');
 
             const payload: PaymentDialogPayload = {
-                tokenAddress: '',
+                token: undefined,
                 targetAddress: '',
                 amount: undefined,
             };
@@ -167,7 +167,7 @@ describe('TokenComponent', () => {
             });
             expect(initiatePaymentSpy).toHaveBeenCalledTimes(1);
             expect(initiatePaymentSpy).toHaveBeenCalledWith(
-                dialogResult.tokenAddress,
+                dialogResult.token.address,
                 dialogResult.targetAddress,
                 dialogResult.amount,
                 dialogResult.paymentIdentifier
@@ -258,7 +258,7 @@ describe('TokenComponent', () => {
         it('should open payment dialog with token network selected', () => {
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             const dialogResult: PaymentDialogPayload = {
-                tokenAddress: connectedToken.address,
+                token: connectedToken,
                 targetAddress: createAddress(),
                 amount: new BigNumber(10),
                 paymentIdentifier: undefined,
@@ -271,7 +271,7 @@ describe('TokenComponent', () => {
             clickElement(fixture.debugElement, '#transfer');
 
             const payload: PaymentDialogPayload = {
-                tokenAddress: connectedToken.address,
+                token: connectedToken,
                 targetAddress: '',
                 amount: undefined,
             };
@@ -281,7 +281,7 @@ describe('TokenComponent', () => {
             });
             expect(initiatePaymentSpy).toHaveBeenCalledTimes(1);
             expect(initiatePaymentSpy).toHaveBeenCalledWith(
-                dialogResult.tokenAddress,
+                dialogResult.token.address,
                 dialogResult.targetAddress,
                 dialogResult.amount,
                 dialogResult.paymentIdentifier

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
     MAT_DIALOG_DATA,
@@ -8,8 +8,8 @@ import {
 import { UserToken } from '../../models/usertoken';
 import BigNumber from 'bignumber.js';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
-import { first, switchMap, map } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
+import { first, switchMap, map, takeUntil } from 'rxjs/operators';
+import { of, Observable, Subject } from 'rxjs';
 import {
     ConfirmationDialogComponent,
     ConfirmationDialogPayload,
@@ -19,10 +19,10 @@ import { AddressBookService } from '../../services/address-book.service';
 import { TokenInputComponent } from '../token-input/token-input.component';
 
 export interface PaymentDialogPayload {
-    tokenAddress: string;
-    targetAddress: string;
-    amount: BigNumber;
-    paymentIdentifier?: BigNumber;
+    readonly token: UserToken;
+    readonly targetAddress: string;
+    readonly amount: BigNumber;
+    readonly paymentIdentifier?: BigNumber;
 }
 
 @Component({
@@ -30,12 +30,13 @@ export interface PaymentDialogPayload {
     templateUrl: './payment-dialog.component.html',
     styleUrls: ['./payment-dialog.component.css'],
 })
-export class PaymentDialogComponent implements OnInit {
+export class PaymentDialogComponent implements OnInit, OnDestroy {
     @ViewChild(TokenInputComponent, { static: true })
     private tokenInput: TokenInputComponent;
 
     form: FormGroup;
-    selectedToken: UserToken;
+
+    private ngUnsubscribe = new Subject();
 
     constructor(
         @Inject(MAT_DIALOG_DATA) data: PaymentDialogPayload,
@@ -48,19 +49,31 @@ export class PaymentDialogComponent implements OnInit {
         this.form = this.fb.group({
             target_address: [data.targetAddress, Validators.required],
             amount: ['', Validators.required],
-            token: [data.tokenAddress, Validators.required],
+            token: [data.token, Validators.required],
             payment_identifier: '',
         });
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.form.controls.token.valueChanges
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((token) => {
+                this.tokenInput.selectedToken = token;
+            });
+        this.form.controls.token.updateValueAndValidity();
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
 
     accept() {
         const value = this.form.value;
         const paymentIdentifier = value['payment_identifier'];
 
         const payload: PaymentDialogPayload = {
-            tokenAddress: value['token'],
+            token: value['token'],
             targetAddress: value['target_address'],
             amount: value['amount'],
             paymentIdentifier:
@@ -83,11 +96,6 @@ export class PaymentDialogComponent implements OnInit {
         this.dialogRef.close();
     }
 
-    tokenNetworkSelected(token: UserToken) {
-        this.selectedToken = token;
-        this.tokenInput.selectedToken = token;
-    }
-
     private checkPendingPayments(
         payload: PaymentDialogPayload
     ): Observable<PaymentDialogPayload> {
@@ -97,7 +105,7 @@ export class PaymentDialogComponent implements OnInit {
                 const samePendingPayment = pendingTransfers.find(
                     (pendingTransfer) =>
                         pendingTransfer.token_address ===
-                            payload.tokenAddress &&
+                            payload.token.address &&
                         pendingTransfer.role === 'initiator' &&
                         pendingTransfer.locked_amount.isEqualTo(
                             payload.amount
@@ -121,7 +129,7 @@ export class PaymentDialogComponent implements OnInit {
     private confirmDuplicatePayment(
         payload: PaymentDialogPayload
     ): Observable<PaymentDialogPayload> {
-        const token = this.selectedToken;
+        const token = this.form.value['token'];
         const formattedAmount = amountToDecimal(
             payload.amount,
             token.decimals

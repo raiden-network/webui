@@ -93,7 +93,7 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
         this.actionClicked.emit(true);
 
         const payload: PaymentDialogPayload = {
-            tokenAddress: this.selectedToken ? this.selectedToken.address : '',
+            token: this.selectedToken,
             targetAddress: this.contact.address,
             amount: undefined,
         };
@@ -111,7 +111,7 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
                     }
 
                     return this.raidenService.initiatePayment(
-                        result.tokenAddress,
+                        result.token.address,
                         result.targetAddress,
                         result.amount,
                         result.paymentIdentifier

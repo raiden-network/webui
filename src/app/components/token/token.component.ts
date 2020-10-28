@@ -110,7 +110,7 @@ export class TokenComponent implements OnInit, OnDestroy {
         }
 
         const payload: PaymentDialogPayload = {
-            tokenAddress: this.selectedToken?.address ?? '',
+            token: this.selectedToken,
             targetAddress: '',
             amount: undefined,
         };
@@ -128,7 +128,7 @@ export class TokenComponent implements OnInit, OnDestroy {
                     }
 
                     return this.raidenService.initiatePayment(
-                        result.tokenAddress,
+                        result.token.address,
                         result.targetAddress,
                         result.amount,
                         result.paymentIdentifier

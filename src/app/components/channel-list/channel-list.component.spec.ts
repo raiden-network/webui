@@ -214,7 +214,7 @@ describe('ChannelListComponent', () => {
 
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const dialogResult: OpenDialogResult = {
-            tokenAddress: token1.address,
+            token: token1,
             partnerAddress: createAddress(),
             balance: new BigNumber(1000),
             settleTimeout: raidenConfig.config.settle_timeout,
@@ -226,7 +226,7 @@ describe('ChannelListComponent', () => {
         clickElement(fixture.debugElement, '#open-channel');
 
         const payload: OpenDialogPayload = {
-            tokenAddress: '',
+            token: undefined,
             defaultSettleTimeout: raidenConfig.config.settle_timeout,
             revealTimeout: raidenConfig.config.reveal_timeout,
         };
@@ -236,7 +236,7 @@ describe('ChannelListComponent', () => {
         });
         expect(openSpy).toHaveBeenCalledTimes(1);
         expect(openSpy).toHaveBeenCalledWith(
-            dialogResult.tokenAddress,
+            dialogResult.token.address,
             dialogResult.partnerAddress,
             dialogResult.settleTimeout,
             dialogResult.balance
@@ -272,7 +272,7 @@ describe('ChannelListComponent', () => {
         clickElement(fixture.debugElement, '#open-channel');
 
         const payload: OpenDialogPayload = {
-            tokenAddress: token1.address,
+            token: token1,
             defaultSettleTimeout: raidenConfig.config.settle_timeout,
             revealTimeout: raidenConfig.config.reveal_timeout,
         };
