@@ -9,3 +9,16 @@ export interface Connection {
 export interface Connections {
     [address: string]: Connection;
 }
+
+export interface ConnectionChoice {
+    readonly partnerAddress: string;
+    readonly balance: BigNumber;
+}
+
+export interface SuggestedConnection {
+    readonly address: string;
+    readonly score: BigNumber;
+    readonly centrality: BigNumber;
+    readonly uptime: BigNumber;
+    readonly capacity: BigNumber;
+}

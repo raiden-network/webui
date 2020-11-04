@@ -17,6 +17,12 @@
     height: 32px;
     color: $black;
 
+    &--disabled {
+        color: $dark-grey;
+        background: none;
+        border: 1px solid $dark-grey;
+    }
+
     &__field {
         width: 100%;
         min-width: 0;

@@ -22,10 +22,6 @@
 
         &--black {
             color: $white;
-
-            &:disabled {
-                color: $dark-grey;
-            }
         }
     }
 
