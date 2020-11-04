@@ -64,6 +64,7 @@ import { SetHeadersInterceptor } from './interceptors/set-headers.interceptor';
 import { BalanceWithSymbolComponent } from './components/balance-with-symbol/balance-with-symbol.component';
 import { AddressIdenticonComponent } from './components/address-identicon/address-identicon.component';
 import { PaymentIdentifierInputComponent } from './components/payment-identifier-input/payment-identifier-input.component';
+import { QuickConnectDialogComponent } from './components/quick-connect-dialog/quick-connect-dialog.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -120,6 +121,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         BalanceWithSymbolComponent,
         AddressIdenticonComponent,
         PaymentIdentifierInputComponent,
+        QuickConnectDialogComponent,
     ],
     imports: [
         RouterModule.forRoot(appRoutes),
@@ -144,7 +146,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         {
             provide: HTTP_INTERCEPTORS,
             useClass: ErrorHandlingInterceptor,
-            deps: [NotificationService, RaidenService],
+            deps: [NotificationService, RaidenService, RaidenConfig],
             multi: true,
         },
         {

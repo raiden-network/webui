@@ -49,7 +49,8 @@ const mockNetwork = createNetworkMock();
 
 @Injectable()
 export class MockConfig extends RaidenConfig {
-    public web3: Web3 = mockProvider.web3;
+    web3: Web3 = mockProvider.web3;
+    api: string = 'localhost:5001/api/v1';
 
     constructor() {
         super(stub<HttpBackend>(), stub<NotificationService>(), mockProvider);

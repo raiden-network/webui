@@ -1,0 +1,46 @@
+<app-raiden-dialog
+    titleText="Quick Connect"
+    acceptText="Connect"
+    [acceptDisabled]="form.invalid"
+    [formGroup]="form"
+    (accept)="accept()"
+    (cancel)="cancel()"
+>
+    <app-token-network-selector
+        *ngIf="initiatedWithoutToken"
+        formControlName="token"
+        [showOnChainBalance]="true"
+    >
+    </app-token-network-selector>
+    <app-token-input
+        placeholder="Total Deposit"
+        infoText="You will get suggested partners to connect to. Quick Connect will open channels with these suggestions. The total deposit is split among the channels. You can modify the deposit for each partner. By setting a deposit to 0 no channel will be created."
+        formControlName="totalAmount"
+        [onChainInput]="true"
+    >
+    </app-token-input>
+    <div
+        *ngIf="loading || pfsError || suggestions.length > 0"
+        class="content"
+        [@stretchVertically]="'in'"
+    >
+        <div *ngIf="!loading && !pfsError; else spinner">
+            Top suggestions: {{ suggestions }}
+        </div>
+        <ng-template #spinner>
+            <div class="content__full" fxLayoutAlign="center center">
+                <mat-progress-spinner
+                    *ngIf="loading; else error"
+                    diameter="60"
+                    mode="indeterminate"
+                    color="primary"
+                ></mat-progress-spinner>
+            </div>
+        </ng-template>
+        <ng-template #error>
+            <div class="content__full error" fxLayoutAlign="center center">
+                Could not fetch any suggestions
+            </div>
+        </ng-template>
+    </div>
+</app-raiden-dialog>

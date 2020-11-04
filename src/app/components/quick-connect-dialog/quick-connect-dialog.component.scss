@@ -1,0 +1,17 @@
+@import '../../../sass/colors';
+
+.content {
+    height: 182px;
+
+    &__full {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.error {
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.35px;
+    color: $red;
+}

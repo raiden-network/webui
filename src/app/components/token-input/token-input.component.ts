@@ -52,6 +52,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     amount: BigNumber;
     errors: ValidationErrors = { empty: true };
     touched = false;
+    disabled = false;
 
     private _selectedToken: UserToken;
     private _maxAmount: BigNumber;
@@ -105,6 +106,10 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
 
     validate(c: AbstractControl): ValidationErrors | null {
         return this.errors;
+    }
+
+    setDisabledState(isDisabled: boolean) {
+        this.disabled = isDisabled;
     }
 
     onChange() {

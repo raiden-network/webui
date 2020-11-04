@@ -12,12 +12,14 @@ import { catchError, tap } from 'rxjs/operators';
 import { NotificationService } from '../services/notification.service';
 import { UiMessage } from '../models/notification';
 import { RaidenService } from '../services/raiden.service';
+import { RaidenConfig } from 'app/services/raiden.config';
 
 @Injectable()
 export class ErrorHandlingInterceptor implements HttpInterceptor {
     constructor(
         private notificationService: NotificationService,
-        private raidenService: RaidenService
+        private raidenService: RaidenService,
+        private raidenConfig: RaidenConfig
     ) {}
 
     intercept(
@@ -28,7 +30,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
             tap((event) => {
                 if (
                     event instanceof HttpResponse &&
-                    event.url.includes('/api') &&
+                    event.url.startsWith(this.raidenConfig.api) &&
                     this.notificationService.apiError
                 ) {
                     this.raidenService.attemptRpcConnection();
@@ -45,6 +47,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
 
         if (
             error instanceof HttpErrorResponse &&
+            error.url.startsWith(this.raidenConfig.api) &&
             (error.status === 504 || error.status === 0)
         ) {
             errMsg = 'Could not connect to the Raiden API';

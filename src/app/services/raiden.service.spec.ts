@@ -93,7 +93,7 @@ describe('RaidenService', () => {
                 {
                     provide: HTTP_INTERCEPTORS,
                     useClass: ErrorHandlingInterceptor,
-                    deps: [NotificationService, RaidenService],
+                    deps: [NotificationService, RaidenService, RaidenConfig],
                     multi: true,
                 },
                 {

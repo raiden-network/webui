@@ -11,13 +11,14 @@ import { ErrorHandlingInterceptor } from './error-handling.interceptor';
 import { TestProviders } from '../../testing/test-providers';
 import { NotificationService } from '../services/notification.service';
 import { RaidenService } from '../services/raiden.service';
+import { RaidenConfig } from 'app/services/raiden.config';
 
 @Injectable()
 class MockRequestingService {
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private raidenConfig: RaidenConfig) {}
 
     getData(): Observable<any> {
-        return this.http.get('localhost:5001/api');
+        return this.http.get(this.raidenConfig.api);
     }
 }
 
@@ -25,6 +26,7 @@ describe('ErrorHandlingInterceptor', () => {
     let service: MockRequestingService;
     let httpMock: HttpTestingController;
     let notificationService: NotificationService;
+    let raidenConfig: RaidenConfig;
 
     beforeEach(() => {
         notificationService = jasmine.createSpyObj('NotificationService', [
@@ -39,7 +41,7 @@ describe('ErrorHandlingInterceptor', () => {
                 {
                     provide: HTTP_INTERCEPTORS,
                     useClass: ErrorHandlingInterceptor,
-                    deps: [NotificationService, RaidenService],
+                    deps: [NotificationService, RaidenService, RaidenConfig],
                     multi: true,
                 },
                 TestProviders.MockRaidenConfigProvider(),
@@ -54,6 +56,7 @@ describe('ErrorHandlingInterceptor', () => {
         service = TestBed.inject(MockRequestingService);
         httpMock = TestBed.inject(HttpTestingController);
         notificationService = TestBed.inject(NotificationService);
+        raidenConfig = TestBed.inject(RaidenConfig);
     });
 
     it('should handle Raiden API errors', () => {
@@ -67,7 +70,7 @@ describe('ErrorHandlingInterceptor', () => {
             }
         );
 
-        const request = httpMock.expectOne('localhost:5001/api');
+        const request = httpMock.expectOne(raidenConfig.api);
 
         const errorBody = {
             errors: errorMessage,
@@ -91,7 +94,7 @@ describe('ErrorHandlingInterceptor', () => {
             }
         );
 
-        const request = httpMock.expectOne('localhost:5001/api');
+        const request = httpMock.expectOne(raidenConfig.api);
 
         const errorBody = {
             errors: [
@@ -107,8 +110,7 @@ describe('ErrorHandlingInterceptor', () => {
     });
 
     it('should handle Raiden API errors with no message', () => {
-        const errorMessage =
-            'Http failure response for localhost:5001/api: 400 ';
+        const errorMessage = `Http failure response for ${raidenConfig.api}: 400 `;
         service.getData().subscribe(
             () => {
                 fail('On next should not be called');
@@ -118,7 +120,7 @@ describe('ErrorHandlingInterceptor', () => {
             }
         );
 
-        const request = httpMock.expectOne('localhost:5001/api');
+        const request = httpMock.expectOne(raidenConfig.api);
 
         const errorBody = {
             errors: '',
@@ -140,7 +142,7 @@ describe('ErrorHandlingInterceptor', () => {
             }
         );
 
-        let request = httpMock.expectOne('localhost:5001/api');
+        let request = httpMock.expectOne(raidenConfig.api);
 
         request.flush(
             {},
@@ -162,7 +164,7 @@ describe('ErrorHandlingInterceptor', () => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
-        request = httpMock.expectOne('localhost:5001/api');
+        request = httpMock.expectOne(raidenConfig.api);
         request.flush(
             {},
             {
@@ -186,7 +188,7 @@ describe('ErrorHandlingInterceptor', () => {
             }
         );
 
-        let request = httpMock.expectOne('localhost:5001/api');
+        let request = httpMock.expectOne(raidenConfig.api);
 
         request.flush(
             {},
@@ -205,7 +207,7 @@ describe('ErrorHandlingInterceptor', () => {
                 expect(error).toBeTruthy('An error is expected');
             }
         );
-        request = httpMock.expectOne('localhost:5001/api');
+        request = httpMock.expectOne(raidenConfig.api);
         request.flush(
             {},
             {
@@ -236,7 +238,7 @@ describe('ErrorHandlingInterceptor', () => {
             }
         );
 
-        let request = httpMock.expectOne('localhost:5001/api');
+        let request = httpMock.expectOne(raidenConfig.api);
 
         request.flush(
             {},
@@ -247,7 +249,7 @@ describe('ErrorHandlingInterceptor', () => {
         );
 
         service.getData().subscribe();
-        request = httpMock.expectOne('localhost:5001/api');
+        request = httpMock.expectOne(raidenConfig.api);
         request.flush(
             {},
             {

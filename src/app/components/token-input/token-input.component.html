@@ -1,6 +1,7 @@
 <div class="amount" fxLayout="row" fxLayoutAlign="start center">
     <div
         class="input"
+        [class.input--disabled]="disabled"
         fxLayout="row"
         fxLayoutAlign="center center"
         fxFlex="0 1 {{ width }}px"
@@ -10,6 +11,7 @@
             aria-label="Amount input"
             class="input__field"
             type="text"
+            [disabled]="disabled"
             (input)="onChange()"
             (focus)="onTouched()"
             #input
@@ -94,7 +96,10 @@
             </div>
         </ng-template>
         <ng-template #max_amount>
-            <div *ngIf="maxAmount && selectedToken" class="info-box__text">
+            <div
+                *ngIf="maxAmount && selectedToken && !disabled"
+                class="info-box__text"
+            >
                 <app-balance-with-symbol
                     [balance]="maxAmount"
                     [token]="selectedToken"
@@ -107,7 +112,7 @@
     </div>
 
     <div
-        *ngIf="maxAmount && selectedToken"
+        *ngIf="maxAmount && selectedToken && !disabled"
         fxFlex="0 1 80px"
         fxLayoutAlign="center"
     >
