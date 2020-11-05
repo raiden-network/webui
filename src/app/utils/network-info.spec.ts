@@ -9,6 +9,7 @@ describe('NetworkInfo', () => {
                 shortName: 'eth',
                 chainId: 1,
                 ensSupported: true,
+                explorerUrl: 'https://explorer.raiden.network',
                 faucet: undefined,
                 tokenConstants: tokenConstants[1],
             });
@@ -20,6 +21,7 @@ describe('NetworkInfo', () => {
                 shortName: 'rop',
                 chainId: 3,
                 ensSupported: true,
+                explorerUrl: 'https://ropsten.explorer.raiden.network',
                 faucet: 'https://faucet.ropsten.be/?${ADDRESS}',
             });
         });
@@ -30,6 +32,7 @@ describe('NetworkInfo', () => {
                 shortName: 'rin',
                 chainId: 4,
                 ensSupported: true,
+                explorerUrl: 'https://rinkeby.explorer.raiden.network',
                 faucet: 'https://faucet.rinkeby.io/',
             });
         });
@@ -40,6 +43,7 @@ describe('NetworkInfo', () => {
                 shortName: 'gor',
                 chainId: 5,
                 ensSupported: true,
+                explorerUrl: 'https://goerli.explorer.raiden.network',
                 faucet: 'https://goerli-faucet.slock.it/?address=${ADDRESS}',
             });
         });

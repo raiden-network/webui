@@ -8,6 +8,7 @@ export class NetworkInfo {
             shortName: 'eth',
             chainId: 1,
             ensSupported: true,
+            explorerUrl: 'https://explorer.raiden.network',
             faucet: undefined,
             tokenConstants: tokenConstants[1],
         },
@@ -16,6 +17,7 @@ export class NetworkInfo {
             shortName: 'rop',
             chainId: 3,
             ensSupported: true,
+            explorerUrl: 'https://ropsten.explorer.raiden.network',
             faucet: 'https://faucet.ropsten.be/?${ADDRESS}',
         },
         {
@@ -23,6 +25,7 @@ export class NetworkInfo {
             shortName: 'rin',
             chainId: 4,
             ensSupported: true,
+            explorerUrl: 'https://rinkeby.explorer.raiden.network',
             faucet: 'https://faucet.rinkeby.io/',
         },
         {
@@ -30,6 +33,7 @@ export class NetworkInfo {
             shortName: 'gor',
             chainId: 5,
             ensSupported: true,
+            explorerUrl: 'https://goerli.explorer.raiden.network',
             faucet: 'https://goerli-faucet.slock.it/?address=${ADDRESS}',
         },
         {
@@ -64,6 +68,7 @@ export interface Network {
     readonly shortName: string;
     readonly chainId: number;
     readonly ensSupported: boolean;
+    readonly explorerUrl?: string;
     readonly faucet?: string;
     readonly tokenConstants?: TokenInfo[];
 }
