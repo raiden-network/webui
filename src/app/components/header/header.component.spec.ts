@@ -159,7 +159,6 @@ describe('HeaderComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(QrCodeComponent, {
             data: payload,
-            width: '360px',
         });
     });
 

@@ -242,7 +242,6 @@ describe('PaymentDialogComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px',
         });
         expect(close).toHaveBeenCalledTimes(1);
         expect(close).toHaveBeenCalledWith({
@@ -277,7 +276,6 @@ describe('PaymentDialogComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px',
         });
     });
 

@@ -118,7 +118,6 @@ describe('ChannelComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(DepositWithdrawDialogComponent, {
             data: payload,
-            width: '360px',
         });
         expect(depositSpy).toHaveBeenCalledTimes(1);
         expect(depositSpy).toHaveBeenCalledWith(
@@ -151,7 +150,6 @@ describe('ChannelComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(DepositWithdrawDialogComponent, {
             data: payload,
-            width: '360px',
         });
         expect(depositSpy).toHaveBeenCalledTimes(1);
         expect(depositSpy).toHaveBeenCalledWith(
@@ -195,7 +193,6 @@ describe('ChannelComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px',
         });
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith(
@@ -235,7 +232,6 @@ describe('ChannelComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px',
         });
     });
 });

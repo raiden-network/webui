@@ -127,7 +127,6 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
 
         const dialog = this.dialog.open(OpenDialogComponent, {
             data: payload,
-            width: '360px',
         });
 
         dialog

@@ -94,9 +94,7 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
     }
 
     register() {
-        const dialog = this.dialog.open(RegisterDialogComponent, {
-            width: '360px',
-        });
+        const dialog = this.dialog.open(RegisterDialogComponent, {});
 
         dialog
             .afterClosed()

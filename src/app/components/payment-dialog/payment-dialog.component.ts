@@ -138,7 +138,6 @@ export class PaymentDialogComponent implements OnInit {
         };
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: confirmationPayload,
-            width: '360px',
         });
 
         return dialog.afterClosed().pipe(

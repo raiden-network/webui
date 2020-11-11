@@ -305,7 +305,6 @@ describe('AppComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px',
         });
         expect(shutdownSpy).toHaveBeenCalledTimes(1);
     });

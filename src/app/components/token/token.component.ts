@@ -117,7 +117,6 @@ export class TokenComponent implements OnInit, OnDestroy {
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
             data: payload,
-            width: '360px',
         });
 
         dialog
@@ -172,7 +171,6 @@ export class TokenComponent implements OnInit, OnDestroy {
         };
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px',
         });
 
         dialog
@@ -201,7 +199,6 @@ export class TokenComponent implements OnInit, OnDestroy {
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px',
         });
 
         dialog.afterClosed().subscribe((result) => {
@@ -219,7 +216,6 @@ export class TokenComponent implements OnInit, OnDestroy {
 
         const dialog = this.dialog.open(ConnectionManagerDialogComponent, {
             data: payload,
-            width: '360px',
         });
 
         dialog

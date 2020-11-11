@@ -159,9 +159,7 @@ describe('TokenNetworkSelectorComponent', () => {
         fixture.detectChanges();
 
         expect(dialogSpy).toHaveBeenCalledTimes(1);
-        expect(dialogSpy).toHaveBeenCalledWith(RegisterDialogComponent, {
-            width: '360px',
-        });
+        expect(dialogSpy).toHaveBeenCalledWith(RegisterDialogComponent, {});
         expect(registerSpy).toHaveBeenCalledTimes(1);
         expect(registerSpy).toHaveBeenCalledWith(tokenAddress);
     });

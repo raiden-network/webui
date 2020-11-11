@@ -133,7 +133,6 @@ describe('ContactActionsComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(PaymentDialogComponent, {
             data: payload,
-            width: '360px',
         });
         expect(initiatePaymentSpy).toHaveBeenCalledTimes(1);
         expect(initiatePaymentSpy).toHaveBeenCalledWith(
@@ -180,7 +179,6 @@ describe('ContactActionsComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(PaymentDialogComponent, {
             data: payload,
-            width: '360px',
         });
     });
 
@@ -204,7 +202,6 @@ describe('ContactActionsComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(AddEditContactDialogComponent, {
             data: payload,
-            width: '360px',
         });
         expect(saveSpy).toHaveBeenCalledTimes(1);
         expect(saveSpy).toHaveBeenCalledWith(dialogResult);
@@ -224,7 +221,6 @@ describe('ContactActionsComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px',
         });
         expect(deleteSpy).toHaveBeenCalledTimes(1);
         expect(deleteSpy).toHaveBeenCalledWith(contact);

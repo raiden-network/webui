@@ -170,7 +170,6 @@ export class AppComponent implements OnInit, OnDestroy {
         };
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px',
         });
 
         dialog

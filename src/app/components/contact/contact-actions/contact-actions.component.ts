@@ -100,7 +100,6 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
 
         const dialog = this.dialog.open(PaymentDialogComponent, {
             data: payload,
-            width: '360px',
         });
 
         dialog
@@ -138,7 +137,6 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
 
         const dialog = this.dialog.open(AddEditContactDialogComponent, {
             data: payload,
-            width: '360px',
         });
 
         dialog.afterClosed().subscribe((result?: Contact) => {
@@ -159,7 +157,6 @@ export class ContactActionsComponent implements OnInit, OnDestroy {
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px',
         });
 
         dialog.afterClosed().subscribe((result) => {
