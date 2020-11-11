@@ -109,7 +109,6 @@ export class ContactListComponent implements OnInit, OnDestroy, AfterViewInit {
     addContact() {
         const dialog = this.dialog.open(AddEditContactDialogComponent, {
             data: { address: '', label: '', edit: false },
-            width: '360px',
         });
 
         dialog.afterClosed().subscribe((result?: Contact) => {

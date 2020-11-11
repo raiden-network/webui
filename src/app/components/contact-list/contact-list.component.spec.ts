@@ -177,7 +177,6 @@ describe('ContactListComponent', () => {
                 AddEditContactDialogComponent,
                 {
                     data: payload,
-                    width: '360px',
                 }
             );
             expect(saveSpy).toHaveBeenCalledTimes(1);

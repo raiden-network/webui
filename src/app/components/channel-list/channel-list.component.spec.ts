@@ -233,7 +233,6 @@ describe('ChannelListComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(OpenDialogComponent, {
             data: payload,
-            width: '360px',
         });
         expect(openSpy).toHaveBeenCalledTimes(1);
         expect(openSpy).toHaveBeenCalledWith(
@@ -280,7 +279,6 @@ describe('ChannelListComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(OpenDialogComponent, {
             data: payload,
-            width: '360px',
         });
     });
 });

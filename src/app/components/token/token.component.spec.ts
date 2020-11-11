@@ -164,7 +164,6 @@ describe('TokenComponent', () => {
             expect(dialogSpy).toHaveBeenCalledTimes(1);
             expect(dialogSpy).toHaveBeenCalledWith(PaymentDialogComponent, {
                 data: payload,
-                width: '360px',
             });
             expect(initiatePaymentSpy).toHaveBeenCalledTimes(1);
             expect(initiatePaymentSpy).toHaveBeenCalledWith(
@@ -211,14 +210,12 @@ describe('TokenComponent', () => {
                 ConfirmationDialogComponent,
                 {
                     data: confirmationPayload,
-                    width: '360px',
                 },
             ]);
             expect(dialogSpy.calls.mostRecent().args).toEqual([
                 ConnectionManagerDialogComponent,
                 {
                     data: connectionManagerPayload,
-                    width: '360px',
                 },
             ]);
         });
@@ -281,7 +278,6 @@ describe('TokenComponent', () => {
             expect(dialogSpy).toHaveBeenCalledTimes(1);
             expect(dialogSpy).toHaveBeenCalledWith(PaymentDialogComponent, {
                 data: payload,
-                width: '360px',
             });
             expect(initiatePaymentSpy).toHaveBeenCalledTimes(1);
             expect(initiatePaymentSpy).toHaveBeenCalledWith(
@@ -336,14 +332,12 @@ describe('TokenComponent', () => {
                 ConfirmationDialogComponent,
                 {
                     data: confirmationPayload,
-                    width: '360px',
                 },
             ]);
             expect(dialogSpy.calls.mostRecent().args).toEqual([
                 ConnectionManagerDialogComponent,
                 {
                     data: connectionManagerPayload,
-                    width: '360px',
                 },
             ]);
             expect(connectSpy).toHaveBeenCalledTimes(1);
@@ -440,7 +434,6 @@ describe('TokenComponent', () => {
                 ConfirmationDialogComponent,
                 {
                     data: payload,
-                    width: '360px',
                 }
             );
             expect(leaveSpy).toHaveBeenCalledTimes(1);

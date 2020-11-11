@@ -60,7 +60,6 @@ export class ChannelComponent implements OnInit {
 
         const dialog = this.dialog.open(ConfirmationDialogComponent, {
             data: payload,
-            width: '360px',
         });
 
         dialog
@@ -91,7 +90,6 @@ export class ChannelComponent implements OnInit {
 
         const dialog = this.dialog.open(DepositWithdrawDialogComponent, {
             data: payload,
-            width: '360px',
         });
 
         dialog
