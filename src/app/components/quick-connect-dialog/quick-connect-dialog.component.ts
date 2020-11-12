@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Animations } from 'app/animations/animations';
 import { ConnectionChoice, SuggestedConnection } from 'app/models/connection';
@@ -11,8 +11,8 @@ import { TokenPollingService } from 'app/services/token-polling.service';
 import { combineLatest, Observable, Subject, zip } from 'rxjs';
 import {
     catchError,
+    delay,
     filter,
-    finalize,
     first,
     map,
     switchMap,
@@ -61,6 +61,7 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
         this.form = this.fb.group({
             token: [data.token, Validators.required],
             totalAmount: ['', Validators.required],
+            choices: this.fb.array([], Validators.required),
         });
     }
 
@@ -76,9 +77,16 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
     }
 
     accept() {
+        const choices: ConnectionChoice[] = [];
+        (<FormArray>this.form.get('choices')).controls.forEach((control) => {
+            choices.push({
+                partnerAddress: control.get('partnerAddress').value,
+                deposit: control.get('deposit').value,
+            });
+        });
         const payload: QuickConnectDialogResult = {
             token: this.form.value.token,
-            connectionChoices: undefined, // TODO
+            connectionChoices: choices,
         };
         this.dialogRef.close(payload);
     }
@@ -94,11 +102,13 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
         const tokenValueChange$: Observable<UserToken> = this.form.controls
             .token.valueChanges;
         const tokenNetworkAddress$ = tokenValueChange$.pipe(
+            delay(0),
             filter((token) => !!token),
             tap(() => {
                 this.loading = true;
                 this.resetError();
             }),
+            delay(0),
             switchMap((token) =>
                 this.raidenService.getTokenNetworkAddress(token.address)
             )

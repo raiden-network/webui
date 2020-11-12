@@ -1,0 +1,59 @@
+@import '../../../../sass/colors';
+
+.selector {
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.35px;
+
+    &__label {
+        color: $text-grey;
+    }
+}
+
+.graph-button {
+    &__icon {
+        color: $action-blue;
+        height: 16px !important;
+
+        &--deselected {
+            color: $dark-grey;
+        }
+    }
+}
+
+.address {
+    width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: $action-blue;
+
+    &--deselected {
+        color: $dark-grey;
+    }
+
+    &--big {
+        margin-left: 16px;
+        width: 178px;
+    }
+}
+
+.info-box {
+    height: 32px;
+
+    &__equal-button {
+        text-decoration: underline;
+        cursor: pointer;
+        font-weight: 500;
+
+        &:hover {
+            color: $text-grey;
+        }
+    }
+
+    &__error {
+        width: 234px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: $red;
+    }
+}

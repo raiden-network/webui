@@ -75,7 +75,14 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
 
     set selectedToken(value: UserToken) {
         this._selectedToken = value;
-        this.setAmount();
+        if (BigNumber.isBigNumber(this.amount) && !this.amount.isNaN()) {
+            const newDecimalAmount = amountToDecimal(
+                this.amount,
+                this.decimals
+            ).toFixed();
+            this.inputElement.nativeElement.value = newDecimalAmount;
+        }
+        this.onChange();
     }
 
     set maxAmount(value: BigNumber) {
@@ -97,10 +104,10 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         } else if (typeof obj === 'string') {
             this.inputElement.nativeElement.value = obj;
             this.onChange();
-        } else if (BigNumber.isBigNumber(obj)) {
+        } else if (BigNumber.isBigNumber(obj) && !obj.isNaN()) {
             const value = amountToDecimal(obj, this.decimals).toFixed();
             this.inputElement.nativeElement.value = value;
-            this.onChange();
+            this.setAmount();
         }
     }
 
@@ -114,6 +121,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
 
     onChange() {
         this.setAmount();
+        this.propagateChange(this.amount);
     }
 
     onTouched() {
@@ -172,6 +180,5 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
         }
 
         this.amount = amount;
-        this.propagateChange(this.amount);
     }
 }

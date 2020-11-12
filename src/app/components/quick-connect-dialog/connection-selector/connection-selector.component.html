@@ -1,0 +1,108 @@
+<div fxLayout="column" fxLayoutGap="16px" class="selector">
+    <span
+        *ngIf="choicesForm.length > 1; else one_suggestion"
+        class="selector__label"
+    >
+        Top {{ choicesForm.length }} suggested connections (best first):
+    </span>
+    <ng-template #one_suggestion>
+        <span class="selector__label"> One suggested connection: </span>
+    </ng-template>
+    <div
+        *ngFor="let choiceGroup of choicesForm.controls"
+        fxLayout="row"
+        [fxLayoutAlign]="
+            choicesForm.length > 1 ? 'space-between center' : 'start center'
+        "
+    >
+        <a
+            *ngIf="explorerUrl$ | async as explorerUrl"
+            mat-icon-button
+            matTooltip="Open Raiden Explorer to see the suggestion in the network"
+            class="graph-button"
+            target="_blank"
+            href="{{
+                explorerUrl + '?node=' + choiceGroup.value['partnerAddress']
+            }}"
+        >
+            <mat-icon
+                class="graph-button__icon"
+                [class.graph-button__icon--deselected]="
+                    !hasValue(choiceGroup.get('deposit').value)
+                "
+                svgIcon="graph"
+                aria-label="Open Raiden Explorer to see the suggestion in the network"
+            >
+            </mat-icon>
+        </a>
+        <span
+            *ngIf="choiceGroup.value['partnerAddress'] as partnerAddress"
+            class="address"
+            [ngClass]="{
+                'address--deselected': !hasValue(
+                    choiceGroup.get('deposit').value
+                ),
+                'address--big': choicesForm.length === 1
+            }"
+            matTooltip="{{ partnerAddress }}
+            (Click to copy)"
+            ngxClipboard
+            [cbContent]="partnerAddress"
+        >
+            {{ partnerAddress }}
+        </span>
+        <mat-slider
+            *ngIf="choicesForm.length > 1"
+            color="primary"
+            min="0"
+            max="1"
+            step="0.01"
+            (input)="choiceGroup.get('percentage').setValue($event.value)"
+            [formControl]="choiceGroup.get('percentage')"
+        ></mat-slider>
+        <app-token-input
+            *ngIf="choicesForm.length > 1"
+            placeholder="Deposit"
+            [onChainInput]="true"
+            [showInfoBox]="false"
+            [allowZero]="true"
+            width="122"
+            [formControl]="choiceGroup.get('deposit')"
+        >
+        </app-token-input>
+    </div>
+    <div
+        *ngIf="choicesForm.length > 1"
+        class="info-box"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+    >
+        <span class="info-box__equal-button" (click)="splitEqually()">
+            Split Equally
+        </span>
+
+        <div
+            *ngIf="choicesForm.invalid && choicesForm.touched"
+            [@fallDown]="'in'"
+            id="errors"
+            class="info-box__error"
+        >
+            <span *ngIf="choicesForm.hasError('negativeAmount')">
+                The deposits should not be negative
+            </span>
+            <span *ngIf="choicesForm.hasError('tooManyDecimals')">
+                The selected token network only supports up to
+                {{ tokenFormControl.value.decimals }} decimals
+            </span>
+            <span *ngIf="choicesForm.hasError('notANumber')">
+                The deposits should be valid numbers
+            </span>
+            <span *ngIf="choicesForm.hasError('insufficientFunds')">
+                Cannot distribute more than the total deposit
+            </span>
+            <span *ngIf="choicesForm.hasError('noSelection')">
+                No suggestion is selected
+            </span>
+        </div>
+    </div>
+</div>
