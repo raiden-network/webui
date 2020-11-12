@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSliderModule } from '@angular/material/slider';
 import { CdkTableModule } from '@angular/cdk/table';
 import { OverlayModule } from '@angular/cdk/overlay';
 
@@ -27,6 +28,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
         MatProgressSpinnerModule,
         MatAutocompleteModule,
         MatSidenavModule,
+        MatSliderModule,
         CdkTableModule,
         OverlayModule,
     ],

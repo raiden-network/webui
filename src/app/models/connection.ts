@@ -12,7 +12,7 @@ export interface Connections {
 
 export interface ConnectionChoice {
     readonly partnerAddress: string;
-    readonly balance: BigNumber;
+    readonly deposit: BigNumber;
 }
 
 export interface SuggestedConnection {

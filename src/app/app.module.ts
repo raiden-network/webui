@@ -65,6 +65,7 @@ import { BalanceWithSymbolComponent } from './components/balance-with-symbol/bal
 import { AddressIdenticonComponent } from './components/address-identicon/address-identicon.component';
 import { PaymentIdentifierInputComponent } from './components/payment-identifier-input/payment-identifier-input.component';
 import { QuickConnectDialogComponent } from './components/quick-connect-dialog/quick-connect-dialog.component';
+import { ConnectionSelectorComponent } from './components/quick-connect-dialog/connection-selector/connection-selector.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -122,6 +123,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         AddressIdenticonComponent,
         PaymentIdentifierInputComponent,
         QuickConnectDialogComponent,
+        ConnectionSelectorComponent,
     ],
     imports: [
         RouterModule.forRoot(appRoutes),

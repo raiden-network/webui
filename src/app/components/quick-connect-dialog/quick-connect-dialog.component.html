@@ -21,16 +21,18 @@
     </app-token-input>
     <div
         *ngIf="loading || pfsError || suggestions.length > 0"
-        class="content"
         [@stretchVertically]="'in'"
     >
-        <div *ngIf="!loading && !pfsError; else spinner">
-            Top suggestions: {{ suggestions }}
-        </div>
+        <app-connection-selector
+            *ngIf="!loading && !pfsError; else spinner"
+            [suggestions]="suggestions"
+            [@stretchVertically]="'in'"
+            formArrayName="choices"
+        >
+        </app-connection-selector>
         <ng-template #spinner>
-            <div class="content__full" fxLayoutAlign="center center">
+            <div *ngIf="loading; else error" fxLayoutAlign="center">
                 <mat-progress-spinner
-                    *ngIf="loading; else error"
                     diameter="60"
                     mode="indeterminate"
                     color="primary"
@@ -38,7 +40,7 @@
             </div>
         </ng-template>
         <ng-template #error>
-            <div class="content__full error" fxLayoutAlign="center center">
+            <div class="error" fxLayoutAlign="center">
                 Could not fetch any suggestions
             </div>
         </ng-template>
