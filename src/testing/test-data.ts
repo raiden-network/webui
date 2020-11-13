@@ -7,7 +7,7 @@ import { UserToken } from '../app/models/usertoken';
 import { PaymentEvent } from '../app/models/payment-event';
 import { PendingTransfer } from '../app/models/pending-transfer';
 import { ContractsInfo } from '../app/models/contracts-info';
-import { Connection } from '../app/models/connection';
+import { Connection, SuggestedConnection } from '../app/models/connection';
 
 const web3 = new Web3('http://localhost:8545');
 
@@ -100,6 +100,7 @@ export function createNetworkMock(obj: any = {}): Network {
         shortName: 'tst',
         chainId: 9001,
         ensSupported: true,
+        explorerUrl: 'https://testing.explorer.raiden.network',
         faucet: 'http://faucet.test/?${ADDRESS}',
     };
     return Object.assign(network, obj);
@@ -185,4 +186,21 @@ export function createContractsInfo(obj: any = {}): ContractsInfo {
         one_to_n_address: createAddress(),
     };
     return Object.assign(contracts, obj);
+}
+
+export function createSuggestedConnections(
+    count: number = 5
+): SuggestedConnection[] {
+    const suggestions: SuggestedConnection[] = [];
+    for (let i = 0; i < count; i++) {
+        suggestions.push({
+            address: createAddress(),
+            score: BigNumber.random(19).times(10 ** 19),
+            centrality: BigNumber.random(21),
+            uptime: BigNumber.random(5).times(10 ** 5),
+            capacity: BigNumber.random(19).times(10 ** 19),
+        });
+    }
+    suggestions.sort((a, b) => a.score.minus(b.score).toNumber());
+    return suggestions;
 }
