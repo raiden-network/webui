@@ -23,6 +23,7 @@ import {
     createNetworkMock,
     createAddress,
     createContractsInfo,
+    createConnectionChoices,
 } from '../../testing/test-data';
 import Spy = jasmine.Spy;
 import { Connection } from '../models/connection';
@@ -218,7 +219,7 @@ describe('RaidenService', () => {
     });
 
     it('should request the api to open a channel', () => {
-        const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
+        const partnerAddress = createAddress();
 
         service
             .openChannel(token.address, partnerAddress, 500, new BigNumber(10))
@@ -249,7 +250,7 @@ describe('RaidenService', () => {
     });
 
     it('Show a proper response when non-EIP addresses are passed in channel creation', () => {
-        const partnerAddress = '0xc52952ebad56f2c5e5b42bb881481ae27d036475';
+        const partnerAddress = createAddress();
 
         service
             .openChannel(token.address, partnerAddress, 500, new BigNumber(10))
@@ -1598,4 +1599,119 @@ describe('RaidenService', () => {
             statusText: '',
         });
     });
+
+    it('should open a batch of channels', fakeAsync(() => {
+        const raidenConfig = TestBed.inject(RaidenConfig);
+        const choices = createConnectionChoices();
+
+        service
+            .openBatchOfChannels(token, choices)
+            .subscribe((value) => {
+                expect(value).toBeFalsy();
+                expect(
+                    notificationService.addSuccessNotification
+                ).toHaveBeenCalledTimes(1);
+            })
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(4);
+            });
+        tick();
+
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(
+            choices.length + 1
+        );
+
+        choices.forEach((choice) => {
+            const requests = mockHttp.match((request) => {
+                const body = losslessParse(request.body);
+                return (
+                    request.url === `${endpoint}/channels` &&
+                    request.method === 'PUT' &&
+                    body.partner_address === choice.partnerAddress &&
+                    body.total_deposit.isEqualTo(choice.deposit) &&
+                    body.settle_timeout.isEqualTo(
+                        raidenConfig.config.settle_timeout
+                    )
+                );
+            });
+            expect(requests.length).toBe(1);
+
+            requests[0].flush(
+                losslessStringify(
+                    createChannel({
+                        partner_address: choice.partnerAddress,
+                        balance: choice.deposit,
+                        total_deposit: choice.deposit,
+                        total_withdraw: new BigNumber(0),
+                        token_address: token.address,
+                    })
+                ),
+                {
+                    status: 200,
+                    statusText: '',
+                }
+            );
+        });
+        flush();
+    }));
+
+    it('should not cancel other channel openings if one fails when opening in a batch', fakeAsync(() => {
+        const raidenConfig = TestBed.inject(RaidenConfig);
+        const choices = createConnectionChoices();
+
+        service.openBatchOfChannels(token, choices).subscribe((value) => {
+            expect(value).toBeFalsy();
+            expect(
+                notificationService.addSuccessNotification
+            ).toHaveBeenCalledTimes(1);
+        });
+        tick();
+
+        choices.forEach((choice, index) => {
+            const requests = mockHttp.match((request) => {
+                const body = losslessParse(request.body);
+                return (
+                    request.url === `${endpoint}/channels` &&
+                    request.method === 'PUT' &&
+                    body.partner_address === choice.partnerAddress &&
+                    body.total_deposit.isEqualTo(choice.deposit) &&
+                    body.settle_timeout.isEqualTo(
+                        raidenConfig.config.settle_timeout
+                    )
+                );
+            });
+            expect(requests.length).toBe(1);
+
+            if (index === 0) {
+                requests[0].flush(
+                    {
+                        errors: 'Channel already exists',
+                    },
+                    {
+                        status: 409,
+                        statusText: '',
+                    }
+                );
+            } else {
+                requests[0].flush(
+                    losslessStringify(
+                        createChannel({
+                            partner_address: choice.partnerAddress,
+                            balance: choice.deposit,
+                            total_deposit: choice.deposit,
+                            total_withdraw: new BigNumber(0),
+                            token_address: token.address,
+                        })
+                    ),
+                    {
+                        status: 200,
+                        statusText: '',
+                    }
+                );
+            }
+        });
+        flush();
+    }));
 });

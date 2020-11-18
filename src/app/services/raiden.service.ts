@@ -14,6 +14,7 @@ import {
     BehaviorSubject,
     Subject,
     throwError,
+    forkJoin,
 } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
@@ -33,7 +34,7 @@ import {
     switchMapTo,
 } from 'rxjs/operators';
 import { Channel } from '../models/channel';
-import { Connections } from '../models/connection';
+import { ConnectionChoice, Connections } from '../models/connection';
 import { PaymentEvent } from '../models/payment-event';
 import { UserToken } from '../models/usertoken';
 import { amountToDecimal } from '../utils/amount.converter';
@@ -643,6 +644,76 @@ export class RaidenService {
                     notificationIdentifier
                 )
             )
+        );
+    }
+
+    openBatchOfChannels(
+        token: UserToken,
+        connectionChoices: ConnectionChoice[]
+    ): Observable<void> {
+        let notificationIdentifier: number;
+        let errorCount = 0;
+
+        return of(null).pipe(
+            tap(() => {
+                this.quickConnectPending[token.address] = true;
+                const message: UiMessage = {
+                    title: 'Quick connect',
+                    description: `${connectionChoices.length} channels on ${token.symbol}`,
+                    icon: 'thunderbolt',
+                    userToken: token,
+                };
+                notificationIdentifier = this.notificationService.addPendingAction(
+                    message
+                );
+            }),
+            switchMap(() => {
+                const openChannelObservables = connectionChoices.map((choice) =>
+                    this.openChannel(
+                        token.address,
+                        choice.partnerAddress,
+                        this.raidenConfig.config.settle_timeout,
+                        choice.deposit
+                    ).pipe(
+                        catchError(() => {
+                            errorCount++;
+                            return of(null);
+                        })
+                    )
+                );
+                return forkJoin(openChannelObservables);
+            }),
+            switchMap(() =>
+                errorCount === connectionChoices.length
+                    ? throwError('All channel creations failed')
+                    : of(null)
+            ),
+            tap(() => {
+                const message: UiMessage = {
+                    title: 'Quick connect successful',
+                    description: `${
+                        connectionChoices.length - errorCount
+                    } channels on ${token.symbol}`,
+                    icon: 'thunderbolt',
+                    userToken: token,
+                };
+                this.notificationService.addSuccessNotification(message);
+            }),
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title: 'Quick connect failed',
+                    description: error,
+                    icon: 'error-mark',
+                    userToken: token,
+                });
+                return throwError(error);
+            }),
+            finalize(() => {
+                this.quickConnectPending[token.address] = false;
+                this.notificationService.removePendingAction(
+                    notificationIdentifier
+                );
+            })
         );
     }
 
