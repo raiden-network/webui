@@ -38,4 +38,10 @@ describe('LosslessJsonConverter', () => {
         });
         expect(stringified).toBe('{"number":"100","text":"Hello"}');
     });
+
+    it('should parse decimals to BigNumbers', () => {
+        const parsed = losslessParse('{"big":"21.201"}');
+        expect(BigNumber.isBigNumber(parsed.big)).toBe(true);
+        expect(parsed.big).toEqual(new BigNumber('21.201'));
+    });
 });

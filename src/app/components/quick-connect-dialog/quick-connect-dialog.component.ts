@@ -8,6 +8,7 @@ import { UserToken } from 'app/models/usertoken';
 import { ChannelPollingService } from 'app/services/channel-polling.service';
 import { RaidenService } from 'app/services/raiden.service';
 import { TokenPollingService } from 'app/services/token-polling.service';
+import BigNumber from 'bignumber.js';
 import { combineLatest, Observable, Subject, zip } from 'rxjs';
 import {
     catchError,
@@ -79,11 +80,15 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
     accept() {
         const choices: ConnectionChoice[] = [];
         (<FormArray>this.form.get('choices')).controls.forEach((control) => {
-            choices.push({
-                partnerAddress: control.get('partnerAddress').value,
-                deposit: control.get('deposit').value,
-            });
+            const depositValue: BigNumber = control.get('deposit').value;
+            if (depositValue.isGreaterThan(0)) {
+                choices.push({
+                    partnerAddress: control.get('partnerAddress').value,
+                    deposit: depositValue,
+                });
+            }
         });
+
         const payload: QuickConnectDialogResult = {
             token: this.form.value.token,
             connectionChoices: choices,

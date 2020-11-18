@@ -2,7 +2,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {
     ComponentFixture,
     fakeAsync,
-    flush,
     TestBed,
     tick,
 } from '@angular/core/testing';
@@ -121,7 +120,6 @@ describe('ConnectionSelectorComponent', () => {
                 );
             });
         });
-        flush();
     }));
 
     it('should set the deposit of the first suggestion to total by default', fakeAsync(() => {
@@ -311,14 +309,14 @@ describe('ConnectionSelectorComponent', () => {
             'input',
             amountToDecimal(value, token.decimals).toString()
         );
+        tick();
+        fixture.detectChanges();
         tick(300);
         fixture.detectChanges();
 
         expect(component.choicesForm.errors).toEqual({
             insufficientFunds: true,
         });
-
-        fixture.destroy();
     }));
 
     it('should show an error if all deposits are zero', fakeAsync(() => {
@@ -328,11 +326,11 @@ describe('ConnectionSelectorComponent', () => {
             By.directive(TokenInputComponent)
         );
         mockInput(tokenInputs[0], 'input', '0');
+        tick();
+        fixture.detectChanges();
         tick(300);
         fixture.detectChanges();
 
         expect(component.choicesForm.errors).toEqual({ noSelection: true });
-
-        fixture.destroy();
     }));
 });
