@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 
 export function losslessParse(json: string): any {
-    const numberRegex = /^\d+$/;
+    const numberRegex = /^\d+(\.\d+)?$/;
     return JSON.parse(json, (key, value) =>
         (typeof value === 'string' && numberRegex.test(value)) ||
         typeof value === 'number'

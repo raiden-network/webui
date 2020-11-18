@@ -8,6 +8,7 @@ import { PaymentEvent } from '../app/models/payment-event';
 import { PendingTransfer } from '../app/models/pending-transfer';
 import { ContractsInfo } from '../app/models/contracts-info';
 import { Connection, SuggestedConnection } from '../app/models/connection';
+import { Settings } from 'app/models/settings';
 
 const web3 = new Web3('http://localhost:8545');
 
@@ -203,4 +204,11 @@ export function createSuggestedConnections(
     }
     suggestions.sort((a, b) => a.score.minus(b.score).toNumber());
     return suggestions;
+}
+
+export function createSettings(): Settings {
+    return {
+        pathfinding_service_address:
+            'https://testing-pfs.transport01.raiden.network',
+    };
 }
