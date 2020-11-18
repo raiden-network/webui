@@ -7,7 +7,11 @@ import { UserToken } from '../app/models/usertoken';
 import { PaymentEvent } from '../app/models/payment-event';
 import { PendingTransfer } from '../app/models/pending-transfer';
 import { ContractsInfo } from '../app/models/contracts-info';
-import { Connection, SuggestedConnection } from '../app/models/connection';
+import {
+    Connection,
+    ConnectionChoice,
+    SuggestedConnection,
+} from '../app/models/connection';
 import { Settings } from 'app/models/settings';
 
 const web3 = new Web3('http://localhost:8545');
@@ -204,6 +208,17 @@ export function createSuggestedConnections(
     }
     suggestions.sort((a, b) => a.score.minus(b.score).toNumber());
     return suggestions;
+}
+
+export function createConnectionChoices(count: number = 3): ConnectionChoice[] {
+    const choices: ConnectionChoice[] = [];
+    for (let i = 0; i < count; i++) {
+        choices.push({
+            partnerAddress: createAddress(),
+            deposit: BigNumber.random(3).times(1000),
+        });
+    }
+    return choices;
 }
 
 export function createSettings(): Settings {
