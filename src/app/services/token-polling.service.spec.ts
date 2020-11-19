@@ -27,14 +27,12 @@ describe('TokenPollingService', () => {
         createToken({
             connected: {
                 channels: 1,
-                funds: new BigNumber(0),
                 sum_deposits: new BigNumber(0),
             },
         }),
         createToken({
             connected: {
                 channels: 2,
-                funds: new BigNumber(0),
                 sum_deposits: new BigNumber(0),
             },
         }),

@@ -717,66 +717,6 @@ export class RaidenService {
         );
     }
 
-    public connectTokenNetwork(
-        funds: BigNumber,
-        tokenAddress: string
-    ): Observable<void> {
-        let notificationIdentifier: number;
-        const token = this.getUserToken(tokenAddress);
-        const formattedAmount = amountToDecimal(
-            funds,
-            token.decimals
-        ).toFixed();
-
-        return of(null).pipe(
-            tap(() => {
-                this.quickConnectPending[tokenAddress] = true;
-                const message: UiMessage = {
-                    title: 'Quick connect',
-                    description: `${formattedAmount} ${token.symbol} funds`,
-                    icon: 'thunderbolt',
-                    userToken: token,
-                };
-                notificationIdentifier = this.notificationService.addPendingAction(
-                    message
-                );
-            }),
-            switchMap(() =>
-                this.http.put(
-                    `${this.raidenConfig.api}/connections/${tokenAddress}`,
-                    {
-                        funds,
-                    }
-                )
-            ),
-            mapTo(null),
-            tap(() => {
-                const message: UiMessage = {
-                    title: 'Quick connect successful',
-                    description: `${formattedAmount} ${token.symbol} funds`,
-                    icon: 'thunderbolt',
-                    userToken: token,
-                };
-                this.notificationService.addSuccessNotification(message);
-            }),
-            catchError((error) => {
-                this.notificationService.addErrorNotification({
-                    title: 'Quick connect failed',
-                    description: error,
-                    icon: 'error-mark',
-                    userToken: token,
-                });
-                return throwError(error);
-            }),
-            finalize(() => {
-                this.quickConnectPending[tokenAddress] = false;
-                this.notificationService.removePendingAction(
-                    notificationIdentifier
-                );
-            })
-        );
-    }
-
     public leaveTokenNetwork(userToken: UserToken): Observable<void> {
         let notificationIdentifier: number;
 

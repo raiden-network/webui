@@ -53,7 +53,6 @@ describe('PaymentDialogComponent', () => {
         decimals: 0,
         connected: {
             channels: 5,
-            funds: new BigNumber(10),
             sum_deposits: new BigNumber(50),
         },
     });
