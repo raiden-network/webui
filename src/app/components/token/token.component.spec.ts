@@ -201,7 +201,7 @@ describe('TokenComponent', () => {
             const confirmationPayload: ConfirmationDialogPayload = {
                 title: 'No open  channels',
                 message:
-                    'Do you want to use quick connect to automatically open  channels?',
+                    'Do you want to use Quick Connect to automatically open  channels?',
             };
             const quickConnectPayload: QuickConnectDialogPayload = {
                 token: undefined,
@@ -323,7 +323,7 @@ describe('TokenComponent', () => {
 
             const confirmationPayload: ConfirmationDialogPayload = {
                 title: `No open ${unconnectedToken.symbol} channels`,
-                message: `Do you want to use quick connect to automatically open ${unconnectedToken.symbol} channels?`,
+                message: `Do you want to use Quick Connect to automatically open ${unconnectedToken.symbol} channels?`,
             };
             const quickConnectPayload: QuickConnectDialogPayload = {
                 token: unconnectedToken,
@@ -456,6 +456,37 @@ describe('TokenComponent', () => {
 
             expect(dialogSpy).toHaveBeenCalledTimes(1);
             expect(leaveSpy).toHaveBeenCalledTimes(0);
+        });
+
+        it('should open quick connect dialog', () => {
+            selectedTokenService.setToken(unconnectedToken);
+            fixture.detectChanges();
+
+            clickElement(fixture.debugElement, '#options');
+            fixture.detectChanges();
+
+            const dialogSpy = spyOn(dialog, 'open').and.callThrough();
+            const dialogResult: QuickConnectDialogResult = {
+                token: unconnectedToken,
+                connectionChoices: createConnectionChoices(),
+            };
+            spyOn(dialog, 'returns').and.returnValues(true, dialogResult);
+            spyOn(raidenService, 'openBatchOfChannels').and.returnValue(
+                of(null)
+            );
+            clickElement(fixture.debugElement, '#quick-connect');
+
+            const payload: QuickConnectDialogPayload = {
+                token: unconnectedToken,
+            };
+            expect(dialogSpy).toHaveBeenCalledTimes(1);
+            expect(dialogSpy).toHaveBeenCalledWith(
+                QuickConnectDialogComponent,
+                {
+                    data: payload,
+                    width: '400px',
+                }
+            );
         });
     });
 });

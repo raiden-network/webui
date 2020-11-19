@@ -191,25 +191,7 @@ export class TokenComponent implements OnInit, OnDestroy {
             });
     }
 
-    private askForQuickConnect() {
-        const tokenSymbol = this.selectedToken?.symbol ?? '';
-        const payload: ConfirmationDialogPayload = {
-            title: `No open ${tokenSymbol} channels`,
-            message: `Do you want to use quick connect to automatically open ${tokenSymbol} channels?`,
-        };
-
-        const dialog = this.dialog.open(ConfirmationDialogComponent, {
-            data: payload,
-        });
-
-        dialog.afterClosed().subscribe((result) => {
-            if (result) {
-                this.openQuickConnect();
-            }
-        });
-    }
-
-    private openQuickConnect() {
+    openQuickConnect() {
         const payload: QuickConnectDialogPayload = {
             token: this.selectedToken,
         };
@@ -238,5 +220,23 @@ export class TokenComponent implements OnInit, OnDestroy {
                 this.tokenPollingService.refresh();
                 this.channelPollingService.refresh();
             });
+    }
+
+    private askForQuickConnect() {
+        const tokenSymbol = this.selectedToken?.symbol ?? '';
+        const payload: ConfirmationDialogPayload = {
+            title: `No open ${tokenSymbol} channels`,
+            message: `Do you want to use Quick Connect to automatically open ${tokenSymbol} channels?`,
+        };
+
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+            data: payload,
+        });
+
+        dialog.afterClosed().subscribe((result) => {
+            if (result) {
+                this.openQuickConnect();
+            }
+        });
     }
 }

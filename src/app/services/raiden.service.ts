@@ -658,7 +658,7 @@ export class RaidenService {
             tap(() => {
                 this.quickConnectPending[token.address] = true;
                 const message: UiMessage = {
-                    title: 'Quick connect',
+                    title: 'Quick Connect',
                     description: `${connectionChoices.length} channels on ${token.symbol}`,
                     icon: 'thunderbolt',
                     userToken: token,
@@ -690,7 +690,7 @@ export class RaidenService {
             ),
             tap(() => {
                 const message: UiMessage = {
-                    title: 'Quick connect successful',
+                    title: 'Quick Connect successful',
                     description: `${
                         connectionChoices.length - errorCount
                     } channels on ${token.symbol}`,
@@ -701,7 +701,7 @@ export class RaidenService {
             }),
             catchError((error) => {
                 this.notificationService.addErrorNotification({
-                    title: 'Quick connect failed',
+                    title: 'Quick Connect failed',
                     description: error,
                     icon: 'error-mark',
                     userToken: token,
