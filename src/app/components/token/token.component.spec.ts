@@ -14,6 +14,7 @@ import {
     createAddress,
     createTestChannels,
     createTestTokens,
+    createConnectionChoices,
 } from '../../../testing/test-data';
 import { By } from '@angular/platform-browser';
 import {
@@ -29,10 +30,6 @@ import {
 } from '../payment-dialog/payment-dialog.component';
 import BigNumber from 'bignumber.js';
 import { of, BehaviorSubject } from 'rxjs';
-import {
-    ConnectionManagerDialogPayload,
-    ConnectionManagerDialogComponent,
-} from '../connection-manager-dialog/connection-manager-dialog.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
     ConfirmationDialogPayload,
@@ -45,6 +42,11 @@ import { ChannelPollingService } from '../../services/channel-polling.service';
 import { stub } from '../../../testing/stub';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
+import {
+    QuickConnectDialogComponent,
+    QuickConnectDialogPayload,
+    QuickConnectDialogResult,
+} from '../quick-connect-dialog/quick-connect-dialog.component';
 
 describe('TokenComponent', () => {
     let component: TokenComponent;
@@ -184,12 +186,12 @@ describe('TokenComponent', () => {
             fixture.detectChanges();
 
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
-            const dialogResult: ConnectionManagerDialogPayload = {
+            const dialogResult: QuickConnectDialogResult = {
                 token: unconnectedToken,
-                funds: new BigNumber(10),
+                connectionChoices: createConnectionChoices(),
             };
             spyOn(dialog, 'returns').and.returnValues(true, dialogResult);
-            spyOn(raidenService, 'connectTokenNetwork').and.returnValue(
+            spyOn(raidenService, 'openBatchOfChannels').and.returnValue(
                 of(null)
             );
 
@@ -201,9 +203,8 @@ describe('TokenComponent', () => {
                 message:
                     'Do you want to use quick connect to automatically open  channels?',
             };
-            const connectionManagerPayload: ConnectionManagerDialogPayload = {
+            const quickConnectPayload: QuickConnectDialogPayload = {
                 token: undefined,
-                funds: undefined,
             };
             expect(dialogSpy).toHaveBeenCalledTimes(2);
             expect(dialogSpy.calls.first().args).toEqual([
@@ -213,9 +214,10 @@ describe('TokenComponent', () => {
                 },
             ]);
             expect(dialogSpy.calls.mostRecent().args).toEqual([
-                ConnectionManagerDialogComponent,
+                QuickConnectDialogComponent,
                 {
-                    data: connectionManagerPayload,
+                    data: quickConnectPayload,
+                    width: '400px',
                 },
             ]);
         });
@@ -306,14 +308,14 @@ describe('TokenComponent', () => {
             fixture.detectChanges();
 
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
-            const dialogResult: ConnectionManagerDialogPayload = {
+            const dialogResult: QuickConnectDialogResult = {
                 token: unconnectedToken,
-                funds: new BigNumber(10),
+                connectionChoices: createConnectionChoices(),
             };
             spyOn(dialog, 'returns').and.returnValues(true, dialogResult);
-            const connectSpy = spyOn(
+            const openBatchSpy = spyOn(
                 raidenService,
-                'connectTokenNetwork'
+                'openBatchOfChannels'
             ).and.returnValue(of(null));
 
             clickElement(fixture.debugElement, '#transfer');
@@ -323,9 +325,8 @@ describe('TokenComponent', () => {
                 title: `No open ${unconnectedToken.symbol} channels`,
                 message: `Do you want to use quick connect to automatically open ${unconnectedToken.symbol} channels?`,
             };
-            const connectionManagerPayload: ConnectionManagerDialogPayload = {
+            const quickConnectPayload: QuickConnectDialogPayload = {
                 token: unconnectedToken,
-                funds: undefined,
             };
             expect(dialogSpy).toHaveBeenCalledTimes(2);
             expect(dialogSpy.calls.first().args).toEqual([
@@ -335,15 +336,16 @@ describe('TokenComponent', () => {
                 },
             ]);
             expect(dialogSpy.calls.mostRecent().args).toEqual([
-                ConnectionManagerDialogComponent,
+                QuickConnectDialogComponent,
                 {
-                    data: connectionManagerPayload,
+                    data: quickConnectPayload,
+                    width: '400px',
                 },
             ]);
-            expect(connectSpy).toHaveBeenCalledTimes(1);
-            expect(connectSpy).toHaveBeenCalledWith(
-                dialogResult.funds,
-                dialogResult.token.address
+            expect(openBatchSpy).toHaveBeenCalledTimes(1);
+            expect(openBatchSpy).toHaveBeenCalledWith(
+                dialogResult.token,
+                dialogResult.connectionChoices
             );
         });
 
@@ -366,16 +368,16 @@ describe('TokenComponent', () => {
 
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             spyOn(dialog, 'returns').and.returnValues(true, null);
-            const connectSpy = spyOn(
+            const openBatchSpy = spyOn(
                 raidenService,
-                'connectTokenNetwork'
+                'openBatchOfChannels'
             ).and.returnValue(of(null));
 
             clickElement(fixture.debugElement, '#transfer');
             fixture.detectChanges();
 
             expect(dialogSpy).toHaveBeenCalledTimes(2);
-            expect(connectSpy).toHaveBeenCalledTimes(0);
+            expect(openBatchSpy).toHaveBeenCalledTimes(0);
         });
 
         it('should mint 0.5 tokens when token has 18 decimals', () => {
