@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- [#547] Connection manager is replaced by a new quick connect dialog which transparently opens channels with suggestions by a pathfinding service.
+
 ### Added
 - [#345] Adds the input field for a payment identifier to the transfer dialog again (was removed in the redesign).
 
@@ -176,6 +179,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#547]: https://github.com/raiden-network/webui/issues/547
 [#485]: https://github.com/raiden-network/webui/issues/485
 [#476]: https://github.com/raiden-network/webui/issues/476
 [#475]: https://github.com/raiden-network/webui/issues/475
