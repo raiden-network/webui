@@ -15,14 +15,15 @@ import {
     PaymentDialogPayload,
     PaymentDialogComponent,
 } from '../payment-dialog/payment-dialog.component';
-import {
-    ConnectionManagerDialogPayload,
-    ConnectionManagerDialogComponent,
-} from '../connection-manager-dialog/connection-manager-dialog.component';
 import { PendingTransferPollingService } from '../../services/pending-transfer-polling.service';
 import { ChannelPollingService } from '../../services/channel-polling.service';
 import { SelectedTokenService } from '../../services/selected-token.service';
 import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
+import {
+    QuickConnectDialogComponent,
+    QuickConnectDialogPayload,
+    QuickConnectDialogResult,
+} from '../quick-connect-dialog/quick-connect-dialog.component';
 
 @Component({
     selector: 'app-token',
@@ -203,33 +204,33 @@ export class TokenComponent implements OnInit, OnDestroy {
 
         dialog.afterClosed().subscribe((result) => {
             if (result) {
-                this.openConnectionManager();
+                this.openQuickConnect();
             }
         });
     }
 
-    private openConnectionManager() {
-        const payload: ConnectionManagerDialogPayload = {
+    private openQuickConnect() {
+        const payload: QuickConnectDialogPayload = {
             token: this.selectedToken,
-            funds: undefined,
         };
 
-        const dialog = this.dialog.open(ConnectionManagerDialogComponent, {
+        const dialog = this.dialog.open(QuickConnectDialogComponent, {
             data: payload,
+            width: '400px',
         });
 
         dialog
             .afterClosed()
             .pipe(
-                mergeMap((result: ConnectionManagerDialogPayload) => {
+                mergeMap((result: QuickConnectDialogResult) => {
                     if (!result) {
                         return EMPTY;
                     }
                     this.selectedTokenService.setToken(result.token);
 
-                    return this.raidenService.connectTokenNetwork(
-                        result.funds,
-                        result.token.address
+                    return this.raidenService.openBatchOfChannels(
+                        result.token,
+                        result.connectionChoices
                     );
                 })
             )
