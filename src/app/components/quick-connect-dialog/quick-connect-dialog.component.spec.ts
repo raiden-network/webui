@@ -64,7 +64,6 @@ describe('QuickConnectDialogComponent', () => {
         balance: new BigNumber(1000),
         connected: {
             channels: 5,
-            funds: new BigNumber(10),
             sum_deposits: new BigNumber(50),
         },
     });

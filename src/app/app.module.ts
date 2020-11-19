@@ -10,7 +10,6 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { HomeComponent } from './components/home/home.component';
-import { ConnectionManagerDialogComponent } from './components/connection-manager-dialog/connection-manager-dialog.component';
 import { AboutComponent } from './components/about/about.component';
 import { OpenDialogComponent } from './components/open-dialog/open-dialog.component';
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
@@ -87,7 +86,6 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         HomeComponent,
         AboutComponent,
         PaymentDialogComponent,
-        ConnectionManagerDialogComponent,
         RegisterDialogComponent,
         OpenDialogComponent,
         ConfirmationDialogComponent,

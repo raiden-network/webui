@@ -11,7 +11,6 @@ describe('TokenUtils', () => {
         balance: new BigNumber(100),
         sumChannelBalances: new BigNumber(100),
         connected: {
-            funds: new BigNumber(100),
             sum_deposits: new BigNumber(100),
             channels: 1,
         },
@@ -25,7 +24,6 @@ describe('TokenUtils', () => {
         balance: new BigNumber(50),
         sumChannelBalances: new BigNumber(30),
         connected: {
-            funds: new BigNumber(40),
             sum_deposits: new BigNumber(20),
             channels: 2,
         },

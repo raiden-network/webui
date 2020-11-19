@@ -52,7 +52,6 @@ export function createTestTokens(count: number = 3): UserToken[] {
         if (i % 2 === 0) {
             connected = {
                 channels: 1,
-                funds: new BigNumber(0),
                 sum_deposits: new BigNumber(0),
             };
         }

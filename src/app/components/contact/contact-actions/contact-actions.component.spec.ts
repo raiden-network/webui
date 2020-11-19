@@ -160,7 +160,6 @@ describe('ContactActionsComponent', () => {
         const connectedToken = createToken({
             connected: {
                 channels: 1,
-                funds: new BigNumber(0),
                 sum_deposits: new BigNumber(0),
             },
         });

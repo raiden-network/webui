@@ -770,80 +770,6 @@ describe('RaidenService', () => {
         );
     });
 
-    it('should inform the user when quick connect was successful', fakeAsync(() => {
-        service
-            .connectTokenNetwork(new BigNumber(1000), token.address)
-            .subscribe((value) => expect(value).toBeFalsy())
-            .add(() => {
-                expect(
-                    notificationService.removePendingAction
-                ).toHaveBeenCalledTimes(1);
-            });
-        tick();
-
-        const request = mockHttp.expectOne({
-            url: `${endpoint}/connections/${token.address}`,
-            method: 'PUT',
-        });
-        expect(losslessParse(request.request.body)).toEqual({
-            funds: new BigNumber(1000),
-        });
-        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
-
-        request.flush(
-            {},
-            {
-                status: 204,
-                statusText: '',
-            }
-        );
-        flush();
-
-        expect(
-            notificationService.addSuccessNotification
-        ).toHaveBeenCalledTimes(1);
-    }));
-
-    it('should inform the user when quick connect was not successful', fakeAsync(() => {
-        service
-            .connectTokenNetwork(new BigNumber(1000), token.address)
-            .subscribe(
-                () => {
-                    fail('On next should not be called');
-                },
-                (error) => {
-                    expect(error).toBeTruthy('An error was expected');
-                }
-            )
-            .add(() => {
-                expect(
-                    notificationService.removePendingAction
-                ).toHaveBeenCalledTimes(1);
-            });
-        tick();
-
-        const request = mockHttp.expectOne({
-            url: `${endpoint}/connections/${token.address}`,
-            method: 'PUT',
-        });
-        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
-
-        const errorMessage = 'Insufficient balance';
-        const errorBody = {
-            errors: errorMessage,
-        };
-
-        request.flush(errorBody, {
-            status: 400,
-            statusText: '',
-        });
-        flush();
-
-        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
-            1
-        );
-    }));
-
     it('should inform the user when leaving a token network was successful', fakeAsync(() => {
         service
             .leaveTokenNetwork(token)
@@ -1057,7 +983,6 @@ describe('RaidenService', () => {
 
     it('should give the tokens', fakeAsync(() => {
         const connection: Connection = {
-            funds: new BigNumber(100),
             sum_deposits: new BigNumber(67),
             channels: 3,
         };
