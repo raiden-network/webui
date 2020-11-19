@@ -33,7 +33,7 @@
                 aria-hidden="true"
             >
             </mat-icon>
-            <span>Quick connect pending</span>
+            <span>Quick Connect pending</span>
             <mat-progress-spinner
                 diameter="24"
                 mode="indeterminate"
@@ -86,9 +86,7 @@
             panelClass="mat-select-panel--dark"
         >
         </app-token-network-selector>
-        <ng-container
-            *ngIf="!isAllNetworksView && (!onMainnet || openChannels > 0)"
-        >
+        <ng-container *ngIf="!isAllNetworksView">
             <button
                 class="options-button"
                 mat-icon-button
@@ -104,26 +102,25 @@
                 [overlapTrigger]="true"
                 xPosition="before"
             >
+                <ng-container *ngIf="!onMainnet">
+                    <button mat-menu-item (click)="mint()" id="mint">
+                        Mint
+                    </button>
+                    <div class="options__divider"></div>
+                </ng-container>
                 <button
-                    *ngIf="!onMainnet"
                     mat-menu-item
-                    (click)="mint()"
-                    id="mint"
+                    (click)="openQuickConnect()"
+                    id="quick-connect"
                 >
-                    Mint
+                    Quick Connect
                 </button>
-                <div
-                    *ngIf="!onMainnet && openChannels > 0"
-                    class="options__divider"
-                ></div>
-                <button
-                    *ngIf="openChannels > 0"
-                    mat-menu-item
-                    (click)="leaveNetwork()"
-                    id="leave"
-                >
-                    Leave network
-                </button>
+                <ng-container *ngIf="openChannels > 0">
+                    <div class="options__divider"></div>
+                    <button mat-menu-item (click)="leaveNetwork()" id="leave">
+                        Leave network
+                    </button>
+                </ng-container>
             </mat-menu>
         </ng-container>
     </div>
