@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [1.1.0] - 2020-12-02
 ### Changed
 - [#547] Connection manager is replaced by a new quick connect dialog which transparently opens channels with suggestions by a pathfinding service.
 
@@ -160,7 +162,8 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/raiden-network/webui/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/raiden-network/webui/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/raiden-network/webui/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/raiden-network/webui/compare/v0.11.0...v1.0.0
