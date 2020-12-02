@@ -15,6 +15,7 @@ import {
     Subject,
     throwError,
     forkJoin,
+    defer,
 } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import {
@@ -294,47 +295,45 @@ export class RaidenService {
         const partnerLabel = this.getContactLabel(partnerAddress);
         let notificationIdentifier: number;
 
-        return of(null).pipe(
-            tap(() => {
-                const formattedBalance = amountToDecimal(
-                    balance,
-                    token.decimals
-                ).toFixed();
-                const message: UiMessage = {
-                    title: 'Opening channel',
-                    description: `with ${partnerLabel} ${partnerAddress} and ${formattedBalance} ${token.symbol} deposit`,
-                    icon: 'channel',
-                    identiconAddress: partnerAddress,
-                    userToken: token,
-                };
-                notificationIdentifier = this.notificationService.addPendingAction(
-                    message
-                );
+        return defer(() => {
+            const formattedBalance = amountToDecimal(
+                balance,
+                token.decimals
+            ).toFixed();
+            const message: UiMessage = {
+                title: 'Opening channel',
+                description: `with ${partnerLabel} ${partnerAddress} and ${formattedBalance} ${token.symbol} deposit`,
+                icon: 'channel',
+                identiconAddress: partnerAddress,
+                userToken: token,
+            };
+            notificationIdentifier = this.notificationService.addPendingAction(
+                message
+            );
 
-                if (!this.pendingChannels[tokenAddress]) {
-                    this.pendingChannels[tokenAddress] = {};
-                }
-                this.pendingChannels[tokenAddress][partnerAddress] = {
-                    channel_identifier: new BigNumber(0),
-                    state: 'waiting_for_open',
-                    total_deposit: new BigNumber(0),
-                    total_withdraw: new BigNumber(0),
-                    balance: new BigNumber(0),
-                    reveal_timeout: 0,
-                    settle_timeout: settleTimeout,
-                    token_address: tokenAddress,
-                    partner_address: partnerAddress,
-                    depositPending: true,
-                    userToken: token,
-                };
-                this.pendingChannelsSubject.next(this.pendingChannels);
-            }),
-            switchMap(() =>
-                this.http.put<Channel>(
-                    `${this.raidenConfig.api}/channels`,
-                    body
-                )
-            ),
+            if (!this.pendingChannels[tokenAddress]) {
+                this.pendingChannels[tokenAddress] = {};
+            }
+            this.pendingChannels[tokenAddress][partnerAddress] = {
+                channel_identifier: new BigNumber(0),
+                state: 'waiting_for_open',
+                total_deposit: new BigNumber(0),
+                total_withdraw: new BigNumber(0),
+                balance: new BigNumber(0),
+                reveal_timeout: 0,
+                settle_timeout: settleTimeout,
+                token_address: tokenAddress,
+                partner_address: partnerAddress,
+                depositPending: true,
+                userToken: token,
+            };
+            this.pendingChannelsSubject.next(this.pendingChannels);
+
+            return this.http.put<Channel>(
+                `${this.raidenConfig.api}/channels`,
+                body
+            );
+        }).pipe(
             map((channel: Channel) => {
                 channel.settle_timeout = (<BigNumber>(
                     (<unknown>channel.settle_timeout)
@@ -605,23 +604,21 @@ export class RaidenService {
     public registerToken(tokenAddress: string): Observable<void> {
         let notificationIdentifier: number;
 
-        return of(null).pipe(
-            tap(() => {
-                const message: UiMessage = {
-                    title: 'Registering token',
-                    description: tokenAddress,
-                    icon: 'add',
-                };
-                notificationIdentifier = this.notificationService.addPendingAction(
-                    message
-                );
-            }),
-            switchMap(() =>
-                this.http.put(
-                    `${this.raidenConfig.api}/tokens/${tokenAddress}`,
-                    {}
-                )
-            ),
+        return defer(() => {
+            const message: UiMessage = {
+                title: 'Registering token',
+                description: tokenAddress,
+                icon: 'add',
+            };
+            notificationIdentifier = this.notificationService.addPendingAction(
+                message
+            );
+
+            return this.http.put(
+                `${this.raidenConfig.api}/tokens/${tokenAddress}`,
+                {}
+            );
+        }).pipe(
             mapTo(null),
             tap(() => {
                 const message: UiMessage = {
@@ -654,35 +651,33 @@ export class RaidenService {
         let notificationIdentifier: number;
         let errorCount = 0;
 
-        return of(null).pipe(
-            tap(() => {
-                this.quickConnectPending[token.address] = true;
-                const message: UiMessage = {
-                    title: 'Quick Connect',
-                    description: `${connectionChoices.length} channels on ${token.symbol}`,
-                    icon: 'thunderbolt',
-                    userToken: token,
-                };
-                notificationIdentifier = this.notificationService.addPendingAction(
-                    message
-                );
-            }),
-            switchMap(() => {
-                const openChannelObservables = connectionChoices.map((choice) =>
-                    this.openChannel(
-                        token.address,
-                        choice.partnerAddress,
-                        this.raidenConfig.config.settle_timeout,
-                        choice.deposit
-                    ).pipe(
-                        catchError(() => {
-                            errorCount++;
-                            return of(null);
-                        })
-                    )
-                );
-                return forkJoin(openChannelObservables);
-            }),
+        return defer(() => {
+            this.quickConnectPending[token.address] = true;
+            const message: UiMessage = {
+                title: 'Quick Connect',
+                description: `${connectionChoices.length} channels on ${token.symbol}`,
+                icon: 'thunderbolt',
+                userToken: token,
+            };
+            notificationIdentifier = this.notificationService.addPendingAction(
+                message
+            );
+
+            const openChannelObservables = connectionChoices.map((choice) =>
+                this.openChannel(
+                    token.address,
+                    choice.partnerAddress,
+                    this.raidenConfig.config.settle_timeout,
+                    choice.deposit
+                ).pipe(
+                    catchError(() => {
+                        errorCount++;
+                        return of(null);
+                    })
+                )
+            );
+            return forkJoin(openChannelObservables);
+        }).pipe(
             switchMap(() =>
                 errorCount === connectionChoices.length
                     ? throwError('All channel creations failed')
@@ -720,23 +715,21 @@ export class RaidenService {
     public leaveTokenNetwork(userToken: UserToken): Observable<void> {
         let notificationIdentifier: number;
 
-        return of(null).pipe(
-            tap(() => {
-                const message: UiMessage = {
-                    title: 'Leaving token network',
-                    description: `${userToken.symbol}`,
-                    icon: 'close',
-                    userToken: userToken,
-                };
-                notificationIdentifier = this.notificationService.addPendingAction(
-                    message
-                );
-            }),
-            switchMap(() =>
-                this.http.delete(
-                    `${this.raidenConfig.api}/connections/${userToken.address}`
-                )
-            ),
+        return defer(() => {
+            const message: UiMessage = {
+                title: 'Leaving token network',
+                description: `${userToken.symbol}`,
+                icon: 'close',
+                userToken: userToken,
+            };
+            notificationIdentifier = this.notificationService.addPendingAction(
+                message
+            );
+
+            return this.http.delete(
+                `${this.raidenConfig.api}/connections/${userToken.address}`
+            );
+        }).pipe(
             mapTo(null),
             tap(() => {
                 const message: UiMessage = {
@@ -800,24 +793,22 @@ export class RaidenService {
         let notificationIdentifier: number;
         const formattedAmount = amountToDecimal(amount, token.decimals);
 
-        return of(null).pipe(
-            tap(() => {
-                const message: UiMessage = {
-                    title: 'Minting',
-                    description: `${formattedAmount} ${token.symbol} on-chain`,
-                    icon: 'token',
-                    userToken: token,
-                };
-                notificationIdentifier = this.notificationService.addPendingAction(
-                    message
-                );
-            }),
-            switchMap(() =>
-                this.http.post(
-                    `${this.raidenConfig.api}/_testing/tokens/${token.address}/mint`,
-                    { to: targetAddress, value: amount }
-                )
-            ),
+        return defer(() => {
+            const message: UiMessage = {
+                title: 'Minting',
+                description: `${formattedAmount} ${token.symbol} on-chain`,
+                icon: 'token',
+                userToken: token,
+            };
+            notificationIdentifier = this.notificationService.addPendingAction(
+                message
+            );
+
+            return this.http.post(
+                `${this.raidenConfig.api}/_testing/tokens/${token.address}/mint`,
+                { to: targetAddress, value: amount }
+            );
+        }).pipe(
             mapTo(null),
             tap(() => {
                 const message: UiMessage = {
