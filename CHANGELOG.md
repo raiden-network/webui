@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- [#580] Show error message in quick connect dialog when no pathfinding service is set.
 
 ## [1.1.0] - 2020-12-02
 ### Changed
@@ -182,6 +184,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#580]: https://github.com/raiden-network/webui/issues/580
 [#547]: https://github.com/raiden-network/webui/issues/547
 [#485]: https://github.com/raiden-network/webui/issues/485
 [#476]: https://github.com/raiden-network/webui/issues/476
