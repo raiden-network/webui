@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [1.1.1] - 2020-12-03
 ### Fixed
 - [#580] Show error message in quick connect dialog when no pathfinding service is set.
 
@@ -164,7 +166,8 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/raiden-network/webui/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/raiden-network/webui/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/raiden-network/webui/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/raiden-network/webui/compare/v1.0.0...v1.0.1
