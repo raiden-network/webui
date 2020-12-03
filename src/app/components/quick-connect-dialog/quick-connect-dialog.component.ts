@@ -53,7 +53,7 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
     suggestions: SuggestedConnection[] = [];
     loading = false;
     pfsError = false;
-    noPfs = false;
+    pfsConfigured = true;
 
     private ngUnsubscribe = new Subject();
 
@@ -112,7 +112,7 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
         const pathfindingServiceUrl$ = this.raidenService.getSettings().pipe(
             map((settings) => {
                 if (!settings.pathfinding_service_address) {
-                    this.noPfs = true;
+                    this.pfsConfigured = false;
                     throw new Error('No PFS set!');
                 }
                 return settings.pathfinding_service_address;
@@ -172,7 +172,7 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
                 catchError((error, caught) => {
                     this.loading = false;
                     this.showError();
-                    if (this.noPfs) {
+                    if (!this.pfsConfigured) {
                         return EMPTY;
                     }
                     return caught;

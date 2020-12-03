@@ -20,7 +20,7 @@
     >
     </app-token-input>
     <div
-        *ngIf="loading || pfsError || noPfs || suggestions.length > 0"
+        *ngIf="loading || pfsError || !pfsConfigured || suggestions.length > 0"
         [@stretchVertically]="'in'"
     >
         <app-connection-selector
@@ -41,7 +41,7 @@
         </ng-template>
         <ng-template #error>
             <div
-                *ngIf="!noPfs; else no_pfs"
+                *ngIf="pfsConfigured; else no_pfs"
                 class="error"
                 fxLayoutAlign="center"
             >
@@ -50,8 +50,8 @@
         </ng-template>
         <ng-template #no_pfs>
             <div class="error" fxLayoutAlign="center">
-                You cannot use Quick Connect because you are using the private
-                routing mode
+                Quick Connect requires a pathfinding service, but no such
+                service is configured
             </div>
         </ng-template>
     </div>
