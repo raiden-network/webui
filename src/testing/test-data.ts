@@ -220,9 +220,10 @@ export function createConnectionChoices(count: number = 3): ConnectionChoice[] {
     return choices;
 }
 
-export function createSettings(): Settings {
-    return {
+export function createSettings(obj: any = {}): Settings {
+    const settings = {
         pathfinding_service_address:
             'https://testing-pfs.transport01.raiden.network',
     };
+    return Object.assign(settings, obj);
 }
