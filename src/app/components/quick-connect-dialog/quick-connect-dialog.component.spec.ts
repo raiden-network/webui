@@ -17,6 +17,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { LosslessJsonInterceptor } from 'app/interceptors/lossless-json.interceptor';
 import { Channel } from 'app/models/channel';
 import { SuggestedConnection } from 'app/models/connection';
+import { Settings } from 'app/models/settings';
 import { MaterialComponentsModule } from 'app/modules/material-components/material-components.module';
 import { RaidenIconsModule } from 'app/modules/raiden-icons/raiden-icons.module';
 import { DecimalPipe } from 'app/pipes/decimal.pipe';
@@ -75,6 +76,7 @@ describe('QuickConnectDialogComponent', () => {
         token.decimals
     );
     let channelsSubject: BehaviorSubject<Channel[]>;
+    let settingsSubject: BehaviorSubject<Settings>;
     let mockHttp: HttpTestingController;
 
     function initServices() {
@@ -82,7 +84,10 @@ describe('QuickConnectDialogComponent', () => {
         spyOn(raidenService, 'getTokenNetworkAddress').and.returnValue(
             of(tokenNetworkAddress)
         );
-        spyOn(raidenService, 'getSettings').and.returnValue(of(settings));
+        settingsSubject = new BehaviorSubject(settings);
+        spyOn(raidenService, 'getSettings').and.returnValue(
+            settingsSubject.asObservable()
+        );
         mockHttp = TestBed.inject(HttpTestingController);
     }
 
@@ -258,14 +263,33 @@ describe('QuickConnectDialogComponent', () => {
 
             expect(component.suggestions.length).toEqual(0);
             expect(component.pfsError).toBe(true);
+            expect(component.noPfs).toBe(false);
             expect(component.form.controls.totalAmount.disabled).toBe(true);
         }));
 
-        it('should show an error if there it fails to request the suggestions', fakeAsync(() => {
+        it('should show an error if it fails to request the suggestions', fakeAsync(() => {
             initComponentForFakeAsync(new Error('API not supported'));
 
             expect(component.suggestions.length).toEqual(0);
             expect(component.pfsError).toBe(true);
+            expect(component.noPfs).toBe(false);
+            expect(component.form.controls.totalAmount.disabled).toBe(true);
+        }));
+
+        it('should show an error if it there is no PFS configured', fakeAsync(() => {
+            settingsSubject.next(
+                createSettings({ pathfinding_service_address: null })
+            );
+
+            fixture.detectChanges();
+            tick();
+
+            fixture.detectChanges();
+            tick();
+
+            expect(component.suggestions.length).toEqual(0);
+            expect(component.pfsError).toBe(true);
+            expect(component.noPfs).toBe(true);
             expect(component.form.controls.totalAmount.disabled).toBe(true);
         }));
     });

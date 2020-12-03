@@ -9,7 +9,14 @@ import { ChannelPollingService } from 'app/services/channel-polling.service';
 import { RaidenService } from 'app/services/raiden.service';
 import { TokenPollingService } from 'app/services/token-polling.service';
 import BigNumber from 'bignumber.js';
-import { combineLatest, Observable, Subject, zip } from 'rxjs';
+import {
+    combineLatest,
+    EMPTY,
+    Observable,
+    Subject,
+    throwError,
+    zip,
+} from 'rxjs';
 import {
     catchError,
     delay,
@@ -46,6 +53,7 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
     suggestions: SuggestedConnection[] = [];
     loading = false;
     pfsError = false;
+    noPfs = false;
 
     private ngUnsubscribe = new Subject();
 
@@ -101,9 +109,15 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
     }
 
     private subscribeToSuggestions() {
-        const pathfindingServiceUrl$ = this.raidenService
-            .getSettings()
-            .pipe(map((settings) => settings.pathfinding_service_address));
+        const pathfindingServiceUrl$ = this.raidenService.getSettings().pipe(
+            map((settings) => {
+                if (!settings.pathfinding_service_address) {
+                    this.noPfs = true;
+                    throw new Error('No PFS set!');
+                }
+                return settings.pathfinding_service_address;
+            })
+        );
         const tokenValueChange$: Observable<UserToken> = this.form.controls
             .token.valueChanges;
         const tokenNetworkAddress$ = tokenValueChange$.pipe(
@@ -156,13 +170,17 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
                     )
                 ),
                 catchError((error, caught) => {
+                    this.loading = false;
                     this.showError();
+                    if (this.noPfs) {
+                        return EMPTY;
+                    }
                     return caught;
                 }),
-                tap(() => (this.loading = false)),
                 takeUntil(this.ngUnsubscribe)
             )
             .subscribe((suggestions) => {
+                this.loading = false;
                 if (suggestions.length === 0) {
                     this.showError();
                 }

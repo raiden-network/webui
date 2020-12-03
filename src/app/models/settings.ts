@@ -1,3 +1,3 @@
 export interface Settings {
-    readonly pathfinding_service_address: string;
+    readonly pathfinding_service_address: string | null;
 }
