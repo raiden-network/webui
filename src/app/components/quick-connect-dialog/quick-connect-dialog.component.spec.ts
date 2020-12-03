@@ -263,7 +263,7 @@ describe('QuickConnectDialogComponent', () => {
 
             expect(component.suggestions.length).toEqual(0);
             expect(component.pfsError).toBe(true);
-            expect(component.noPfs).toBe(false);
+            expect(component.pfsConfigured).toBe(true);
             expect(component.form.controls.totalAmount.disabled).toBe(true);
         }));
 
@@ -272,7 +272,7 @@ describe('QuickConnectDialogComponent', () => {
 
             expect(component.suggestions.length).toEqual(0);
             expect(component.pfsError).toBe(true);
-            expect(component.noPfs).toBe(false);
+            expect(component.pfsConfigured).toBe(true);
             expect(component.form.controls.totalAmount.disabled).toBe(true);
         }));
 
@@ -289,7 +289,7 @@ describe('QuickConnectDialogComponent', () => {
 
             expect(component.suggestions.length).toEqual(0);
             expect(component.pfsError).toBe(true);
-            expect(component.noPfs).toBe(true);
+            expect(component.pfsConfigured).toBe(false);
             expect(component.form.controls.totalAmount.disabled).toBe(true);
         }));
     });
