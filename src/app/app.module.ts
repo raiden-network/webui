@@ -124,7 +124,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         ConnectionSelectorComponent,
     ],
     imports: [
-        RouterModule.forRoot(appRoutes),
+        RouterModule.forRoot(appRoutes, { relativeLinkResolution: 'legacy' }),
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
