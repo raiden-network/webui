@@ -9,7 +9,7 @@
             "projectType": "application",
             "architect": {
                 "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
+                    "builder": "@angular-builders/custom-webpack:browser",
                     "options": {
                         "aot": true,
                         "outputPath": "raiden_webui/ui",
@@ -47,7 +47,13 @@
                             "underscore",
                             "ethjs-unit",
                             "elliptic"
-                        ]
+                        ],
+                        "customWebpackConfig": {
+                            "path": "./webpack.config.js",
+                            "mergeRules": {
+                                "externals": "replace"
+                            }
+                        }
                     },
                     "configurations": {
                         "production": {
@@ -75,7 +81,7 @@
                     }
                 },
                 "serve": {
-                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "builder": "@angular-builders/custom-webpack:dev-server",
                     "options": {
                         "browserTarget": "raidenwebui:build"
                     },
@@ -86,13 +92,13 @@
                     }
                 },
                 "extract-i18n": {
-                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "builder": "@angular-builders/custom-webpack:extract-i18n",
                     "options": {
                         "browserTarget": "raidenwebui:build"
                     }
                 },
                 "test": {
-                    "builder": "@angular-devkit/build-angular:karma",
+                    "builder": "@angular-builders/custom-webpack:karma",
                     "options": {
                         "main": "src/test.ts",
                         "karmaConfig": "./karma.conf.js",
@@ -100,7 +106,13 @@
                         "tsConfig": "src/tsconfig.spec.json",
                         "scripts": [],
                         "styles": ["src/styles.scss"],
-                        "assets": ["src/assets", "src/favicon.ico"]
+                        "assets": ["src/assets", "src/favicon.ico"],
+                        "customWebpackConfig": {
+                            "path": "./webpack.config.js",
+                            "mergeRules": {
+                                "externals": "replace"
+                            }
+                        }
                     }
                 },
                 "lint": {
