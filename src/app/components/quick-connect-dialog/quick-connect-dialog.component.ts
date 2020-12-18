@@ -87,7 +87,7 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
 
     accept() {
         const choices: ConnectionChoice[] = [];
-        (<FormArray>this.form.get('choices')).controls.forEach((control) => {
+        (this.form.get('choices') as FormArray).controls.forEach((control) => {
             const depositValue: BigNumber = control.get('deposit').value;
             if (depositValue.isGreaterThan(0)) {
                 choices.push({

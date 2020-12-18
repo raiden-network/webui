@@ -34,9 +34,6 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
     value: UserToken;
     tokens$: Observable<UserToken[]>;
 
-    private propagateTouched = () => {};
-    private propagateChange = (token: UserToken) => {};
-
     constructor(
         private tokenPollingService: TokenPollingService,
         private raidenService: RaidenService,
@@ -102,4 +99,7 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
                 this.tokenPollingService.refresh();
             });
     }
+
+    private propagateTouched = () => {};
+    private propagateChange = (token: UserToken) => {};
 }

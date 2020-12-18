@@ -12,7 +12,7 @@ import {
 class MockRequestingService {
     constructor(private http: HttpClient) {}
 
-    putData(body: Object): Observable<any> {
+    putData(body: any): Observable<any> {
         return this.http.put('someurl.com/data', body);
     }
 }

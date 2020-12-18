@@ -68,9 +68,9 @@ describe('OpenDialogComponent', () => {
     beforeEach(
         waitForAsync(() => {
             const payload: OpenDialogPayload = {
-                token: token,
-                defaultSettleTimeout: defaultSettleTimeout,
-                revealTimeout: revealTimeout,
+                token,
+                defaultSettleTimeout,
+                revealTimeout,
             };
 
             const tokenPollingMock = stub<TokenPollingService>();
@@ -136,7 +136,7 @@ describe('OpenDialogComponent', () => {
 
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith({
-            token: token,
+            token,
             partnerAddress: addressInput,
             settleTimeout: defaultSettleTimeout,
             balance: new BigNumber(amountInput),

@@ -5,7 +5,7 @@
         {
             "files": ["*.ts"],
             "parserOptions": {
-                "project": ["tsconfig.json", "e2e/tsconfig.json"],
+                "project": ["tsconfig.json", "e2e/tsconfig.e2e.json"],
                 "createDefaultProgram": true
             },
             "extends": [
@@ -28,7 +28,9 @@
                 "id-match": "off",
                 "no-underscore-dangle": "off",
                 "@typescript-eslint/naming-convention": "off",
-                "prefer-arrow/prefer-arrow-functions": "off"
+                "prefer-arrow/prefer-arrow-functions": "off",
+                "no-shadow": "off",
+                "@typescript-eslint/no-shadow": "error"
             }
         },
         {

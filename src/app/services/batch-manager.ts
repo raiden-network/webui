@@ -45,14 +45,13 @@ export class BatchManager {
         );
         const results = [];
 
-        for (let i = 0; i < batches.length; i++) {
-            const batch = batches[i];
+        for (const batch of batches) {
             const rpcRequests = batch.map((value) => value.request);
             const batchResponses = (await this.sendBatch(rpcRequests)) || [];
 
-            const allResponses = batch.map((request, index) => {
-                return batchResponses[index] || {};
-            });
+            const allResponses = batch.map(
+                (request, index) => batchResponses[index] || {}
+            );
 
             const processedResponses = [];
             for (let index = 0; index < allResponses.length; index++) {
@@ -72,12 +71,11 @@ export class BatchManager {
         return this.requests.push(request);
     }
 
-    // noinspection JSMethodCanBeStatic
     private processResponse(
         responseItem: any,
         currentRequest: BatchRequest
-    ): Object {
-        let resultValue: Object;
+    ): any {
+        let resultValue: any;
         const defaultValue = currentRequest.defaultValue;
 
         if (responseItem && responseItem.error) {

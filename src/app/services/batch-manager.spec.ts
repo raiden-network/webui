@@ -129,7 +129,7 @@ export class FakeHttpProvider implements Provider {
         this.response.push([responses]);
     }
 
-    public injectInvalidResponse(response: object) {
+    public injectInvalidResponse(response: any) {
         this.response.push(response);
     }
 

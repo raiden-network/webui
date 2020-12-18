@@ -147,7 +147,7 @@ describe('HeaderComponent', () => {
     });
 
     it('should show the qr code dialog for the raiden address', () => {
-        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open');
 
         clickElement(fixture.debugElement, '#qr-button');

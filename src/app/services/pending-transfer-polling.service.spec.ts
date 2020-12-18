@@ -66,12 +66,10 @@ describe('PendingTransferPollingService', () => {
         [PendingTransferPollingService],
         (service: PendingTransferPollingService) => {
             const mockAddressBookService = TestBed.inject(AddressBookService);
-            mockAddressBookService.get = () => {
-                return {
-                    [pendingTransfer1.target]: 'Test account 1',
-                    [pendingTransfer2.initiator]: 'Test account 2',
-                };
-            };
+            mockAddressBookService.get = () => ({
+                [pendingTransfer1.target]: 'Test account 1',
+                [pendingTransfer2.initiator]: 'Test account 2',
+            });
             getPendingTransfersSpy.and.returnValues(
                 from([
                     [],

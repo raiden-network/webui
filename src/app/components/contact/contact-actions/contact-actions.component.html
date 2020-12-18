@@ -4,7 +4,7 @@
         mat-flat-button
         color="accent"
         (click)="pay()"
-        stopClickPropagation
+        appStopClickPropagation
         [disabled]="!isConnected()"
         [matTooltip]="
             !isConnected()
@@ -22,7 +22,7 @@
         mat-flat-button
         color="accent"
         (click)="edit()"
-        stopClickPropagation
+        appStopClickPropagation
         id="edit"
     >
         Edit
@@ -32,7 +32,7 @@
         mat-flat-button
         color="accent"
         (click)="delete()"
-        stopClickPropagation
+        appStopClickPropagation
         id="delete"
     >
         Delete

@@ -115,7 +115,7 @@ describe('TokenComponent', () => {
         fixture = TestBed.createComponent(TokenComponent);
         component = fixture.componentInstance;
 
-        dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
         raidenService = TestBed.inject(RaidenService);
         fixture.detectChanges();
     });

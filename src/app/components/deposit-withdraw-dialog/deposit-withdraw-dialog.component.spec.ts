@@ -43,7 +43,7 @@ describe('DepositWithdrawDialogComponent', () => {
     beforeEach(
         waitForAsync(() => {
             const payload: DepositWithdrawDialogPayload = {
-                channel: channel,
+                channel,
                 depositMode: DepositMode.DEPOSIT,
             };
 
@@ -150,7 +150,7 @@ describe('DepositWithdrawDialogComponent', () => {
     describe('as deposit dialog', () => {
         beforeEach(() => {
             const payload: DepositWithdrawDialogPayload = {
-                channel: channel,
+                channel,
                 depositMode: DepositMode.WITHDRAW,
             };
             TestBed.overrideProvider(MAT_DIALOG_DATA, { useValue: payload });

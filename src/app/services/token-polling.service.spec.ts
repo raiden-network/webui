@@ -164,12 +164,11 @@ describe('TokenPollingService', () => {
                 PaymentHistoryPollingService
             );
             spyOn(paymentHistoryPollingService, 'getTokenUsage').and.callFake(
-                (tokenAddress) => {
-                    return {
+                (tokenAddress) =>
+                    ({
                         [usedToken.address]: 6,
                         [connectedTokens[0].address]: 2,
-                    }[tokenAddress];
-                }
+                    }[tokenAddress])
             );
             spyOn(raidenService, 'getTokens').and.returnValue(
                 of(connectedTokens.concat([usedToken, token, notOwnedToken]))

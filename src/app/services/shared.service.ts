@@ -6,17 +6,17 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class SharedService {
+    readonly globalClickTarget$: Observable<HTMLElement>;
+    readonly searchFilter$: Observable<string>;
+
     private globalClickTargetSubject: Subject<HTMLElement> = new Subject();
     private searchFilterSubject: BehaviorSubject<string> = new BehaviorSubject(
         ''
     );
 
-    readonly globalClickTarget$: Observable<
-        HTMLElement
-    > = this.globalClickTargetSubject.asObservable();
-    readonly searchFilter$: Observable<string>;
-
     constructor() {
+        this.globalClickTarget$ = this.globalClickTargetSubject.asObservable();
+
         this.searchFilter$ = this.searchFilterSubject
             .asObservable()
             .pipe(debounceTime(400), distinctUntilChanged());

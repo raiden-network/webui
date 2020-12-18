@@ -213,7 +213,7 @@ describe('ConnectionSelectorComponent', () => {
         fixture.detectChanges();
 
         const sliders = fixture.debugElement.queryAll(By.directive(MatSlider));
-        (<MatSlider>sliders[2].componentInstance).input.emit({
+        (sliders[2].componentInstance as MatSlider).input.emit({
             source: sliders[2].componentInstance,
             value: 1,
         });

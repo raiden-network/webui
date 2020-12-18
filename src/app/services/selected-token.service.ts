@@ -6,15 +6,15 @@ import { UserToken } from '../models/usertoken';
     providedIn: 'root',
 })
 export class SelectedTokenService {
+    selectedToken$: Observable<UserToken>;
+
     private selectedTokenSubject: BehaviorSubject<
         UserToken
     > = new BehaviorSubject(undefined);
 
-    selectedToken$: Observable<
-        UserToken
-    > = this.selectedTokenSubject.asObservable();
-
-    constructor() {}
+    constructor() {
+        this.selectedToken$ = this.selectedTokenSubject.asObservable();
+    }
 
     setToken(token: UserToken) {
         this.selectedTokenSubject.next(token);

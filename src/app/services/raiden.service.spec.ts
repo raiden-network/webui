@@ -46,7 +46,7 @@ describe('RaidenService', () => {
 
     let mockHttp: HttpTestingController;
     let notificationService: NotificationService;
-    let endpoint: String;
+    let endpoint: string;
 
     let service: RaidenService;
 
@@ -138,7 +138,7 @@ describe('RaidenService', () => {
 
         request.flush(
             {
-                version: version,
+                version,
             },
             {
                 status: 200,
@@ -320,7 +320,7 @@ describe('RaidenService', () => {
         flush();
     }));
 
-    it('should show an info message if attempted connection is successful', fakeAsync(function () {
+    it('should show an info message if attempted connection is successful', fakeAsync(() => {
         const config: RaidenConfig = TestBed.inject(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.returnValue(Promise.resolve(true));
@@ -332,7 +332,7 @@ describe('RaidenService', () => {
         );
     }));
 
-    it('should show an error message if attempted connection is unsuccessful', fakeAsync(function () {
+    it('should show an error message if attempted connection is unsuccessful', fakeAsync(() => {
         const config = TestBed.inject(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.returnValue(Promise.resolve(false));
@@ -344,7 +344,7 @@ describe('RaidenService', () => {
         );
     }));
 
-    it('should show an error message if attempted connection is load fails', fakeAsync(function () {
+    it('should show an error message if attempted connection is load fails', fakeAsync(() => {
         const config = TestBed.inject(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.callFake(() => Promise.reject(new Error('failed')));
@@ -356,7 +356,7 @@ describe('RaidenService', () => {
         );
     }));
 
-    it('should not show a notification for successful rpc connection when flag set to false', fakeAsync(function () {
+    it('should not show a notification for successful rpc connection when flag set to false', fakeAsync(() => {
         const config: RaidenConfig = TestBed.inject(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.returnValue(Promise.resolve(true));
@@ -368,7 +368,7 @@ describe('RaidenService', () => {
         );
     }));
 
-    it('should not show a notification for unsuccessful rpc connection when flag set to false', fakeAsync(function () {
+    it('should not show a notification for unsuccessful rpc connection when flag set to false', fakeAsync(() => {
         const config = TestBed.inject(RaidenConfig);
         const loadSpy = spyOn(config, 'load');
         loadSpy.and.returnValue(Promise.resolve(false));
@@ -380,7 +380,7 @@ describe('RaidenService', () => {
         );
     }));
 
-    it('should periodically poll the balance', fakeAsync(function () {
+    it('should periodically poll the balance', fakeAsync(() => {
         let count = 0;
         const config = TestBed.inject(RaidenConfig);
 
@@ -388,11 +388,10 @@ describe('RaidenService', () => {
 
         // @ts-ignore
         config.web3.eth = {
-            getBalance(address: string): Promise<string> {
-                return Promise.resolve(
+            getBalance: (address: string) =>
+                Promise.resolve(
                     new BigNumber('2000000000000000000').toString()
-                );
-            },
+                ),
         };
 
         tick(15000);
@@ -430,9 +429,7 @@ describe('RaidenService', () => {
 
         // @ts-ignore
         raidenConfig.web3.eth = {
-            getBalance(address: string): Promise<string> {
-                return Promise.reject();
-            },
+            getBalance: (address: string) => Promise.reject(),
         };
 
         tick(15000);
@@ -459,11 +456,10 @@ describe('RaidenService', () => {
 
         // @ts-ignore
         raidenConfig.web3.eth = {
-            getBalance(address: string): Promise<string> {
-                return Promise.resolve(
+            getBalance: (address: string) =>
+                Promise.resolve(
                     new BigNumber('2000000000000000000').toString()
-                );
-            },
+                ),
         };
 
         const loadSpy = spyOn(raidenConfig, 'load');

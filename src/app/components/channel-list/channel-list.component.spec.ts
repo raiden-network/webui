@@ -165,10 +165,8 @@ describe('ChannelListComponent', () => {
 
         expect(setTokenSpy).toHaveBeenCalledTimes(1);
         expect(setTokenSpy).toHaveBeenCalledWith(token1);
-        for (let i = 0; i < component.visibleChannels.length; i++) {
-            expect(component.visibleChannels[i].token_address).toBe(
-                token1.address
-            );
+        for (const channel of component.visibleChannels) {
+            expect(channel.token_address).toBe(token1.address);
         }
     });
 
@@ -178,10 +176,8 @@ describe('ChannelListComponent', () => {
         tick(1000);
         fixture.detectChanges();
 
-        for (let i = 0; i < component.visibleChannels.length; i++) {
-            expect(component.visibleChannels[i].token_address).toBe(
-                token2.address
-            );
+        for (const channel of component.visibleChannels) {
+            expect(channel.token_address).toBe(token2.address);
         }
         flush();
     }));
@@ -208,7 +204,7 @@ describe('ChannelListComponent', () => {
     }));
 
     it('should open open channel dialog', () => {
-        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
         const raidenService = TestBed.inject(RaidenService);
         const raidenConfig = TestBed.inject(RaidenConfig);
 
@@ -244,7 +240,7 @@ describe('ChannelListComponent', () => {
     });
 
     it('should not open channel if dialog is cancelled', () => {
-        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
         const raidenService = TestBed.inject(RaidenService);
 
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
@@ -259,7 +255,7 @@ describe('ChannelListComponent', () => {
     });
 
     it('should open open channel dialog with selected token', () => {
-        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
         const raidenConfig = TestBed.inject(RaidenConfig);
         const selectedTokenService: SelectedTokenService = TestBed.inject(
             SelectedTokenService

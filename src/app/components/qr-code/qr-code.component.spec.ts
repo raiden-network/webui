@@ -22,7 +22,7 @@ describe('QrCodeComponent', () => {
     beforeEach(
         waitForAsync(() => {
             const payload: QrCodePayload = {
-                content: content,
+                content,
             };
 
             TestBed.configureTestingModule({

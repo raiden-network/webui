@@ -12,6 +12,11 @@ import { scan } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class NotificationService {
+    public readonly numberOfNotifications$: Observable<number>;
+    public readonly notifications$: Observable<NotificationMessage[]>;
+    public readonly pendingActions$: Observable<NotificationMessage[]>;
+    public readonly connectionErrors$: Observable<ConnectionErrors>;
+
     private numberOfNotificationsSubject = new BehaviorSubject<number>(0);
     private notificationsSubject = new BehaviorSubject<NotificationMessage[]>(
         []
@@ -21,39 +26,31 @@ export class NotificationService {
     );
     private connectionErrorsSubject = new BehaviorSubject<ConnectionErrors>({});
 
-    public readonly numberOfNotifications$: Observable<
-        number
-    > = this.numberOfNotificationsSubject
-        .asObservable()
-        .pipe(scan((acc, value) => Math.max(acc + value, 0), 0));
-    public readonly notifications$: Observable<
-        NotificationMessage[]
-    > = this.notificationsSubject.asObservable();
-    public readonly pendingActions$: Observable<
-        NotificationMessage[]
-    > = this.pendingActionsSubject.asObservable();
-    public readonly connectionErrors$: Observable<
-        ConnectionErrors
-    > = this.connectionErrorsSubject.asObservable();
-
     private notifications: NotificationMessage[] = [];
     private pendingActions: NotificationMessage[] = [];
     private notificationCounter = 0;
     private connectionErrors: ConnectionErrors = {};
 
-    constructor(@Inject(Injector) private injector: Injector) {}
+    constructor(@Inject(Injector) private injector: Injector) {
+        this.numberOfNotifications$ = this.numberOfNotificationsSubject
+            .asObservable()
+            .pipe(scan((acc, value) => Math.max(acc + value, 0), 0));
+        this.notifications$ = this.notificationsSubject.asObservable();
+        this.pendingActions$ = this.pendingActionsSubject.asObservable();
+        this.connectionErrors$ = this.connectionErrorsSubject.asObservable();
+    }
 
     public get rpcError(): Error {
         return this.connectionErrors.rpcError;
     }
 
-    public get apiError(): ApiErrorResponse {
-        return this.connectionErrors.apiError;
-    }
-
     public set rpcError(error: Error) {
         this.connectionErrors.rpcError = error;
         this.connectionErrorsSubject.next(this.connectionErrors);
+    }
+
+    public get apiError(): ApiErrorResponse {
+        return this.connectionErrors.apiError;
     }
 
     public set apiError(error: ApiErrorResponse) {
@@ -83,7 +80,7 @@ export class NotificationService {
         this.pendingActions = [
             {
                 ...message,
-                identifier: identifier,
+                identifier,
                 timestamp: new Date().toISOString(),
             },
             ...this.pendingActions,
@@ -145,7 +142,7 @@ export class NotificationService {
         this.notifications = [
             {
                 ...message,
-                identifier: identifier,
+                identifier,
                 timestamp: new Date().toISOString(),
             },
             ...this.notifications,

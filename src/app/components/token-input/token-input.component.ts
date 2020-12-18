@@ -56,8 +56,6 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
 
     private _selectedToken: UserToken;
     private _maxAmount: BigNumber;
-    private propagateTouched = () => {};
-    private propagateChange = (amount: BigNumber) => {};
 
     constructor() {}
 
@@ -67,10 +65,6 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
 
     get selectedToken(): UserToken {
         return this._selectedToken;
-    }
-
-    get maxAmount(): BigNumber {
-        return this._maxAmount;
     }
 
     set selectedToken(value: UserToken) {
@@ -83,6 +77,10 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
             this.inputElement.nativeElement.value = newDecimalAmount;
         }
         this.onChange();
+    }
+
+    get maxAmount(): BigNumber {
+        return this._maxAmount;
     }
 
     set maxAmount(value: BigNumber) {
@@ -148,6 +146,9 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
             this.decimals
         ).toFixed();
     }
+
+    private propagateTouched = () => {};
+    private propagateChange = (amount: BigNumber) => {};
 
     private setAmount() {
         const decimalAmount = new BigNumber(

@@ -184,7 +184,7 @@ describe('PaymentDialogComponent', () => {
 
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith({
-            token: token,
+            token,
             targetAddress: addressInput,
             amount: new BigNumber(amountInput),
             paymentIdentifier: undefined,
@@ -201,7 +201,7 @@ describe('PaymentDialogComponent', () => {
 
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith({
-            token: token,
+            token,
             targetAddress: addressInput,
             amount: new BigNumber(amountInput),
             paymentIdentifier: new BigNumber(identifierInput),
@@ -224,7 +224,7 @@ describe('PaymentDialogComponent', () => {
         pendingTransferPollingService.pendingTransfers$ = of([
             identicalPendingTransfer,
         ]);
-        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         mockAllInputs();
@@ -244,7 +244,7 @@ describe('PaymentDialogComponent', () => {
         });
         expect(close).toHaveBeenCalledTimes(1);
         expect(close).toHaveBeenCalledWith({
-            token: token,
+            token,
             targetAddress: addressInput,
             amount: new BigNumber(amountInput),
             paymentIdentifier: new BigNumber(identifierInput),
@@ -261,7 +261,7 @@ describe('PaymentDialogComponent', () => {
         pendingTransferPollingService.pendingTransfers$ = of([
             identicalPendingTransfer,
         ]);
-        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         mockAllInputs();
@@ -283,7 +283,7 @@ describe('PaymentDialogComponent', () => {
         pendingTransferPollingService.pendingTransfers$ = of([
             identicalPendingTransfer,
         ]);
-        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
         dialog.cancelled = true;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
@@ -302,7 +302,7 @@ describe('PaymentDialogComponent', () => {
         pendingTransferPollingService.pendingTransfers$ = of([
             identicalPendingTransfer,
         ]);
-        const dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         const differentIdentifier = pendingTransfer.payment_identifier.plus(1);
@@ -316,7 +316,7 @@ describe('PaymentDialogComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(0);
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith({
-            token: token,
+            token,
             targetAddress: addressInput,
             amount: new BigNumber(amountInput),
             paymentIdentifier: differentIdentifier,

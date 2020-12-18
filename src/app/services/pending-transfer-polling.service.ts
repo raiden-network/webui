@@ -73,14 +73,13 @@ export class PendingTransferPollingService {
         newPendingTransfers: PendingTransfer[]
     ) {
         const pendingTransfers = newPendingTransfers.filter(
-            (newPendingTransfer) => {
-                return !oldPendingTransfers.find((oldPendingTransfer) =>
+            (newPendingTransfer) =>
+                !oldPendingTransfers.find((oldPendingTransfer) =>
                     this.isTheSamePendingTransfer(
                         oldPendingTransfer,
                         newPendingTransfer
                     )
-                );
-            }
+                )
         );
         for (const pendingTransfer of pendingTransfers) {
             let message: UiMessage;
@@ -131,8 +130,8 @@ export class PendingTransferPollingService {
         newPendingTransfers: PendingTransfer[]
     ) {
         const pendingTransfers = oldPendingTransfers.filter(
-            (oldPendingTransfer) => {
-                return !newPendingTransfers.find((newPendingTransfer) => {
+            (oldPendingTransfer) =>
+                !newPendingTransfers.find((newPendingTransfer) => {
                     const isTheSame = this.isTheSamePendingTransfer(
                         oldPendingTransfer,
                         newPendingTransfer
@@ -142,8 +141,7 @@ export class PendingTransferPollingService {
                             oldPendingTransfer.notificationIdentifier;
                     }
                     return isTheSame;
-                });
-            }
+                })
         );
         for (const pendingTransfer of pendingTransfers) {
             if (pendingTransfer.notificationIdentifier !== undefined) {

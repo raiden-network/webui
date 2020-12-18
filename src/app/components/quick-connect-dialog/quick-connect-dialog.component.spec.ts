@@ -93,7 +93,7 @@ describe('QuickConnectDialogComponent', () => {
 
     beforeEach(async () => {
         const payload: QuickConnectDialogPayload = {
-            token: token,
+            token,
         };
 
         const tokenPollingMock = stub<TokenPollingService>();
@@ -200,7 +200,7 @@ describe('QuickConnectDialogComponent', () => {
 
             expect(closeSpy).toHaveBeenCalledTimes(1);
             expect(closeSpy).toHaveBeenCalledWith({
-                token: token,
+                token,
                 connectionChoices: [
                     {
                         partnerAddress: suggestions[0].address,

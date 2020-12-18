@@ -178,7 +178,7 @@ describe('AppComponent', () => {
         app = fixture.componentInstance;
 
         notificationService = TestBed.inject(NotificationService);
-        dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
     });
 
     it('should create the app', () => {
