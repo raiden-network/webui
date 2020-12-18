@@ -53,7 +53,7 @@ export class NetworkInfo {
             return {
                 name: `Chain-id: ${chainId}`,
                 shortName: 'eth',
-                chainId: chainId,
+                chainId,
                 ensSupported: false,
                 faucet: undefined,
             };

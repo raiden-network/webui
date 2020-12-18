@@ -68,7 +68,7 @@ describe('UserDepositService', () => {
             options?: ContractOptions
         ) {
             const contractMock = {
-                address: address,
+                address,
                 options: {},
                 methods: {},
             };
@@ -76,24 +76,18 @@ describe('UserDepositService', () => {
                 jsonInterface.find((item: AbiItem) => item.name === 'balanceOf')
             ) {
                 contractMock.methods = {
-                    balanceOf: () => {
-                        return {
-                            call: () => tokenBalanceResult,
-                        };
-                    },
+                    balanceOf: () => ({
+                        call: () => tokenBalanceResult,
+                    }),
                 };
             } else {
                 contractMock.methods = {
-                    token: () => {
-                        return {
-                            call: () => tokenAddressResult,
-                        };
-                    },
-                    balances: () => {
-                        return {
-                            call: () => balanceResult,
-                        };
-                    },
+                    token: () => ({
+                        call: () => tokenAddressResult,
+                    }),
+                    balances: () => ({
+                        call: () => balanceResult,
+                    }),
                 };
             }
             return contractMock;

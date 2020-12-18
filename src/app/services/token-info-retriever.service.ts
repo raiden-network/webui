@@ -55,7 +55,7 @@ export class TokenInfoRetrieverService {
         ) {
             const index = batchManager.add({
                 request: methods[nameProperty]().call.request(),
-                defaultValue: defaultValue,
+                defaultValue,
             });
 
             map[index - 1] = {
@@ -79,7 +79,7 @@ export class TokenInfoRetrieverService {
             const request = methods.balanceOf(raidenAddress).call.request();
 
             const balanceIndex = batchManager.add({
-                request: request,
+                request,
             });
 
             map[balanceIndex - 1] = {

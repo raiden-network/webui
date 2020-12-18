@@ -64,6 +64,15 @@ interface PendingChannelsMap {
     providedIn: 'root',
 })
 export class RaidenService {
+    readonly raidenAddress$: Observable<string>;
+    readonly balance$: Observable<string>;
+    readonly network$: Observable<Network>;
+    public readonly paymentInitiated$: Observable<void>;
+    public readonly globalRetry$: Observable<void>;
+    public readonly reconnected$: Observable<void>;
+    public readonly rpcConnected$: Observable<void>;
+    public quickConnectPending: { [tokenAddress: string]: boolean } = {};
+
     private paymentInitiatedSubject: BehaviorSubject<
         void
     > = new BehaviorSubject(null);
@@ -76,25 +85,9 @@ export class RaidenService {
         {}
     );
 
-    readonly raidenAddress$: Observable<string>;
-    readonly balance$: Observable<string>;
-    readonly network$: Observable<Network>;
-    public readonly paymentInitiated$: Observable<
-        void
-    > = this.paymentInitiatedSubject.asObservable();
-    public readonly globalRetry$: Observable<
-        void
-    > = this.globalRetrySubject.asObservable();
-    public readonly reconnected$: Observable<
-        void
-    > = this.reconnectedSubject.asObservable();
-    public readonly rpcConnected$: Observable<
-        void
-    > = this.rpcConnectedSubject.asObservable();
-    public quickConnectPending: { [tokenAddress: string]: boolean } = {};
-
     private userTokens: { [address: string]: UserToken | null } = {};
     private pendingChannels: PendingChannelsMap = {};
+    private _raidenAddress: string;
 
     constructor(
         private http: HttpClient,
@@ -103,6 +96,11 @@ export class RaidenService {
         private notificationService: NotificationService,
         private addressBookService: AddressBookService
     ) {
+        this.paymentInitiated$ = this.paymentInitiatedSubject.asObservable();
+        this.globalRetry$ = this.globalRetrySubject.asObservable();
+        this.reconnected$ = this.reconnectedSubject.asObservable();
+        this.rpcConnected$ = this.rpcConnectedSubject.asObservable();
+
         this.raidenAddress$ = this.reconnected$.pipe(
             switchMap(() =>
                 this.http.get<{ our_address: string }>(
@@ -150,8 +148,6 @@ export class RaidenService {
         );
     }
 
-    private _raidenAddress: string;
-
     public get raidenAddress(): string {
         return this._raidenAddress;
     }
@@ -175,12 +171,8 @@ export class RaidenService {
             .pipe(
                 mergeMap((channels: Array<Channel>) => from(channels)),
                 map((channel: Channel) => {
-                    channel.settle_timeout = (<BigNumber>(
-                        (<unknown>channel.settle_timeout)
-                    )).toNumber();
-                    channel.reveal_timeout = (<BigNumber>(
-                        (<unknown>channel.reveal_timeout)
-                    )).toNumber();
+                    channel.settle_timeout = ((channel.settle_timeout as unknown) as BigNumber).toNumber();
+                    channel.reveal_timeout = ((channel.reveal_timeout as unknown) as BigNumber).toNumber();
                     channel.userToken = this.getUserToken(
                         channel.token_address
                     );
@@ -235,9 +227,9 @@ export class RaidenService {
                             connections[address] &&
                             connections[address].channels
                         ) {
-                            connections[address].channels = (<BigNumber>(
-                                (<unknown>connections[address].channels)
-                            )).toNumber();
+                            connections[address].channels = ((connections[
+                                address
+                            ].channels as unknown) as BigNumber).toNumber();
                         }
                         token.connected = connections[address];
                     }
@@ -268,12 +260,8 @@ export class RaidenService {
             )
             .pipe(
                 map((channel: Channel) => {
-                    channel.settle_timeout = (<BigNumber>(
-                        (<unknown>channel.settle_timeout)
-                    )).toNumber();
-                    channel.reveal_timeout = (<BigNumber>(
-                        (<unknown>channel.reveal_timeout)
-                    )).toNumber();
+                    channel.settle_timeout = ((channel.settle_timeout as unknown) as BigNumber).toNumber();
+                    channel.reveal_timeout = ((channel.reveal_timeout as unknown) as BigNumber).toNumber();
                     return channel;
                 })
             );
@@ -335,12 +323,8 @@ export class RaidenService {
             );
         }).pipe(
             map((channel: Channel) => {
-                channel.settle_timeout = (<BigNumber>(
-                    (<unknown>channel.settle_timeout)
-                )).toNumber();
-                channel.reveal_timeout = (<BigNumber>(
-                    (<unknown>channel.reveal_timeout)
-                )).toNumber();
+                channel.settle_timeout = ((channel.settle_timeout as unknown) as BigNumber).toNumber();
+                channel.reveal_timeout = ((channel.reveal_timeout as unknown) as BigNumber).toNumber();
                 return channel;
             }),
             catchError((error) => {
@@ -444,7 +428,7 @@ export class RaidenService {
         }
 
         return this.http.get<PaymentEvent[]>(paymentsResource, {
-            params: params,
+            params,
         });
     }
 
@@ -494,12 +478,8 @@ export class RaidenService {
                 );
             }),
             map((channel: Channel) => {
-                channel.settle_timeout = (<BigNumber>(
-                    (<unknown>channel.settle_timeout)
-                )).toNumber();
-                channel.reveal_timeout = (<BigNumber>(
-                    (<unknown>channel.reveal_timeout)
-                )).toNumber();
+                channel.settle_timeout = ((channel.settle_timeout as unknown) as BigNumber).toNumber();
+                channel.reveal_timeout = ((channel.reveal_timeout as unknown) as BigNumber).toNumber();
                 return channel;
             }),
             tap((response) => {
@@ -564,12 +544,8 @@ export class RaidenService {
                 )
             ),
             map((channel: Channel) => {
-                channel.settle_timeout = (<BigNumber>(
-                    (<unknown>channel.settle_timeout)
-                )).toNumber();
-                channel.reveal_timeout = (<BigNumber>(
-                    (<unknown>channel.reveal_timeout)
-                )).toNumber();
+                channel.settle_timeout = ((channel.settle_timeout as unknown) as BigNumber).toNumber();
+                channel.reveal_timeout = ((channel.reveal_timeout as unknown) as BigNumber).toNumber();
                 return channel;
             }),
             tap((response) => {
@@ -720,7 +696,7 @@ export class RaidenService {
                 title: 'Leaving token network',
                 description: `${userToken.symbol}`,
                 icon: 'close',
-                userToken: userToken,
+                userToken,
             };
             notificationIdentifier = this.notificationService.addPendingAction(
                 message
@@ -736,7 +712,7 @@ export class RaidenService {
                     title: 'Left token network',
                     description: `${userToken.symbol}`,
                     icon: 'close',
-                    userToken: userToken,
+                    userToken,
                 };
                 this.notificationService.addSuccessNotification(message);
             }),
@@ -745,7 +721,7 @@ export class RaidenService {
                     title: 'Leave token network failed',
                     description: error,
                     icon: 'error-mark',
-                    userToken: userToken,
+                    userToken,
                 });
                 return throwError(error);
             }),
@@ -841,9 +817,7 @@ export class RaidenService {
         return this.http.get<Status>(`${this.raidenConfig.api}/status`).pipe(
             map((status) => {
                 if (status.blocks_to_sync) {
-                    status.blocks_to_sync = (<BigNumber>(
-                        (<unknown>status.blocks_to_sync)
-                    )).toNumber();
+                    status.blocks_to_sync = ((status.blocks_to_sync as unknown) as BigNumber).toNumber();
                 }
                 return status;
             })

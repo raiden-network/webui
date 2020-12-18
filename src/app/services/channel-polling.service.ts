@@ -109,11 +109,12 @@ export class ChannelPollingService {
         newChannels: Channel[]
     ) {
         if (this.loaded) {
-            const channels = newChannels.filter((newChannel) => {
-                return !oldChannels.find((oldChannel) =>
-                    this.isTheSameChannel(oldChannel, newChannel)
-                );
-            });
+            const channels = newChannels.filter(
+                (newChannel) =>
+                    !oldChannels.find((oldChannel) =>
+                        this.isTheSameChannel(oldChannel, newChannel)
+                    )
+            );
 
             for (const channel of channels) {
                 this.informAboutNewChannel(channel);

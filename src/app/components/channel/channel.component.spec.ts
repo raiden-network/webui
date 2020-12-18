@@ -85,7 +85,7 @@ describe('ChannelComponent', () => {
         component = fixture.componentInstance;
 
         component.channel = channel;
-        dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
         raidenService = TestBed.inject(RaidenService);
         contacts = {};
 
@@ -112,7 +112,7 @@ describe('ChannelComponent', () => {
         clickElement(fixture.debugElement, '#deposit');
 
         const payload: DepositWithdrawDialogPayload = {
-            channel: channel,
+            channel,
             depositMode: DepositMode.DEPOSIT,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);
@@ -144,7 +144,7 @@ describe('ChannelComponent', () => {
         clickElement(fixture.debugElement, '#withdraw');
 
         const payload: DepositWithdrawDialogPayload = {
-            channel: channel,
+            channel,
             depositMode: DepositMode.WITHDRAW,
         };
         expect(dialogSpy).toHaveBeenCalledTimes(1);

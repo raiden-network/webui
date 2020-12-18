@@ -36,10 +36,10 @@ import { ChunkPipe } from '../../pipes/chunk.pipe';
 import { By } from '@angular/platform-browser';
 import { PaymentHistoryPollingService } from '../../services/payment-history-polling.service';
 
-function createMockReader(result: {}) {
+function createMockReader(result: any) {
     return {
         result: JSON.stringify(result),
-        readAsText: function () {
+        readAsText() {
             this.onprogress();
             this.onload();
         },
@@ -119,14 +119,15 @@ describe('ContactListComponent', () => {
         spyOn(
             paymentHistoryPollingService,
             'getPaymentTargetUsage'
-        ).and.callFake((targetAddress) => {
-            return {
-                [contacts[2].address]: 12,
-                [contacts[3].address]: 1,
-                [contacts[4].address]: 5,
-                [contacts[5].address]: 9,
-            }[targetAddress];
-        });
+        ).and.callFake(
+            (targetAddress) =>
+                ({
+                    [contacts[2].address]: 12,
+                    [contacts[3].address]: 1,
+                    [contacts[4].address]: 5,
+                    [contacts[5].address]: 9,
+                }[targetAddress])
+        );
     });
 
     describe('not showing all contacts', () => {
@@ -155,9 +156,9 @@ describe('ContactListComponent', () => {
         }));
 
         it('should open add contact dialog', () => {
-            const dialog = (<unknown>(
-                TestBed.inject(MatDialog)
-            )) as MockMatDialog;
+            const dialog = (TestBed.inject(
+                MatDialog
+            ) as unknown) as MockMatDialog;
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             const dialogResult: Contact = {
                 address: createAddress(),

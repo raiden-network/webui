@@ -7,9 +7,9 @@ export class ChunkPipe implements PipeTransform {
     transform(value: Array<any>, size: number): any {
         return [].concat.apply(
             [],
-            value.map((element: any, index: number) => {
-                return index % size ? [] : [value.slice(index, index + size)];
-            })
+            value.map((element: any, index: number) =>
+                index % size ? [] : [value.slice(index, index + size)]
+            )
         );
     }
 }

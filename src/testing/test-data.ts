@@ -26,7 +26,7 @@ export function createTestContacts(count: number = 15): Contact[] {
     for (let i = 0; i < count; i++) {
         const address = createAddress();
         contacts.push({
-            address: address,
+            address,
             label: `Random Account ${i + 1}`,
         });
     }
@@ -60,7 +60,7 @@ export function createTestTokens(count: number = 3): UserToken[] {
                 address: createAddress(),
                 symbol: `TST ${i + 1}`,
                 name: `Test Suite Token ${i + 1}`,
-                connected: connected,
+                connected,
             })
         );
     }
@@ -91,7 +91,7 @@ export function createTestChannels(
     for (let i = 0; i < count; i++) {
         channels.push(
             createChannel({
-                userToken: userToken,
+                userToken,
             })
         );
     }
@@ -157,7 +157,7 @@ export function createTestPaymentEvents(
                 : 'EventPaymentReceivedSuccess';
         events.push(
             createPaymentEvent(type, {
-                userToken: userToken,
+                userToken,
             })
         );
     }

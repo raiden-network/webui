@@ -61,9 +61,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.network$ = raidenService.network$;
         this.balance$ = raidenService.balance$;
         this.zeroBalance$ = raidenService.balance$.pipe(
-            map((balance) => {
-                return new BigNumber(balance).isZero();
-            })
+            map((balance) => new BigNumber(balance).isZero())
         );
         this.faucetLink$ = zip(
             raidenService.network$,
@@ -77,9 +75,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.udcBalance$ = this.userDepositService.balance$;
         this.servicesToken$ = this.userDepositService.servicesToken$;
         this.zeroUdcBalance$ = this.userDepositService.balance$.pipe(
-            map((balance) => {
-                return balance.isZero();
-            })
+            map((balance) => balance.isZero())
         );
         this.tokens$ = this.tokenPollingService.tokens$.pipe(
             map((tokens) =>

@@ -21,7 +21,7 @@ class MockRequestingService {
         return this.http.get('someurl.com/data', { responseType: 'text' });
     }
 
-    putData(body: Object): Observable<any> {
+    putData(body: any): Observable<any> {
         return this.http.put('someurl.com/data', body);
     }
 }

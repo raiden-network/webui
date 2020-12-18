@@ -116,11 +116,12 @@ describe('HistoryTableComponent', () => {
         component = fixture.componentInstance;
 
         const raidenService = TestBed.inject(RaidenService);
-        spyOn(raidenService, 'getUserToken').and.callFake((tokenAddress) => {
-            return { [token1.address]: token1, [token2.address]: token2 }[
-                tokenAddress
-            ];
-        });
+        spyOn(raidenService, 'getUserToken').and.callFake(
+            (tokenAddress) =>
+                ({ [token1.address]: token1, [token2.address]: token2 }[
+                    tokenAddress
+                ])
+        );
 
         historySubject = new BehaviorSubject(history);
         const paymentHistoryPollingService = TestBed.inject(
@@ -167,10 +168,8 @@ describe('HistoryTableComponent', () => {
             selectedTokenService.setToken(token1);
             fixture.detectChanges();
 
-            for (let i = 0; i < component.visibleHistory.length; i++) {
-                expect(component.visibleHistory[i].token_address).toBe(
-                    token1.address
-                );
+            for (const event of component.visibleHistory) {
+                expect(event.token_address).toBe(token1.address);
             }
         });
 
@@ -180,10 +179,8 @@ describe('HistoryTableComponent', () => {
             tick(1000);
             fixture.detectChanges();
 
-            for (let i = 0; i < component.visibleHistory.length; i++) {
-                expect(component.visibleHistory[i].token_address).toBe(
-                    token2.address
-                );
+            for (const event of component.visibleHistory) {
+                expect(event.token_address).toBe(token2.address);
             }
             flush();
         }));

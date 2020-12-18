@@ -81,8 +81,6 @@ export class AddressInputComponent
     private ngUnsubscribe = new Subject();
     private inputSubject: BehaviorSubject<string> = new BehaviorSubject('');
     private contactLabel: string | undefined;
-    private propagateTouched = () => {};
-    private propagateChange = (address: string) => {};
 
     constructor(
         private identiconCacheService: IdenticonCacheService,
@@ -213,9 +211,7 @@ export class AddressInputComponent
                         this.raidenService.resolveEnsName(name)
                     ),
                     tap(() => (this.searching = false)),
-                    map((resolvedAddress) => {
-                        return { value: resolvedAddress };
-                    }),
+                    map((resolvedAddress) => ({ value: resolvedAddress })),
                     catchError(() => {
                         this.searching = false;
                         return of({
@@ -239,8 +235,8 @@ export class AddressInputComponent
                     value = '';
                 }
                 return {
-                    value: value,
-                    errors: errors,
+                    value,
+                    errors,
                 };
             })
         );
@@ -255,6 +251,9 @@ export class AddressInputComponent
                 this.propagateChange(this.address);
             });
     }
+
+    private propagateTouched = () => {};
+    private propagateChange = (address: string) => {};
 
     private setupFiltering() {
         this.filteredOptions$ = combineLatest([

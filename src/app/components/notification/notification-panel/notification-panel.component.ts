@@ -18,7 +18,7 @@ import { takeUntil } from 'rxjs/operators';
     animations: Animations.flyInOut,
 })
 export class NotificationPanelComponent implements OnInit, OnDestroy {
-    @Output() close: EventEmitter<boolean> = new EventEmitter();
+    @Output() closing: EventEmitter<boolean> = new EventEmitter();
     public notifications: NotificationMessage[];
     public pendingActions: NotificationMessage[];
 

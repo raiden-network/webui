@@ -84,7 +84,7 @@ describe('ContactActionsComponent', () => {
         // @ts-ignore
         channelPollingService.channels$ = channelsSubject.asObservable();
         selectedTokenService = TestBed.inject(SelectedTokenService);
-        dialog = (<unknown>TestBed.inject(MatDialog)) as MockMatDialog;
+        dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
         raidenService = TestBed.inject(RaidenService);
 
         component.contact = contact;
@@ -113,7 +113,7 @@ describe('ContactActionsComponent', () => {
     it('should open payment dialog', () => {
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         const dialogResult: PaymentDialogPayload = {
-            token: token,
+            token,
             targetAddress: contact.address,
             amount: new BigNumber(10),
             paymentIdentifier: undefined,

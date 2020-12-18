@@ -199,7 +199,7 @@ export class ContactListComponent implements OnInit, OnDestroy, AfterViewInit {
         const title = 'Contacts import';
         console.error(`${title}: ${message}`);
         this.notificationService.addErrorNotification({
-            title: title,
+            title,
             description: message,
             icon: 'error-mark',
         });

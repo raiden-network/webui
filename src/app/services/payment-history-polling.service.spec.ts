@@ -77,11 +77,9 @@ describe('PaymentHistoryPollingService', () => {
         [PaymentHistoryPollingService],
         (service: PaymentHistoryPollingService) => {
             const mockAddressBookService = TestBed.inject(AddressBookService);
-            mockAddressBookService.get = () => {
-                return {
-                    [receivedEvent2.initiator]: 'Test account',
-                };
-            };
+            mockAddressBookService.get = () => ({
+                [receivedEvent2.initiator]: 'Test account',
+            });
             getPaymentHistorySpy.and.returnValues(
                 from([[], [receivedEvent], [receivedEvent2]])
             );

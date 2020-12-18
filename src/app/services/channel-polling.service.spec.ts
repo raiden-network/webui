@@ -86,11 +86,9 @@ describe('ChannelPollingService', () => {
 
     it('should send a notification when user opens the first channel', fakeAsync(() => {
         const mockAddressBookService = TestBed.inject(AddressBookService);
-        mockAddressBookService.get = () => {
-            return {
-                [channel1.partner_address]: 'Test account',
-            };
-        };
+        mockAddressBookService.get = () => ({
+            [channel1.partner_address]: 'Test account',
+        });
         raidenServiceSpy.and.returnValues(
             from([[], [], [channel1], [channel1]])
         );

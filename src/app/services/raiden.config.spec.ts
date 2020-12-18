@@ -97,7 +97,7 @@ describe('RaidenConfig', () => {
 
         testingController
             .expectOne({
-                url: url,
+                url,
                 method: 'GET',
             })
             .flush(configuration, {
@@ -125,7 +125,7 @@ describe('RaidenConfig', () => {
 
         testingController
             .expectOne({
-                url: url,
+                url,
                 method: 'GET',
             })
             .flush(
@@ -169,7 +169,7 @@ describe('RaidenConfig', () => {
 
         testingController
             .expectOne({
-                url: url,
+                url,
                 method: 'GET',
             })
             .flush(configuration, {
@@ -211,7 +211,7 @@ describe('RaidenConfig', () => {
 
         testingController
             .expectOne({
-                url: url,
+                url,
                 method: 'GET',
             })
             .flush(configuration, {
@@ -243,7 +243,7 @@ describe('RaidenConfig', () => {
 
         testingController
             .expectOne({
-                url: url,
+                url,
                 method: 'GET',
             })
             .flush(configuration, {
@@ -282,7 +282,7 @@ describe('Web3Factory', () => {
         const web3 = web3Factory.create(
             new Web3.providers.HttpProvider('http://localhost:8485')
         );
-        expect((<HttpProvider>web3.currentProvider).host).toBe(
+        expect((web3.currentProvider as HttpProvider).host).toBe(
             'http://localhost:8485'
         );
     }));

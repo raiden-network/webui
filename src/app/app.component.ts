@@ -49,10 +49,10 @@ import { ToastContainerDirective, ToastrService } from 'ngx-toastr';
 })
 export class AppComponent implements OnInit, OnDestroy {
     @HostBinding('@.disabled') animationsDisabled = false;
-    @ViewChild(ToastContainerDirective, { static: true })
-    private toastContainer: ToastContainerDirective;
     @ViewChild('menu_sidenav', { static: true })
     public menuSidenav: MatSidenav;
+    @ViewChild(ToastContainerDirective, { static: true })
+    private toastContainer: ToastContainerDirective;
 
     readonly network$: Observable<Network>;
     showNetworkInfo = false;

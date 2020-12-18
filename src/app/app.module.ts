@@ -174,7 +174,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         },
         {
             provide: MAT_DIALOG_DEFAULT_OPTIONS,
-            useValue: Object.assign(new MatDialogConfig(), <MatDialogConfig>{
+            useValue: Object.assign(new MatDialogConfig(), {
                 maxWidth: '90vw',
                 width: '360px',
                 autoFocus: false,

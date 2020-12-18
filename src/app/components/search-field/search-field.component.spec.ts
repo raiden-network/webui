@@ -66,9 +66,9 @@ describe('SearchFieldComponent', () => {
         selectedTokenService = TestBed.inject(SelectedTokenService);
 
         const raidenService = TestBed.inject(RaidenService);
-        spyOn(raidenService, 'getUserToken').and.callFake((userToken) => {
-            return { [token.address]: token }[userToken];
-        });
+        spyOn(raidenService, 'getUserToken').and.callFake(
+            (userToken) => ({ [token.address]: token }[userToken])
+        );
         const addressBookService = TestBed.inject(AddressBookService);
         addressBookService.getObservableArray = () => of(contacts);
 

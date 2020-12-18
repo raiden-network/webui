@@ -47,9 +47,7 @@ describe('TokenInfoRetriever', () => {
             return function method(any?: any) {
                 return {
                     call: {
-                        request: () => {
-                            return name;
-                        },
+                        request: () => name,
                     },
                 };
             };

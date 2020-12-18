@@ -13,6 +13,8 @@ class MockWeb3 extends Web3 {
     isChecksum = false;
     checksumAddress = '';
 
+    utils: Utils;
+
     constructor() {
         super('http://localhost:8485');
 
@@ -22,10 +24,10 @@ class MockWeb3 extends Web3 {
         };
 
         const mockUtils = {
-            checkAddressChecksum: function () {
+            checkAddressChecksum() {
                 return mockWeb3.isChecksum;
             },
-            toChecksumAddress: function () {
+            toChecksumAddress() {
                 return mockWeb3.checksumAddress;
             },
         };
@@ -33,8 +35,6 @@ class MockWeb3 extends Web3 {
         // @ts-ignore
         this.utils = Object.assign(mockUtils, super.utils);
     }
-
-    utils: Utils;
 }
 
 // noinspection JSUnusedLocalSymbols

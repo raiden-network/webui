@@ -81,8 +81,8 @@ export class RaidenConfig {
     private async setupWeb3(): Promise<void> {
         this.web3 = this.web3Factory.create(this.provider());
 
-        const getNetworkId: () => Promise<number> = () => {
-            return new Promise(async (resolve, reject) => {
+        const getNetworkId: () => Promise<number> = () =>
+            new Promise(async (resolve, reject) => {
                 const timeout = setTimeout(
                     () =>
                         reject(
@@ -100,7 +100,6 @@ export class RaidenConfig {
                     reject(e);
                 }
             });
-        };
 
         try {
             const id = await getNetworkId();

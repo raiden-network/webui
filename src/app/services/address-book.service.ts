@@ -29,12 +29,10 @@ export class AddressBookService {
         return this.addressBookUpdateSubject.pipe(
             map(() => {
                 const contacts = this.get();
-                return Object.keys(contacts).map((value) => {
-                    return {
-                        address: value,
-                        label: contacts[value],
-                    };
-                });
+                return Object.keys(contacts).map((value) => ({
+                    address: value,
+                    label: contacts[value],
+                }));
             })
         );
     }

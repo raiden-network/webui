@@ -344,8 +344,8 @@ describe('AddressInputComponent', () => {
 
             expect(addressBookSpy).toHaveBeenCalledTimes(1);
             expect(addressBookSpy).toHaveBeenCalledWith({
-                address: address,
-                label: label,
+                address,
+                label,
             });
         });
 
@@ -373,8 +373,8 @@ describe('AddressInputComponent', () => {
 
             expect(addressBookSpy).toHaveBeenCalledTimes(1);
             expect(addressBookSpy).toHaveBeenCalledWith({
-                address: address,
-                label: label,
+                address,
+                label,
             });
         });
 
