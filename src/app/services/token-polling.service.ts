@@ -18,9 +18,9 @@ export class TokenPollingService {
     public readonly tokens$: Observable<UserToken[]>;
 
     private tokensSubject: BehaviorSubject<void> = new BehaviorSubject(null);
-    private refreshingSubject: BehaviorSubject<boolean> = new BehaviorSubject<
-        boolean
-    >(false);
+    private refreshingSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+        false
+    );
 
     constructor(
         private raidenService: RaidenService,

@@ -16,9 +16,9 @@ import { AddressBookService } from './address-book.service';
 export class PaymentHistoryPollingService {
     readonly newPaymentEvents$: Observable<PaymentEvent[]>;
 
-    private readonly paymentHistorySubject: BehaviorSubject<
-        void
-    > = new BehaviorSubject(null);
+    private readonly paymentHistorySubject: BehaviorSubject<void> = new BehaviorSubject(
+        null
+    );
     private queryOffset = 0;
     private loaded = false;
     private tokenUsage: { [tokenAddress: string]: number } = {};

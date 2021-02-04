@@ -89,15 +89,11 @@ describe('AppComponent', () => {
             raidenServiceMock.getUserToken = () => undefined;
             raidenServiceMock.attemptRpcConnection = () => undefined;
 
-            const pendingTransferPollingMock = stub<
-                PendingTransferPollingService
-            >();
+            const pendingTransferPollingMock = stub<PendingTransferPollingService>();
             // @ts-ignore
             pendingTransferPollingMock.pendingTransfers$ = pendingTransfersSubject.asObservable();
 
-            const paymentHistoryPollingMock = stub<
-                PaymentHistoryPollingService
-            >();
+            const paymentHistoryPollingMock = stub<PaymentHistoryPollingService>();
             // @ts-ignore
             paymentHistoryPollingMock.newPaymentEvents$ = paymentHistorySubject.asObservable();
 
