@@ -73,9 +73,9 @@ export class RaidenService {
     public readonly rpcConnected$: Observable<void>;
     public quickConnectPending: { [tokenAddress: string]: boolean } = {};
 
-    private paymentInitiatedSubject: BehaviorSubject<
-        void
-    > = new BehaviorSubject(null);
+    private paymentInitiatedSubject: BehaviorSubject<void> = new BehaviorSubject(
+        null
+    );
     private globalRetrySubject: Subject<void> = new Subject();
     private reconnectedSubject: BehaviorSubject<void> = new BehaviorSubject(
         null

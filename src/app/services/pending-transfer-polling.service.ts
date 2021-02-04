@@ -16,9 +16,9 @@ import { AddressBookService } from './address-book.service';
 export class PendingTransferPollingService {
     public readonly pendingTransfers$: Observable<PendingTransfer[]>;
 
-    private pendingTransfersSubject: BehaviorSubject<
-        void
-    > = new BehaviorSubject(null);
+    private pendingTransfersSubject: BehaviorSubject<void> = new BehaviorSubject(
+        null
+    );
 
     constructor(
         private raidenService: RaidenService,

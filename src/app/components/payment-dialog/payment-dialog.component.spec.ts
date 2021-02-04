@@ -112,9 +112,7 @@ describe('PaymentDialogComponent', () => {
             // @ts-ignore
             tokenPollingMock.tokens$ = of([token]);
 
-            const pendingTransferPollingMock = stub<
-                PendingTransferPollingService
-            >();
+            const pendingTransferPollingMock = stub<PendingTransferPollingService>();
             // @ts-ignore
             pendingTransferPollingMock.pendingTransfers$ = of([
                 pendingTransfer,
