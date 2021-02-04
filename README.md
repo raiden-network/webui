@@ -103,13 +103,14 @@ If you want to work on the WebUI codebase you need:
 -   Node >=10.13.0
 -   A working [Raiden client](https://raiden-network.readthedocs.io/en/latest/overview_and_guide.html).
 -   Git for version control.
+-   Yarn v1 for package management.
 
 ### Development
 
 Before you start working on the WebUI you need to install the WebUI dependencies.
 
 ```bash
-npm install
+yarn install
 ```
 
 #### Configuration
@@ -170,7 +171,7 @@ modify the `proxy.config.json` to like like:
 After you are done with the configuration you can start the development server:
 
 ```bash
-npm run serve
+yarn run serve
 ```
 
 After the development server starts you have to navigate to `http://localhost:4200/ui`, in order to use the WebUI.
@@ -193,7 +194,7 @@ The package can build the python package by calling:
 python setup.py build sdist bdist_wheel
 ```
 
-The command calls `npm build:prod` to build the static production version of the WebUI so
+The command calls `yarn build:prod` to build the static production version of the WebUI so
 that it can get included in the python package.
 
 If you need to install the package locally to your development virtual environment you can do

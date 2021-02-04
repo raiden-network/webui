@@ -115,13 +115,18 @@ Then install the required packages:
     sudo apt-get install build-essential git libffi-dev libgmp-dev libssl-dev \
     libtool pkg-config nodejs npm git
 
+#### Install Yarn package manager
+
+    npm install --global yarn
+
+
 ### Testing
 
 The unit tests use karma and jasmine:
 
 ```bash
-    cd webui
-    npm run test
+cd webui
+yarn run test
 ```
 
 Tests are split in unit tests, and integration tests. The first are faster to execute while
@@ -156,7 +161,7 @@ The code style is enforced by [prettier](https://prettier.io/) which means that 
 To fix any fixable codestyle issue in either SDK or Wallet, you may just run the following command on the respective folder:
 
 ```bash
-npm run lint
+yarn run lint
 ```
 
 Linting plugins available for modern IDEs are also useful in early spotting any mistakes and help keep the code quality level.
