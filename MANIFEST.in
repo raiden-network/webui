@@ -5,6 +5,7 @@ exclude angular.json
 exclude karma.conf.js
 exclude package.json
 exclude package-lock.json
+exclude yarn.lock
 exclude protractor.conf.js
 exclude proxy.config.json
 exclude tsconfig.json

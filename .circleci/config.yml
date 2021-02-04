@@ -9,9 +9,9 @@ templates:
 
 
 var_1: &docker_image circleci/node:12.18.0-browsers
-var_2: &cache_key raiden-webui-{{ .Branch }}-{{ checksum "package-lock.json" }}
+var_2: &cache_key raiden-webui-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
-anchor_1: &root_package_lock_key
+anchor_1: &root_yarn_lock_key
   key: *cache_key
 
 anchor_2: &attach_options
@@ -52,12 +52,12 @@ jobs:
     executor: base-executor
     steps:
       - checkout
-      - restore_cache: *root_package_lock_key
-      - run: npm ci
+      - restore_cache: *root_yarn_lock_key
+      - run: yarn install --frozen-lockfile --cache-folder ~/.cache/yarn
       - save_cache:
-          <<: *root_package_lock_key
+          <<: *root_yarn_lock_key
           paths:
-            - "node_modules"
+            - ~/.cache/yarn
       - persist_to_workspace:
           root: .
           paths:
@@ -73,7 +73,7 @@ jobs:
           command: echo 'export PATH=$PATH:/tmp/node_modules/.bin' >> $BASH_ENV
       - run:
           name: Install license checker
-          command: cd /tmp && npm install license-checker@25.0.1
+          command: cd /tmp && yarn add license-checker@25.0.1
       - run:
           name: Check Licenses
           command: license-checker --production --onlyAllow 'MIT;BSD;Apache;MPL;LGPL;ZPL;ISC;WTFPL;Unlicense;CC0-1.0' --excludePackages 'uuid@2.0.1' --excludePrivatePackages # uuid@2.0.1 has an issue with the license information but it is licensed under MIT
@@ -82,21 +82,21 @@ jobs:
     executor: base-executor
     steps:
       - attach_workspace: *attach_options
-      - run: npm run prettier:check
-      - run: npm run lint
+      - run: yarn run prettier:check
+      - run: yarn run lint
 
   test:
     executor: base-executor
     steps:
       - attach_workspace: *attach_options
-      - run: npm run test -- --watch=false --progress=false --browsers=ChromeHeadlessCI --code-coverage
+      - run: yarn run test -- --watch=false --progress=false --browsers=ChromeHeadlessCI --code-coverage
       - store_test_results:
           path: ./test-reports
       - store_artifacts:
           path: ./test-reports
       - run:
           name: "Install codecov"
-          command: npm install codecov
+          command: yarn add codecov
       - run:
           name: "Upload coverage"
           command: node_modules/codecov/bin/codecov
@@ -105,7 +105,7 @@ jobs:
     executor: base-executor
     steps:
       - attach_workspace: *attach_options
-      - run: npm run build:prod
+      - run: yarn run build:prod
       - persist_to_workspace:
           root: .
           paths:

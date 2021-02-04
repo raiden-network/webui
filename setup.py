@@ -16,7 +16,7 @@ class BuildCommand(build):
 
 
 class CompileWebUI(Command):
-    description = 'use npm to compile raiden_webui'
+    description = 'use yarn to compile raiden_webui'
     user_options = [
         ('dev', 'D', 'use development preset, instead of production (default)'),
     ]
@@ -28,19 +28,13 @@ class CompileWebUI(Command):
         pass
 
     def run(self):
-        npm = find_executable('npm')
-        if not npm:
-            if os.environ.get('RAIDEN_NPM_MISSING_FATAL') is not None:
-                # Used in the automatic deployment scripts to prevent builds with missing web-ui
-                raise RuntimeError('NPM not found. Aborting')
-            self.announce(
-                'NPM not found. Skipping webUI compilation',
-                level=distutils.log.WARN,  # pylint: disable=no-member
-            )
-            return
-        npm_run = 'build:prod'
+        yarn = find_executable('yarn')
+        if not yarn:
+            raise RuntimeError('Yarn not found. Aborting')
+
+        yarn_run = 'build:prod'
         if self.dev is not None:
-            npm_run = 'build:dev'
+            yarn_run = 'build:dev'
 
         cwd = os.path.abspath(
             os.path.join(
@@ -48,26 +42,19 @@ class CompileWebUI(Command):
             ),
         )
 
-        npm_version = subprocess.check_output([npm, '--version'])
-        # require npm 4.x.x or later
-        if not int(npm_version.split(b'.')[0]) >= 4:
-            if os.environ.get('RAIDEN_NPM_MISSING_FATAL') is not None:
-                # Used in the automatic deployment scripts to prevent builds with missing web-ui
-                raise RuntimeError(f'NPM >= 4.0 required. Have {npm_version} from {npm}.')
-            self.announce(
-                'NPM 4.x or later required. Skipping webUI compilation',
-                level=distutils.log.WARN,  # pylint: disable=no-member
-            )
-            return
+        yarn_version = subprocess.check_output([yarn, '--version'])
+        # require yarn 1.x.x
+        if not int(yarn_version.split(b'.')[0]) == 1:
+            raise RuntimeError(f'Yarn v1 required. Have {yarn_version} from {yarn}.')
 
-        command = [npm, 'install']
+        command = [yarn, 'install', '--frozen-lockfile']
         self.announce(
             'Running %r in %r' % (command, cwd),
             level=distutils.log.INFO,  # pylint: disable=no-member
         )
         subprocess.check_call(command, cwd=cwd)
 
-        command = [npm, 'run', npm_run]
+        command = [yarn, 'run', yarn_run]
         self.announce(
             'Running %r in %r' % (command, cwd),
             level=distutils.log.INFO,  # pylint: disable=no-member

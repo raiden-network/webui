@@ -24,12 +24,6 @@ This assumes that the current version is `0.7.0` and then next would be a patch 
 
 Running `bumpversion` will automatically update `setup.py` and `package.json` and creates a bump commit.
 
-Unfortunately due to `bumpversion` matching all of the occurrences of `"version": "(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)";`
-and not only the first one, `package-lock.json` is not automatically updated by `bumpversion`.
-
-This means that you have to proceed and update the version in `package-lock.json` manually. Alternatively
-you can use `npm install`. Please ensure that the version `package-lock.json` is the same as in `package.json`.
-
 ### Updating the Change Log
 
 Before a new release make sure to update [CHANGELOG.md](CHANGELOG.md).
