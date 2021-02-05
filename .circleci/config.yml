@@ -8,7 +8,7 @@ templates:
       ignore: /.*/
 
 
-var_1: &docker_image circleci/node:12.18.0-browsers
+var_1: &docker_image circleci/node:14.15.4-browsers
 var_2: &cache_key raiden-webui-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
 anchor_1: &root_yarn_lock_key
@@ -89,7 +89,7 @@ jobs:
     executor: base-executor
     steps:
       - attach_workspace: *attach_options
-      - run: yarn run test -- --watch=false --progress=false --browsers=ChromeHeadlessCI --code-coverage
+      - run: yarn run test --watch=false --progress=false --browsers=ChromeHeadlessCI --code-coverage
       - store_test_results:
           path: ./test-reports
       - store_artifacts:
