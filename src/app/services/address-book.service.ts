@@ -3,7 +3,7 @@ import { Contact, Contacts } from '../models/contact';
 import { LocalStorageAdapter } from '../adapters/local-storage-adapter';
 import * as Utils from 'web3-utils';
 import { contactsSchema } from '../models/contacts-schema';
-import * as Ajv from 'ajv';
+import Ajv from 'ajv';
 import { ValidateFunction } from 'ajv';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -15,7 +15,7 @@ export class AddressBookService {
     private static ADDRESS_BOOK_KEY = 'raiden__address_book';
 
     private storage: Storage;
-    private readonly schema: ValidateFunction;
+    private readonly schema: ValidateFunction<Contacts>;
     private addressBookUpdateSubject = new BehaviorSubject<void>(null);
 
     constructor(localStorageAdapter: LocalStorageAdapter) {

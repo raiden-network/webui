@@ -29,7 +29,7 @@
     "@angular/platform-browser": "11.1.2",
     "@angular/platform-browser-dynamic": "11.1.2",
     "@angular/router": "11.1.2",
-    "ajv": "6.12.6",
+    "ajv": "7.0.4",
     "bignumber.js": "9.0.1",
     "core-js": "3.8.3",
     "ethereum-blockies-base64": "1.0.2",

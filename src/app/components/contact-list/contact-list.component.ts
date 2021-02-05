@@ -7,14 +7,14 @@ import {
     Input,
     AfterViewInit,
 } from '@angular/core';
-import { Contact } from '../../models/contact';
+import { Contact, Contacts } from '../../models/contact';
 import { AddressBookService } from '../../services/address-book.service';
 import { StringUtils } from '../../utils/string.utils';
 import { Animations } from '../../animations/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { UploadChecks } from '../../shared/upload-checks';
 import { ValidateFunction } from 'ajv';
-import * as Ajv from 'ajv';
+import Ajv from 'ajv';
 import { contactsSchema } from '../../models/contacts-schema';
 import { NotificationService } from '../../services/notification.service';
 import { UploadError } from '../../models/upload-error';
@@ -47,7 +47,7 @@ export class ContactListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private contacts: Contact[] = [];
     private readonly uploadChecks: UploadChecks = new UploadChecks();
-    private readonly schema: ValidateFunction;
+    private readonly schema: ValidateFunction<Contacts>;
     private searchFilter = '';
     private ngUnsubscribe = new Subject();
 
