@@ -8,13 +8,19 @@
       "packagePatterns": [
         "*"
       ],
-      "groupName": "all dependencies",
-      "groupSlug": "all"
+      "updateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance", "rollback", "bump"],
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch"
+    },
+    {
+      "updateTypes": ["major"],
+      "masterIssueApproval": true
     }
   ],
+  "masterIssue": true,
   "labels": ["dependencies"],
   "lockFileMaintenance": { "enabled": true },
-  "schedule": ["after 8am on thursday"],
+  "schedule": ["before 8am on thursday"],
   "prConcurrentLimit": 15,
   "prHourlyLimit": 5,
   "rangeStrategy": "pin",
