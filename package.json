@@ -3,6 +3,7 @@
   "version": "1.1.1",
   "license": "MIT",
   "scripts": {
+    "preinstall": "npx only-allow yarn",
     "ng": "ng",
     "start": "yarn run serve",
     "serve": "ng serve --proxy-config proxy.config.json",
