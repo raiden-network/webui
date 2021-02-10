@@ -8,7 +8,7 @@ templates:
       ignore: /.*/
 
 
-var_1: &docker_image circleci/node:14.15.4-browsers
+var_1: &docker_image circleci/node:lts-browsers
 var_2: &cache_key raiden-webui-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
 anchor_1: &root_yarn_lock_key
