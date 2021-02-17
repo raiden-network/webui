@@ -38,6 +38,7 @@ export class RaidenIconsModule {
         'paste',
         'help',
         'graph',
+        'doublearrow',
     ];
 
     constructor(
