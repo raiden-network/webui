@@ -2,22 +2,25 @@
 
 .header {
     height: 60px;
-    font-size: 12px;
-    line-height: 14px;
+    font-size: 14px;
+    line-height: 16px;
 
     &--mobile {
         height: unset;
     }
 
     &__balance {
-        text-transform: uppercase;
+        color: $light-grey;
+
+        &--eth {
+            text-transform: uppercase;
+        }
     }
 
     &__label {
-        font-size: 10px;
-        line-height: 12px;
-        font-weight: 500;
-        opacity: 0.5;
+        font-size: 12px;
+        line-height: 14px;
+        color: $dark-grey;
     }
 
     &__box {
@@ -28,7 +31,10 @@
     }
 
     &__address {
-        width: 90px;
+        width: 60px;
+        color: $light-grey;
+        font-size: 12px;
+        line-height: 14px;
         letter-spacing: 1.07px;
         white-space: nowrap;
         overflow: hidden;
@@ -62,22 +68,19 @@
 .divider {
     height: 36px;
     width: 1px;
-    background-color: $light-divider;
+    background-color: $bg-grey;
 }
 
 .balances-button {
-    border: 1px solid $dark-grey;
-    border-radius: 8px !important;
-    background: none;
-    font-weight: 500 !important;
-    font-size: 8px !important;
-    line-height: 9px !important;
-    letter-spacing: 0.5px;
-    color: $dark-grey;
-    white-space: normal;
-    text-transform: uppercase;
-    height: 32px;
-    width: 56px;
+    height: 36px !important;
+    width: 36px !important;
+    background-color: $bg-grey;
+
+    &__icon {
+        color: $dark-grey;
+        height: 24px !important;
+        width: 24px !important;
+    }
 }
 
 .balances-overlay {
@@ -86,12 +89,26 @@
     font-size: 12px;
     line-height: 30px;
     color: $white;
-    padding: 12px 16px 0 16px;
-    width: 93px;
+    width: 125px;
     max-height: 170px;
     overflow-y: scroll;
 
+    &__label {
+        width: 100%;
+        padding-top: 6px;
+        background-color: $black;
+        position: sticky;
+        position: -webkit-sticky;
+        top: 0;
+    }
+
+    &__label-text {
+        margin: 0 16px;
+        color: $dark-grey;
+    }
+
     &__item {
+        margin: 0 16px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

@@ -35,10 +35,13 @@
                 fxLayoutGap="4px"
             >
                 <span>
-                    <span [matTooltip]="balance" class="header__balance">
+                    <span
+                        [matTooltip]="balance"
+                        class="header__balance header__balance--eth"
+                    >
                         {{ balance | displayDecimals: 3 }}
                     </span>
-                    <span class="header__balance">
+                    <span class="header__balance header__balance--eth">
                         {{ (network$ | async)?.shortName }}
                     </span>
                     <span *ngIf="zeroBalance$ | async" class="alert">
@@ -61,6 +64,7 @@
             >
                 <span>
                     <app-balance-with-symbol
+                        class="header__balance"
                         [balance]="udcBalance$ | async"
                         [token]="servicesToken"
                         id="udc-balance"
@@ -74,7 +78,7 @@
                         ></mat-icon>
                     </span>
                 </span>
-                <span class="header__label">Deposited in UDC</span>
+                <span class="header__label">UDC Deposit</span>
             </div>
             <ng-container *ngIf="tokens$ | async as tokens">
                 <ng-container
@@ -91,6 +95,7 @@
                         class="header__token-balance"
                     >
                         <app-balance-with-symbol
+                            class="header__balance"
                             [balance]="token.balance"
                             [token]="token"
                         ></app-balance-with-symbol>
@@ -100,14 +105,24 @@
                 <ng-container *ngIf="tokens.length > 2">
                     <div class="divider"></div>
                     <button
-                        mat-flat-button
+                        mat-icon-button
                         class="balances-button"
+                        matTooltip="{{
+                            tokenBalancesOpen
+                                ? ''
+                                : 'Show all on-chain balances'
+                        }}"
                         (click)="tokenBalancesOpen = !tokenBalancesOpen"
                         appStopClickPropagation
                         cdkOverlayOrigin
                         #tokenBalancesTrigger="cdkOverlayOrigin"
                     >
-                        On-chain balances
+                        <mat-icon
+                            class="balances-button__icon"
+                            svgIcon="doublearrow"
+                            aria-label="Toggle on-chain balances view"
+                        >
+                        </mat-icon>
                     </button>
                     <ng-template
                         cdkConnectedOverlay
@@ -115,6 +130,11 @@
                         [cdkConnectedOverlayOpen]="tokenBalancesOpen"
                     >
                         <div #token_balances_list class="balances-overlay">
+                            <div class="balances-overlay__label">
+                                <span class="balances-overlay__label-text"
+                                    >On-Chain</span
+                                >
+                            </div>
                             <div
                                 *ngFor="
                                     let token of tokens;
