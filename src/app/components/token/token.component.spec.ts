@@ -391,42 +391,6 @@ describe('TokenComponent', () => {
             expect(openBatchSpy).toHaveBeenCalledTimes(0);
         });
 
-        it('should mint 0.5 tokens when token has 18 decimals', () => {
-            clickElement(fixture.debugElement, '#options');
-            fixture.detectChanges();
-
-            const mintSpy = spyOn(raidenService, 'mintToken').and.returnValue(
-                of(null)
-            );
-            clickElement(fixture.debugElement, '#mint');
-            expect(mintSpy).toHaveBeenCalledTimes(1);
-            expect(mintSpy).toHaveBeenCalledWith(
-                connectedToken,
-                raidenService.raidenAddress,
-                new BigNumber(500000000000000000)
-            );
-        });
-
-        it('should mint 5000 tokens when token has no decimals', () => {
-            const noDecimalsToken = createToken({ decimals: 0 });
-            selectedTokenService.setToken(noDecimalsToken);
-            fixture.detectChanges();
-
-            clickElement(fixture.debugElement, '#options');
-            fixture.detectChanges();
-
-            const mintSpy = spyOn(raidenService, 'mintToken').and.returnValue(
-                of(null)
-            );
-            clickElement(fixture.debugElement, '#mint');
-            expect(mintSpy).toHaveBeenCalledTimes(1);
-            expect(mintSpy).toHaveBeenCalledWith(
-                noDecimalsToken,
-                raidenService.raidenAddress,
-                new BigNumber(5000)
-            );
-        });
-
         it('should open leave dialog', () => {
             clickElement(fixture.debugElement, '#options');
             fixture.detectChanges();

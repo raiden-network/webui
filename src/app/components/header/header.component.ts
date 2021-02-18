@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { Animations } from '../../animations/animations';
 import { RaidenService } from '../../services/raiden.service';
-import { map, takeUntil } from 'rxjs/operators';
+import { finalize, map, takeUntil } from 'rxjs/operators';
 import { Observable, zip, Subject, combineLatest } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
 import { Network } from '../../utils/network-info';
@@ -22,6 +22,7 @@ import { UserToken } from '../../models/usertoken';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { SharedService } from '../../services/shared.service';
 import { SelectedTokenService } from 'app/services/selected-token.service';
+import { amountFromDecimal } from 'app/utils/amount.converter';
 
 @Component({
     selector: 'app-header',
@@ -47,6 +48,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     readonly zeroUdcBalance$: Observable<boolean>;
     readonly tokens$: Observable<UserToken[]>;
     tokenBalancesOpen = false;
+    mintPending: { [tokenAddress: string]: boolean } = {};
 
     private ngUnsubscribe = new Subject();
 
@@ -135,5 +137,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     tokenTrackByFn(token: UserToken): string {
         return token.address;
+    }
+
+    mint(token: UserToken) {
+        this.mintPending[token.address] = true;
+        const decimals = token.decimals;
+        const scaleFactor = decimals >= 18 ? 1 : decimals / 18;
+        const amount = amountFromDecimal(new BigNumber(0.5), decimals)
+            .times(scaleFactor)
+            .plus(
+                amountFromDecimal(new BigNumber(5000), decimals).times(
+                    1 - scaleFactor
+                )
+            )
+            .integerValue();
+        this.raidenService
+            .mintToken(token, this.raidenAddress, amount)
+            .pipe(finalize(() => (this.mintPending[token.address] = false)))
+            .subscribe(() => this.tokenPollingService.refresh());
     }
 }

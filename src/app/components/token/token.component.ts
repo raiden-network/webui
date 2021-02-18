@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserToken } from '../../models/usertoken';
 import { RaidenService } from '../../services/raiden.service';
-import { amountFromDecimal } from '../../utils/amount.converter';
-import BigNumber from 'bignumber.js';
 import { TokenPollingService } from '../../services/token-polling.service';
 import {
     ConfirmationDialogPayload,
@@ -34,7 +32,6 @@ export class TokenComponent implements OnInit, OnDestroy {
     tokens$: Observable<UserToken[]>;
     selectedToken: UserToken;
     totalChannels = 0;
-    onMainnet: boolean;
 
     private ngUnsubscribe = new Subject();
 
@@ -71,10 +68,6 @@ export class TokenComponent implements OnInit, OnDestroy {
             .subscribe((token) => {
                 this.selectedToken = token;
             });
-
-        this.raidenService.network$.subscribe((network) => {
-            this.onMainnet = network.chainId === 1;
-        });
     }
 
     ngOnDestroy() {
@@ -142,26 +135,6 @@ export class TokenComponent implements OnInit, OnDestroy {
                 this.paymentHistoryPollingService.refresh();
                 this.tokenPollingService.refresh();
             });
-    }
-
-    mint() {
-        const decimals = this.selectedToken.decimals;
-        const scaleFactor = decimals >= 18 ? 1 : decimals / 18;
-        const amount = amountFromDecimal(new BigNumber(0.5), decimals)
-            .times(scaleFactor)
-            .plus(
-                amountFromDecimal(new BigNumber(5000), decimals).times(
-                    1 - scaleFactor
-                )
-            )
-            .integerValue();
-        this.raidenService
-            .mintToken(
-                this.selectedToken,
-                this.raidenService.raidenAddress,
-                amount
-            )
-            .subscribe(() => this.tokenPollingService.refresh());
     }
 
     leaveNetwork() {
