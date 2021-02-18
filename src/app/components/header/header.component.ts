@@ -10,7 +10,7 @@ import {
 import { Animations } from '../../animations/animations';
 import { RaidenService } from '../../services/raiden.service';
 import { map, takeUntil } from 'rxjs/operators';
-import { Observable, zip, Subject } from 'rxjs';
+import { Observable, zip, Subject, combineLatest } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
 import { Network } from '../../utils/network-info';
 import BigNumber from 'bignumber.js';
@@ -21,12 +21,13 @@ import { UserDepositService } from '../../services/user-deposit.service';
 import { UserToken } from '../../models/usertoken';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { SharedService } from '../../services/shared.service';
+import { SelectedTokenService } from 'app/services/selected-token.service';
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
-    animations: Animations.easeInOut,
+    animations: Animations.stretchInOut,
 })
 export class HeaderComponent implements OnInit, OnDestroy {
     @Output() toggleNotifications: EventEmitter<boolean> = new EventEmitter();
@@ -56,7 +57,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private mediaObserver: MediaObserver,
         private userDepositService: UserDepositService,
         private tokenPollingService: TokenPollingService,
-        private sharedService: SharedService
+        private sharedService: SharedService,
+        private selectedTokenService: SelectedTokenService
     ) {
         this.network$ = raidenService.network$;
         this.balance$ = raidenService.balance$;
@@ -77,12 +79,22 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.zeroUdcBalance$ = this.userDepositService.balance$.pipe(
             map((balance) => balance.isZero())
         );
-        this.tokens$ = this.tokenPollingService.tokens$.pipe(
-            map((tokens) =>
-                tokens.filter(
-                    (token) => !!token.connected || !token.balance.isZero()
-                )
-            )
+        this.tokens$ = combineLatest([
+            this.tokenPollingService.tokens$,
+            this.selectedTokenService.selectedToken$,
+        ]).pipe(
+            map(([tokens, selectedToken]) => {
+                const filteredTokens = tokens.filter(
+                    (token) =>
+                        (!!token.connected || !token.balance.isZero()) &&
+                        (!selectedToken ||
+                            token.address !== selectedToken.address)
+                );
+                if (selectedToken) {
+                    filteredTokens.unshift(selectedToken);
+                }
+                return filteredTokens;
+            })
         );
     }
 
