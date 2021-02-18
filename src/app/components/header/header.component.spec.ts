@@ -67,11 +67,13 @@ describe('HeaderComponent', () => {
             // @ts-ignore
             raidenServiceMock.balance$ = balanceSubject.asObservable();
             raidenServiceMock.getUserToken = () => undefined;
+            raidenServiceMock.mintToken = () => of(null);
 
             const tokenPollingMock = stub<TokenPollingService>();
             tokensSubject = new BehaviorSubject(tokens);
             // @ts-ignore
             tokenPollingMock.tokens$ = tokensSubject.asObservable();
+            tokenPollingMock.refresh = () => {};
 
             const channelPollingMock = stub<ChannelPollingService>();
             // @ts-ignore
@@ -206,9 +208,9 @@ describe('HeaderComponent', () => {
         expect(balanceText).toBe(`0.75 ${servicesToken.symbol}`);
     });
 
-    it('should show the token on-chain balances inside the header for two tokens', () => {
-        const twoTokens = createTestTokens(2);
-        tokensSubject.next(twoTokens);
+    it('should show the token on-chain balances inside the header for one token', () => {
+        const oneToken = createTestTokens(1);
+        tokensSubject.next(oneToken);
         fixture.detectChanges();
 
         expect(
@@ -217,10 +219,10 @@ describe('HeaderComponent', () => {
         const balances = fixture.debugElement.queryAll(
             By.css('.header__token-balance')
         );
-        expect(balances.length).toBe(2);
+        expect(balances.length).toBe(1);
     });
 
-    it('should show the token on-chain balances in an overlay for more than two tokens', () => {
+    it('should show the token on-chain balances in an overlay for more than one token', () => {
         clickElement(fixture.debugElement, '.balances-button');
         fixture.detectChanges();
         expect(component.tokenBalancesOpen).toBe(true);
@@ -256,4 +258,38 @@ describe('HeaderComponent', () => {
         );
         tick();
     }));
+
+    it('should mint 0.5 tokens when token has 18 decimals', () => {
+        const raidenService = TestBed.inject(RaidenService);
+        const mintSpy = spyOn(raidenService, 'mintToken').and.callThrough();
+
+        clickElement(fixture.debugElement, '#mint');
+        fixture.detectChanges();
+
+        expect(mintSpy).toHaveBeenCalledTimes(1);
+        expect(mintSpy).toHaveBeenCalledWith(
+            tokens[0],
+            component.raidenAddress,
+            new BigNumber(500000000000000000)
+        );
+    });
+
+    it('should mint 5000 tokens when token has no decimals', () => {
+        const raidenService = TestBed.inject(RaidenService);
+        const mintSpy = spyOn(raidenService, 'mintToken').and.callThrough();
+        const selectedTokenService = TestBed.inject(SelectedTokenService);
+        const noDecimalsToken = createToken({ decimals: 0 });
+        selectedTokenService.setToken(noDecimalsToken);
+        fixture.detectChanges();
+
+        clickElement(fixture.debugElement, '#mint');
+        fixture.detectChanges();
+
+        expect(mintSpy).toHaveBeenCalledTimes(1);
+        expect(mintSpy).toHaveBeenCalledWith(
+            noDecimalsToken,
+            component.raidenAddress,
+            new BigNumber(5000)
+        );
+    });
 });

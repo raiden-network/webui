@@ -103,12 +103,6 @@
                 [overlapTrigger]="true"
                 xPosition="before"
             >
-                <ng-container *ngIf="!onMainnet">
-                    <button mat-menu-item (click)="mint()" id="mint">
-                        Mint
-                    </button>
-                    <div class="options__divider"></div>
-                </ng-container>
                 <button
                     mat-menu-item
                     (click)="openQuickConnect()"

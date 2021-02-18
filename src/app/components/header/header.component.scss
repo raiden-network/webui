@@ -71,6 +71,33 @@
     background-color: $bg-grey;
 }
 
+.small-balance-button {
+    height: 24px !important;
+    width: 24px !important;
+    background-color: $bg-dark-light-grey;
+    margin: -4px 0;
+
+    &__icon {
+        color: $light-grey;
+        height: 16px !important;
+        width: 16px !important;
+    }
+
+    &--in-progress {
+        background-color: $bg-label-yellow !important;
+        opacity: 1;
+        border: none;
+
+        &:disabled {
+            cursor: wait;
+        }
+    }
+
+    &--in-progress &__icon {
+        color: $label-yellow !important;
+    }
+}
+
 .balances-button {
     height: 36px !important;
     width: 36px !important;

@@ -81,28 +81,45 @@
                 <span class="header__label">UDC Deposit</span>
             </div>
             <ng-container *ngIf="tokens$ | async as tokens">
-                <ng-container
-                    *ngFor="
-                        let token of tokens
-                            | slice: 0:(tokens.length > 2 ? 1 : 2);
-                        trackBy: tokenTrackByFn
-                    "
-                >
+                <ng-container *ngIf="tokens[0] as token">
                     <div class="divider"></div>
                     <div
                         fxLayout="column"
                         fxLayoutGap="4px"
                         class="header__token-balance"
                     >
-                        <app-balance-with-symbol
-                            class="header__balance"
-                            [balance]="token.balance"
-                            [token]="token"
-                        ></app-balance-with-symbol>
+                        <span fxLayout="row" fxLayoutGap="6px">
+                            <app-balance-with-symbol
+                                class="header__balance"
+                                [balance]="token.balance"
+                                [token]="token"
+                            ></app-balance-with-symbol>
+                            <button
+                                *ngIf="(network$ | async)?.chainId !== 1"
+                                class="small-balance-button"
+                                [class.small-balance-button--in-progress]="
+                                    mintPending[token.address]
+                                "
+                                mat-icon-button
+                                matTooltip="Mint token"
+                                fxLayout="column"
+                                fxLayoutAlign="center center"
+                                (click)="mint(token)"
+                                [disabled]="mintPending[token.address]"
+                                id="mint"
+                            >
+                                <mat-icon
+                                    class="small-balance-button__icon"
+                                    svgIcon="mint"
+                                    aria-label="Mint token"
+                                >
+                                </mat-icon>
+                            </button>
+                        </span>
                         <span class="header__label">On-Chain</span>
                     </div>
                 </ng-container>
-                <ng-container *ngIf="tokens.length > 2">
+                <ng-container *ngIf="tokens.length > 1">
                     <div class="divider"></div>
                     <button
                         mat-icon-button

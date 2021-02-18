@@ -39,6 +39,7 @@ export class RaidenIconsModule {
         'help',
         'graph',
         'doublearrow',
+        'mint',
     ];
 
     constructor(
