@@ -1,4 +1,10 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+    waitForAsync,
+    ComponentFixture,
+    TestBed,
+    fakeAsync,
+    tick,
+} from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 import { NotificationService } from '../../services/notification.service';
 import { ChannelPollingService } from '../../services/channel-polling.service';
@@ -34,6 +40,7 @@ import BigNumber from 'bignumber.js';
 import { SharedService } from '../../services/shared.service';
 import { UserToken } from '../../models/usertoken';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
+import { SelectedTokenService } from 'app/services/selected-token.service';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -100,6 +107,7 @@ describe('HeaderComponent', () => {
                     TestProviders.AddressBookStubProvider(),
                     { provide: UserDepositService, useValue: userDepositMock },
                     SharedService,
+                    SelectedTokenService,
                 ],
                 imports: [
                     MaterialComponentsModule,
@@ -237,4 +245,15 @@ describe('HeaderComponent', () => {
         fixture.detectChanges();
         expect(component.tokenBalancesOpen).toBe(true);
     });
+
+    it('should show the selected token first in the header', fakeAsync(() => {
+        const selectedTokenService = TestBed.inject(SelectedTokenService);
+        selectedTokenService.setToken(tokens[2]);
+        fixture.detectChanges();
+
+        component.tokens$.subscribe((componentTokens) =>
+            expect(componentTokens[0].address).toBe(tokens[2].address)
+        );
+        tick();
+    }));
 });
