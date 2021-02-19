@@ -78,6 +78,7 @@
 >
     <div class="card__top" fxLayout="row" fxLayoutAlign="center">
         <app-token-network-selector
+            [value]="selectedToken"
             [showChannelBalance]="true"
             [setSelectedToken]="true"
             [showRegisterButton]="!production"

@@ -30,8 +30,8 @@ export class TokenNetworkSelectorComponent implements ControlValueAccessor {
     @Input() placeholder = 'Token Network';
     @Input() selectorClass = '';
     @Input() panelClass = '';
+    @Input() value: UserToken;
 
-    value: UserToken;
     tokens$: Observable<UserToken[]>;
 
     constructor(

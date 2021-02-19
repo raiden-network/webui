@@ -221,6 +221,17 @@ describe('TokenComponent', () => {
                 },
             ]);
         });
+
+        it('should be able to initialize the token selector with a token', () => {
+            const selectedTokenService = TestBed.inject(SelectedTokenService);
+            selectedTokenService.setToken(tokens[0]);
+            fixture.detectChanges();
+
+            const tokenSelector: TokenNetworkSelectorComponent = fixture.debugElement.query(
+                By.directive(TokenNetworkSelectorComponent)
+            ).componentInstance;
+            expect(tokenSelector.value).toEqual(tokens[0]);
+        });
     });
 
     describe('as token view', () => {
