@@ -47,6 +47,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     readonly servicesToken$: Observable<UserToken>;
     readonly zeroUdcBalance$: Observable<boolean>;
     readonly tokens$: Observable<UserToken[]>;
+    readonly onMainnet$: Observable<boolean>;
     tokenBalancesOpen = false;
     mintPending: { [tokenAddress: string]: boolean } = {};
 
@@ -97,6 +98,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 }
                 return filteredTokens;
             })
+        );
+        this.onMainnet$ = raidenService.network$.pipe(
+            map((network) => network.chainId === 1)
         );
     }
 

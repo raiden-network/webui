@@ -37,11 +37,11 @@
                 <span>
                     <span
                         [matTooltip]="balance"
-                        class="header__balance header__balance--eth"
+                        class="header__balance header__balance--uppercase"
                     >
                         {{ balance | displayDecimals: 3 }}
                     </span>
-                    <span class="header__balance header__balance--eth">
+                    <span class="header__balance header__balance--uppercase">
                         {{ (network$ | async)?.shortName }}
                     </span>
                     <span *ngIf="zeroBalance$ | async" class="alert">
@@ -95,7 +95,7 @@
                                 [token]="token"
                             ></app-balance-with-symbol>
                             <button
-                                *ngIf="(network$ | async)?.chainId !== 1"
+                                *ngIf="(onMainnet$ | async) === false"
                                 class="small-balance-button"
                                 [class.small-balance-button--in-progress]="
                                     mintPending[token.address]
