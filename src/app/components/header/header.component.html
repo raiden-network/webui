@@ -124,11 +124,8 @@
                     <button
                         mat-icon-button
                         class="balances-button"
-                        matTooltip="{{
-                            tokenBalancesOpen
-                                ? ''
-                                : 'Show all on-chain balances'
-                        }}"
+                        matTooltip="Show all on-chain balances"
+                        [matTooltipDisabled]="tokenBalancesOpen"
                         (click)="tokenBalancesOpen = !tokenBalancesOpen"
                         appStopClickPropagation
                         cdkOverlayOrigin
