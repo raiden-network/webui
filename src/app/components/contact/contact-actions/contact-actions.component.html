@@ -6,13 +6,10 @@
         (click)="pay()"
         appStopClickPropagation
         [disabled]="!isConnected()"
-        [matTooltip]="
-            !isConnected()
-                ? 'You need open ' +
-                  getTokenSymbol() +
-                  ' channels to send a transfer'
-                : ''
-        "
+        matTooltip="You need open {{
+            getTokenSymbol()
+        }} channels to send a transfer"
+        [matTooltipDisabled]="isConnected()"
         id="transfer"
     >
         Transfer
