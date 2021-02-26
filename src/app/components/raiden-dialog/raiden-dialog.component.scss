@@ -2,37 +2,80 @@
 
 .dialog {
     position: relative;
+    color: $grey;
 
     &__title {
-        margin: 0;
+        color: $white;
         font-size: 12px;
-        letter-spacing: 0.3px;
-        line-height: 14px;
+        line-height: 15px;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
+        text-align: center;
     }
 
     &__button {
-        height: 32px !important;
-        width: 100px;
-        letter-spacing: 0.35px;
+        background-color: $bg-grey;
+        height: 38px !important;
+        width: 120px;
+        letter-spacing: 0.01em;
+        font-size: 12px !important;
+        line-height: 15px !important;
+
+        &--dark {
+            color: $grey !important;
+        }
 
         &--white {
-            border: 2px solid $black;
+            background-color: $white;
+            color: $black;
         }
 
-        &--black {
-            color: $white;
+        &--wide {
+            width: 224px;
         }
     }
 
-    &__close-button {
-        position: absolute;
-        top: -19px;
-        right: -8px;
+    &__button-section {
+        margin-top: 12px;
+    }
+}
+
+.small-button {
+    background-color: $bg-grey;
+
+    &--left {
+        margin-left: -24px;
     }
 
-    &__close-icon {
+    &--right {
+        margin-right: -24px;
+    }
+
+    &__icon {
+        color: $grey;
         width: 16px !important;
         height: 16px !important;
+        line-height: 16px;
+
+        &--big {
+            width: 32px !important;
+            height: 32px !important;
+            line-height: 32px;
+        }
     }
+}
+
+.info-box {
+    z-index: 3000;
+    background-color: $black;
+    position: absolute;
+    margin: 0 !important;
+    top: 32px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 16px;
+    line-height: 19px;
+    color: $white;
+    text-align: center;
 }

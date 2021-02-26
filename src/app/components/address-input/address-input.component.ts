@@ -77,6 +77,7 @@ export class AddressInputComponent
     readonly network$: Observable<Network>;
     showContactLabelInput = false;
     contactLabelFc: FormControl;
+    disabled = false;
 
     private ngUnsubscribe = new Subject();
     private inputSubject: BehaviorSubject<string> = new BehaviorSubject('');
@@ -124,7 +125,7 @@ export class AddressInputComponent
     }
 
     setDisabledState(isDisabled: boolean) {
-        this.inputElement.nativeElement.disabled = isDisabled;
+        this.disabled = isDisabled;
     }
 
     onChange(value: string) {

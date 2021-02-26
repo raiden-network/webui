@@ -233,7 +233,6 @@ export class AppComponent implements OnInit, OnDestroy {
         } else {
             this.errorDialog = this.dialog.open(ErrorComponent, {
                 data: payload,
-                width: '500px',
                 disableClose: true,
                 panelClass: 'grey-dialog',
             });

@@ -176,8 +176,9 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
             provide: MAT_DIALOG_DEFAULT_OPTIONS,
             useValue: Object.assign(new MatDialogConfig(), {
                 maxWidth: '90vw',
-                width: '360px',
+                width: '490px',
                 autoFocus: false,
+                backdropClass: 'dialog-backdrop',
             }),
         },
         RaidenService,

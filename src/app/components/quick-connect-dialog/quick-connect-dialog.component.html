@@ -1,6 +1,7 @@
 <app-raiden-dialog
     titleText="Quick Connect"
     acceptText="Connect"
+    infoText="You will get suggested partners to connect to. Quick Connect will open channels with these suggestions. The total deposit is split among the channels. You can modify the deposit for each partner. By setting a deposit to 0 no channel will be created."
     [acceptDisabled]="form.invalid"
     [formGroup]="form"
     (accept)="accept()"
@@ -14,7 +15,6 @@
     </app-token-network-selector>
     <app-token-input
         placeholder="Total Deposit"
-        infoText="You will get suggested partners to connect to. Quick Connect will open channels with these suggestions. The total deposit is split among the channels. You can modify the deposit for each partner. By setting a deposit to 0 no channel will be created."
         formControlName="totalAmount"
         [onChainInput]="true"
     >
@@ -35,7 +35,7 @@
                 <mat-progress-spinner
                     diameter="60"
                     mode="indeterminate"
-                    color="primary"
+                    color="accent"
                 ></mat-progress-spinner>
             </div>
         </ng-template>

@@ -224,7 +224,6 @@ describe('AppComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ErrorComponent, {
             data: payload,
-            width: '500px',
             disableClose: true,
             panelClass: 'grey-dialog',
         });
@@ -243,7 +242,6 @@ describe('AppComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(ErrorComponent, {
             data: payload,
-            width: '500px',
             disableClose: true,
             panelClass: 'grey-dialog',
         });

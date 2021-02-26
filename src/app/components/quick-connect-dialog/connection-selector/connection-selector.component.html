@@ -1,12 +1,9 @@
 <div fxLayout="column" fxLayoutGap="16px" class="selector">
-    <span
-        *ngIf="choicesForm.length > 1; else one_suggestion"
-        class="selector__label"
-    >
+    <span *ngIf="choicesForm.length > 1; else one_suggestion">
         Top {{ choicesForm.length }} suggested connections (best first):
     </span>
     <ng-template #one_suggestion>
-        <span class="selector__label"> One suggested connection: </span>
+        <span> One suggested connection: </span>
     </ng-template>
     <div
         *ngFor="let choiceGroup of choicesForm.controls"
@@ -45,7 +42,7 @@
                 'address--big': choicesForm.length === 1
             }"
             matTooltip="{{ partnerAddress }}
-            (Click to copy)"
+                (Click to copy)"
             ngxClipboard
             [cbContent]="partnerAddress"
         >
@@ -53,12 +50,14 @@
         </span>
         <mat-slider
             *ngIf="choicesForm.length > 1"
-            color="primary"
+            color="accent"
             min="0"
             max="1"
             step="0.01"
             (input)="choiceGroup.get('percentage').setValue($event.value)"
             [formControl]="choiceGroup.get('percentage')"
+            matTooltip="You must first set a total deposit"
+            [matTooltipDisabled]="totalAmountFormControl.valid"
         ></mat-slider>
         <app-token-input
             *ngIf="choicesForm.length > 1"
@@ -68,6 +67,8 @@
             [allowZero]="true"
             width="122"
             [formControl]="choiceGroup.get('deposit')"
+            matTooltip="You must first set a total deposit"
+            [matTooltipDisabled]="totalAmountFormControl.valid"
         >
         </app-token-input>
     </div>

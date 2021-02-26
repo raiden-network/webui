@@ -1,13 +1,11 @@
 @import '../../../../sass/colors';
 
 .selector {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 15px;
-    letter-spacing: 0.35px;
-
-    &__label {
-        color: $text-grey;
-    }
+    background-color: $bg-dark-grey;
+    border-radius: 15px;
+    padding: 16px 16px 8px 16px;
 }
 
 .graph-button {
@@ -41,12 +39,13 @@
     height: 32px;
 
     &__equal-button {
+        color: $dark-grey;
         text-decoration: underline;
         cursor: pointer;
         font-weight: 500;
 
         &:hover {
-            color: $text-grey;
+            color: $grey;
         }
     }
 

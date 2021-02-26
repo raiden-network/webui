@@ -2,7 +2,7 @@
 @import '../../../sass/colors';
 
 .search {
-    color: $text-grey;
+    color: $grey;
     border-radius: 50px;
     background-color: $bg-dark-grey;
     position: relative;
@@ -31,7 +31,7 @@
 
         &::placeholder,
         &::-webkit-input-placeholder {
-            color: $text-grey;
+            color: $grey;
         }
     }
 

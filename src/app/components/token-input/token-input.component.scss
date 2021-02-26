@@ -5,17 +5,23 @@
     z-index: 1;
     position: relative;
 
-    &__help {
+    &__max-button {
+        font-size: 12px;
+        line-height: 15px;
         color: $action-blue;
+        cursor: pointer;
+
+        &:hover {
+            color: $action-light-blue;
+        }
     }
 }
 
 .input {
     position: relative;
-    border-radius: 25px;
-    background-color: $light-grey;
-    height: 32px;
-    color: $black;
+    border-radius: 100px;
+    background-color: $bg-grey;
+    height: 40px;
 
     &--disabled {
         color: $dark-grey;
@@ -26,23 +32,24 @@
     &__field {
         width: 100%;
         min-width: 0;
-        padding: 0 52px 0 18px;
+        padding: 0 52px 0 16px;
         background: none;
         border: none;
         box-shadow: none;
         font-family: $main-font;
-        font-size: 13px;
-        line-height: 15px;
-        letter-spacing: 0.35px;
+        font-size: 14px;
+        line-height: 16px;
+        font-weight: 500;
+        color: $grey;
     }
 
     &__symbol {
         position: absolute;
         right: 0;
         margin-right: 10px;
-        font-size: 13px;
-        line-height: 15px;
-        letter-spacing: 0.35px;
+        font-size: 14px;
+        line-height: 16px;
+        font-weight: 500;
         max-width: 40px;
         overflow: hidden;
         white-space: nowrap;
@@ -52,26 +59,16 @@
 
 .info-box {
     height: 32px;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 15px;
-    letter-spacing: 0.35px;
 
     &__text {
         overflow: hidden;
         text-overflow: ellipsis;
-        margin-left: 18px;
+        margin-left: 16px;
 
         &--error {
             color: $red;
-        }
-    }
-
-    &__max-button {
-        color: $action-blue;
-        cursor: pointer;
-
-        &:hover {
-            color: $action-light-blue;
         }
     }
 }

@@ -22,102 +22,87 @@
         </div>
     </div>
 
-    <mat-icon
-        *ngIf="infoText"
-        svgIcon="help"
-        aria-label="Help text"
-        [matTooltip]="infoText"
-        class="amount__help"
+    <div
+        *ngIf="showInfoBox && maxAmount && selectedToken && !disabled"
         fxFlex="0 1 80px"
         fxLayoutAlign="center"
     >
-    </mat-icon>
+        <span class="amount__max-button" (click)="setAmountToMax()"> Max </span>
+    </div>
 </div>
 
 <div
     *ngIf="showInfoBox"
     class="info-box"
-    fxLayout="row"
-    fxLayoutAlign="start center"
+    fxLayout="column"
+    fxLayoutAlign="center"
 >
-    <div fxFlex="0 1 {{ width }}px">
-        <div
-            *ngIf="
-                errors && touched && input.value.length > 0;
-                else low_transfer_amount
-            "
-            [@fallDown]="'in'"
-            id="errors"
-            class="info-box__text info-box__text--error"
-        >
-            <span *ngIf="errors['zeroAmount']">
-                The amount should be greater than 0
-            </span>
-            <span *ngIf="errors['negativeAmount']">
-                The amount should not be negative
-            </span>
-            <span *ngIf="errors['tooManyDecimals'] && selectedToken">
-                The selected token network only supports up to
-                {{ decimals }} decimals
-            </span>
-            <span *ngIf="errors['notANumber']">
-                The amount should be a valid number
-            </span>
-            <span *ngIf="errors['insufficientFunds']">
-                There are only
-                <app-balance-with-symbol
-                    [balance]="maxAmount"
-                    [token]="selectedToken"
-                ></app-balance-with-symbol>
-            </span>
-        </div>
-        <ng-template #low_transfer_amount>
-            <div
-                *ngIf="
-                    showTransferLimit &&
-                        touched &&
-                        input.value.length > 0 &&
-                        isLessThanThreshold();
-                    else max_amount
-                "
-                class="info-box__text"
-                [@fallDown]="'in'"
-                id="threshold-hint"
-            >
-                Below recommended limit of {{ formattedThreshold() }}
-                {{ selectedToken.symbol }} for mediated transfers.
-                <a
-                    href="https://docs.raiden.network/using-raiden-on-mainnet/mediation-fees"
-                    target="_blank"
-                    class="info-link"
-                >
-                    More
-                </a>
-            </div>
-        </ng-template>
-        <ng-template #max_amount>
-            <div
-                *ngIf="maxAmount && selectedToken && !disabled"
-                class="info-box__text"
-            >
-                <app-balance-with-symbol
-                    [balance]="maxAmount"
-                    [token]="selectedToken"
-                    id="max-amount"
-                ></app-balance-with-symbol>
-                available
-                <span *ngIf="onChainInput">on-chain</span>
-            </div>
-        </ng-template>
-    </div>
-
     <div
-        *ngIf="maxAmount && selectedToken && !disabled"
-        fxFlex="0 1 80px"
-        fxLayoutAlign="center"
+        *ngIf="
+            errors && touched && input.value.length > 0;
+            else low_transfer_amount
+        "
+        [@fallDown]="'in'"
+        id="errors"
+        class="info-box__text info-box__text--error"
     >
-        <span class="info-box__max-button" (click)="setAmountToMax()">
-            Max
+        <span *ngIf="errors['zeroAmount']">
+            The amount should be greater than 0
+        </span>
+        <span *ngIf="errors['negativeAmount']">
+            The amount should not be negative
+        </span>
+        <span *ngIf="errors['tooManyDecimals'] && selectedToken">
+            The selected token network only supports up to
+            {{ decimals }} decimals
+        </span>
+        <span *ngIf="errors['notANumber']">
+            The amount should be a valid number
+        </span>
+        <span *ngIf="errors['insufficientFunds']">
+            There are only
+            <app-balance-with-symbol
+                [balance]="maxAmount"
+                [token]="selectedToken"
+            ></app-balance-with-symbol>
         </span>
     </div>
+    <ng-template #low_transfer_amount>
+        <div
+            *ngIf="
+                showTransferLimit &&
+                    touched &&
+                    input.value.length > 0 &&
+                    isLessThanThreshold();
+                else max_amount
+            "
+            class="info-box__text"
+            [@fallDown]="'in'"
+            id="threshold-hint"
+        >
+            Below recommended limit of {{ formattedThreshold() }}
+            {{ selectedToken.symbol }} for mediated transfers.
+            <a
+                href="https://docs.raiden.network/using-raiden-on-mainnet/mediation-fees"
+                target="_blank"
+                class="info-link"
+            >
+                More
+            </a>
+        </div>
+    </ng-template>
+    <ng-template #max_amount>
+        <div
+            *ngIf="maxAmount && selectedToken && !disabled"
+            class="info-box__text"
+        >
+            <app-balance-with-symbol
+                [balance]="maxAmount"
+                [token]="selectedToken"
+                id="max-amount"
+            ></app-balance-with-symbol>
+            available
+            <span *ngIf="onChainInput">on-chain</span>
+        </div>
+    </ng-template>
 </div>

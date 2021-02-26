@@ -3,12 +3,12 @@
         type="text"
         placeholder="{{ placeholder }} address / ENS name"
         aria-label="Address input"
+        [disabled]="disabled"
         class="input__field"
         [matAutocomplete]="auto"
         [matAutocompleteDisabled]="!userAccount"
         (input)="onChange($event.target.value)"
         (focus)="onTouched()"
-        fxFlex="0 1 226px"
         spellcheck="false"
         #input
     />
@@ -33,8 +33,8 @@
     </mat-autocomplete>
 
     <div
-        fxFlex="0 1 80px"
-        fxLayoutAlign="center"
+        fxLayout="row"
+        fxLayoutAlign="start center"
         class="icon-box"
         *ngIf="displayIdenticon"
     >
@@ -48,13 +48,19 @@
             <mat-progress-spinner
                 diameter="24"
                 mode="indeterminate"
+                color="accent"
                 *ngIf="searching"
             ></mat-progress-spinner>
         </ng-template>
     </div>
 </div>
 
-<div class="info-box" fxLayout="column" fxLayoutAlign="center">
+<div
+    *ngIf="!disabled"
+    class="info-box"
+    fxLayout="column"
+    fxLayoutAlign="center"
+>
     <span
         *ngIf="errors && touched && input.value.length > 0; else hint_text"
         [@fallDown]="'in'"
@@ -107,25 +113,28 @@
 
     <div
         *ngIf="showContactLabelInput"
-        class="input input--contact"
         fxLayout="row"
         fxLayoutAlign="start center"
+        fxFlexOffset="16px"
         [@stretchVertically]="'in'"
     >
         <mat-icon svgIcon="go" aria-hidden="true" class="icon"> </mat-icon>
-        <input
-            fxFlexOffset="6px"
-            placeholder="Contact name"
-            aria-label="Contact name input for address"
-            class="input__field"
-            [formControl]="contactLabelFc"
-            type="text"
-            fxFlex="0 1 196px"
-            (keyup.enter)="labelFieldOnEnter($event)"
-            spellcheck="false"
-        />
-        <div class="icon-box">
+        <div class="input">
+            <input
+                fxFlexOffset="6px"
+                placeholder="Contact name"
+                aria-label="Contact name input for address"
+                class="input__field input__field--contact"
+                [formControl]="contactLabelFc"
+                type="text"
+                fxFlex="0 1 194px"
+                (keyup.enter)="labelFieldOnEnter($event)"
+                spellcheck="false"
+            />
+        </div>
+        <div fxFlex="0 1 80px" fxLayoutAlign="center center">
             <button
+                class="add-contact-button"
                 mat-icon-button
                 (click)="saveContact()"
                 [disabled]="contactLabelFc.invalid"
