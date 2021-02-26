@@ -41,9 +41,8 @@ import { Animations } from '../../animations/animations';
 })
 export class TokenInputComponent implements ControlValueAccessor, Validator {
     @Input() allowZero = false;
-    @Input() infoText = '';
     @Input() placeholder = 'Amount';
-    @Input() width = '226';
+    @Input() width = '224';
     @Input() showInfoBox = true;
     @Input() onChainInput = false;
     @Input() showTransferLimit = false;

@@ -1,4 +1,4 @@
-<div fxLayout="column" fxLayoutGap="33px" fxLayoutAlign="center center">
+<div fxLayout="column" fxLayoutGap="32px" fxLayoutAlign="center center">
     <mat-icon class="icon" aria-hidden="true" svgIcon="error"></mat-icon>
     <ng-container *ngIf="isRpcError(); else api_error">
         <div class="title">JSON RPC connection error!</div>
@@ -19,21 +19,26 @@
             {{ data.errorContent }}
         </div>
     </div>
-    <div class="actions" fxLayout="row" fxLayoutAlign="space-between">
+    <div
+        class="actions"
+        fxLayout="row"
+        fxLayoutAlign="space-between"
+        fxLayoutGap="32px"
+    >
         <button
-            class="actions__button actions__button--white"
+            class="actions__button actions__button--dark"
             id="show-error"
             mat-flat-button
-            color="accent"
+            color="primary"
             (click)="showError = !showError"
         >
             {{ showError ? 'Hide Error' : 'Show Error' }}
         </button>
         <button
-            class="actions__button actions__button--black"
+            class="actions__button actions__button--white"
             id="retry"
             mat-flat-button
-            color="primary"
+            color="accent"
             (click)="retry()"
         >
             Retry

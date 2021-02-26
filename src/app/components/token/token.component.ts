@@ -171,7 +171,6 @@ export class TokenComponent implements OnInit, OnDestroy {
 
         const dialog = this.dialog.open(QuickConnectDialogComponent, {
             data: payload,
-            width: '400px',
         });
 
         dialog

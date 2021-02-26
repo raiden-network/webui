@@ -81,6 +81,7 @@
         color: $light-grey;
         height: 16px !important;
         width: 16px !important;
+        line-height: 16px;
     }
 
     &--in-progress {
@@ -170,7 +171,7 @@
     background-color: $bg-dark-grey;
 
     &__icon {
-        color: $text-grey;
+        color: $grey;
         height: 26px !important;
         width: 24px !important;
     }

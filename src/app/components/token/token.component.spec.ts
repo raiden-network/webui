@@ -217,7 +217,6 @@ describe('TokenComponent', () => {
                 QuickConnectDialogComponent,
                 {
                     data: quickConnectPayload,
-                    width: '400px',
                 },
             ]);
         });
@@ -350,7 +349,6 @@ describe('TokenComponent', () => {
                 QuickConnectDialogComponent,
                 {
                     data: quickConnectPayload,
-                    width: '400px',
                 },
             ]);
             expect(openBatchSpy).toHaveBeenCalledTimes(1);
@@ -459,7 +457,6 @@ describe('TokenComponent', () => {
                 QuickConnectDialogComponent,
                 {
                     data: payload,
-                    width: '400px',
                 }
             );
         });

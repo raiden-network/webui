@@ -2,40 +2,86 @@
     class="dialog"
     (keyup.enter)="onEnter()"
     fxLayout="column"
-    fxLayoutGap="20px"
+    fxLayoutGap="16px"
 >
-    <div class="dialog__title">{{ titleText }}</div>
+    <div fxLayout="column" fxLayoutGap="6px">
+        <div fxLayout="row" fxLayoutAlign="space-between">
+            <button
+                *ngIf="infoText"
+                mat-icon-button
+                (click)="showInfoText = !showInfoText"
+                class="small-button small-button--left"
+            >
+                <mat-icon
+                    *ngIf="!showInfoText; else info_back"
+                    aria-label="Show information about the dialog"
+                    svgIcon="info"
+                    class="small-button__icon"
+                ></mat-icon>
+                <ng-template #info_back>
+                    <mat-icon
+                        aria-label="Hide information about the dialog"
+                        svgIcon="left"
+                        class="small-button__icon small-button__icon--big"
+                    ></mat-icon>
+                </ng-template>
+            </button>
+            <div fxFlex="1 1 auto"></div>
+            <button
+                mat-icon-button
+                (click)="cancel.emit(true)"
+                class="small-button small-button--right"
+                id="close"
+            >
+                <mat-icon
+                    aria-label="Close dialog"
+                    svgIcon="close"
+                    class="small-button__icon"
+                ></mat-icon>
+            </button>
+        </div>
 
-    <button
-        mat-icon-button
-        (click)="cancel.emit(true)"
-        class="dialog__close-button"
-        id="close"
+        <div *ngIf="titleText" class="dialog__title">{{ titleText }}</div>
+    </div>
+
+    <div
+        *ngIf="showInfoText"
+        class="info-box"
+        fxLayout="column"
+        fxLayoutAlign="center center"
     >
-        <mat-icon
-            aria-label="Close dialog"
-            svgIcon="close"
-            class="dialog__close-icon"
-        ></mat-icon>
-    </button>
+        {{ infoText }}
+    </div>
 
     <ng-content></ng-content>
 
-    <div *ngIf="!noButtons" fxLayout="row" fxLayoutAlign="space-between">
+    <div
+        *ngIf="!noButtons"
+        class="dialog__button-section"
+        fxLayout="row"
+        fxLayoutAlign="center"
+        fxLayoutGap="32px"
+    >
         <button
-            class="dialog__button dialog__button--white"
+            *ngIf="showCancel"
+            class="dialog__button dialog__button--dark"
             mat-flat-button
-            color="accent"
+            color="primary"
             (click)="cancel.emit(true)"
             id="cancel"
         >
             Cancel
         </button>
         <button
-            class="dialog__button dialog__button--black"
+            class="dialog__button"
+            [ngClass]="{
+                'dialog__button--wide': !showCancel,
+                'dialog__button--dark': !showCancel,
+                'dialog__button--white': showCancel
+            }"
             mat-flat-button
             [disabled]="acceptDisabled"
-            color="primary"
+            color="accent"
             (click)="accept.emit(true)"
             id="accept"
         >

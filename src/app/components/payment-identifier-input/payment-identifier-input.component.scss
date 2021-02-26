@@ -4,20 +4,20 @@
 .input {
     z-index: 1;
     position: relative;
-    height: 32px;
+    height: 40px;
 
     &__field {
-        border-radius: 25px;
-        background-color: $light-grey;
+        border-radius: 100px;
+        background-color: $bg-grey;
         border: none;
         box-shadow: none;
         font-family: $main-font;
-        padding: 0 18px;
+        padding: 0 16px;
         height: 100%;
-        font-size: 13px;
-        line-height: 15px;
-        letter-spacing: 0.35px;
-        color: $black;
+        font-size: 14px;
+        line-height: 16px;
+        font-weight: 500;
+        color: $grey;
     }
 
     &__button {
@@ -34,14 +34,13 @@
 
 .info-box {
     height: 32px;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 15px;
-    letter-spacing: 0.35px;
 
     &__text {
         overflow: hidden;
         text-overflow: ellipsis;
-        margin-left: 18px;
+        margin-left: 16px;
         color: $red;
     }
 }
@@ -51,8 +50,8 @@
 
     &__text {
         font-weight: 500;
-        font-size: 10px;
-        line-height: 12px;
+        font-size: 12px;
+        line-height: 15px;
         color: $dark-grey;
         vertical-align: top;
         cursor: pointer;

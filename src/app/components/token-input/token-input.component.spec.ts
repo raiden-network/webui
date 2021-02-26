@@ -184,7 +184,7 @@ describe('TokenInputComponent', () => {
     it('should set the input value to the max amount', () => {
         component.maxAmount = new BigNumber(7000000000000000);
         fixture.detectChanges();
-        clickElement(fixture.debugElement, '.info-box__max-button');
+        clickElement(fixture.debugElement, '.amount__max-button');
         fixture.detectChanges();
 
         expect(input.value).toBe('0.007');

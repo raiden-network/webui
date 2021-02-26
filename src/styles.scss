@@ -128,7 +128,7 @@ body {
 
 .mat-flat-button {
     height: 50px;
-    border-radius: 25px !important;
+    border-radius: 100px !important;
     font-size: 13px !important;
     line-height: 15px !important;
     font-weight: 500 !important;
@@ -149,7 +149,7 @@ body {
 
 .mat-flat-button:disabled,
 .mat-icon-button:disabled {
-    border: 2px solid $dark-grey;
+    border: 1px solid $dark-grey;
     color: $dark-grey !important;
     opacity: 0.32;
     background: none !important;
@@ -186,25 +186,37 @@ body {
 }
 
 .mat-dialog-container {
-    background-color: $white !important;
-    color: $black !important;
-    border-radius: 15px !important;
-    padding: 32px 27px 27px 27px !important;
+    background-color: $black !important;
+    border-radius: 24px !important;
+    padding: 18px 48px 32px 48px !important;
     box-shadow: none !important;
 }
 
 .grey-dialog .mat-dialog-container {
-    background-color: #d8d8d8 !important;
+    background-color: $bg-light-grey !important;
+}
+
+.dialog-backdrop {
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+@supports not (
+    (backdrop-filter: blur(15px)) or (-webkit-backdrop-filter: blur(15px))
+) {
+    .dialog-backdrop {
+        background: rgba(0, 0, 0, 0.32);
+    }
 }
 
 .mat-select {
-    border-radius: 25px;
-    background-color: $light-grey;
-    height: 32px;
-    padding: 0 18px;
-    font-size: 13px;
-    line-height: 15px;
-    letter-spacing: 0.35px;
+    border-radius: 100px;
+    background-color: $bg-grey;
+    height: 40px;
+    padding: 0 16px;
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 500;
 }
 
 .mat-select-trigger {
@@ -214,7 +226,7 @@ body {
 
 .mat-select-value {
     vertical-align: middle;
-    color: $black !important;
+    color: $grey !important;
 }
 
 .mat-select-arrow {
@@ -229,7 +241,7 @@ body {
 .mat-autocomplete-panel {
     box-shadow: none !important;
     border-radius: 5px !important;
-    background-color: $light-grey !important;
+    background-color: $bg-grey !important;
 }
 
 .mat-select--dark .mat-select-placeholder,
@@ -241,8 +253,24 @@ body {
     background-color: $black !important;
 
     .mat-option {
-        background: none !important;
         color: $white !important;
+    }
+
+    .mat-flat-button:not(:hover) {
+        background: none !important;
+    }
+}
+
+.mat-autocomplete-panel--light {
+    background-color: $light-grey !important;
+
+    .mat-option {
+        color: $black !important;
+
+        &.mat-active,
+        &:hover:not(.mat-option-disabled) {
+            background-color: rgba(0, 0, 0, 0.04);
+        }
     }
 }
 
@@ -253,8 +281,7 @@ body {
 }
 
 .mat-option {
-    color: $black !important;
-    background-color: $light-grey !important;
+    color: $grey !important;
     font-size: 13px !important;
     line-height: 15px !important;
     height: 60px !important;
@@ -295,7 +322,7 @@ body {
 
     .mat-slider-track-background {
         height: 100% !important;
-        background-color: $bg-light-grey !important;
+        background-color: $bg-grey !important;
     }
 
     .mat-slider-track-fill {
@@ -311,19 +338,19 @@ body {
 }
 
 .mat-slider-min-value:not(.mat-slider-thumb-label-showing) .mat-slider-thumb {
-    border: 1px solid $dark-grey !important;
-    background-color: $white !important;
+    border: none;
+    background-color: $grey !important;
 }
 
 .mat-slider-disabled .mat-slider-thumb,
 .mat-slider-min-value:not(.mat-slider-thumb-label-showing).mat-slider-disabled
     .mat-slider-thumb {
     border: none;
-    background-color: $grey !important;
+    background-color: $dark-grey !important;
 }
 
 .mat-slider-disabled .mat-slider-track-fill {
-    background-color: $bg-light-grey !important;
+    background-color: $bg-grey !important;
 }
 
 input:focus {
