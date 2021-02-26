@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - [#557] Moves the token mint button next to the token on-chain balance in the header.
+- [#556] New dark dialog design.
 
 ### Fixed
 - [#590] Fixed a bug that prevented to select the all networks view.
@@ -195,6 +196,7 @@ token network.
 [#590]: https://github.com/raiden-network/webui/issues/590
 [#580]: https://github.com/raiden-network/webui/issues/580
 [#557]: https://github.com/raiden-network/webui/issues/557
+[#556]: https://github.com/raiden-network/webui/issues/556
 [#547]: https://github.com/raiden-network/webui/issues/547
 [#485]: https://github.com/raiden-network/webui/issues/485
 [#476]: https://github.com/raiden-network/webui/issues/476
