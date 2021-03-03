@@ -1635,4 +1635,86 @@ describe('RaidenService', () => {
         });
         flush();
     }));
+
+    it('should request to set the total UDC deposit', fakeAsync(() => {
+        service
+            .setUdcDeposit(new BigNumber(1000))
+            .subscribe((value) => expect(value).toBeFalsy());
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/user_deposit`,
+            method: 'POST',
+        });
+        expect(losslessParse(request.request.body)).toEqual({
+            total_deposit: new BigNumber(1000),
+        });
+
+        request.flush(
+            {
+                transaction_hash:
+                    '0xfc7edd195c6cc0c9391d84dd83b7aa9dbfffbcfc107e5c33a5ab912c0d92416c',
+            },
+            {
+                status: 200,
+                statusText: '',
+            }
+        );
+        tick();
+        flush();
+    }));
+
+    it('should request to plan a UDC withdraw', fakeAsync(() => {
+        service
+            .planUdcWithdraw(new BigNumber(500))
+            .subscribe((value) => expect(value).toBeFalsy());
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/user_deposit`,
+            method: 'POST',
+        });
+        expect(losslessParse(request.request.body)).toEqual({
+            planned_withdraw_amount: new BigNumber(500),
+        });
+
+        request.flush(
+            {
+                transaction_hash:
+                    '0xfc7edd195c6cc0c9391d84dd83b7aa9dbfffbcfc107e5c33a5ab912c0d92416c',
+                planned_withdraw_block_number: 4269933,
+            },
+            {
+                status: 200,
+                statusText: '',
+            }
+        );
+        tick();
+        flush();
+    }));
+
+    it('should request to withdraw from UDC', fakeAsync(() => {
+        service
+            .withdrawFromUdc(new BigNumber(2222))
+            .subscribe((value) => expect(value).toBeFalsy());
+
+        const request = mockHttp.expectOne({
+            url: `${endpoint}/user_deposit`,
+            method: 'POST',
+        });
+        expect(losslessParse(request.request.body)).toEqual({
+            withdraw_amount: new BigNumber(2222),
+        });
+
+        request.flush(
+            {
+                transaction_hash:
+                    '0xfc7edd195c6cc0c9391d84dd83b7aa9dbfffbcfc107e5c33a5ab912c0d92416c',
+            },
+            {
+                status: 200,
+                statusText: '',
+            }
+        );
+        tick();
+        flush();
+    }));
 });

@@ -813,6 +813,30 @@ export class RaidenService {
         );
     }
 
+    public setUdcDeposit(totalDeposit: BigNumber): Observable<void> {
+        return this.http
+            .post(`${this.raidenConfig.api}/user_deposit`, {
+                total_deposit: totalDeposit,
+            })
+            .pipe(mapTo(null));
+    }
+
+    public planUdcWithdraw(plannedWithdrawAmount: BigNumber): Observable<void> {
+        return this.http
+            .post(`${this.raidenConfig.api}/user_deposit`, {
+                planned_withdraw_amount: plannedWithdrawAmount,
+            })
+            .pipe(mapTo(null));
+    }
+
+    public withdrawFromUdc(withdrawAmount: BigNumber): Observable<void> {
+        return this.http
+            .post(`${this.raidenConfig.api}/user_deposit`, {
+                withdraw_amount: withdrawAmount,
+            })
+            .pipe(mapTo(null));
+    }
+
     public getStatus(): Observable<Status> {
         return this.http.get<Status>(`${this.raidenConfig.api}/status`).pipe(
             map((status) => {
