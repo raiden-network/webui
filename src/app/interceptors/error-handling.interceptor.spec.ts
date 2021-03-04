@@ -29,11 +29,6 @@ describe('ErrorHandlingInterceptor', () => {
     let raidenConfig: RaidenConfig;
 
     beforeEach(() => {
-        notificationService = jasmine.createSpyObj('NotificationService', [
-            'addErrorNotification',
-        ]);
-        notificationService.apiError = undefined;
-
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             providers: [
@@ -45,10 +40,7 @@ describe('ErrorHandlingInterceptor', () => {
                     multi: true,
                 },
                 TestProviders.MockRaidenConfigProvider(),
-                {
-                    provide: NotificationService,
-                    useValue: notificationService,
-                },
+                TestProviders.SpyNotificationServiceProvider(),
                 TestProviders.AddressBookStubProvider(),
             ],
         });

@@ -40,6 +40,8 @@ export class RaidenIconsModule {
         'graph',
         'doublearrow',
         'mint',
+        'deposit',
+        'withdraw',
     ];
 
     constructor(

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RaidenService } from './raiden.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
-import { Observable, zip, interval, of } from 'rxjs';
+import { Observable, zip, interval, of, throwError } from 'rxjs';
 import { UserToken } from '../models/usertoken';
 import {
     switchMap,
@@ -10,6 +10,10 @@ import {
     startWith,
     retryWhen,
     switchMapTo,
+    tap,
+    catchError,
+    finalize,
+    first,
 } from 'rxjs/operators';
 import { backoff } from '../shared/backoff.operator';
 import { RaidenConfig } from './raiden.config';
@@ -18,6 +22,8 @@ import { fromPromise } from 'rxjs/internal-compatibility';
 import BigNumber from 'bignumber.js';
 import { Contract } from 'web3-eth-contract';
 import { tokenabi } from '../models/tokenabi';
+import { NotificationService } from './notification.service';
+import { amountToDecimal } from 'app/utils/amount.converter';
 
 @Injectable({
     providedIn: 'root',
@@ -26,16 +32,181 @@ export class UserDepositService {
     readonly balance$: Observable<BigNumber>;
     readonly servicesToken$: Observable<UserToken>;
 
+    private readonly userDepositContract$: Observable<Contract>;
+
     constructor(
         private raidenService: RaidenService,
         private tokenInfoRetriever: TokenInfoRetrieverService,
-        private raidenConfig: RaidenConfig
+        private raidenConfig: RaidenConfig,
+        private notificationService: NotificationService
     ) {
-        const userDepositContract$ = this.getUserDepositContractObservable();
-
-        this.balance$ = this.getBalanceObservable(userDepositContract$);
+        this.userDepositContract$ = this.getUserDepositContractObservable();
+        this.balance$ = this.getBalanceObservable(this.userDepositContract$);
         this.servicesToken$ = this.getServicesTokenObservable(
-            userDepositContract$
+            this.userDepositContract$
+        );
+    }
+
+    deposit(amount: BigNumber): Observable<void> {
+        const totalDeposit$ = zip(
+            this.raidenService.raidenAddress$,
+            this.userDepositContract$
+        ).pipe(
+            first(),
+            switchMap(([raidenAddress, userDepositContract]) =>
+                fromPromise<string>(
+                    userDepositContract.methods
+                        .total_deposit(raidenAddress)
+                        .call()
+                )
+            ),
+            map((value) => new BigNumber(value))
+        );
+
+        let servicesToken: UserToken;
+        let formattedAmount: string;
+        let notificationIdentifier: number;
+
+        return this.servicesToken$.pipe(
+            first(),
+            tap((token) => {
+                servicesToken = token;
+                formattedAmount = amountToDecimal(
+                    amount,
+                    servicesToken.decimals
+                ).toFixed();
+                notificationIdentifier = this.notificationService.addPendingAction(
+                    {
+                        title: 'Depositing to UDC',
+                        description: `${formattedAmount} ${servicesToken.symbol}`,
+                        icon: 'deposit',
+                        userToken: servicesToken,
+                    }
+                );
+            }),
+            switchMapTo(totalDeposit$),
+            switchMap((totalDeposit) => {
+                const newTotalDeposit = totalDeposit.plus(amount);
+                return this.raidenService.setUdcDeposit(newTotalDeposit);
+            }),
+            tap(() => {
+                this.notificationService.addSuccessNotification({
+                    title: 'Deposited to UDC',
+                    description: `${formattedAmount} ${servicesToken.symbol}`,
+                    icon: 'deposit',
+                    userToken: servicesToken,
+                });
+            }),
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title: 'Deposit to UDC failed',
+                    description: error,
+                    icon: 'error-mark',
+                    userToken: servicesToken,
+                });
+                return throwError(error);
+            }),
+            finalize(() =>
+                this.notificationService.removePendingAction(
+                    notificationIdentifier
+                )
+            )
+        );
+    }
+
+    planWithdraw(amount: BigNumber): Observable<void> {
+        let servicesToken: UserToken;
+        let formattedAmount: string;
+        let notificationIdentifier: number;
+
+        return this.servicesToken$.pipe(
+            first(),
+            tap((token) => {
+                servicesToken = token;
+                formattedAmount = amountToDecimal(
+                    amount,
+                    servicesToken.decimals
+                ).toFixed();
+                notificationIdentifier = this.notificationService.addPendingAction(
+                    {
+                        title: 'Planning withdraw from UDC',
+                        description: `${formattedAmount} ${servicesToken.symbol}`,
+                        icon: 'withdraw',
+                        userToken: servicesToken,
+                    }
+                );
+            }),
+            switchMap(() => this.raidenService.planUdcWithdraw(amount)),
+            tap(() => {
+                this.notificationService.addSuccessNotification({
+                    title: 'Planned withdraw from UDC',
+                    description: `${formattedAmount} ${servicesToken.symbol}`,
+                    icon: 'withdraw',
+                    userToken: servicesToken,
+                });
+            }),
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title: 'Plan withdraw from UDC failed',
+                    description: error,
+                    icon: 'error-mark',
+                    userToken: servicesToken,
+                });
+                return throwError(error);
+            }),
+            finalize(() =>
+                this.notificationService.removePendingAction(
+                    notificationIdentifier
+                )
+            )
+        );
+    }
+
+    withdraw(amount: BigNumber): Observable<void> {
+        let servicesToken: UserToken;
+        let formattedAmount: string;
+        let notificationIdentifier: number;
+
+        return this.servicesToken$.pipe(
+            first(),
+            tap((token) => {
+                servicesToken = token;
+                formattedAmount = amountToDecimal(
+                    amount,
+                    servicesToken.decimals
+                ).toFixed();
+                notificationIdentifier = this.notificationService.addPendingAction(
+                    {
+                        title: 'Withdrawing from UDC',
+                        description: `${formattedAmount} ${servicesToken.symbol}`,
+                        icon: 'withdraw',
+                        userToken: servicesToken,
+                    }
+                );
+            }),
+            switchMap(() => this.raidenService.withdrawFromUdc(amount)),
+            tap(() => {
+                this.notificationService.addSuccessNotification({
+                    title: 'Withdrew from UDC',
+                    description: `${formattedAmount} ${servicesToken.symbol}`,
+                    icon: 'withdraw',
+                    userToken: servicesToken,
+                });
+            }),
+            catchError((error) => {
+                this.notificationService.addErrorNotification({
+                    title: 'Withdraw from UDC failed',
+                    description: error,
+                    icon: 'error-mark',
+                    userToken: servicesToken,
+                });
+                return throwError(error);
+            }),
+            finalize(() =>
+                this.notificationService.removePendingAction(
+                    notificationIdentifier
+                )
+            )
         );
     }
 
