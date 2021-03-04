@@ -8,9 +8,18 @@
       "packagePatterns": [
         "*"
       ],
-      "updateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance", "rollback", "bump"],
-      "groupName": "all non-major dependencies",
-      "groupSlug": "all-minor-patch"
+      "updateTypes": ["patch", "pin", "digest", "lockFileMaintenance", "rollback", "bump"],
+      "groupName": "all non-major and non-minor dependencies",
+      "groupSlug": "all-patch"
+    },
+    {
+      "packagePatterns": [
+        "*"
+      ],
+      "excludePackageNames": ["typescript"],
+      "updateTypes": ["minor"],
+      "groupName": "all minor dependencies",
+      "groupSlug": "all-minor"
     },
     {
       "updateTypes": ["major"],
