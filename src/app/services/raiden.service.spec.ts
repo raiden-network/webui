@@ -71,24 +71,12 @@ describe('RaidenService', () => {
     const paymentEvent = createPaymentEvent('EventPaymentReceivedSuccess');
 
     beforeEach(() => {
-        notificationService = jasmine.createSpyObj('NotificationService', [
-            'addPendingAction',
-            'removePendingAction',
-            'addSuccessNotification',
-            'addInfoNotification',
-            'addErrorNotification',
-        ]);
-        notificationService.apiError = null;
-
         TestBed.configureTestingModule({
             imports: [HttpClientModule, HttpClientTestingModule],
             providers: [
                 TestProviders.MockRaidenConfigProvider(),
                 RaidenService,
-                {
-                    provide: NotificationService,
-                    useValue: notificationService,
-                },
+                TestProviders.SpyNotificationServiceProvider(),
                 TokenInfoRetrieverService,
                 Web3Factory,
                 {

@@ -10,6 +10,7 @@ import {
 } from '@angular/material/dialog';
 import { MockMatDialog } from './mock-mat-dialog';
 import { of } from 'rxjs';
+import { NotificationService } from 'app/services/notification.service';
 
 export class TestProviders {
     static AddressBookStubProvider(): Provider {
@@ -52,6 +53,26 @@ export class TestProviders {
         return {
             provide: MatDialog,
             useClass: MockMatDialog,
+        };
+    }
+
+    static SpyNotificationServiceProvider(): Provider {
+        return {
+            provide: NotificationService,
+            useFactory: () => {
+                const notificationService = jasmine.createSpyObj(
+                    'NotificationService',
+                    [
+                        'addPendingAction',
+                        'removePendingAction',
+                        'addSuccessNotification',
+                        'addInfoNotification',
+                        'addErrorNotification',
+                    ]
+                );
+                notificationService.apiError = undefined;
+                return notificationService;
+            },
         };
     }
 }

@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RaidenService } from './raiden.service';
 import { stub } from '../../testing/stub';
-import { BehaviorSubject, Subject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import {
     createAddress,
     createContractsInfo,
@@ -18,6 +18,7 @@ import { AbiItem } from 'web3-utils/types';
 import Spy = jasmine.Spy;
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { UserToken } from '../models/usertoken';
+import { NotificationService } from './notification.service';
 
 describe('UserDepositService', () => {
     let service: UserDepositService;
@@ -29,6 +30,7 @@ describe('UserDepositService', () => {
     let tokenRetrieverSpy: Spy;
 
     const balance = '40000000';
+    const totalDeposit = '333';
     let token: UserToken;
 
     beforeEach(() => {
@@ -42,6 +44,9 @@ describe('UserDepositService', () => {
         // @ts-ignore
         raidenServiceMock.rpcConnected$ = rpcConnectedSubject.asObservable();
         raidenServiceMock.getContractsInfo = () => of(createContractsInfo());
+        raidenServiceMock.setUdcDeposit = () => of(null);
+        raidenServiceMock.planUdcWithdraw = () => of(null);
+        raidenServiceMock.withdrawFromUdc = () => of(null);
 
         TestBed.configureTestingModule({
             imports: [HttpClientModule, HttpClientTestingModule],
@@ -52,6 +57,7 @@ describe('UserDepositService', () => {
                     useValue: raidenServiceMock,
                 },
                 TokenInfoRetrieverService,
+                TestProviders.SpyNotificationServiceProvider(),
             ],
         });
         const raidenConfig = TestBed.inject(RaidenConfig);
@@ -60,6 +66,7 @@ describe('UserDepositService', () => {
         tokenAddressResult = Promise.resolve(token.address);
         balanceResult = Promise.resolve(balance);
         tokenBalanceResult = Promise.resolve(token.balance.toString());
+        const totalDepsositResult = Promise.resolve(totalDeposit);
 
         // @ts-ignore
         raidenConfig.web3.eth.Contract = function (
@@ -88,6 +95,9 @@ describe('UserDepositService', () => {
                     balances: () => ({
                         call: () => balanceResult,
                     }),
+                    total_deposit: () => ({
+                        call: () => totalDepsositResult,
+                    }),
                 };
             }
             return contractMock;
@@ -96,7 +106,7 @@ describe('UserDepositService', () => {
         tokenRetrieverSpy = spyOn(
             TestBed.inject(TokenInfoRetrieverService),
             'createBatch'
-        );
+        ).and.returnValue(Promise.resolve({ [token.address]: token }));
 
         service = TestBed.inject(UserDepositService);
     });
@@ -132,9 +142,6 @@ describe('UserDepositService', () => {
     }));
 
     it('should periodically poll the services token', fakeAsync(() => {
-        tokenRetrieverSpy.and.returnValue(
-            Promise.resolve({ [token.address]: token })
-        );
         tokenBalanceResult = Promise.resolve('999999');
         const tokenWithFetchedBalance = Object.assign({}, token, {
             balance: new BigNumber('999999'),
@@ -151,10 +158,6 @@ describe('UserDepositService', () => {
     }));
 
     it('should retry getting the token address after successful rpc connection attempt', fakeAsync(() => {
-        tokenRetrieverSpy.and.returnValue(
-            Promise.resolve({ [token.address]: token })
-        );
-
         const spy = jasmine.createSpy();
         tokenAddressResult = Promise.reject();
         const subscription = service.servicesToken$.subscribe(spy);
@@ -184,5 +187,182 @@ describe('UserDepositService', () => {
         expect(spy).toHaveBeenCalledWith(token);
         flush();
         subscription.unsubscribe();
+    }));
+
+    it('should show notifications when depositing', fakeAsync(() => {
+        const notificationService = TestBed.inject(NotificationService);
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'setUdcDeposit').and.callThrough();
+
+        const deposit = new BigNumber('666');
+        service
+            .deposit(deposit)
+            .subscribe((value) => expect(value).toBeFalsy())
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
+
+        tick();
+        expect(raidenService.setUdcDeposit).toHaveBeenCalledTimes(1);
+        expect(raidenService.setUdcDeposit).toHaveBeenCalledWith(
+            deposit.plus(totalDeposit)
+        );
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
+        flush();
+    }));
+
+    it('should show notifications when planning a withdraw', fakeAsync(() => {
+        const notificationService = TestBed.inject(NotificationService);
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'planUdcWithdraw').and.callThrough();
+
+        const withdrawAmount = new BigNumber('21');
+        service
+            .planWithdraw(withdrawAmount)
+            .subscribe((value) => expect(value).toBeFalsy())
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
+
+        tick();
+        expect(raidenService.planUdcWithdraw).toHaveBeenCalledTimes(1);
+        expect(raidenService.planUdcWithdraw).toHaveBeenCalledWith(
+            withdrawAmount
+        );
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
+        flush();
+    }));
+
+    it('should show notifications when withdrawing', fakeAsync(() => {
+        const notificationService = TestBed.inject(NotificationService);
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'withdrawFromUdc').and.callThrough();
+
+        const withdrawAmount = new BigNumber('123456');
+        service
+            .withdraw(withdrawAmount)
+            .subscribe((value) => expect(value).toBeFalsy())
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
+
+        tick();
+        expect(raidenService.withdrawFromUdc).toHaveBeenCalledTimes(1);
+        expect(raidenService.withdrawFromUdc).toHaveBeenCalledWith(
+            withdrawAmount
+        );
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
+        expect(
+            notificationService.addSuccessNotification
+        ).toHaveBeenCalledTimes(1);
+        flush();
+    }));
+
+    it('should show error notifications when deposit fails', fakeAsync(() => {
+        const notificationService = TestBed.inject(NotificationService);
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'setUdcDeposit').and.returnValue(
+            throwError('Deposit failed')
+        );
+
+        const deposit = new BigNumber('666');
+        service
+            .deposit(deposit)
+            .subscribe(
+                () => {
+                    fail('On next should not be called');
+                },
+                (error) => {
+                    expect(error).toBeTruthy('An error was expected');
+                }
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
+
+        tick();
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
+        );
+        flush();
+    }));
+
+    it('should show error notifications when plan withdraw fails', fakeAsync(() => {
+        const notificationService = TestBed.inject(NotificationService);
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'planUdcWithdraw').and.returnValue(
+            throwError('Plan withdraw failed')
+        );
+
+        const withdrawAmount = new BigNumber('21');
+        service
+            .planWithdraw(withdrawAmount)
+            .subscribe(
+                () => {
+                    fail('On next should not be called');
+                },
+                (error) => {
+                    expect(error).toBeTruthy('An error was expected');
+                }
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
+
+        tick();
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
+        );
+        flush();
+    }));
+
+    it('should show error notifications when withdraw fails', fakeAsync(() => {
+        const notificationService = TestBed.inject(NotificationService);
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'withdrawFromUdc').and.returnValue(
+            throwError('Withdraw failed')
+        );
+
+        const withdrawAmount = new BigNumber('123456');
+        service
+            .withdraw(withdrawAmount)
+            .subscribe(
+                () => {
+                    fail('On next should not be called');
+                },
+                (error) => {
+                    expect(error).toBeTruthy('An error was expected');
+                }
+            )
+            .add(() => {
+                expect(
+                    notificationService.removePendingAction
+                ).toHaveBeenCalledTimes(1);
+            });
+
+        tick();
+        expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
+        );
+        flush();
     }));
 });
