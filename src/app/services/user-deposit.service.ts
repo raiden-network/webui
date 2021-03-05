@@ -48,21 +48,6 @@ export class UserDepositService {
     }
 
     deposit(amount: BigNumber): Observable<void> {
-        const totalDeposit$ = zip(
-            this.raidenService.raidenAddress$,
-            this.userDepositContract$
-        ).pipe(
-            first(),
-            switchMap(([raidenAddress, userDepositContract]) =>
-                fromPromise<string>(
-                    userDepositContract.methods
-                        .total_deposit(raidenAddress)
-                        .call()
-                )
-            ),
-            map((value) => new BigNumber(value))
-        );
-
         let servicesToken: UserToken;
         let formattedAmount: string;
         let notificationIdentifier: number;
@@ -84,7 +69,7 @@ export class UserDepositService {
                     }
                 );
             }),
-            switchMapTo(totalDeposit$),
+            switchMap(() => this.getTotalDepositObservable()),
             switchMap((totalDeposit) => {
                 const newTotalDeposit = totalDeposit.plus(amount);
                 return this.raidenService.depositToUdc(newTotalDeposit);
@@ -207,6 +192,23 @@ export class UserDepositService {
                     notificationIdentifier
                 )
             )
+        );
+    }
+
+    private getTotalDepositObservable(): Observable<BigNumber> {
+        return zip(
+            this.raidenService.raidenAddress$,
+            this.userDepositContract$
+        ).pipe(
+            first(),
+            switchMap(([raidenAddress, userDepositContract]) =>
+                fromPromise<string>(
+                    userDepositContract.methods
+                        .total_deposit(raidenAddress)
+                        .call()
+                )
+            ),
+            map((value) => new BigNumber(value))
         );
     }
 
