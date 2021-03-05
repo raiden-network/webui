@@ -44,7 +44,7 @@ describe('UserDepositService', () => {
         // @ts-ignore
         raidenServiceMock.rpcConnected$ = rpcConnectedSubject.asObservable();
         raidenServiceMock.getContractsInfo = () => of(createContractsInfo());
-        raidenServiceMock.setUdcDeposit = () => of(null);
+        raidenServiceMock.depositToUdc = () => of(null);
         raidenServiceMock.planUdcWithdraw = () => of(null);
         raidenServiceMock.withdrawFromUdc = () => of(null);
 
@@ -192,7 +192,7 @@ describe('UserDepositService', () => {
     it('should show notifications when depositing', fakeAsync(() => {
         const notificationService = TestBed.inject(NotificationService);
         const raidenService = TestBed.inject(RaidenService);
-        spyOn(raidenService, 'setUdcDeposit').and.callThrough();
+        spyOn(raidenService, 'depositToUdc').and.callThrough();
 
         const deposit = new BigNumber('666');
         service
@@ -205,8 +205,8 @@ describe('UserDepositService', () => {
             });
 
         tick();
-        expect(raidenService.setUdcDeposit).toHaveBeenCalledTimes(1);
-        expect(raidenService.setUdcDeposit).toHaveBeenCalledWith(
+        expect(raidenService.depositToUdc).toHaveBeenCalledTimes(1);
+        expect(raidenService.depositToUdc).toHaveBeenCalledWith(
             deposit.plus(totalDeposit)
         );
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
@@ -273,7 +273,7 @@ describe('UserDepositService', () => {
     it('should show error notifications when deposit fails', fakeAsync(() => {
         const notificationService = TestBed.inject(NotificationService);
         const raidenService = TestBed.inject(RaidenService);
-        spyOn(raidenService, 'setUdcDeposit').and.returnValue(
+        spyOn(raidenService, 'depositToUdc').and.returnValue(
             throwError('Deposit failed')
         );
 
