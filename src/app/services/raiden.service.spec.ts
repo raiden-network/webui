@@ -1626,7 +1626,7 @@ describe('RaidenService', () => {
 
     it('should request to set the total UDC deposit', fakeAsync(() => {
         service
-            .setUdcDeposit(new BigNumber(1000))
+            .depositToUdc(new BigNumber(1000))
             .subscribe((value) => expect(value).toBeFalsy());
 
         const request = mockHttp.expectOne({

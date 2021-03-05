@@ -87,7 +87,7 @@ export class UserDepositService {
             switchMapTo(totalDeposit$),
             switchMap((totalDeposit) => {
                 const newTotalDeposit = totalDeposit.plus(amount);
-                return this.raidenService.setUdcDeposit(newTotalDeposit);
+                return this.raidenService.depositToUdc(newTotalDeposit);
             }),
             tap(() => {
                 this.notificationService.addSuccessNotification({

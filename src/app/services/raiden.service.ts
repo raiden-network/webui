@@ -813,7 +813,7 @@ export class RaidenService {
         );
     }
 
-    public setUdcDeposit(totalDeposit: BigNumber): Observable<void> {
+    public depositToUdc(totalDeposit: BigNumber): Observable<void> {
         return this.http
             .post(`${this.raidenConfig.api}/user_deposit`, {
                 total_deposit: totalDeposit,
