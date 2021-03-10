@@ -40,6 +40,7 @@ import {
 } from './components/confirmation-dialog/confirmation-dialog.component';
 import { Status } from './models/status';
 import { ToastContainerDirective, ToastrService } from 'ngx-toastr';
+import { UserDepositService } from './services/user-deposit.service';
 
 @Component({
     selector: 'app-root',
@@ -74,7 +75,8 @@ export class AppComponent implements OnInit, OnDestroy {
         private sharedService: SharedService,
         private dialog: MatDialog,
         private mediaObserver: MediaObserver,
-        private toastrService: ToastrService
+        private toastrService: ToastrService,
+        private userDepositService: UserDepositService
     ) {
         this.network$ = raidenService.network$;
     }
@@ -198,6 +200,10 @@ export class AppComponent implements OnInit, OnDestroy {
             .subscribe();
 
         this.paymentHistoryPollingService.newPaymentEvents$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe();
+
+        this.userDepositService.blocksUntilWithdraw$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe();
     }

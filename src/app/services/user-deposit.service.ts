@@ -1,7 +1,17 @@
 import { Injectable } from '@angular/core';
 import { RaidenService } from './raiden.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
-import { Observable, zip, interval, of, throwError } from 'rxjs';
+import {
+    Observable,
+    zip,
+    interval,
+    of,
+    throwError,
+    BehaviorSubject,
+    iif,
+    combineLatest,
+    defer,
+} from 'rxjs';
 import { UserToken } from '../models/usertoken';
 import {
     switchMap,
@@ -14,6 +24,9 @@ import {
     catchError,
     finalize,
     first,
+    filter,
+    mergeScan,
+    mapTo,
 } from 'rxjs/operators';
 import { backoff } from '../shared/backoff.operator';
 import { RaidenConfig } from './raiden.config';
@@ -25,14 +38,24 @@ import { tokenabi } from '../models/tokenabi';
 import { NotificationService } from './notification.service';
 import { amountToDecimal } from 'app/utils/amount.converter';
 
+export interface WithdrawPlan {
+    amount: BigNumber;
+    withdrawBlock: number;
+}
+
 @Injectable({
     providedIn: 'root',
 })
 export class UserDepositService {
     readonly balance$: Observable<BigNumber>;
     readonly servicesToken$: Observable<UserToken>;
+    readonly withdrawPlan$: Observable<WithdrawPlan>;
+    readonly blocksUntilWithdraw$: Observable<number>;
 
     private readonly userDepositContract$: Observable<Contract>;
+    private withdrawPlanSubject: BehaviorSubject<void> = new BehaviorSubject(
+        null
+    );
 
     constructor(
         private raidenService: RaidenService,
@@ -45,6 +68,16 @@ export class UserDepositService {
         this.servicesToken$ = this.getServicesTokenObservable(
             this.userDepositContract$
         );
+        this.withdrawPlan$ = this.getWithdrawPlanObservable(
+            this.userDepositContract$
+        );
+        this.blocksUntilWithdraw$ = this.getBlocksUntilWithdrawObservable(
+            this.withdrawPlan$
+        );
+    }
+
+    refreshWithdrawPlan() {
+        this.withdrawPlanSubject.next(null);
     }
 
     deposit(amount: BigNumber): Observable<void> {
@@ -114,7 +147,7 @@ export class UserDepositService {
                 ).toFixed();
                 notificationIdentifier = this.notificationService.addPendingAction(
                     {
-                        title: 'Planning withdraw from UDC',
+                        title: 'Planning withdrawal from UDC',
                         description: `${formattedAmount} ${servicesToken.symbol}`,
                         icon: 'withdraw',
                         userToken: servicesToken,
@@ -124,7 +157,7 @@ export class UserDepositService {
             switchMap(() => this.raidenService.planUdcWithdraw(amount)),
             tap(() => {
                 this.notificationService.addSuccessNotification({
-                    title: 'Planned withdraw from UDC',
+                    title: 'Planned withdrawal from UDC',
                     description: `${formattedAmount} ${servicesToken.symbol}`,
                     icon: 'withdraw',
                     userToken: servicesToken,
@@ -132,7 +165,7 @@ export class UserDepositService {
             }),
             catchError((error) => {
                 this.notificationService.addErrorNotification({
-                    title: 'Plan withdraw from UDC failed',
+                    title: 'Plan withdrawal from UDC failed',
                     description: error,
                     icon: 'error-mark',
                     userToken: servicesToken,
@@ -309,6 +342,86 @@ export class UserDepositService {
             startWith(0),
             switchMapTo(fetchTokenBalance$),
             shareReplay({ bufferSize: 1, refCount: true })
+        );
+    }
+
+    private getWithdrawPlanObservable(
+        userDepositContract$: Observable<Contract>
+    ): Observable<WithdrawPlan> {
+        return this.withdrawPlanSubject.pipe(
+            switchMapTo(
+                zip(this.raidenService.raidenAddress$, userDepositContract$)
+            ),
+            switchMap(([raidenAddress, userDepositContract]) =>
+                fromPromise<{ amount: string; withdraw_block: string }>(
+                    userDepositContract.methods
+                        .withdraw_plans(raidenAddress)
+                        .call()
+                )
+            ),
+            map(
+                ({ amount, withdraw_block }) =>
+                    ({
+                        amount: new BigNumber(amount),
+                        withdrawBlock: Number(withdraw_block),
+                    } as WithdrawPlan)
+            ),
+            retryWhen((errors) =>
+                errors.pipe(switchMapTo(this.raidenService.rpcConnected$))
+            ),
+            shareReplay(1)
+        );
+    }
+
+    private getBlocksUntilWithdrawObservable(
+        withdrawPlan$: Observable<WithdrawPlan>
+    ): Observable<number> {
+        const filteredWithdrawPlan$ = withdrawPlan$.pipe(
+            filter((withdrawPlan) => withdrawPlan.amount.isGreaterThan(0))
+        );
+        const blockNumber$ = defer(() =>
+            fromPromise<number>(this.raidenConfig.web3.eth.getBlockNumber())
+        );
+
+        const blocksUntilWithdraw$ = combineLatest([
+            filteredWithdrawPlan$,
+            blockNumber$,
+        ]).pipe(
+            map(([withdrawPlan, blockNumber]) =>
+                Math.max(0, withdrawPlan.withdrawBlock - blockNumber)
+            )
+        );
+
+        return interval(15000).pipe(
+            startWith(0),
+            switchMapTo(blocksUntilWithdraw$),
+            mergeScan((oldValue, newValue) => {
+                const showNotification$ = combineLatest([
+                    filteredWithdrawPlan$,
+                    this.servicesToken$,
+                ]).pipe(
+                    first(),
+                    tap(([withdrawPlan, servicesToken]) => {
+                        const formattedAmount = amountToDecimal(
+                            withdrawPlan.amount,
+                            servicesToken.decimals
+                        ).toFixed();
+                        this.notificationService.addInfoNotification({
+                            title: 'UDC Withdrawal ready',
+                            description: `${formattedAmount} ${servicesToken.symbol}`,
+                            icon: 'withdraw',
+                            userToken: servicesToken,
+                        });
+                    }),
+                    mapTo(newValue)
+                );
+                return iif(
+                    () => oldValue !== 0 && newValue === 0,
+                    showNotification$,
+                    of(newValue)
+                );
+            }, null),
+            shareReplay({ refCount: true, bufferSize: 1 })
         );
     }
 }

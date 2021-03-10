@@ -19,6 +19,7 @@ import Spy = jasmine.Spy;
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { UserToken } from '../models/usertoken';
 import { NotificationService } from './notification.service';
+import { MockConfig } from 'testing/mock-config';
 
 describe('UserDepositService', () => {
     let service: UserDepositService;
@@ -27,6 +28,7 @@ describe('UserDepositService', () => {
     let tokenAddressResult: Promise<string>;
     let balanceResult: Promise<string>;
     let tokenBalanceResult: Promise<string>;
+    let withdrawPlanResult: Promise<{ amount: string; withdraw_block: string }>;
     let tokenRetrieverSpy: Spy;
 
     const balance = '40000000';
@@ -66,6 +68,10 @@ describe('UserDepositService', () => {
         tokenAddressResult = Promise.resolve(token.address);
         balanceResult = Promise.resolve(balance);
         tokenBalanceResult = Promise.resolve(token.balance.toString());
+        withdrawPlanResult = Promise.resolve({
+            amount: '0',
+            withdraw_block: '0',
+        });
         const totalDepsositResult = Promise.resolve(totalDeposit);
 
         // @ts-ignore
@@ -97,6 +103,9 @@ describe('UserDepositService', () => {
                     }),
                     total_deposit: () => ({
                         call: () => totalDepsositResult,
+                    }),
+                    withdraw_plans: () => ({
+                        call: () => withdrawPlanResult,
                     }),
                 };
             }
@@ -364,5 +373,90 @@ describe('UserDepositService', () => {
             1
         );
         flush();
+    }));
+
+    it('should refresh the withdraw plan', fakeAsync(() => {
+        const spy = jasmine.createSpy();
+        const subscription = service.withdrawPlan$.subscribe(spy);
+        tick();
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({
+            amount: new BigNumber(0),
+            withdrawBlock: 0,
+        });
+
+        withdrawPlanResult = Promise.resolve({
+            amount: '500',
+            withdraw_block: '9000',
+        });
+        service.refreshWithdrawPlan();
+        tick();
+        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenCalledWith({
+            amount: new BigNumber(500),
+            withdrawBlock: 9000,
+        });
+        flush();
+        subscription.unsubscribe();
+    }));
+
+    it('should retry polling the withdraw plan after successful rpc connection attempt', fakeAsync(() => {
+        const spy = jasmine.createSpy();
+        withdrawPlanResult = Promise.reject();
+        const subscription = service.withdrawPlan$.subscribe(spy);
+
+        withdrawPlanResult = Promise.resolve({
+            amount: '50',
+            withdraw_block: '3',
+        });
+        rpcConnectedSubject.next();
+
+        tick();
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({
+            amount: new BigNumber(50),
+            withdrawBlock: 3,
+        });
+        flush();
+        subscription.unsubscribe();
+    }));
+
+    it('should periodically poll the blocks until withdrawal is ready', fakeAsync(() => {
+        const notificationService = TestBed.inject(NotificationService);
+        const raidenConfig = TestBed.inject(RaidenConfig) as MockConfig;
+        raidenConfig.web3.eth.getBlockNumber = () => Promise.resolve(1100);
+
+        const spy = jasmine.createSpy();
+        const subscription = service.blocksUntilWithdraw$.subscribe(spy);
+        tick();
+        expect(spy).toHaveBeenCalledTimes(0);
+
+        withdrawPlanResult = Promise.resolve({
+            amount: '500',
+            withdraw_block: '1200',
+        });
+        service.refreshWithdrawPlan();
+        tick();
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith(100);
+
+        raidenConfig.web3.eth.getBlockNumber = () => Promise.resolve(1200);
+        tick(15000);
+        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenCalledWith(0);
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            1
+        );
+
+        raidenConfig.web3.eth.getBlockNumber = () => Promise.resolve(1201);
+        tick(15000);
+        expect(spy).toHaveBeenCalledTimes(3);
+        expect(spy).toHaveBeenCalledWith(0);
+        expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
+            1
+        );
+
+        flush();
+        subscription.unsubscribe();
     }));
 });

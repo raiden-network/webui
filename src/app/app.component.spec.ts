@@ -110,6 +110,8 @@ describe('AppComponent', () => {
             userDepositMock.balance$ = of(new BigNumber('750000000000000000'));
             // @ts-ignore
             userDepositMock.servicesToken$ = of(createToken());
+            // @ts-ignore
+            userDepositMock.blocksUntilWithdraw$ = of(99);
 
             TestBed.configureTestingModule({
                 declarations: [
