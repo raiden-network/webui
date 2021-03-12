@@ -49,19 +49,15 @@
 
 .alert {
     background-color: $bg-label-red;
-    display: inline-block;
-    width: 14px;
-    height: 14px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    text-align: center;
     color: $label-red;
-    margin-left: 6px;
+    margin: -4px 0;
 
     &__icon {
-        height: 8px;
-        width: 8px;
-        display: block;
-        margin: auto;
+        height: 16px;
+        width: 16px;
     }
 }
 
@@ -82,6 +78,14 @@
         height: 16px !important;
         width: 16px !important;
         line-height: 16px;
+    }
+
+    &--alert {
+        background-color: $bg-label-red !important;
+    }
+
+    &--alert &__icon {
+        color: $label-red !important;
     }
 
     &--in-progress {

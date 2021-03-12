@@ -42,6 +42,9 @@ export class RaidenIconsModule {
         'mint',
         'deposit',
         'withdraw',
+        'manage-funds',
+        'clock',
+        'checkmark',
     ];
 
     constructor(

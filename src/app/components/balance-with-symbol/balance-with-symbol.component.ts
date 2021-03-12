@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js';
 export class BalanceWithSymbolComponent implements OnInit {
     @Input() balance: BigNumber;
     @Input() token: UserToken;
+    @Input() showTooltip = true;
 
     constructor() {}
 

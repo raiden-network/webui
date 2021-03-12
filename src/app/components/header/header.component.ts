@@ -22,7 +22,8 @@ import { UserToken } from '../../models/usertoken';
 import { TokenPollingService } from '../../services/token-polling.service';
 import { SharedService } from '../../services/shared.service';
 import { SelectedTokenService } from 'app/services/selected-token.service';
-import { amountFromDecimal } from 'app/utils/amount.converter';
+import { UserDepositDialogComponent } from '../user-deposit-dialog/user-deposit-dialog.component';
+import { getMintAmount } from 'app/shared/mint-amount';
 
 @Component({
     selector: 'app-header',
@@ -48,6 +49,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     readonly zeroUdcBalance$: Observable<boolean>;
     readonly tokens$: Observable<UserToken[]>;
     readonly onMainnet$: Observable<boolean>;
+    readonly udcWithdrawPlanned$: Observable<boolean>;
     tokenBalancesOpen = false;
     mintPending: { [tokenAddress: string]: boolean } = {};
 
@@ -102,6 +104,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.onMainnet$ = raidenService.network$.pipe(
             map((network) => network.chainId === 1)
         );
+        this.udcWithdrawPlanned$ = this.userDepositService.withdrawPlan$.pipe(
+            map((withdrawPlan) => withdrawPlan.amount.isGreaterThan(0))
+        );
     }
 
     ngOnInit() {
@@ -146,19 +151,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     mint(token: UserToken) {
         this.mintPending[token.address] = true;
-        const decimals = token.decimals;
-        const scaleFactor = decimals >= 18 ? 1 : decimals / 18;
-        const amount = amountFromDecimal(new BigNumber(0.5), decimals)
-            .times(scaleFactor)
-            .plus(
-                amountFromDecimal(new BigNumber(5000), decimals).times(
-                    1 - scaleFactor
-                )
-            )
-            .integerValue();
+        const amount = getMintAmount(token.decimals);
         this.raidenService
-            .mintToken(token, this.raidenAddress, amount)
+            .mintToken(token, amount)
             .pipe(finalize(() => (this.mintPending[token.address] = false)))
             .subscribe(() => this.tokenPollingService.refresh());
+    }
+
+    openUdcDialog() {
+        this.dialog.open(UserDepositDialogComponent, {
+            width: '509px',
+        });
+    }
+
+    pendingUdcTransaction(): boolean {
+        return (
+            this.userDepositService.depositPending ||
+            this.userDepositService.planWithdrawPending ||
+            this.userDepositService.withdrawPending
+        );
     }
 }

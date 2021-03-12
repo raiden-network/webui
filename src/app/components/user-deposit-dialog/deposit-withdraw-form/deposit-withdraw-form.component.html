@@ -1,0 +1,39 @@
+<div
+    fxLayout="row"
+    fxLayoutAlign="center start"
+    [formGroup]="form"
+    (keyup.enter)="onEnter($event)"
+>
+    <button
+        class="cancel"
+        mat-flat-button
+        color="primary"
+        (click)="cancel.emit(true)"
+    >
+        Cancel
+    </button>
+    <app-token-input
+        class="input"
+        formControlName="amount"
+        [placeholder]="depositing ? 'Deposit' : 'Withdrawal'"
+        [onChainInput]="depositing"
+        fxFlexOffset="16px"
+        fxFlex="1 0 0"
+    >
+    </app-token-input>
+    <button
+        class="accept"
+        mat-flat-button
+        color="accent"
+        [matTooltip]="depositing ? 'Deposit' : 'Plan withdrawal'"
+        (click)="submit()"
+        [disabled]="form.invalid"
+    >
+        <mat-icon
+            class="accept__icon"
+            [svgIcon]="depositing ? 'deposit' : 'withdraw'"
+            aria-label="Accept"
+        >
+        </mat-icon>
+    </button>
+</div>
