@@ -11,6 +11,7 @@ import {
     iif,
     combineLatest,
     defer,
+    from,
 } from 'rxjs';
 import { UserToken } from '../models/usertoken';
 import {
@@ -31,7 +32,6 @@ import {
 import { backoff } from '../shared/backoff.operator';
 import { RaidenConfig } from './raiden.config';
 import { userDepositAbi } from '../models/userDepositAbi';
-import { fromPromise } from 'rxjs/internal-compatibility';
 import BigNumber from 'bignumber.js';
 import { Contract } from 'web3-eth-contract';
 import { tokenabi } from '../models/tokenabi';
@@ -258,7 +258,7 @@ export class UserDepositService {
         ).pipe(
             first(),
             switchMap(([raidenAddress, userDepositContract]) =>
-                fromPromise<string>(
+                from<Promise<string>>(
                     userDepositContract.methods
                         .total_deposit(raidenAddress)
                         .call()
@@ -291,7 +291,7 @@ export class UserDepositService {
             userDepositContract$
         ).pipe(
             switchMap(([raidenAddress, userDepositContract]) =>
-                fromPromise<string>(
+                from<Promise<string>>(
                     userDepositContract.methods.balances(raidenAddress).call()
                 )
             ),
@@ -313,7 +313,9 @@ export class UserDepositService {
     ): Observable<UserToken> {
         const servicesTokenAddress$ = userDepositContract$.pipe(
             switchMap((userDepositContract) =>
-                fromPromise<string>(userDepositContract.methods.token().call())
+                from<Promise<string>>(
+                    userDepositContract.methods.token().call()
+                )
             )
         );
 
@@ -322,7 +324,7 @@ export class UserDepositService {
             servicesTokenAddress$
         ).pipe(
             switchMap(([raidenAddress, tokenAddress]) =>
-                fromPromise(
+                from(
                     this.tokenInfoRetriever.createBatch(
                         [tokenAddress],
                         raidenAddress
@@ -347,7 +349,7 @@ export class UserDepositService {
                 );
                 return zip(
                     of(servicesTokenInfo),
-                    fromPromise<string>(
+                    from<Promise<string>>(
                         tokenContract.methods.balanceOf(raidenAddress).call()
                     )
                 );
@@ -376,7 +378,7 @@ export class UserDepositService {
                 zip(this.raidenService.raidenAddress$, userDepositContract$)
             ),
             switchMap(([raidenAddress, userDepositContract]) =>
-                fromPromise<{ amount: string; withdraw_block: string }>(
+                from<Promise<{ amount: string; withdraw_block: string }>>(
                     userDepositContract.methods
                         .withdraw_plans(raidenAddress)
                         .call()
@@ -403,7 +405,7 @@ export class UserDepositService {
             filter((withdrawPlan) => withdrawPlan.amount.isGreaterThan(0))
         );
         const blockNumber$ = defer(() =>
-            fromPromise<number>(this.raidenConfig.web3.eth.getBlockNumber())
+            from<Promise<number>>(this.raidenConfig.web3.eth.getBlockNumber())
         );
 
         const blocksUntilWithdraw$ = combineLatest([
