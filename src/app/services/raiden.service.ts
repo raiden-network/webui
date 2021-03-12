@@ -761,11 +761,7 @@ export class RaidenService {
         return tokens$.pipe(mergeMap(() => fetchPendingTransfers$));
     }
 
-    public mintToken(
-        token: UserToken,
-        targetAddress: string,
-        amount: BigNumber
-    ): Observable<void> {
+    public mintToken(token: UserToken, amount: BigNumber): Observable<void> {
         let notificationIdentifier: number;
         const formattedAmount = amountToDecimal(amount, token.decimals);
 
@@ -782,7 +778,7 @@ export class RaidenService {
 
             return this.http.post(
                 `${this.raidenConfig.api}/_testing/tokens/${token.address}/mint`,
-                { to: targetAddress, value: amount }
+                { to: this.raidenAddress, value: amount }
             );
         }).pipe(
             mapTo(null),

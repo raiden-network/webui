@@ -1,6 +1,7 @@
 <span
     *ngIf="balance | decimal: token.decimals as decimalBalance"
     [matTooltip]="decimalBalance"
+    [matTooltipDisabled]="!showTooltip"
 >
     {{ decimalBalance | displayDecimals: 3 }}
 </span>
@@ -8,6 +9,7 @@
     matTooltip="{{ token.name }}
         {{ token.address }}
         (Click to copy)"
+    [matTooltipDisabled]="!showTooltip"
     ngxClipboard
     [cbContent]="token.address"
 >

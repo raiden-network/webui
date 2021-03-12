@@ -1,0 +1,23 @@
+@import '../../../../sass/colors';
+
+.cancel {
+    background-color: $bg-dark-grey;
+    color: $dark-grey !important;
+    height: 38px !important;
+    width: 113px;
+    letter-spacing: 0.01em;
+    font-size: 12px !important;
+    line-height: 15px !important;
+    margin-top: 1px;
+}
+
+.accept {
+    height: 40px;
+    width: 40px;
+
+    &__icon {
+        height: 24px !important;
+        width: 24px !important;
+        line-height: 24px;
+    }
+}

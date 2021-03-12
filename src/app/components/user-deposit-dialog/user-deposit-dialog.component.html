@@ -1,0 +1,235 @@
+<app-raiden-dialog
+    acceptText="Done"
+    infoText="You need to pay {{
+        servicesToken?.symbol
+    }} tokens for sending transfers with the help of the Pathfinding Service and for using the Monitoring Service. These tokens have to be deposited in the UDC. Use this dialog to deposit and withdraw. Withdrawals need to be planned first and can only be fulfilled after a specific number of blocks have passed."
+    [showCancel]="false"
+    (accept)="close()"
+    (cancel)="close()"
+>
+    <div class="info" fxLayout="column" fxLayoutAlign="start center">
+        <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="center center">
+            <app-balance-with-symbol
+                class="info__balance"
+                [balance]="balance$ | async"
+                [token]="servicesToken"
+            ></app-balance-with-symbol>
+            <span
+                *ngIf="zeroBalance$ | async"
+                class="info__alert"
+                fxLayoutAlign="center center"
+            >
+                <mat-icon
+                    svgIcon="down-arrow"
+                    aria-label="Funds needed"
+                    class="info__icon"
+                    matTooltip="Funds needed"
+                ></mat-icon>
+            </span>
+        </div>
+        <span class="info__label info__label--big">
+            User Deposit Contract balance
+        </span>
+        <div
+            class="info__box"
+            fxFlexOffset="8px"
+            fxLayout="row"
+            fxLayoutGap="8px"
+            fxLayoutAlign="center center"
+        >
+            <mat-icon
+                class="info__icon"
+                svgIcon="info"
+                aria-hidden="true"
+            ></mat-icon>
+            <span class="info__label">
+                You have
+                <app-balance-with-symbol
+                    [balance]="servicesToken?.balance"
+                    [token]="servicesToken"
+                ></app-balance-with-symbol>
+                On-Chain
+            </span>
+            <button
+                *ngIf="(onMainnet$ | async) === false"
+                class="mint-button"
+                [class.mint-button--in-progress]="mintPending"
+                mat-icon-button
+                matTooltip="Mint token"
+                fxLayout="column"
+                fxLayoutAlign="center center"
+                (click)="mint()"
+                [disabled]="mintPending"
+            >
+                <mat-icon
+                    class="mint-button__icon"
+                    svgIcon="mint"
+                    aria-label="Mint token"
+                >
+                </mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="space-between">
+        <button
+            class="action"
+            mat-flat-button
+            color="accent"
+            (click)="showDepositInput()"
+            [disabled]="depositPending"
+            matTooltip="Deposit pending"
+            [matTooltipDisabled]="!depositPending"
+        >
+            <mat-icon class="action__icon" svgIcon="deposit" aria-hidden="true">
+            </mat-icon>
+            <span>Deposit</span>
+            <mat-progress-spinner
+                *ngIf="depositPending"
+                class="action__spinner"
+                diameter="24"
+                mode="indeterminate"
+                color="accent"
+            ></mat-progress-spinner>
+        </button>
+        <button
+            class="action"
+            mat-flat-button
+            color="accent"
+            (click)="showPlanWithdrawInput()"
+            [disabled]="planWithdrawPending"
+            matTooltip="Plan withdrawal pending"
+            [matTooltipDisabled]="!planWithdrawPending"
+        >
+            <mat-icon
+                class="action__icon"
+                svgIcon="withdraw"
+                aria-hidden="true"
+            >
+            </mat-icon>
+            <span>Plan Withdrawal</span>
+            <mat-progress-spinner
+                *ngIf="planWithdrawPending"
+                class="action__spinner"
+                diameter="24"
+                mode="indeterminate"
+                color="accent"
+            ></mat-progress-spinner>
+        </button>
+    </div>
+    <div
+        *ngIf="withdrawPlan?.amount.isZero(); else waiting_for_withdrawal"
+        class="withdrawal-info"
+        fxLayout="row"
+        fxLayoutAlign="center"
+    >
+        <span class="withdrawal-info__label">No withdrawal planned</span>
+    </div>
+    <ng-template #waiting_for_withdrawal>
+        <div
+            *ngIf="(blocksUntilWithdraw$ | async) > 0; else withdrawal_ready"
+            class="withdrawal-info withdrawal-info--yellow"
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+        >
+            <div fxLayout="row" fxLayoutGap="8px">
+                <mat-icon
+                    svgIcon="clock"
+                    aria-hidden="true"
+                    class="withdrawal-info__icon"
+                ></mat-icon>
+                <app-balance-with-symbol
+                    [balance]="withdrawPlan?.amount"
+                    [token]="servicesToken"
+                ></app-balance-with-symbol>
+            </div>
+            <span class="withdrawal-info__label">
+                {{ blocksUntilWithdraw$ | async }} Blocks remaining...
+            </span>
+        </div>
+    </ng-template>
+    <ng-template #withdrawal_ready>
+        <div fxLayout="column" fxLayoutGap="10px">
+            <div
+                class="withdrawal-info withdrawal-info--green"
+                fxLayout="row"
+                fxLayoutAlign="space-between center"
+            >
+                <div fxLayout="row" fxLayoutGap="8px">
+                    <mat-icon
+                        svgIcon="checkmark"
+                        aria-hidden="true"
+                        class="withdrawal-info__icon"
+                    ></mat-icon>
+                    <app-balance-with-symbol
+                        [balance]="withdrawPlan?.amount"
+                        [token]="servicesToken"
+                    ></app-balance-with-symbol>
+                </div>
+                <span class="withdrawal-info__label">Ready to withdraw</span>
+            </div>
+            <div
+                class="ready-withdrawal"
+                fxLayout="row"
+                fxLayoutAlign="space-between center"
+            >
+                <div class="ready-withdrawal__token-info" fxLayout="column">
+                    <span
+                        class="ready-withdrawal__label ready-withdrawal__label--bold"
+                    >
+                        {{ servicesToken?.name }}
+                    </span>
+                    <span
+                        class="ready-withdrawal__label"
+                        matTooltip="{{ servicesToken?.address }}
+                            (Click to copy)"
+                        ngxClipboard
+                        [cbContent]="servicesToken?.address"
+                    >
+                        {{ servicesToken?.address }}
+                    </span>
+                </div>
+                <button
+                    class="ready-withdrawal__button"
+                    mat-flat-button
+                    color="accent"
+                    (click)="withdraw()"
+                    matTooltip="{{
+                        withdrawPending ? 'Withdraw pending' : 'Withdraw'
+                    }}"
+                    [disabled]="withdrawPending"
+                >
+                    <app-balance-with-symbol
+                        [balance]="withdrawPlan?.amount"
+                        [token]="servicesToken"
+                        [showTooltip]="false"
+                    ></app-balance-with-symbol>
+                    <mat-icon
+                        *ngIf="!withdrawPending; else withdraw_pending"
+                        class="ready-withdrawal__icon"
+                        svgIcon="withdraw"
+                        aria-hidden="true"
+                    >
+                    </mat-icon>
+                    <ng-template #withdraw_pending>
+                        <mat-progress-spinner
+                            class="ready-withdrawal__spinner"
+                            diameter="24"
+                            mode="indeterminate"
+                            color="accent"
+                        ></mat-progress-spinner>
+                    </ng-template>
+                </button>
+            </div>
+        </div>
+    </ng-template>
+
+    <app-deposit-withdraw-form
+        *ngIf="inputActive"
+        class="form"
+        [inputMode]="inputMode"
+        (accept)="acceptForm($event)"
+        (cancel)="hideInput()"
+    >
+    </app-deposit-withdraw-form>
+</app-raiden-dialog>

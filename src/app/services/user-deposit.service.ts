@@ -51,6 +51,9 @@ export class UserDepositService {
     readonly servicesToken$: Observable<UserToken>;
     readonly withdrawPlan$: Observable<WithdrawPlan>;
     readonly blocksUntilWithdraw$: Observable<number>;
+    depositPending = false;
+    withdrawPending = false;
+    planWithdrawPending = false;
 
     private readonly userDepositContract$: Observable<Contract>;
     private withdrawPlanSubject: BehaviorSubject<void> = new BehaviorSubject(
@@ -81,6 +84,10 @@ export class UserDepositService {
     }
 
     deposit(amount: BigNumber): Observable<void> {
+        if (this.depositPending) {
+            return throwError('A deposit transaction is pending');
+        }
+
         let servicesToken: UserToken;
         let formattedAmount: string;
         let notificationIdentifier: number;
@@ -101,6 +108,7 @@ export class UserDepositService {
                         userToken: servicesToken,
                     }
                 );
+                this.depositPending = true;
             }),
             switchMap(() => this.getTotalDepositObservable()),
             switchMap((totalDeposit) => {
@@ -124,15 +132,20 @@ export class UserDepositService {
                 });
                 return throwError(error);
             }),
-            finalize(() =>
+            finalize(() => {
                 this.notificationService.removePendingAction(
                     notificationIdentifier
-                )
-            )
+                );
+                this.depositPending = false;
+            })
         );
     }
 
     planWithdraw(amount: BigNumber): Observable<void> {
+        if (this.depositPending) {
+            return throwError('A plan withdraw transaction is pending');
+        }
+
         let servicesToken: UserToken;
         let formattedAmount: string;
         let notificationIdentifier: number;
@@ -153,6 +166,7 @@ export class UserDepositService {
                         userToken: servicesToken,
                     }
                 );
+                this.planWithdrawPending = true;
             }),
             switchMap(() => this.raidenService.planUdcWithdraw(amount)),
             tap(() => {
@@ -162,6 +176,7 @@ export class UserDepositService {
                     icon: 'withdraw',
                     userToken: servicesToken,
                 });
+                this.refreshWithdrawPlan();
             }),
             catchError((error) => {
                 this.notificationService.addErrorNotification({
@@ -172,15 +187,20 @@ export class UserDepositService {
                 });
                 return throwError(error);
             }),
-            finalize(() =>
+            finalize(() => {
                 this.notificationService.removePendingAction(
                     notificationIdentifier
-                )
-            )
+                );
+                this.planWithdrawPending = false;
+            })
         );
     }
 
     withdraw(amount: BigNumber): Observable<void> {
+        if (this.depositPending) {
+            return throwError('A withdraw transaction is pending');
+        }
+
         let servicesToken: UserToken;
         let formattedAmount: string;
         let notificationIdentifier: number;
@@ -201,6 +221,7 @@ export class UserDepositService {
                         userToken: servicesToken,
                     }
                 );
+                this.withdrawPending = true;
             }),
             switchMap(() => this.raidenService.withdrawFromUdc(amount)),
             tap(() => {
@@ -210,6 +231,7 @@ export class UserDepositService {
                     icon: 'withdraw',
                     userToken: servicesToken,
                 });
+                this.refreshWithdrawPlan();
             }),
             catchError((error) => {
                 this.notificationService.addErrorNotification({
@@ -220,11 +242,12 @@ export class UserDepositService {
                 });
                 return throwError(error);
             }),
-            finalize(() =>
+            finalize(() => {
                 this.notificationService.removePendingAction(
                     notificationIdentifier
-                )
-            )
+                );
+                this.withdrawPending = false;
+            })
         );
     }
 

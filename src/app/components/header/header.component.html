@@ -34,17 +34,23 @@
                 fxLayout="column"
                 fxLayoutGap="4px"
             >
-                <span>
+                <span fxLayout="row">
                     <span
                         [matTooltip]="balance"
                         class="header__balance header__balance--uppercase"
                     >
-                        {{ balance | displayDecimals: 3 }}
+                        {{ balance | displayDecimals: 3 }}&nbsp;
                     </span>
                     <span class="header__balance header__balance--uppercase">
                         {{ (network$ | async)?.shortName }}
                     </span>
-                    <span *ngIf="zeroBalance$ | async" class="alert">
+                    <span
+                        *ngIf="zeroBalance$ | async"
+                        class="alert"
+                        fxLayout="column"
+                        fxLayoutAlign="center center"
+                        fxFlexOffset="6px"
+                    >
                         <mat-icon
                             svgIcon="down-arrow"
                             aria-hidden="true"
@@ -62,21 +68,36 @@
                 fxLayout="column"
                 fxLayoutGap="4px"
             >
-                <span>
+                <span fxLayout="row" fxLayoutGap="6px">
                     <app-balance-with-symbol
                         class="header__balance"
                         [balance]="udcBalance$ | async"
                         [token]="servicesToken"
                         id="udc-balance"
                     ></app-balance-with-symbol>
-                    <span *ngIf="zeroUdcBalance$ | async" class="alert">
+                    <button
+                        class="small-balance-button"
+                        [ngClass]="{
+                            'small-balance-button--in-progress':
+                                (udcWithdrawPlanned$ | async) ||
+                                pendingUdcTransaction(),
+                            'small-balance-button--alert':
+                                zeroUdcBalance$ | async
+                        }"
+                        mat-icon-button
+                        matTooltip="Manage UDC deposit"
+                        fxLayout="column"
+                        fxLayoutAlign="center center"
+                        (click)="openUdcDialog()"
+                        id="open-udc"
+                    >
                         <mat-icon
-                            svgIcon="down-arrow"
-                            aria-hidden="true"
-                            class="alert__icon"
-                            matTooltip="Funds needed"
-                        ></mat-icon>
-                    </span>
+                            class="small-balance-button__icon"
+                            svgIcon="manage-funds"
+                            aria-label="Manage UDC deposit"
+                        >
+                        </mat-icon>
+                    </button>
                 </span>
                 <span class="header__label">UDC Deposit</span>
             </div>
