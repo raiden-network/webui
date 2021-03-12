@@ -17,7 +17,6 @@ import {
     forkJoin,
     defer,
 } from 'rxjs';
-import { fromPromise } from 'rxjs/internal-compatibility';
 import {
     mergeMap,
     map,
@@ -114,7 +113,7 @@ export class RaidenService {
 
         const fetchBalance$: Observable<string> = this.raidenAddress$.pipe(
             switchMap((address) =>
-                fromPromise(this.raidenConfig.web3.eth.getBalance(address))
+                from(this.raidenConfig.web3.eth.getBalance(address))
             ),
             retryWhen((errors) => errors.pipe(switchMapTo(this.rpcConnected$)))
         );
@@ -204,7 +203,7 @@ export class RaidenService {
             this.raidenAddress$
         ).pipe(
             mergeMap(([tokenAddresses, raidenAddress]) =>
-                fromPromise(
+                from(
                     this.tokenInfoRetriever.createBatch(
                         tokenAddresses,
                         raidenAddress,
@@ -922,7 +921,7 @@ export class RaidenService {
     }
 
     public resolveEnsName(name: string): Observable<string> {
-        return fromPromise(this.raidenConfig.web3.eth.ens.getAddress(name));
+        return from(this.raidenConfig.web3.eth.ens.getAddress(name));
     }
 
     private getContactLabel(address: string): string {
