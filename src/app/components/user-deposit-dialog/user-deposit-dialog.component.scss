@@ -151,11 +151,6 @@
         border-radius: 8px !important;
 
         &:disabled {
-            background-color: $bg-label-yellow !important;
-            color: $label-yellow !important;
-            stroke: $label-yellow !important;
-            opacity: 1;
-            border: none;
             cursor: wait;
         }
     }

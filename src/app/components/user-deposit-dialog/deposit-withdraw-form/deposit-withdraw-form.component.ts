@@ -8,12 +8,17 @@ import {
     ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import {
+    ConfirmationDialogComponent,
+    ConfirmationDialogPayload,
+} from 'app/components/confirmation-dialog/confirmation-dialog.component';
 import { TokenInputComponent } from 'app/components/token-input/token-input.component';
 import { DepositMode } from 'app/models/deposit-mode.enum';
 import { UserDepositService } from 'app/services/user-deposit.service';
 import BigNumber from 'bignumber.js';
-import { Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-deposit-withdraw-form',
@@ -34,7 +39,8 @@ export class DepositWithdrawFormComponent implements OnInit, OnDestroy {
 
     constructor(
         private fb: FormBuilder,
-        private userDepositService: UserDepositService
+        private userDepositService: UserDepositService,
+        private dialog: MatDialog
     ) {
         this.form = this.fb.group({
             amount: ['', Validators.required],
@@ -74,7 +80,37 @@ export class DepositWithdrawFormComponent implements OnInit, OnDestroy {
     }
 
     submit() {
-        this.accept.emit(this.form.value.amount);
+        let canSubmit$: Observable<boolean>;
+        if (this.depositing) {
+            canSubmit$ = of(true);
+        } else {
+            canSubmit$ = this.userDepositService.withdrawPlan$.pipe(
+                first(),
+                switchMap((withdrawPlan) => {
+                    if (withdrawPlan.amount.isZero()) {
+                        return of(true);
+                    }
+                    const confirmationPayload: ConfirmationDialogPayload = {
+                        title: 'Override Planned Withdrawal',
+                        message:
+                            'There is already a withdrawal planned. This will override the existing plan. Are you sure?',
+                    };
+                    const dialog = this.dialog.open(
+                        ConfirmationDialogComponent,
+                        {
+                            data: confirmationPayload,
+                        }
+                    );
+                    return dialog.afterClosed();
+                })
+            );
+        }
+
+        canSubmit$.subscribe((result) => {
+            if (result) {
+                this.accept.emit(this.form.value.amount);
+            }
+        });
     }
 
     onEnter(event: Event) {

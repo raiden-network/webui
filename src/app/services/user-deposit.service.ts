@@ -446,7 +446,7 @@ export class UserDepositService {
                     of(newValue)
                 );
             }, null),
-            shareReplay({ refCount: true, bufferSize: 1 })
+            shareReplay(1)
         );
     }
 }
