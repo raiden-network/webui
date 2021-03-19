@@ -35,12 +35,12 @@ import { SearchFieldComponent } from '../search-field/search-field.component';
 import { ToastrModule } from 'ngx-toastr';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
-import { UserDepositService } from '../../services/user-deposit.service';
-import BigNumber from 'bignumber.js';
 import { SharedService } from '../../services/shared.service';
 import { UserToken } from '../../models/usertoken';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 import { SelectedTokenService } from 'app/services/selected-token.service';
+import { getMintAmount } from 'app/shared/mint-amount';
+import { UserDepositDialogComponent } from '../user-deposit-dialog/user-deposit-dialog.component';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -79,12 +79,6 @@ describe('HeaderComponent', () => {
             // @ts-ignore
             channelPollingMock.channels$ = of(channels);
 
-            const userDepositMock = stub<UserDepositService>();
-            // @ts-ignore
-            userDepositMock.balance$ = of(new BigNumber('750000000000000000'));
-            // @ts-ignore
-            userDepositMock.servicesToken$ = of(servicesToken);
-
             TestBed.configureTestingModule({
                 declarations: [
                     HeaderComponent,
@@ -107,7 +101,7 @@ describe('HeaderComponent', () => {
                     TestProviders.MockRaidenConfigProvider(),
                     TestProviders.MockMatDialog(),
                     TestProviders.AddressBookStubProvider(),
-                    { provide: UserDepositService, useValue: userDepositMock },
+                    TestProviders.MockUserDepositService(servicesToken),
                     SharedService,
                     SelectedTokenService,
                 ],
@@ -260,7 +254,7 @@ describe('HeaderComponent', () => {
         tick();
     }));
 
-    it('should mint 0.5 tokens when token has 18 decimals', () => {
+    it('should mint tokens', () => {
         const raidenService = TestBed.inject(RaidenService);
         const mintSpy = spyOn(raidenService, 'mintToken').and.callThrough();
 
@@ -270,27 +264,20 @@ describe('HeaderComponent', () => {
         expect(mintSpy).toHaveBeenCalledTimes(1);
         expect(mintSpy).toHaveBeenCalledWith(
             tokens[0],
-            component.raidenAddress,
-            new BigNumber(500000000000000000)
+            getMintAmount(tokens[0].decimals)
         );
     });
 
-    it('should mint 5000 tokens when token has no decimals', () => {
-        const raidenService = TestBed.inject(RaidenService);
-        const mintSpy = spyOn(raidenService, 'mintToken').and.callThrough();
-        const selectedTokenService = TestBed.inject(SelectedTokenService);
-        const noDecimalsToken = createToken({ decimals: 0 });
-        selectedTokenService.setToken(noDecimalsToken);
+    it('should open the UDC dialog', () => {
+        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialogSpy = spyOn(dialog, 'open');
+
+        clickElement(fixture.debugElement, '#open-udc');
         fixture.detectChanges();
 
-        clickElement(fixture.debugElement, '#mint');
-        fixture.detectChanges();
-
-        expect(mintSpy).toHaveBeenCalledTimes(1);
-        expect(mintSpy).toHaveBeenCalledWith(
-            noDecimalsToken,
-            component.raidenAddress,
-            new BigNumber(5000)
-        );
+        expect(dialogSpy).toHaveBeenCalledTimes(1);
+        expect(dialogSpy).toHaveBeenCalledWith(UserDepositDialogComponent, {
+            width: '509px',
+        });
     });
 });

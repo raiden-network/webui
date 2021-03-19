@@ -60,6 +60,7 @@
                 fxLayoutAlign="center center"
                 (click)="mint()"
                 [disabled]="mintPending"
+                id="mint"
             >
                 <mat-icon
                     class="mint-button__icon"
@@ -80,6 +81,7 @@
             [disabled]="depositPending"
             matTooltip="Deposit pending"
             [matTooltipDisabled]="!depositPending"
+            id="deposit"
         >
             <mat-icon class="action__icon" svgIcon="deposit" aria-hidden="true">
             </mat-icon>
@@ -100,6 +102,7 @@
             [disabled]="planWithdrawPending"
             matTooltip="Plan Withdrawal pending"
             [matTooltipDisabled]="!planWithdrawPending"
+            id="plan-withdraw"
         >
             <mat-icon
                 class="action__icon"
@@ -198,6 +201,7 @@
                         withdrawPending ? 'Withdraw pending' : 'Withdraw'
                     }}"
                     [disabled]="withdrawPending"
+                    id="withdraw"
                 >
                     <app-balance-with-symbol
                         [balance]="withdrawPlan?.amount"

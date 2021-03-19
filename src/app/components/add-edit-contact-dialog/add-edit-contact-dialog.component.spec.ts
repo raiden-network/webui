@@ -54,7 +54,7 @@ describe('AddEditContactDialogComponent', () => {
                 ],
                 providers: [
                     TestProviders.MockMatDialogData(payload),
-                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    TestProviders.MockMatDialogRef(),
                     TestProviders.MockRaidenConfigProvider(),
                     TestProviders.AddressBookStubProvider(),
                 ],

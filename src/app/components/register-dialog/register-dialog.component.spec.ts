@@ -28,7 +28,7 @@ describe('RegisterDialogComponent', () => {
                 ],
                 providers: [
                     TestProviders.MockMatDialogData(),
-                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    TestProviders.MockMatDialogRef(),
                     TestProviders.MockRaidenConfigProvider(),
                     TestProviders.AddressBookStubProvider(),
                 ],

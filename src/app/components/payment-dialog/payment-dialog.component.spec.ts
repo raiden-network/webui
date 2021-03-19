@@ -130,7 +130,7 @@ describe('PaymentDialogComponent', () => {
                 ],
                 providers: [
                     TestProviders.MockMatDialogData(payload),
-                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    TestProviders.MockMatDialogRef(),
                     TestProviders.MockRaidenConfigProvider(),
                     TestProviders.AddressBookStubProvider(),
                     TestProviders.MockMatDialog(),

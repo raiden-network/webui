@@ -120,7 +120,7 @@ describe('QuickConnectDialogComponent', () => {
             ],
             providers: [
                 TestProviders.MockMatDialogData(payload),
-                TestProviders.MockMatDialogRef({ close: () => {} }),
+                TestProviders.MockMatDialogRef(),
                 TestProviders.MockRaidenConfigProvider(),
                 {
                     provide: TokenPollingService,

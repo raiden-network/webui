@@ -66,7 +66,7 @@ describe('DepositWithdrawDialogComponent', () => {
                 ],
                 providers: [
                     TestProviders.MockMatDialogData(payload),
-                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    TestProviders.MockMatDialogRef(),
                     {
                         provide: TokenPollingService,
                         useValue: tokenPollingMock,

@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RaidenService } from './raiden.service';
 import { stub } from '../../testing/stub';
-import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, of, throwError, NEVER } from 'rxjs';
 import {
     createAddress,
     createContractsInfo,
@@ -286,17 +286,13 @@ describe('UserDepositService', () => {
             throwError('Deposit failed')
         );
 
+        const errorSpy = jasmine.createSpy();
         const deposit = new BigNumber('666');
         service
             .deposit(deposit)
-            .subscribe(
-                () => {
-                    fail('On next should not be called');
-                },
-                (error) => {
-                    expect(error).toBeTruthy('An error was expected');
-                }
-            )
+            .subscribe(() => {
+                fail('On next should not be called');
+            }, errorSpy)
             .add(() => {
                 expect(
                     notificationService.removePendingAction
@@ -308,6 +304,7 @@ describe('UserDepositService', () => {
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
+        expect(errorSpy).toHaveBeenCalledTimes(1);
         flush();
     }));
 
@@ -318,17 +315,13 @@ describe('UserDepositService', () => {
             throwError('Plan withdraw failed')
         );
 
+        const errorSpy = jasmine.createSpy();
         const withdrawAmount = new BigNumber('21');
         service
             .planWithdraw(withdrawAmount)
-            .subscribe(
-                () => {
-                    fail('On next should not be called');
-                },
-                (error) => {
-                    expect(error).toBeTruthy('An error was expected');
-                }
-            )
+            .subscribe(() => {
+                fail('On next should not be called');
+            }, errorSpy)
             .add(() => {
                 expect(
                     notificationService.removePendingAction
@@ -340,6 +333,7 @@ describe('UserDepositService', () => {
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
+        expect(errorSpy).toHaveBeenCalledTimes(1);
         flush();
     }));
 
@@ -350,17 +344,13 @@ describe('UserDepositService', () => {
             throwError('Withdraw failed')
         );
 
+        const errorSpy = jasmine.createSpy();
         const withdrawAmount = new BigNumber('123456');
         service
             .withdraw(withdrawAmount)
-            .subscribe(
-                () => {
-                    fail('On next should not be called');
-                },
-                (error) => {
-                    expect(error).toBeTruthy('An error was expected');
-                }
-            )
+            .subscribe(() => {
+                fail('On next should not be called');
+            }, errorSpy)
             .add(() => {
                 expect(
                     notificationService.removePendingAction
@@ -372,6 +362,61 @@ describe('UserDepositService', () => {
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        flush();
+    }));
+
+    it('should throw an error if there is a pending deposit', fakeAsync(() => {
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'depositToUdc').and.returnValue(NEVER);
+
+        const deposit = new BigNumber('100');
+        service.deposit(deposit).subscribe();
+        tick();
+        expect(service.depositPending).toBe(true);
+
+        const errorSpy = jasmine.createSpy();
+        service.deposit(deposit).subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
+        tick();
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        flush();
+    }));
+
+    it('should throw an error if there is a pending withdraw plan', fakeAsync(() => {
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'planUdcWithdraw').and.returnValue(NEVER);
+
+        const amount = new BigNumber('100');
+        service.planWithdraw(amount).subscribe();
+        tick();
+        expect(service.planWithdrawPending).toBe(true);
+
+        const errorSpy = jasmine.createSpy();
+        service.planWithdraw(amount).subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
+        tick();
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        flush();
+    }));
+
+    it('should throw an error if there is a pending withdraw', fakeAsync(() => {
+        const raidenService = TestBed.inject(RaidenService);
+        spyOn(raidenService, 'withdrawFromUdc').and.returnValue(NEVER);
+
+        const amount = new BigNumber('100');
+        service.withdraw(amount).subscribe();
+        tick();
+        expect(service.withdrawPending).toBe(true);
+
+        const errorSpy = jasmine.createSpy();
+        service.withdraw(amount).subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
+        tick();
+        expect(errorSpy).toHaveBeenCalledTimes(1);
         flush();
     }));
 
