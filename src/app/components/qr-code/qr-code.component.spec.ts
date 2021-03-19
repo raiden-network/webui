@@ -29,7 +29,7 @@ describe('QrCodeComponent', () => {
                 declarations: [QrCodeComponent, RaidenDialogComponent],
                 providers: [
                     TestProviders.MockMatDialogData(payload),
-                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    TestProviders.MockMatDialogRef(),
                 ],
                 imports: [
                     ClipboardModule,

@@ -9,8 +9,12 @@ import {
     MatDialogRef,
 } from '@angular/material/dialog';
 import { MockMatDialog } from './mock-mat-dialog';
-import { of } from 'rxjs';
+import { NEVER, of } from 'rxjs';
 import { NotificationService } from 'app/services/notification.service';
+import { UserDepositService } from 'app/services/user-deposit.service';
+import { UserToken } from 'app/models/usertoken';
+import BigNumber from 'bignumber.js';
+import { createToken } from './test-data';
 
 export class TestProviders {
     static AddressBookStubProvider(): Provider {
@@ -42,10 +46,10 @@ export class TestProviders {
         };
     }
 
-    static MockMatDialogRef(obj = {}): Provider {
+    static MockMatDialogRef(): Provider {
         return {
             provide: MatDialogRef,
-            useValue: obj,
+            useValue: { close: () => {} },
         };
     }
 
@@ -72,6 +76,38 @@ export class TestProviders {
                 );
                 notificationService.apiError = undefined;
                 return notificationService;
+            },
+        };
+    }
+
+    static MockUserDepositService(
+        servicesToken?: UserToken,
+        balance?: BigNumber
+    ): Provider {
+        return {
+            provide: UserDepositService,
+            useFactory: () => {
+                const userDepositMock = stub<UserDepositService>();
+                // @ts-ignore
+                userDepositMock.balance$ = of(
+                    balance ?? new BigNumber('750000000000000000')
+                );
+                // @ts-ignore
+                userDepositMock.servicesToken$ = of(
+                    servicesToken ?? createToken()
+                );
+                // @ts-ignore
+                userDepositMock.withdrawPlan$ = of({
+                    amount: new BigNumber(0),
+                    withdrawBlock: 0,
+                });
+                // @ts-ignore
+                userDepositMock.blocksUntilWithdraw$ = NEVER;
+                userDepositMock.refreshWithdrawPlan = () => {};
+                userDepositMock.deposit = () => of(null);
+                userDepositMock.planWithdraw = () => of(null);
+                userDepositMock.withdraw = () => of(null);
+                return userDepositMock;
             },
         };
     }

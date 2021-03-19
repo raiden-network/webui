@@ -28,11 +28,7 @@ import { NotificationItemComponent } from './components/notification/notificatio
 import { HttpErrorResponse } from '@angular/common/http';
 import { RaidenIconsModule } from './modules/raiden-icons/raiden-icons.module';
 import { stub } from '../testing/stub';
-import {
-    createNetworkMock,
-    createAddress,
-    createToken,
-} from '../testing/test-data';
+import { createNetworkMock, createAddress } from '../testing/test-data';
 import { PendingTransferPollingService } from './services/pending-transfer-polling.service';
 import { PaymentHistoryPollingService } from './services/payment-history-polling.service';
 import { SharedService } from './services/shared.service';
@@ -53,8 +49,6 @@ import {
 import { By } from '@angular/platform-browser';
 import { ToastrModule } from 'ngx-toastr';
 import { MatSidenav } from '@angular/material/sidenav';
-import { UserDepositService } from './services/user-deposit.service';
-import BigNumber from 'bignumber.js';
 import { DecimalPipe } from './pipes/decimal.pipe';
 import { BalanceWithSymbolComponent } from './components/balance-with-symbol/balance-with-symbol.component';
 import { TokenNetworkSelectorComponent } from './components/token-network-selector/token-network-selector.component';
@@ -105,14 +99,6 @@ describe('AppComponent', () => {
             // @ts-ignore
             tokenPollingMock.tokens$ = of([]);
 
-            const userDepositMock = stub<UserDepositService>();
-            // @ts-ignore
-            userDepositMock.balance$ = of(new BigNumber('750000000000000000'));
-            // @ts-ignore
-            userDepositMock.servicesToken$ = of(createToken());
-            // @ts-ignore
-            userDepositMock.blocksUntilWithdraw$ = of(99);
-
             TestBed.configureTestingModule({
                 declarations: [
                     AppComponent,
@@ -156,7 +142,7 @@ describe('AppComponent', () => {
                         provide: TokenPollingService,
                         useValue: tokenPollingMock,
                     },
-                    { provide: UserDepositService, useValue: userDepositMock },
+                    TestProviders.MockUserDepositService(),
                 ],
                 imports: [
                     MaterialComponentsModule,

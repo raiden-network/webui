@@ -142,8 +142,8 @@ export class UserDepositService {
     }
 
     planWithdraw(amount: BigNumber): Observable<void> {
-        if (this.depositPending) {
-            return throwError('A plan withdraw transaction is pending');
+        if (this.planWithdrawPending) {
+            return throwError('A plan withdrawal transaction is pending');
         }
 
         let servicesToken: UserToken;
@@ -197,7 +197,7 @@ export class UserDepositService {
     }
 
     withdraw(amount: BigNumber): Observable<void> {
-        if (this.depositPending) {
+        if (this.withdrawPending) {
             return throwError('A withdraw transaction is pending');
         }
 
@@ -446,7 +446,7 @@ export class UserDepositService {
                     of(newValue)
                 );
             }, null),
-            shareReplay(1)
+            shareReplay({ bufferSize: 1, refCount: true })
         );
     }
 }

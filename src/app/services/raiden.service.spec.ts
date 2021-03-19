@@ -42,7 +42,7 @@ import { Settings } from '../models/settings';
 
 describe('RaidenService', () => {
     const token = createToken();
-    const raidenAddress = '0x504300C525CbE91Adb3FE0944Fe1f56f5162C75C';
+    const raidenAddress = createAddress();
 
     let mockHttp: HttpTestingController;
     let notificationService: NotificationService;
@@ -685,8 +685,11 @@ describe('RaidenService', () => {
     });
 
     it('should inform the user when minting was completed successfully', () => {
+        //@ts-ignore
+        service._raidenAddress = raidenAddress;
+
         service
-            .mintToken(token, '0xto', new BigNumber(1000))
+            .mintToken(token, new BigNumber(1000))
             .subscribe((value) => expect(value).toBeFalsy())
             .add(() => {
                 expect(
@@ -698,7 +701,7 @@ describe('RaidenService', () => {
             method: 'POST',
         });
         expect(losslessParse(request.request.body)).toEqual({
-            to: '0xto',
+            to: raidenAddress,
             value: new BigNumber(1000),
         });
         expect(notificationService.addPendingAction).toHaveBeenCalledTimes(1);
@@ -718,7 +721,7 @@ describe('RaidenService', () => {
 
     it('should inform the user when minting was not successful', () => {
         service
-            .mintToken(token, '0xto', new BigNumber(1000))
+            .mintToken(token, new BigNumber(1000))
             .subscribe(
                 () => {
                     fail('On next should not be called');

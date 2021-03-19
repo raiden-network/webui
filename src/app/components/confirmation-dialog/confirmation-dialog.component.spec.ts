@@ -29,7 +29,7 @@ describe('ConfirmationDialogComponent', () => {
                 ],
                 providers: [
                     TestProviders.MockMatDialogData(payload),
-                    TestProviders.MockMatDialogRef({ close: () => {} }),
+                    TestProviders.MockMatDialogRef(),
                 ],
                 imports: [
                     MaterialComponentsModule,
