@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- [#556] New dialog for interacting with the UDC. The dialog enables depositing and withdrawing tokens.
+- [#195] Services tokens can be minted from the UDC dialog.
+
 ### Changed
 - [#557] Moves the token mint button next to the token on-chain balance in the header.
 - [#556] New dark dialog design.
@@ -220,6 +224,7 @@ token network.
 [#205]: https://github.com/raiden-network/webui/issues/205
 [#203]: https://github.com/raiden-network/webui/issues/203
 [#196]: https://github.com/raiden-network/webui/issues/196
+[#195]: https://github.com/raiden-network/webui/issues/195
 [#194]: https://github.com/raiden-network/webui/issues/194
 [#190]: https://github.com/raiden-network/webui/issues/190
 [#189]: https://github.com/raiden-network/webui/issues/189
