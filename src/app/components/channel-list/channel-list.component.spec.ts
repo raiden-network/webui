@@ -49,6 +49,7 @@ import { stub } from '../../../testing/stub';
 import { ChunkPipe } from '../../pipes/chunk.pipe';
 import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-symbol.component';
 import { TokenNetworkSelectorComponent } from '../token-network-selector/token-network-selector.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('ChannelListComponent', () => {
     let component: ChannelListComponent;
@@ -99,6 +100,7 @@ describe('ChannelListComponent', () => {
                     HttpClientTestingModule,
                     NoopAnimationsModule,
                     RaidenIconsModule,
+                    ReactiveFormsModule,
                 ],
             }).compileComponents();
         })

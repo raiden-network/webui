@@ -1,8 +1,8 @@
-<div
+<form
     fxLayout="row"
     fxLayoutAlign="center start"
     [formGroup]="form"
-    (keyup.enter)="onEnter($event)"
+    (submit)="submit()"
     id="deposit-withdraw-form"
 >
     <button
@@ -10,6 +10,7 @@
         mat-flat-button
         color="primary"
         (click)="cancel.emit(true)"
+        type="button"
     >
         Cancel
     </button>
@@ -27,9 +28,9 @@
         mat-flat-button
         color="accent"
         [matTooltip]="depositing ? 'Deposit' : 'Plan withdrawal'"
-        (click)="submit()"
         [disabled]="form.invalid"
         id="accept"
+        type="submit"
     >
         <mat-icon
             class="accept__icon"
@@ -38,4 +39,4 @@
         >
         </mat-icon>
     </button>
-</div>
+</form>

@@ -94,49 +94,14 @@ describe('DepositWithdrawFormComponent', () => {
                 '0.0000000000003'
             );
             fixture.detectChanges();
-            clickElement(fixture.debugElement, '#accept');
+            fixture.debugElement
+                .query(By.css('form'))
+                .triggerEventHandler('submit', {});
             fixture.detectChanges();
             tick();
 
             expect(acceptSpy).toHaveBeenCalledTimes(1);
             expect(acceptSpy).toHaveBeenCalledWith(new BigNumber('300000'));
-        }));
-
-        it('should submit on enter', fakeAsync(() => {
-            const acceptSpy = spyOn(component.accept, 'emit');
-
-            mockInput(
-                fixture.debugElement.query(By.directive(TokenInputComponent)),
-                'input',
-                '0.0000000000003'
-            );
-            fixture.detectChanges();
-            const form = fixture.debugElement.query(
-                By.css('#deposit-withdraw-form')
-            );
-            form.triggerEventHandler('keyup.enter', {
-                stopPropagation: () => {},
-            });
-            fixture.detectChanges();
-            tick();
-
-            expect(acceptSpy).toHaveBeenCalledTimes(1);
-            expect(acceptSpy).toHaveBeenCalledWith(new BigNumber('300000'));
-        }));
-
-        it('should not submit on enter when form is invalid', fakeAsync(() => {
-            const acceptSpy = spyOn(component.accept, 'emit');
-
-            const form = fixture.debugElement.query(
-                By.css('#deposit-withdraw-form')
-            );
-            form.triggerEventHandler('keyup.enter', {
-                stopPropagation: () => {},
-            });
-            fixture.detectChanges();
-            tick();
-
-            expect(acceptSpy).toHaveBeenCalledTimes(0);
         }));
     });
 
@@ -176,7 +141,9 @@ describe('DepositWithdrawFormComponent', () => {
                 '0.0000000000003'
             );
             fixture.detectChanges();
-            clickElement(fixture.debugElement, '#accept');
+            fixture.debugElement
+                .query(By.css('form'))
+                .triggerEventHandler('submit', {});
             fixture.detectChanges();
             tick();
 
@@ -202,7 +169,9 @@ describe('DepositWithdrawFormComponent', () => {
                 '0.0000000000003'
             );
             fixture.detectChanges();
-            clickElement(fixture.debugElement, '#accept');
+            fixture.debugElement
+                .query(By.css('form'))
+                .triggerEventHandler('submit', {});
             fixture.detectChanges();
             tick();
 
