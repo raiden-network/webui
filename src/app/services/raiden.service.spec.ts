@@ -382,12 +382,11 @@ describe('RaidenService', () => {
                 ),
         };
 
-        tick(15000);
-
         const subscription = service.balance$.subscribe((value) => {
             expect(value).toEqual('2');
             count++;
         });
+        tick();
 
         const addressRequest = mockHttp.expectOne({
             url: `${endpoint}/address`,
@@ -420,12 +419,11 @@ describe('RaidenService', () => {
             getBalance: (address: string) => Promise.reject(),
         };
 
-        tick(15000);
-
         const subscription = service.balance$.subscribe((value) => {
             expect(value).toEqual('2');
             count++;
         });
+        tick();
 
         mockHttp
             .expectOne({

@@ -7,7 +7,6 @@ import {
 import { Injectable } from '@angular/core';
 import {
     from,
-    interval,
     Observable,
     of,
     zip,
@@ -16,12 +15,12 @@ import {
     throwError,
     forkJoin,
     defer,
+    timer,
 } from 'rxjs';
 import {
     mergeMap,
     map,
     shareReplay,
-    startWith,
     switchMap,
     tap,
     toArray,
@@ -118,8 +117,7 @@ export class RaidenService {
             retryWhen((errors) => errors.pipe(switchMapTo(this.rpcConnected$)))
         );
 
-        this.balance$ = interval(15000).pipe(
-            startWith(0),
+        this.balance$ = timer(0, 15000).pipe(
             switchMapTo(fetchBalance$),
             map((value) => fromWei(value, 'ether')),
             shareReplay({ bufferSize: 1, refCount: true })
