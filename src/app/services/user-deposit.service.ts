@@ -12,6 +12,7 @@ import {
     combineLatest,
     defer,
     from,
+    timer,
 } from 'rxjs';
 import { UserToken } from '../models/usertoken';
 import {
@@ -404,8 +405,8 @@ export class UserDepositService {
         const filteredWithdrawPlan$ = withdrawPlan$.pipe(
             filter((withdrawPlan) => withdrawPlan.amount.isGreaterThan(0))
         );
-        const blockNumber$ = defer(() =>
-            from<Promise<number>>(this.raidenConfig.web3.eth.getBlockNumber())
+        const blockNumber$ = defer(async () =>
+            this.raidenConfig.web3.eth.getBlockNumber()
         );
 
         const blocksUntilWithdraw$ = combineLatest([
@@ -417,8 +418,7 @@ export class UserDepositService {
             )
         );
 
-        return interval(15000).pipe(
-            startWith(0),
+        return timer(0, 15000).pipe(
             switchMapTo(blocksUntilWithdraw$),
             mergeScan((oldValue, newValue) => {
                 const showNotification$ = combineLatest([
