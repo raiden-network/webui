@@ -111,7 +111,9 @@ describe('DepositWithdrawDialogComponent', () => {
 
             // @ts-ignore
             const closeSpy = spyOn(component.dialogRef, 'close');
-            clickElement(fixture.debugElement, '#accept');
+            fixture.debugElement
+                .query(By.css('form'))
+                .triggerEventHandler('submit', {});
             fixture.detectChanges();
 
             expect(closeSpy).toHaveBeenCalledTimes(1);

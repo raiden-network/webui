@@ -171,14 +171,6 @@ export class AddressInputComponent
         this.contactLabelFc = new FormControl('', Validators.required);
     }
 
-    labelFieldOnEnter(event: Event) {
-        event.stopPropagation();
-        if (this.contactLabelFc.invalid) {
-            return;
-        }
-        this.saveContact();
-    }
-
     saveContact() {
         this.showContactLabelInput = false;
         const contact: Contact = {

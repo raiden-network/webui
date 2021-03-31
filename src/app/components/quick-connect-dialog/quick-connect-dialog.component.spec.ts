@@ -194,7 +194,9 @@ describe('QuickConnectDialogComponent', () => {
 
             // @ts-ignore
             const closeSpy = spyOn(component.dialogRef, 'close');
-            clickElement(fixture.debugElement, '#accept');
+            fixture.debugElement
+                .query(By.css('form'))
+                .triggerEventHandler('submit', {});
             tick(300);
             fixture.detectChanges();
 

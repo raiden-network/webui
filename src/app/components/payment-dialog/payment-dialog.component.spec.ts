@@ -177,7 +177,9 @@ describe('PaymentDialogComponent', () => {
         mockAllInputs();
         // @ts-ignore
         const closeSpy = spyOn(component.dialogRef, 'close');
-        clickElement(fixture.debugElement, '#accept');
+        fixture.debugElement
+            .query(By.css('form'))
+            .triggerEventHandler('submit', {});
         fixture.detectChanges();
 
         expect(closeSpy).toHaveBeenCalledTimes(1);
@@ -194,7 +196,9 @@ describe('PaymentDialogComponent', () => {
         mockPaymentIdentifier();
         // @ts-ignore
         const closeSpy = spyOn(component.dialogRef, 'close');
-        clickElement(fixture.debugElement, '#accept');
+        fixture.debugElement
+            .query(By.css('form'))
+            .triggerEventHandler('submit', {});
         fixture.detectChanges();
 
         expect(closeSpy).toHaveBeenCalledTimes(1);
@@ -229,7 +233,9 @@ describe('PaymentDialogComponent', () => {
         mockPaymentIdentifier();
         // @ts-ignore
         const close = spyOn(component.dialogRef, 'close');
-        clickElement(fixture.debugElement, '#accept');
+        fixture.debugElement
+            .query(By.css('form'))
+            .triggerEventHandler('submit', {});
         fixture.detectChanges();
 
         const payload: ConfirmationDialogPayload = {
@@ -263,7 +269,9 @@ describe('PaymentDialogComponent', () => {
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         mockAllInputs();
-        clickElement(fixture.debugElement, '#accept');
+        fixture.debugElement
+            .query(By.css('form'))
+            .triggerEventHandler('submit', {});
         fixture.detectChanges();
 
         const payload: ConfirmationDialogPayload = {
@@ -288,7 +296,9 @@ describe('PaymentDialogComponent', () => {
         mockAllInputs();
         // @ts-ignore
         const close = spyOn(component.dialogRef, 'close');
-        clickElement(fixture.debugElement, '#accept');
+        fixture.debugElement
+            .query(By.css('form'))
+            .triggerEventHandler('submit', {});
         fixture.detectChanges();
 
         expect(dialogSpy).toHaveBeenCalledTimes(1);
@@ -308,7 +318,9 @@ describe('PaymentDialogComponent', () => {
         mockPaymentIdentifier(differentIdentifier.toString());
         // @ts-ignore
         const closeSpy = spyOn(component.dialogRef, 'close');
-        clickElement(fixture.debugElement, '#accept');
+        fixture.debugElement
+            .query(By.css('form'))
+            .triggerEventHandler('submit', {});
         fixture.detectChanges();
 
         expect(dialogSpy).toHaveBeenCalledTimes(0);

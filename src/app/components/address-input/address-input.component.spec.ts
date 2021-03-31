@@ -339,7 +339,9 @@ describe('AddressInputComponent', () => {
             );
             fixture.detectChanges();
 
-            clickElement(fixture.debugElement, '#save-contact');
+            fixture.debugElement
+                .query(By.css('form'))
+                .triggerEventHandler('submit', {});
             fixture.detectChanges();
 
             expect(addressBookSpy).toHaveBeenCalledTimes(1);
@@ -347,60 +349,6 @@ describe('AddressInputComponent', () => {
                 address,
                 label,
             });
-        });
-
-        it('should save the contact on enter', () => {
-            mockInput(fixture.debugElement, 'input', address);
-            fixture.detectChanges();
-
-            clickElement(fixture.debugElement, '#add-contact');
-            fixture.detectChanges();
-
-            mockInput(
-                fixture.debugElement,
-                'input[placeholder="Contact name"]',
-                label
-            );
-            fixture.detectChanges();
-
-            const labelInput = fixture.debugElement.query(
-                By.css('input[placeholder="Contact name"]')
-            );
-            labelInput.triggerEventHandler('keyup.enter', {
-                stopPropagation: () => {},
-            });
-            fixture.detectChanges();
-
-            expect(addressBookSpy).toHaveBeenCalledTimes(1);
-            expect(addressBookSpy).toHaveBeenCalledWith({
-                address,
-                label,
-            });
-        });
-
-        it('should not save the contact on enter if the label input is empty', () => {
-            mockInput(fixture.debugElement, 'input', address);
-            fixture.detectChanges();
-
-            clickElement(fixture.debugElement, '#add-contact');
-            fixture.detectChanges();
-
-            mockInput(
-                fixture.debugElement,
-                'input[placeholder="Contact name"]',
-                ''
-            );
-            fixture.detectChanges();
-
-            const labelInput = fixture.debugElement.query(
-                By.css('input[placeholder="Contact name"]')
-            );
-            labelInput.triggerEventHandler('keyup.enter', {
-                stopPropagation: () => {},
-            });
-            fixture.detectChanges();
-
-            expect(addressBookSpy).toHaveBeenCalledTimes(0);
         });
     });
 

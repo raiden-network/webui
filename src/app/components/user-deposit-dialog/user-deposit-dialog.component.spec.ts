@@ -84,7 +84,9 @@ describe('UserDepositDialogComponent', () => {
     it('should close the dialog', () => {
         const dialogRef = TestBed.inject(MatDialogRef);
         const closeSpy = spyOn(dialogRef, 'close');
-        clickElement(fixture.debugElement, '#accept');
+        fixture.debugElement
+            .query(By.css('form'))
+            .triggerEventHandler('submit', {});
         expect(closeSpy).toHaveBeenCalledTimes(1);
         expect(closeSpy).toHaveBeenCalledWith();
     });

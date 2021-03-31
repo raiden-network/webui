@@ -10,6 +10,7 @@ import { clickElement } from '../../../testing/interaction-helper';
 import { RaidenDialogComponent } from '../raiden-dialog/raiden-dialog.component';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { By } from '@angular/platform-browser';
 
 describe('ConfirmationDialogComponent', () => {
     let component: ConfirmationDialogComponent;
@@ -54,7 +55,9 @@ describe('ConfirmationDialogComponent', () => {
     it('should close the dialog with true when confirmed', function () {
         // @ts-ignore
         const closeSpy = spyOn(component.dialogRef, 'close');
-        clickElement(fixture.debugElement, '#accept');
+        fixture.debugElement
+            .query(By.css('form'))
+            .triggerEventHandler('submit', {});
         fixture.detectChanges();
 
         expect(closeSpy).toHaveBeenCalledTimes(1);

@@ -111,11 +111,12 @@
         </span>
     </ng-template>
 
-    <div
+    <form
         *ngIf="showContactLabelInput"
         fxLayout="row"
         fxLayoutAlign="start center"
         fxFlexOffset="16px"
+        (submit)="saveContact()"
         [@stretchVertically]="'in'"
     >
         <mat-icon svgIcon="go" aria-hidden="true" class="icon"> </mat-icon>
@@ -128,7 +129,6 @@
                 [formControl]="contactLabelFc"
                 type="text"
                 fxFlex="0 1 194px"
-                (keyup.enter)="labelFieldOnEnter($event)"
                 spellcheck="false"
             />
         </div>
@@ -136,15 +136,15 @@
             <button
                 class="add-contact-button"
                 mat-icon-button
-                (click)="saveContact()"
                 [disabled]="contactLabelFc.invalid"
                 fxLayout="column"
                 fxLayoutAlign="center center"
                 id="save-contact"
+                type="submit"
             >
                 <mat-icon class="icon" svgIcon="add" aria-label="Save contact">
                 </mat-icon>
             </button>
         </div>
-    </div>
+    </form>
 </div>

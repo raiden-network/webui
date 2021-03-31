@@ -114,6 +114,7 @@ export class DepositWithdrawFormComponent implements OnInit, OnDestroy {
     }
 
     onEnter(event: Event) {
+        console.log(event);
         event.stopPropagation();
         if (this.form.invalid) {
             return;
