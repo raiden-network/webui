@@ -10,16 +10,14 @@ import {
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { MockConfig } from '../testing/mock-config';
 import { MaterialComponentsModule } from './modules/material-components/material-components.module';
 import { ChannelPollingService } from './services/channel-polling.service';
-import { RaidenConfig } from './services/raiden.config';
 import { RaidenService } from './services/raiden.service';
 import {
     ErrorComponent,
     ErrorPayload,
 } from './components/error/error.component';
-import { BehaviorSubject, of, NEVER } from 'rxjs';
+import { BehaviorSubject, of, NEVER, throwError, Subject } from 'rxjs';
 import { TestProviders } from '../testing/test-providers';
 import { Network } from './utils/network-info';
 import { NotificationService } from './services/notification.service';
@@ -63,6 +61,7 @@ describe('AppComponent', () => {
     const channelsSubject = new BehaviorSubject([]);
     const paymentHistorySubject = new BehaviorSubject([]);
     const pendingTransfersSubject = new BehaviorSubject([]);
+    const globalRetrySubject = new Subject();
 
     beforeEach(
         waitForAsync(() => {
@@ -82,6 +81,8 @@ describe('AppComponent', () => {
             raidenServiceMock.getStatus = () => of({ status: 'ready' });
             raidenServiceMock.getUserToken = () => undefined;
             raidenServiceMock.attemptRpcConnection = () => undefined;
+            // @ts-ignore
+            raidenServiceMock.globalRetry$ = globalRetrySubject.asObservable();
 
             const pendingTransferPollingMock = stub<PendingTransferPollingService>();
             // @ts-ignore
@@ -113,10 +114,7 @@ describe('AppComponent', () => {
                     TokenNetworkSelectorComponent,
                 ],
                 providers: [
-                    {
-                        provide: RaidenConfig,
-                        useClass: MockConfig,
-                    },
+                    TestProviders.MockRaidenConfigProvider(),
                     {
                         provide: RaidenService,
                         useValue: raidenServiceMock,
@@ -402,6 +400,25 @@ describe('AppComponent', () => {
         expect(attemptRpcSpy).toHaveBeenCalledTimes(1);
 
         tick(5000);
+        flush();
+    }));
+
+    it('should retry polling the status after an error', fakeAsync(() => {
+        const raidenService = TestBed.inject(RaidenService);
+        const statusSpy = spyOn(raidenService, 'getStatus').and.returnValues(
+            throwError('API unavailable!'),
+            of({ status: 'ready' })
+        );
+        fixture.detectChanges();
+
+        expect(app.apiStatus).toBeFalsy();
+
+        globalRetrySubject.next(null);
+        tick();
+
+        expect(app.apiStatus).toEqual({ status: 'ready' });
+        tick(5000);
+        expect(statusSpy).toHaveBeenCalledTimes(2);
         flush();
     }));
 });

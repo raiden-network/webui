@@ -41,6 +41,8 @@ import {
 import { Status } from './models/status';
 import { ToastContainerDirective, ToastrService } from 'ngx-toastr';
 import { UserDepositService } from './services/user-deposit.service';
+import { backoff } from './shared/backoff.operator';
+import { RaidenConfig } from './services/raiden.config';
 
 @Component({
     selector: 'app-root',
@@ -76,7 +78,8 @@ export class AppComponent implements OnInit, OnDestroy {
         private dialog: MatDialog,
         private mediaObserver: MediaObserver,
         private toastrService: ToastrService,
-        private userDepositService: UserDepositService
+        private userDepositService: UserDepositService,
+        private raidenConfig: RaidenConfig
     ) {
         this.network$ = raidenService.network$;
     }
@@ -118,7 +121,11 @@ export class AppComponent implements OnInit, OnDestroy {
                 takeUntil(this.ngUnsubscribe),
                 takeWhile((status) => status.status !== 'ready'),
                 delay(500),
-                tap(() => this.statusSubject.next(null))
+                tap(() => this.statusSubject.next(null)),
+                backoff(
+                    this.raidenConfig.config.error_poll_interval,
+                    this.raidenService.globalRetry$
+                )
             )
             .subscribe();
 
