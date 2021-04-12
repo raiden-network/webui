@@ -9,14 +9,7 @@ import { ChannelPollingService } from 'app/services/channel-polling.service';
 import { RaidenService } from 'app/services/raiden.service';
 import { TokenPollingService } from 'app/services/token-polling.service';
 import BigNumber from 'bignumber.js';
-import {
-    combineLatest,
-    EMPTY,
-    Observable,
-    Subject,
-    throwError,
-    zip,
-} from 'rxjs';
+import { combineLatest, EMPTY, Observable, Subject, zip } from 'rxjs';
 import {
     catchError,
     delay,
@@ -160,14 +153,16 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
         zip(suggestions$, existingChannels$)
             .pipe(
                 map(([suggestions, channels]) =>
-                    suggestions.filter(
-                        (suggestion) =>
-                            !channels.find(
-                                (channel) =>
-                                    channel.partner_address ===
-                                    suggestion.address
-                            )
-                    )
+                    suggestions.filter((suggestion) => {
+                        const channelExisting = !!channels.find(
+                            (channel) =>
+                                channel.partner_address === suggestion.address
+                        );
+                        const isOwnAddress =
+                            suggestion.address ===
+                            this.raidenService.raidenAddress;
+                        return !channelExisting && !isOwnAddress;
+                    })
                 ),
                 catchError((error, caught) => {
                     this.loading = false;

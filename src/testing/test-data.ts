@@ -192,18 +192,23 @@ export function createContractsInfo(obj: any = {}): ContractsInfo {
     return Object.assign(contracts, obj);
 }
 
-export function createSuggestedConnections(
+export function createSuggestedConnection(obj: any = {}): SuggestedConnection {
+    const suggestedConnection: SuggestedConnection = {
+        address: createAddress(),
+        score: BigNumber.random(19).times(10 ** 19),
+        centrality: BigNumber.random(21),
+        uptime: BigNumber.random(5).times(10 ** 5),
+        capacity: BigNumber.random(19).times(10 ** 19),
+    };
+    return Object.assign(suggestedConnection, obj);
+}
+
+export function createTestSuggestedConnections(
     count: number = 5
 ): SuggestedConnection[] {
     const suggestions: SuggestedConnection[] = [];
     for (let i = 0; i < count; i++) {
-        suggestions.push({
-            address: createAddress(),
-            score: BigNumber.random(19).times(10 ** 19),
-            centrality: BigNumber.random(21),
-            uptime: BigNumber.random(5).times(10 ** 5),
-            capacity: BigNumber.random(19).times(10 ** 19),
-        });
+        suggestions.push(createSuggestedConnection());
     }
     suggestions.sort((a, b) => a.score.minus(b.score).toNumber());
     return suggestions;

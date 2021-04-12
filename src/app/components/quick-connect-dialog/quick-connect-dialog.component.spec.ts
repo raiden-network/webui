@@ -41,7 +41,8 @@ import {
     createAddress,
     createChannel,
     createSettings,
-    createSuggestedConnections,
+    createSuggestedConnection,
+    createTestSuggestedConnections,
     createToken,
 } from 'testing/test-data';
 import { TestProviders } from 'testing/test-providers';
@@ -59,7 +60,7 @@ describe('QuickConnectDialogComponent', () => {
     let component: QuickConnectDialogComponent;
     let fixture: ComponentFixture<QuickConnectDialogComponent>;
 
-    const suggestions = createSuggestedConnections();
+    const suggestions = createTestSuggestedConnections();
     const token = createToken({
         decimals: 0,
         balance: new BigNumber(1000),
@@ -69,6 +70,7 @@ describe('QuickConnectDialogComponent', () => {
         },
     });
     const tokenNetworkAddress = createAddress();
+    const raidenAddress = createAddress();
     const settings = createSettings();
     const totalAmountInput = '70';
     const totalAmountValue = amountFromDecimal(
@@ -83,6 +85,9 @@ describe('QuickConnectDialogComponent', () => {
         const raidenService = TestBed.inject(RaidenService);
         spyOn(raidenService, 'getTokenNetworkAddress').and.returnValue(
             of(tokenNetworkAddress)
+        );
+        spyOnProperty(raidenService, 'raidenAddress').and.returnValue(
+            raidenAddress
         );
         settingsSubject = new BehaviorSubject(settings);
         spyOn(raidenService, 'getSettings').and.returnValue(
@@ -258,6 +263,19 @@ describe('QuickConnectDialogComponent', () => {
                 suggestions.length - 1
             );
             expect(component.suggestions).toEqual(suggestions.slice(1));
+        }));
+
+        it('should filter the suggestions by the address of the user account', fakeAsync(() => {
+            const suggestedConnections = [
+                createSuggestedConnection({ address: raidenAddress }),
+                createSuggestedConnection(),
+            ];
+            initComponentForFakeAsync(suggestedConnections);
+
+            expect(component.suggestions.length).toEqual(1);
+            expect(component.suggestions).toEqual(
+                suggestedConnections.slice(1)
+            );
         }));
 
         it('should show an error if there are no suggestions', fakeAsync(() => {

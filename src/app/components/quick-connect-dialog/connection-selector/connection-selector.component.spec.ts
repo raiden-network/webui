@@ -26,7 +26,7 @@ import { amountToDecimal } from 'app/utils/amount.converter';
 import BigNumber from 'bignumber.js';
 import { ClipboardModule } from 'ngx-clipboard';
 import { clickElement, mockInput } from 'testing/interaction-helper';
-import { createSuggestedConnections, createToken } from 'testing/test-data';
+import { createTestSuggestedConnections, createToken } from 'testing/test-data';
 import { TestProviders } from 'testing/test-providers';
 import { ConnectionSelectorComponent } from './connection-selector.component';
 
@@ -40,7 +40,7 @@ describe('ConnectionSelectorComponent', () => {
         balance: new BigNumber('10000000000000000000'),
     });
     const totalAmount = new BigNumber('3000000000000000000');
-    const suggestions = createSuggestedConnections();
+    const suggestions = createTestSuggestedConnections();
 
     function initComponentForFakeAsync() {
         fixture.detectChanges();
