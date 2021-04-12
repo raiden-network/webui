@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import {
     HttpClientTestingModule,
     HttpTestingController,
@@ -6,7 +6,6 @@ import {
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import { ErrorHandlingInterceptor } from './error-handling.interceptor';
 import { TestProviders } from '../../testing/test-providers';
 import { NotificationService } from '../services/notification.service';
@@ -55,16 +54,12 @@ describe('ErrorHandlingInterceptor', () => {
         raidenConfig = TestBed.inject(RaidenConfig);
     });
 
-    it('should handle Raiden API errors', () => {
+    it('should handle Raiden API errors', fakeAsync(() => {
+        const errorSpy = jasmine.createSpy();
         const errorMessage = 'An Raiden API error occured.';
-        service.getData().subscribe(
-            () => {
-                fail('On next should not be called');
-            },
-            (error) => {
-                expect(error).toBe(errorMessage);
-            }
-        );
+        service.getData().subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
 
         const request = httpMock.expectOne(raidenConfig.api);
 
@@ -76,19 +71,18 @@ describe('ErrorHandlingInterceptor', () => {
             status: 400,
             statusText: '',
         });
-    });
+        tick();
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        expect(errorSpy).toHaveBeenCalledWith(errorMessage);
+    }));
 
-    it('should handle Raiden API errors with multiple messages', () => {
+    it('should handle Raiden API errors with multiple messages', fakeAsync(() => {
+        const errorSpy = jasmine.createSpy();
         const errorMessage =
             'An Raiden API error occurred.\nAnother error occurred.';
-        service.getData().subscribe(
-            () => {
-                fail('On next should not be called');
-            },
-            (error) => {
-                expect(error).toBe(errorMessage);
-            }
-        );
+        service.getData().subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
 
         const request = httpMock.expectOne(raidenConfig.api);
 
@@ -103,18 +97,17 @@ describe('ErrorHandlingInterceptor', () => {
             status: 400,
             statusText: '',
         });
-    });
+        tick();
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        expect(errorSpy).toHaveBeenCalledWith(errorMessage);
+    }));
 
-    it('should handle Raiden API errors with no message', () => {
+    it('should handle Raiden API errors with no message', fakeAsync(() => {
+        const errorSpy = jasmine.createSpy();
         const errorMessage = `Http failure response for ${raidenConfig.api}: 400 `;
-        service.getData().subscribe(
-            () => {
-                fail('On next should not be called');
-            },
-            (error) => {
-                expect(error).toBe(errorMessage);
-            }
-        );
+        service.getData().subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
 
         const request = httpMock.expectOne(raidenConfig.api);
 
@@ -126,17 +119,16 @@ describe('ErrorHandlingInterceptor', () => {
             status: 400,
             statusText: '',
         });
-    });
+        tick();
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        expect(errorSpy).toHaveBeenCalledWith(errorMessage);
+    }));
 
-    it('should handle non-response Raiden API errors', () => {
-        service.getData().subscribe(
-            () => {
-                fail('On next should not be called');
-            },
-            (error) => {
-                expect(error).toBeTruthy('An error is expected');
-            }
-        );
+    it('should handle non-response Raiden API errors', fakeAsync(() => {
+        const errorSpy = jasmine.createSpy();
+        service.getData().subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
 
         let request = httpMock.expectOne(raidenConfig.api);
 
@@ -147,19 +139,16 @@ describe('ErrorHandlingInterceptor', () => {
                 statusText: '',
             }
         );
+        tick();
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
+        expect(errorSpy).toHaveBeenCalledTimes(1);
 
-        service.getData().subscribe(
-            () => {
-                fail('On next should not be called');
-            },
-            (error) => {
-                expect(error).toBeTruthy('An error is expected');
-            }
-        );
+        service.getData().subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
         request = httpMock.expectOne(raidenConfig.api);
         request.flush(
             {},
@@ -168,21 +157,19 @@ describe('ErrorHandlingInterceptor', () => {
                 statusText: '',
             }
         );
+        tick();
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
-    });
+        expect(errorSpy).toHaveBeenCalledTimes(2);
+    }));
 
-    it('should always show a notification when the user retries to connect', () => {
-        service.getData().subscribe(
-            () => {
-                fail('On next should not be called');
-            },
-            (error) => {
-                expect(error).toBeTruthy('An error is expected');
-            }
-        );
+    it('should always show a notification when the user retries to connect', fakeAsync(() => {
+        const errorSpy = jasmine.createSpy();
+        service.getData().subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
 
         let request = httpMock.expectOne(raidenConfig.api);
 
@@ -194,15 +181,11 @@ describe('ErrorHandlingInterceptor', () => {
             }
         );
 
+        tick();
         notificationService.apiError.retrying = true;
-        service.getData().subscribe(
-            () => {
-                fail('On next should not be called');
-            },
-            (error) => {
-                expect(error).toBeTruthy('An error is expected');
-            }
-        );
+        service.getData().subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
         request = httpMock.expectOne(raidenConfig.api);
         request.flush(
             {},
@@ -211,13 +194,16 @@ describe('ErrorHandlingInterceptor', () => {
                 statusText: '',
             }
         );
+        tick();
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             2
         );
-    });
+        expect(errorSpy).toHaveBeenCalledTimes(2);
+    }));
 
-    it('should reset the error and refresh rpc connection when connection is back', () => {
+    it('should reset the error and refresh rpc connection when connection is back', fakeAsync(() => {
+        const errorSpy = jasmine.createSpy();
         const raidenService = TestBed.inject(RaidenService);
         const attemptSpy = spyOn(raidenService, 'attemptRpcConnection');
         const refreshSpy = spyOn(
@@ -225,14 +211,9 @@ describe('ErrorHandlingInterceptor', () => {
             'reconnectSuccessful'
         ).and.callFake(() => {});
 
-        service.getData().subscribe(
-            () => {
-                fail('On next should not be called');
-            },
-            (error) => {
-                expect(error).toBeTruthy('An error is expected');
-            }
-        );
+        service.getData().subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
 
         let request = httpMock.expectOne(raidenConfig.api);
 
@@ -243,8 +224,11 @@ describe('ErrorHandlingInterceptor', () => {
                 statusText: '',
             }
         );
+        tick();
 
-        service.getData().subscribe();
+        service.getData().subscribe((data) => {
+            expect(data).toEqual({});
+        }, errorSpy);
         request = httpMock.expectOne(raidenConfig.api);
         request.flush(
             {},
@@ -253,13 +237,15 @@ describe('ErrorHandlingInterceptor', () => {
                 statusText: '',
             }
         );
+        tick();
 
         expect(attemptSpy).toHaveBeenCalledTimes(1);
         expect(refreshSpy).toHaveBeenCalledTimes(1);
         expect(notificationService.apiError).toBeFalsy();
-    });
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+    }));
 
-    it('should handle non-response Raiden API errors for path url requests', () => {
+    it('should handle non-response Raiden API errors for path url requests', fakeAsync(() => {
         raidenConfig.api = '/api/v1';
         // Unlike the HttpClientModule, the HttpClientTestingModule does not prepend the url
         // property of a HttpResponse with the host if the request was made by a URL path.
@@ -278,14 +264,15 @@ describe('ErrorHandlingInterceptor', () => {
                 statusText: '',
             }
         );
+        tick();
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
         expect(errorSpy).toHaveBeenCalledTimes(1);
-    });
+    }));
 
-    it('should not misinterpret non-api errors', () => {
+    it('should not misinterpret non-api errors', fakeAsync(() => {
         raidenConfig.api = '/api/v1';
         const requestUrl = 'http://some.url/api/v1';
         const errorSpy = jasmine.createSpy();
@@ -302,11 +289,12 @@ describe('ErrorHandlingInterceptor', () => {
                 statusText: '',
             }
         );
+        tick();
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             0
         );
         expect(notificationService.apiError).toBeFalsy();
         expect(errorSpy).toHaveBeenCalledTimes(1);
-    });
+    }));
 });
