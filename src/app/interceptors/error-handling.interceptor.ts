@@ -30,7 +30,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
             tap((event) => {
                 if (
                     event instanceof HttpResponse &&
-                    event.url.startsWith(this.raidenConfig.api) &&
+                    this.isRaidenApiUrl(event.url) &&
                     this.notificationService.apiError
                 ) {
                     this.raidenService.attemptRpcConnection();
@@ -47,7 +47,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
 
         if (
             error instanceof HttpErrorResponse &&
-            error.url.startsWith(this.raidenConfig.api) &&
+            this.isRaidenApiUrl(error.url) &&
             (error.status === 504 || error.status === 0)
         ) {
             errMsg = 'Could not connect to the Raiden API';
@@ -93,5 +93,12 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
 
         console.error(errMsg);
         return throwError(errMsg);
+    }
+
+    private isRaidenApiUrl(url: string): boolean {
+        return (
+            url.startsWith(this.raidenConfig.api) ||
+            url.startsWith(window.location.origin + this.raidenConfig.api)
+        );
     }
 }
