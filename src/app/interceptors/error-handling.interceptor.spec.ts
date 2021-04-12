@@ -20,6 +20,10 @@ class MockRequestingService {
     getData(): Observable<any> {
         return this.http.get(this.raidenConfig.api);
     }
+
+    makeRequest(url: string): Observable<any> {
+        return this.http.get(url);
+    }
 }
 
 describe('ErrorHandlingInterceptor', () => {
@@ -253,5 +257,56 @@ describe('ErrorHandlingInterceptor', () => {
         expect(attemptSpy).toHaveBeenCalledTimes(1);
         expect(refreshSpy).toHaveBeenCalledTimes(1);
         expect(notificationService.apiError).toBeFalsy();
+    });
+
+    it('should handle non-response Raiden API errors for path url requests', () => {
+        raidenConfig.api = '/api/v1';
+        // Unlike the HttpClientModule, the HttpClientTestingModule does not prepend the url
+        // property of a HttpResponse with the host if the request was made by a URL path.
+        const requestUrl = window.location.origin + raidenConfig.api;
+        const errorSpy = jasmine.createSpy();
+
+        service.makeRequest(requestUrl).subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
+
+        const request = httpMock.expectOne(requestUrl);
+        request.flush(
+            {},
+            {
+                status: 504,
+                statusText: '',
+            }
+        );
+
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            1
+        );
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not misinterpret non-api errors', () => {
+        raidenConfig.api = '/api/v1';
+        const requestUrl = 'http://some.url/api/v1';
+        const errorSpy = jasmine.createSpy();
+
+        service.makeRequest(requestUrl).subscribe(() => {
+            fail('On next should not be called');
+        }, errorSpy);
+
+        const request = httpMock.expectOne(requestUrl);
+        request.flush(
+            {},
+            {
+                status: 504,
+                statusText: '',
+            }
+        );
+
+        expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
+            0
+        );
+        expect(notificationService.apiError).toBeFalsy();
+        expect(errorSpy).toHaveBeenCalledTimes(1);
     });
 });
