@@ -31,6 +31,15 @@ describe('ErrorHandlingInterceptor', () => {
     let notificationService: NotificationService;
     let raidenConfig: RaidenConfig;
 
+    const httpResponse400 = {
+        status: 400,
+        statusText: '',
+    };
+    const httpResponse504 = {
+        status: 504,
+        statusText: '',
+    };
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
@@ -67,10 +76,7 @@ describe('ErrorHandlingInterceptor', () => {
             errors: errorMessage,
         };
 
-        request.flush(errorBody, {
-            status: 400,
-            statusText: '',
-        });
+        request.flush(errorBody, httpResponse400);
         tick();
         expect(errorSpy).toHaveBeenCalledTimes(1);
         expect(errorSpy).toHaveBeenCalledWith(errorMessage);
@@ -93,10 +99,7 @@ describe('ErrorHandlingInterceptor', () => {
             ],
         };
 
-        request.flush(errorBody, {
-            status: 400,
-            statusText: '',
-        });
+        request.flush(errorBody, httpResponse400);
         tick();
         expect(errorSpy).toHaveBeenCalledTimes(1);
         expect(errorSpy).toHaveBeenCalledWith(errorMessage);
@@ -115,10 +118,7 @@ describe('ErrorHandlingInterceptor', () => {
             errors: '',
         };
 
-        request.flush(errorBody, {
-            status: 400,
-            statusText: '',
-        });
+        request.flush(errorBody, httpResponse400);
         tick();
         expect(errorSpy).toHaveBeenCalledTimes(1);
         expect(errorSpy).toHaveBeenCalledWith(errorMessage);
@@ -132,18 +132,13 @@ describe('ErrorHandlingInterceptor', () => {
 
         let request = httpMock.expectOne(raidenConfig.api);
 
-        request.flush(
-            {},
-            {
-                status: 504,
-                statusText: '',
-            }
-        );
+        request.flush({}, httpResponse504);
         tick();
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
+        expect(notificationService.apiError).toBeTruthy();
         expect(errorSpy).toHaveBeenCalledTimes(1);
 
         service.getData().subscribe(() => {
@@ -162,6 +157,7 @@ describe('ErrorHandlingInterceptor', () => {
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
+        expect(notificationService.apiError).toBeTruthy();
         expect(errorSpy).toHaveBeenCalledTimes(2);
     }));
 
@@ -173,32 +169,21 @@ describe('ErrorHandlingInterceptor', () => {
 
         let request = httpMock.expectOne(raidenConfig.api);
 
-        request.flush(
-            {},
-            {
-                status: 504,
-                statusText: '',
-            }
-        );
-
+        request.flush({}, httpResponse504);
         tick();
+
         notificationService.apiError.retrying = true;
         service.getData().subscribe(() => {
             fail('On next should not be called');
         }, errorSpy);
         request = httpMock.expectOne(raidenConfig.api);
-        request.flush(
-            {},
-            {
-                status: 504,
-                statusText: '',
-            }
-        );
+        request.flush({}, httpResponse504);
         tick();
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             2
         );
+        expect(notificationService.apiError).toBeTruthy();
         expect(errorSpy).toHaveBeenCalledTimes(2);
     }));
 
@@ -217,13 +202,7 @@ describe('ErrorHandlingInterceptor', () => {
 
         let request = httpMock.expectOne(raidenConfig.api);
 
-        request.flush(
-            {},
-            {
-                status: 504,
-                statusText: '',
-            }
-        );
+        request.flush({}, httpResponse504);
         tick();
 
         service.getData().subscribe((data) => {
@@ -257,18 +236,13 @@ describe('ErrorHandlingInterceptor', () => {
         }, errorSpy);
 
         const request = httpMock.expectOne(requestUrl);
-        request.flush(
-            {},
-            {
-                status: 504,
-                statusText: '',
-            }
-        );
+        request.flush({}, httpResponse504);
         tick();
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
             1
         );
+        expect(notificationService.apiError).toBeTruthy();
         expect(errorSpy).toHaveBeenCalledTimes(1);
     }));
 
@@ -282,13 +256,7 @@ describe('ErrorHandlingInterceptor', () => {
         }, errorSpy);
 
         const request = httpMock.expectOne(requestUrl);
-        request.flush(
-            {},
-            {
-                status: 504,
-                statusText: '',
-            }
-        );
+        request.flush({}, httpResponse504);
         tick();
 
         expect(notificationService.addErrorNotification).toHaveBeenCalledTimes(
