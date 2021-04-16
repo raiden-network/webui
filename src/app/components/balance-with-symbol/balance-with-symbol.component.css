@@ -1,0 +1,11 @@
+:host {
+    white-space: nowrap;
+}
+
+.balance {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: text-bottom;
+}
