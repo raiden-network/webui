@@ -13,6 +13,7 @@
 - [#590] Fixed a bug that prevented to select the all networks view.
 - [#603] Error screen was not showing up when API connection failed.
 - [#598] Filters the address of the user account from the suggested connections when using Quick Connect.
+- [#542] Fixed the layout to not get broken by big token balances.
 
 ## [1.1.1] - 2020-12-03
 ### Fixed
@@ -206,6 +207,7 @@ token network.
 [#557]: https://github.com/raiden-network/webui/issues/557
 [#556]: https://github.com/raiden-network/webui/issues/556
 [#547]: https://github.com/raiden-network/webui/issues/547
+[#542]: https://github.com/raiden-network/webui/issues/542
 [#485]: https://github.com/raiden-network/webui/issues/485
 [#476]: https://github.com/raiden-network/webui/issues/476
 [#475]: https://github.com/raiden-network/webui/issues/475
