@@ -13,6 +13,7 @@
                 class="info__balance"
                 [balance]="balance$ | async"
                 [token]="servicesToken"
+                [maxBalanceWidth]="200"
             ></app-balance-with-symbol>
             <span
                 *ngIf="zeroBalance$ | async"
@@ -211,6 +212,7 @@
                         [balance]="withdrawPlan?.amount"
                         [token]="servicesToken"
                         [showTooltip]="false"
+                        [maxBalanceWidth]="100"
                     ></app-balance-with-symbol>
                     <mat-icon
                         *ngIf="!withdrawPending; else withdraw_pending"

@@ -141,7 +141,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         };
         this.dialog.open(QrCodeComponent, {
             data: payload,
-            width: '536px',
+            width: '550px',
         });
     }
 

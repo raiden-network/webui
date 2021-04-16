@@ -11,6 +11,7 @@ export class BalanceWithSymbolComponent implements OnInit {
     @Input() balance: BigNumber;
     @Input() token: UserToken;
     @Input() showTooltip = true;
+    @Input() maxBalanceWidth = 50;
 
     constructor() {}
 

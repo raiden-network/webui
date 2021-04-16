@@ -15,6 +15,13 @@
         &--uppercase {
             text-transform: uppercase;
         }
+
+        &--limited {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 50px;
+        }
     }
 
     &__label {
@@ -119,7 +126,7 @@
     background-color: $black;
     border-radius: 8px;
     font-size: 12px;
-    line-height: 30px;
+    line-height: 15px;
     color: $white;
     width: 125px;
     max-height: 171px;
@@ -127,7 +134,8 @@
 
     &__label {
         width: 100%;
-        padding-top: 6px;
+        padding-top: 13.5px;
+        padding-bottom: 7.5px;
         background-color: $black;
         position: sticky;
         position: -webkit-sticky;
@@ -140,6 +148,7 @@
     }
 
     &__item {
+        padding: 7.5px 0;
         margin: 0 16px;
         white-space: nowrap;
         overflow: hidden;

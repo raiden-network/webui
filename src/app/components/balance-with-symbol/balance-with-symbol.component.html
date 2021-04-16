@@ -2,6 +2,8 @@
     *ngIf="balance | decimal: token.decimals as decimalBalance"
     [matTooltip]="decimalBalance"
     [matTooltipDisabled]="!showTooltip"
+    class="balance"
+    [style.max-width.px]="maxBalanceWidth"
 >
     {{ decimalBalance | displayDecimals: 3 }}
 </span>

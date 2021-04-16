@@ -4,7 +4,8 @@
     &__balance {
         font-weight: 500;
         font-size: 26px;
-        line-height: 39px;
+        line-height: 32px;
+        padding: 3.5px 0;
         color: $white;
     }
 
@@ -168,7 +169,7 @@
 }
 
 .form {
-    z-index: 3000;
+    z-index: 2500;
     background-color: $black;
     position: absolute;
     margin: 0 !important;
