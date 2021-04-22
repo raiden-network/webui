@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [1.2.0] - 2020-04-26
 ### Added
 - [#556] New dialog for interacting with the UDC. The dialog enables depositing and withdrawing tokens.
 - [#195] Services tokens can be minted from the UDC dialog.
@@ -179,7 +181,8 @@ token network.
 ### Changed
 - First python package release.
 
-[Unreleased]: https://github.com/raiden-network/webui/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/raiden-network/webui/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/raiden-network/webui/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/raiden-network/webui/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/raiden-network/webui/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/raiden-network/webui/compare/v1.0.1...v1.0.2
