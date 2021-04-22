@@ -136,7 +136,7 @@ jobs:
           command: |
             echo "TAG: ${CIRCLE_TAG}"
             VERSION=${CIRCLE_TAG}
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -replace ${VERSION} ./dist/
+            ghr -t ${GITHUB_TOKEN_RELEASES} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -replace ${VERSION} ./dist/
 
   deploy-pypi:
     executor:
@@ -156,7 +156,7 @@ jobs:
       - run:
           name: "Upload to pypi"
           command: |
-            twine upload -u $PYPI_USER -p $PYPI_PASSWORD dist/*
+            twine upload -u __token__ -p $PYPI_TOKEN_RAIDEN_WEBUI dist/*
 
 
 workflows:
@@ -198,13 +198,13 @@ workflows:
           filters:
             <<: *filter-version-regex
       - deploy-github-release:
-          context: "Raiden Context"
+          context: "raiden-general-2021"
           requires:
             - build-package
           filters:
             <<: *filter-version-regex
       - deploy-pypi:
-          context: "Raiden Context"
+          context: "raiden-webui"
           requires:
             - build-package
           filters:
