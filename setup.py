@@ -30,7 +30,11 @@ class CompileWebUI(Command):
     def run(self):
         yarn = find_executable('yarn')
         if not yarn:
-            raise RuntimeError('Yarn not found. Aborting')
+            self.announce(
+                'Yarn not found. Skipping webUI compilation',
+                level=distutils.log.WARN,  # pylint: disable=no-member
+            )
+            return
 
         yarn_run = 'build:prod'
         if self.dev is not None:
