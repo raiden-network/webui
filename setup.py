@@ -30,7 +30,11 @@ class CompileWebUI(Command):
     def run(self):
         yarn = find_executable('yarn')
         if not yarn:
-            raise RuntimeError('Yarn not found. Aborting')
+            self.announce(
+                'Yarn not found. Skipping webUI compilation',
+                level=distutils.log.WARN,  # pylint: disable=no-member
+            )
+            return
 
         yarn_run = 'build:prod'
         if self.dev is not None:
@@ -72,7 +76,7 @@ with open('README.md', encoding='utf-8') as readme_file:
 
 history = ''
 
-version = '1.2.0'  # Do not edit: this is maintained by bumpversion (see .bumpversion.cfg)
+version = '1.2.1'  # Do not edit: this is maintained by bumpversion (see .bumpversion.cfg)
 
 setup(
     name='raiden-webui',

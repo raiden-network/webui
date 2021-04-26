@@ -1,6 +1,6 @@
 {
   "name": "raiden-webui",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "MIT",
   "scripts": {
     "preinstall": "npx only-allow yarn",
