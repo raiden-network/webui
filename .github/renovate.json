@@ -2,6 +2,9 @@
   "extends": [
     "config:base"
   ],
+  "circleci": {
+    "enabled": false
+  },
   "commitMessagePrefix": "dependencies:",
   "packageRules": [
     {
