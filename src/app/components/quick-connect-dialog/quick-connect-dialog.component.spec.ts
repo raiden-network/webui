@@ -242,9 +242,10 @@ describe('QuickConnectDialogComponent', () => {
         it('should set the maximum token amount to the balance', fakeAsync(() => {
             initComponentForFakeAsync();
 
-            const tokenInputComponent: TokenInputComponent = fixture.debugElement.query(
-                By.css('app-token-input[formControlName="totalAmount"')
-            ).componentInstance;
+            const tokenInputComponent: TokenInputComponent =
+                fixture.debugElement.query(
+                    By.css('app-token-input[formControlName="totalAmount"')
+                ).componentInstance;
             expect(tokenInputComponent.maxAmount.isEqualTo(token.balance)).toBe(
                 true
             );
@@ -337,9 +338,10 @@ describe('QuickConnectDialogComponent', () => {
         it('should not set the maximum token amount by default', () => {
             fixture.detectChanges();
 
-            const tokenInputComponent: TokenInputComponent = fixture.debugElement.query(
-                By.css('app-token-input[formControlName="totalAmount"')
-            ).componentInstance;
+            const tokenInputComponent: TokenInputComponent =
+                fixture.debugElement.query(
+                    By.css('app-token-input[formControlName="totalAmount"')
+                ).componentInstance;
             expect(tokenInputComponent.maxAmount).toBeUndefined();
         });
 
@@ -354,9 +356,10 @@ describe('QuickConnectDialogComponent', () => {
             mockMatSelectFirst(fixture.debugElement);
             fixture.detectChanges();
 
-            const tokenInputComponent: TokenInputComponent = fixture.debugElement.query(
-                By.css('app-token-input[formControlName="totalAmount"')
-            ).componentInstance;
+            const tokenInputComponent: TokenInputComponent =
+                fixture.debugElement.query(
+                    By.css('app-token-input[formControlName="totalAmount"')
+                ).componentInstance;
             expect(tokenInputComponent.maxAmount.isEqualTo(token.balance)).toBe(
                 true
             );

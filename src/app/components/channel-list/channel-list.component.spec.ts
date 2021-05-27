@@ -206,7 +206,7 @@ describe('ChannelListComponent', () => {
     }));
 
     it('should open open channel dialog', () => {
-        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         const raidenService = TestBed.inject(RaidenService);
         const raidenConfig = TestBed.inject(RaidenConfig);
 
@@ -242,7 +242,7 @@ describe('ChannelListComponent', () => {
     });
 
     it('should not open channel if dialog is cancelled', () => {
-        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         const raidenService = TestBed.inject(RaidenService);
 
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
@@ -257,11 +257,10 @@ describe('ChannelListComponent', () => {
     });
 
     it('should open open channel dialog with selected token', () => {
-        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         const raidenConfig = TestBed.inject(RaidenConfig);
-        const selectedTokenService: SelectedTokenService = TestBed.inject(
-            SelectedTokenService
-        );
+        const selectedTokenService: SelectedTokenService =
+            TestBed.inject(SelectedTokenService);
         selectedTokenService.setToken(token1);
         fixture.detectChanges();
 

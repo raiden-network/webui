@@ -63,7 +63,8 @@ import { matchesContact } from '../../shared/keyword-matcher';
     ],
 })
 export class AddressInputComponent
-    implements ControlValueAccessor, Validator, OnInit, OnDestroy {
+    implements ControlValueAccessor, Validator, OnInit, OnDestroy
+{
     @Input() placeholder: string;
     @Input() displayIdenticon = false;
     @Input() userAccount = false;

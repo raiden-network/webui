@@ -127,7 +127,7 @@ describe('TokenNetworkSelectorComponent', () => {
     });
 
     it('should open register dialog', () => {
-        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         const raidenService = TestBed.inject(RaidenService);
         const tokenAddress = createAddress();
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
@@ -153,7 +153,7 @@ describe('TokenNetworkSelectorComponent', () => {
     });
 
     it('should not register token if dialog is cancelled', () => {
-        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         const raidenService = TestBed.inject(RaidenService);
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
         dialog.returns = () => null;

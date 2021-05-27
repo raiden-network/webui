@@ -111,8 +111,8 @@ export class QuickConnectDialogComponent implements OnInit, OnDestroy {
                 return settings.pathfinding_service_address;
             })
         );
-        const tokenValueChange$: Observable<UserToken> = this.form.controls
-            .token.valueChanges;
+        const tokenValueChange$: Observable<UserToken> =
+            this.form.controls.token.valueChanges;
         const tokenNetworkAddress$ = tokenValueChange$.pipe(
             delay(0),
             filter((token) => !!token),

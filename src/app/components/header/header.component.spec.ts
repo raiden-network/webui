@@ -151,7 +151,7 @@ describe('HeaderComponent', () => {
     });
 
     it('should show the qr code dialog for the raiden address', () => {
-        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open');
 
         clickElement(fixture.debugElement, '#qr-button');
@@ -236,8 +236,9 @@ describe('HeaderComponent', () => {
         const sharedService = TestBed.inject(SharedService);
         clickElement(fixture.debugElement, '.balances-button');
         fixture.detectChanges();
-        const overlay = fixture.debugElement.query(By.css('.balances-overlay'))
-            .nativeElement;
+        const overlay = fixture.debugElement.query(
+            By.css('.balances-overlay')
+        ).nativeElement;
         sharedService.newGlobalClick(overlay);
         fixture.detectChanges();
         expect(component.tokenBalancesOpen).toBe(true);
@@ -269,7 +270,7 @@ describe('HeaderComponent', () => {
     });
 
     it('should open the UDC dialog', () => {
-        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open');
 
         clickElement(fixture.debugElement, '#open-udc');

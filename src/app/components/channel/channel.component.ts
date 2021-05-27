@@ -45,9 +45,8 @@ export class ChannelComponent implements OnInit {
     }
 
     close() {
-        const partner = this.addressBookService.get()[
-            this.channel.partner_address
-        ];
+        const partner =
+            this.addressBookService.get()[this.channel.partner_address];
 
         const payload: ConfirmationDialogPayload = {
             title: 'Close Channel',

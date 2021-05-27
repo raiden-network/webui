@@ -85,7 +85,7 @@ describe('ChannelComponent', () => {
         component = fixture.componentInstance;
 
         component.channel = channel;
-        dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         raidenService = TestBed.inject(RaidenService);
         contacts = {};
 

@@ -23,9 +23,8 @@ export class ChannelPollingService {
     public readonly channels$: Observable<Channel[]>;
 
     private channelsSubject: BehaviorSubject<void> = new BehaviorSubject(null);
-    private refreshingSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-        false
-    );
+    private refreshingSubject: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(false);
     private loaded = false;
 
     constructor(

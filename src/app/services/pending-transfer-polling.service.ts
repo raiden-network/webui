@@ -16,9 +16,8 @@ import { AddressBookService } from './address-book.service';
 export class PendingTransferPollingService {
     public readonly pendingTransfers$: Observable<PendingTransfer[]>;
 
-    private pendingTransfersSubject: BehaviorSubject<void> = new BehaviorSubject(
-        null
-    );
+    private pendingTransfersSubject: BehaviorSubject<void> =
+        new BehaviorSubject(null);
 
     constructor(
         private raidenService: RaidenService,
@@ -104,9 +103,8 @@ export class PendingTransferPollingService {
                 };
             } else {
                 const initiatorAddress = pendingTransfer.initiator;
-                let initiatorLabel = this.addressBookService.get()[
-                    initiatorAddress
-                ];
+                let initiatorLabel =
+                    this.addressBookService.get()[initiatorAddress];
                 if (!initiatorLabel) {
                     initiatorLabel = '';
                 }
@@ -119,9 +117,8 @@ export class PendingTransferPollingService {
                 };
             }
 
-            pendingTransfer.notificationIdentifier = this.notificationService.addPendingAction(
-                message
-            );
+            pendingTransfer.notificationIdentifier =
+                this.notificationService.addPendingAction(message);
         }
     }
 

@@ -43,7 +43,8 @@ import {
     animations: Animations.fallDown,
 })
 export class ConnectionSelectorComponent
-    implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+    implements OnInit, OnChanges, OnDestroy, AfterViewInit
+{
     private static MAX_SUGGESTIONS = 3;
 
     @ViewChildren(TokenInputComponent)
@@ -103,9 +104,10 @@ export class ConnectionSelectorComponent
                 });
             });
 
-        const totalAmount$: Observable<BigNumber> = this.totalAmountFormControl.valueChanges.pipe(
-            startWith(this.totalAmountFormControl.value)
-        );
+        const totalAmount$: Observable<BigNumber> =
+            this.totalAmountFormControl.valueChanges.pipe(
+                startWith(this.totalAmountFormControl.value)
+            );
         combineLatest([this.tokenInputs.changes, totalAmount$])
             .pipe(delay(0), takeUntil(this.ngUnsubscribe))
             .subscribe(([changedInput, totalAmount]) => {
@@ -322,10 +324,11 @@ export class ConnectionSelectorComponent
 
         this.unsubscribeFormChanges.next();
         this.choicesForm.clear();
-        const visibleSuggestions: SuggestedConnection[] = this.suggestions.slice(
-            0,
-            ConnectionSelectorComponent.MAX_SUGGESTIONS
-        );
+        const visibleSuggestions: SuggestedConnection[] =
+            this.suggestions.slice(
+                0,
+                ConnectionSelectorComponent.MAX_SUGGESTIONS
+            );
         visibleSuggestions.forEach((suggestion, index) => {
             const formGroup = this.fb.group({
                 partnerAddress: [suggestion.address, Validators.required],
@@ -360,8 +363,8 @@ export class ConnectionSelectorComponent
                     takeUntil(this.unsubscribeFormChanges)
                 )
                 .subscribe((newValue) => {
-                    const totalDeposit: BigNumber = this.totalAmountFormControl
-                        .value;
+                    const totalDeposit: BigNumber =
+                        this.totalAmountFormControl.value;
                     const oldValue = totalDeposit
                         .times(formGroup.get('percentage').value)
                         .integerValue();

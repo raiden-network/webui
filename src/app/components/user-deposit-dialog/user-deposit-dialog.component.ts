@@ -39,7 +39,8 @@ export class UserDepositDialogComponent implements OnInit, OnDestroy {
         this.zeroBalance$ = this.userDepositService.balance$.pipe(
             map((balance) => balance.isZero())
         );
-        this.blocksUntilWithdraw$ = this.userDepositService.blocksUntilWithdraw$;
+        this.blocksUntilWithdraw$ =
+            this.userDepositService.blocksUntilWithdraw$;
         this.onMainnet$ = this.raidenService.network$.pipe(
             map((network) => network.chainId === 1)
         );

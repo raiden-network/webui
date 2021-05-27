@@ -8,9 +8,8 @@ import { UserToken } from '../models/usertoken';
 export class SelectedTokenService {
     selectedToken$: Observable<UserToken>;
 
-    private selectedTokenSubject: BehaviorSubject<UserToken> = new BehaviorSubject(
-        undefined
-    );
+    private selectedTokenSubject: BehaviorSubject<UserToken> =
+        new BehaviorSubject(undefined);
 
     constructor() {
         this.selectedToken$ = this.selectedTokenSubject.asObservable();

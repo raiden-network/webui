@@ -71,9 +71,8 @@ export class RaidenService {
     public readonly rpcConnected$: Observable<void>;
     public quickConnectPending: { [tokenAddress: string]: boolean } = {};
 
-    private paymentInitiatedSubject: BehaviorSubject<void> = new BehaviorSubject(
-        null
-    );
+    private paymentInitiatedSubject: BehaviorSubject<void> =
+        new BehaviorSubject(null);
     private globalRetrySubject: Subject<void> = new Subject();
     private reconnectedSubject: BehaviorSubject<void> = new BehaviorSubject(
         null
@@ -168,8 +167,12 @@ export class RaidenService {
             .pipe(
                 mergeMap((channels: Array<Channel>) => from(channels)),
                 map((channel: Channel) => {
-                    channel.settle_timeout = ((channel.settle_timeout as unknown) as BigNumber).toNumber();
-                    channel.reveal_timeout = ((channel.reveal_timeout as unknown) as BigNumber).toNumber();
+                    channel.settle_timeout = (
+                        channel.settle_timeout as unknown as BigNumber
+                    ).toNumber();
+                    channel.reveal_timeout = (
+                        channel.reveal_timeout as unknown as BigNumber
+                    ).toNumber();
                     channel.userToken = this.getUserToken(
                         channel.token_address
                     );
@@ -224,9 +227,10 @@ export class RaidenService {
                             connections[address] &&
                             connections[address].channels
                         ) {
-                            connections[address].channels = ((connections[
-                                address
-                            ].channels as unknown) as BigNumber).toNumber();
+                            connections[address].channels = (
+                                connections[address]
+                                    .channels as unknown as BigNumber
+                            ).toNumber();
                         }
                         token.connected = connections[address];
                     }
@@ -257,8 +261,12 @@ export class RaidenService {
             )
             .pipe(
                 map((channel: Channel) => {
-                    channel.settle_timeout = ((channel.settle_timeout as unknown) as BigNumber).toNumber();
-                    channel.reveal_timeout = ((channel.reveal_timeout as unknown) as BigNumber).toNumber();
+                    channel.settle_timeout = (
+                        channel.settle_timeout as unknown as BigNumber
+                    ).toNumber();
+                    channel.reveal_timeout = (
+                        channel.reveal_timeout as unknown as BigNumber
+                    ).toNumber();
                     return channel;
                 })
             );
@@ -292,9 +300,8 @@ export class RaidenService {
                 identiconAddress: partnerAddress,
                 userToken: token,
             };
-            notificationIdentifier = this.notificationService.addPendingAction(
-                message
-            );
+            notificationIdentifier =
+                this.notificationService.addPendingAction(message);
 
             if (!this.pendingChannels[tokenAddress]) {
                 this.pendingChannels[tokenAddress] = {};
@@ -320,8 +327,12 @@ export class RaidenService {
             );
         }).pipe(
             map((channel: Channel) => {
-                channel.settle_timeout = ((channel.settle_timeout as unknown) as BigNumber).toNumber();
-                channel.reveal_timeout = ((channel.reveal_timeout as unknown) as BigNumber).toNumber();
+                channel.settle_timeout = (
+                    channel.settle_timeout as unknown as BigNumber
+                ).toNumber();
+                channel.reveal_timeout = (
+                    channel.reveal_timeout as unknown as BigNumber
+                ).toNumber();
                 return channel;
             }),
             catchError((error) => {
@@ -454,9 +465,8 @@ export class RaidenService {
                     identiconAddress: partnerAddress,
                     userToken: token,
                 };
-                notificationIdentifier = this.notificationService.addPendingAction(
-                    message
-                );
+                notificationIdentifier =
+                    this.notificationService.addPendingAction(message);
             }),
             switchMap((channel) => {
                 const body: {
@@ -475,8 +485,12 @@ export class RaidenService {
                 );
             }),
             map((channel: Channel) => {
-                channel.settle_timeout = ((channel.settle_timeout as unknown) as BigNumber).toNumber();
-                channel.reveal_timeout = ((channel.reveal_timeout as unknown) as BigNumber).toNumber();
+                channel.settle_timeout = (
+                    channel.settle_timeout as unknown as BigNumber
+                ).toNumber();
+                channel.reveal_timeout = (
+                    channel.reveal_timeout as unknown as BigNumber
+                ).toNumber();
                 return channel;
             }),
             tap((response) => {
@@ -530,9 +544,8 @@ export class RaidenService {
                     identiconAddress: partnerAddress,
                     userToken: token,
                 };
-                notificationIdentifier = this.notificationService.addPendingAction(
-                    message
-                );
+                notificationIdentifier =
+                    this.notificationService.addPendingAction(message);
             }),
             switchMap(() =>
                 this.http.patch<Channel>(
@@ -541,8 +554,12 @@ export class RaidenService {
                 )
             ),
             map((channel: Channel) => {
-                channel.settle_timeout = ((channel.settle_timeout as unknown) as BigNumber).toNumber();
-                channel.reveal_timeout = ((channel.reveal_timeout as unknown) as BigNumber).toNumber();
+                channel.settle_timeout = (
+                    channel.settle_timeout as unknown as BigNumber
+                ).toNumber();
+                channel.reveal_timeout = (
+                    channel.reveal_timeout as unknown as BigNumber
+                ).toNumber();
                 return channel;
             }),
             tap((response) => {
@@ -583,9 +600,8 @@ export class RaidenService {
                 description: tokenAddress,
                 icon: 'add',
             };
-            notificationIdentifier = this.notificationService.addPendingAction(
-                message
-            );
+            notificationIdentifier =
+                this.notificationService.addPendingAction(message);
 
             return this.http.put(
                 `${this.raidenConfig.api}/tokens/${tokenAddress}`,
@@ -632,9 +648,8 @@ export class RaidenService {
                 icon: 'thunderbolt',
                 userToken: token,
             };
-            notificationIdentifier = this.notificationService.addPendingAction(
-                message
-            );
+            notificationIdentifier =
+                this.notificationService.addPendingAction(message);
 
             const openChannelObservables = connectionChoices.map((choice) =>
                 this.openChannel(
@@ -695,9 +710,8 @@ export class RaidenService {
                 icon: 'close',
                 userToken,
             };
-            notificationIdentifier = this.notificationService.addPendingAction(
-                message
-            );
+            notificationIdentifier =
+                this.notificationService.addPendingAction(message);
 
             return this.http.delete(
                 `${this.raidenConfig.api}/connections/${userToken.address}`
@@ -769,9 +783,8 @@ export class RaidenService {
                 icon: 'token',
                 userToken: token,
             };
-            notificationIdentifier = this.notificationService.addPendingAction(
-                message
-            );
+            notificationIdentifier =
+                this.notificationService.addPendingAction(message);
 
             return this.http.post(
                 `${this.raidenConfig.api}/_testing/tokens/${token.address}/mint`,
@@ -834,7 +847,9 @@ export class RaidenService {
         return this.http.get<Status>(`${this.raidenConfig.api}/status`).pipe(
             map((status) => {
                 if (status.blocks_to_sync) {
-                    status.blocks_to_sync = ((status.blocks_to_sync as unknown) as BigNumber).toNumber();
+                    status.blocks_to_sync = (
+                        status.blocks_to_sync as unknown as BigNumber
+                    ).toNumber();
                 }
                 return status;
             })

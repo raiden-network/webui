@@ -157,9 +157,10 @@ describe('OpenDialogComponent', () => {
     });
 
     it('should set the maximum token amount to the balance', () => {
-        const tokenInputComponent: TokenInputComponent = fixture.debugElement.query(
-            By.directive(TokenInputComponent)
-        ).componentInstance;
+        const tokenInputComponent: TokenInputComponent =
+            fixture.debugElement.query(
+                By.directive(TokenInputComponent)
+            ).componentInstance;
         expect(tokenInputComponent.maxAmount.isEqualTo(token.balance)).toBe(
             true
         );

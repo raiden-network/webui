@@ -35,7 +35,8 @@ import { Animations } from '../../animations/animations';
     ],
 })
 export class PaymentIdentifierInputComponent
-    implements ControlValueAccessor, Validator {
+    implements ControlValueAccessor, Validator
+{
     @ViewChild('input', { static: false }) private inputElement: ElementRef;
 
     identifier: BigNumber;

@@ -77,9 +77,10 @@ describe('DepositWithdrawFormComponent', () => {
         });
 
         it('should set the maximum token amount to the token balance', () => {
-            const tokenInputComponent: TokenInputComponent = fixture.debugElement.query(
-                By.directive(TokenInputComponent)
-            ).componentInstance;
+            const tokenInputComponent: TokenInputComponent =
+                fixture.debugElement.query(
+                    By.directive(TokenInputComponent)
+                ).componentInstance;
             expect(
                 tokenInputComponent.maxAmount.isEqualTo(servicesToken.balance)
             ).toBe(true);
@@ -119,14 +120,16 @@ describe('DepositWithdrawFormComponent', () => {
                 withdrawBlock: 0,
             });
             //@ts-ignore
-            userDepositService.withdrawPlan$ = withdrawPlanSubject.asObservable();
+            userDepositService.withdrawPlan$ =
+                withdrawPlanSubject.asObservable();
             fixture.detectChanges();
         });
 
         it('should set the maximum token amount to the UDC balance', () => {
-            const tokenInputComponent: TokenInputComponent = fixture.debugElement.query(
-                By.directive(TokenInputComponent)
-            ).componentInstance;
+            const tokenInputComponent: TokenInputComponent =
+                fixture.debugElement.query(
+                    By.directive(TokenInputComponent)
+                ).componentInstance;
             expect(tokenInputComponent.maxAmount.isEqualTo(udcBalance)).toBe(
                 true
             );
@@ -157,9 +160,9 @@ describe('DepositWithdrawFormComponent', () => {
                 amount: new BigNumber(10000),
                 withdrawBlock: 9498430,
             });
-            const dialog = (TestBed.inject(
+            const dialog = TestBed.inject(
                 MatDialog
-            ) as unknown) as MockMatDialog;
+            ) as unknown as MockMatDialog;
             dialog.cancelled = true;
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
