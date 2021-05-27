@@ -206,8 +206,8 @@ export class ContactListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private calculateItemsPerRow() {
-        const sectionWidth = this.contactsElement.nativeElement.getBoundingClientRect()
-            .width;
+        const sectionWidth =
+            this.contactsElement.nativeElement.getBoundingClientRect().width;
         this.itemsPerRow = Math.max(
             1,
             Math.floor(sectionWidth / ContactListComponent.MIN_CONTACT_WIDTH)

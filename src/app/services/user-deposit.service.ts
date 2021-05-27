@@ -101,14 +101,13 @@ export class UserDepositService {
                     amount,
                     servicesToken.decimals
                 ).toFixed();
-                notificationIdentifier = this.notificationService.addPendingAction(
-                    {
+                notificationIdentifier =
+                    this.notificationService.addPendingAction({
                         title: 'Depositing to UDC',
                         description: `${formattedAmount} ${servicesToken.symbol}`,
                         icon: 'deposit',
                         userToken: servicesToken,
-                    }
-                );
+                    });
                 this.depositPending = true;
             }),
             switchMap(() => this.getTotalDepositObservable()),
@@ -159,14 +158,13 @@ export class UserDepositService {
                     amount,
                     servicesToken.decimals
                 ).toFixed();
-                notificationIdentifier = this.notificationService.addPendingAction(
-                    {
+                notificationIdentifier =
+                    this.notificationService.addPendingAction({
                         title: 'Planning withdrawal from UDC',
                         description: `${formattedAmount} ${servicesToken.symbol}`,
                         icon: 'withdraw',
                         userToken: servicesToken,
-                    }
-                );
+                    });
                 this.planWithdrawPending = true;
             }),
             switchMap(() => this.raidenService.planUdcWithdraw(amount)),
@@ -214,14 +212,13 @@ export class UserDepositService {
                     amount,
                     servicesToken.decimals
                 ).toFixed();
-                notificationIdentifier = this.notificationService.addPendingAction(
-                    {
+                notificationIdentifier =
+                    this.notificationService.addPendingAction({
                         title: 'Withdrawing from UDC',
                         description: `${formattedAmount} ${servicesToken.symbol}`,
                         icon: 'withdraw',
                         userToken: servicesToken,
-                    }
-                );
+                    });
                 this.withdrawPending = true;
             }),
             switchMap(() => this.raidenService.withdrawFromUdc(amount)),

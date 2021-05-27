@@ -84,13 +84,17 @@ describe('AppComponent', () => {
             // @ts-ignore
             raidenServiceMock.globalRetry$ = globalRetrySubject.asObservable();
 
-            const pendingTransferPollingMock = stub<PendingTransferPollingService>();
+            const pendingTransferPollingMock =
+                stub<PendingTransferPollingService>();
             // @ts-ignore
-            pendingTransferPollingMock.pendingTransfers$ = pendingTransfersSubject.asObservable();
+            pendingTransferPollingMock.pendingTransfers$ =
+                pendingTransfersSubject.asObservable();
 
-            const paymentHistoryPollingMock = stub<PaymentHistoryPollingService>();
+            const paymentHistoryPollingMock =
+                stub<PaymentHistoryPollingService>();
             // @ts-ignore
-            paymentHistoryPollingMock.newPaymentEvents$ = paymentHistorySubject.asObservable();
+            paymentHistoryPollingMock.newPaymentEvents$ =
+                paymentHistorySubject.asObservable();
 
             const channelPollingMock = stub<ChannelPollingService>();
             // @ts-ignore
@@ -160,7 +164,7 @@ describe('AppComponent', () => {
         app = fixture.componentInstance;
 
         notificationService = TestBed.inject(NotificationService);
-        dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
     });
 
     it('should create the app', () => {

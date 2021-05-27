@@ -156,9 +156,9 @@ describe('ContactListComponent', () => {
         }));
 
         it('should open add contact dialog', () => {
-            const dialog = (TestBed.inject(
+            const dialog = TestBed.inject(
                 MatDialog
-            ) as unknown) as MockMatDialog;
+            ) as unknown as MockMatDialog;
             const dialogSpy = spyOn(dialog, 'open').and.callThrough();
             const dialogResult: Contact = {
                 address: createAddress(),

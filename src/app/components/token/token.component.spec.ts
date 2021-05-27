@@ -115,7 +115,7 @@ describe('TokenComponent', () => {
         fixture = TestBed.createComponent(TokenComponent);
         component = fixture.componentInstance;
 
-        dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         raidenService = TestBed.inject(RaidenService);
         fixture.detectChanges();
     });
@@ -226,9 +226,10 @@ describe('TokenComponent', () => {
             selectedTokenService.setToken(tokens[0]);
             fixture.detectChanges();
 
-            const tokenSelector: TokenNetworkSelectorComponent = fixture.debugElement.query(
-                By.directive(TokenNetworkSelectorComponent)
-            ).componentInstance;
+            const tokenSelector: TokenNetworkSelectorComponent =
+                fixture.debugElement.query(
+                    By.directive(TokenNetworkSelectorComponent)
+                ).componentInstance;
             expect(tokenSelector.value).toEqual(tokens[0]);
         });
     });

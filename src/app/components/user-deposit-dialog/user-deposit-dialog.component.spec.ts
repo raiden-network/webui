@@ -123,9 +123,10 @@ describe('UserDepositDialogComponent', () => {
         expect(component.inputActive).toBe(true);
         expect(component.inputMode).toBe(DepositMode.DEPOSIT);
 
-        const depositForm: DepositWithdrawFormComponent = fixture.debugElement.query(
-            By.directive(DepositWithdrawFormComponent)
-        ).componentInstance;
+        const depositForm: DepositWithdrawFormComponent =
+            fixture.debugElement.query(
+                By.directive(DepositWithdrawFormComponent)
+            ).componentInstance;
         const depositAmount = new BigNumber(200);
         depositForm.accept.emit(depositAmount);
         fixture.detectChanges();
@@ -148,9 +149,10 @@ describe('UserDepositDialogComponent', () => {
         expect(component.inputActive).toBe(true);
         expect(component.inputMode).toBe(DepositMode.WITHDRAW);
 
-        const planWithdrawForm: DepositWithdrawFormComponent = fixture.debugElement.query(
-            By.directive(DepositWithdrawFormComponent)
-        ).componentInstance;
+        const planWithdrawForm: DepositWithdrawFormComponent =
+            fixture.debugElement.query(
+                By.directive(DepositWithdrawFormComponent)
+            ).componentInstance;
         const withdrawAmount = new BigNumber(70);
         planWithdrawForm.accept.emit(withdrawAmount);
         fixture.detectChanges();

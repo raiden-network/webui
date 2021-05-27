@@ -112,7 +112,8 @@ describe('PaymentDialogComponent', () => {
             // @ts-ignore
             tokenPollingMock.tokens$ = of([token]);
 
-            const pendingTransferPollingMock = stub<PendingTransferPollingService>();
+            const pendingTransferPollingMock =
+                stub<PendingTransferPollingService>();
             // @ts-ignore
             pendingTransferPollingMock.pendingTransfers$ = of([
                 pendingTransfer,
@@ -226,7 +227,7 @@ describe('PaymentDialogComponent', () => {
         pendingTransferPollingService.pendingTransfers$ = of([
             identicalPendingTransfer,
         ]);
-        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         mockAllInputs();
@@ -256,16 +257,15 @@ describe('PaymentDialogComponent', () => {
     });
 
     it('should open the confirmation dialog with contact label', () => {
-        const addressBookService: AddressBookService = TestBed.inject(
-            AddressBookService
-        );
+        const addressBookService: AddressBookService =
+            TestBed.inject(AddressBookService);
         const contacts: Contacts = { [addressInput]: 'Test account' };
         addressBookService.get = () => contacts;
         // @ts-ignore
         pendingTransferPollingService.pendingTransfers$ = of([
             identicalPendingTransfer,
         ]);
-        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         mockAllInputs();
@@ -289,7 +289,7 @@ describe('PaymentDialogComponent', () => {
         pendingTransferPollingService.pendingTransfers$ = of([
             identicalPendingTransfer,
         ]);
-        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         dialog.cancelled = true;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
@@ -310,7 +310,7 @@ describe('PaymentDialogComponent', () => {
         pendingTransferPollingService.pendingTransfers$ = of([
             identicalPendingTransfer,
         ]);
-        const dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         const dialogSpy = spyOn(dialog, 'open').and.callThrough();
 
         const differentIdentifier = pendingTransfer.payment_identifier.plus(1);

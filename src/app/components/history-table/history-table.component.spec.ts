@@ -75,10 +75,12 @@ describe('HistoryTableComponent', () => {
 
     beforeEach(
         waitForAsync(() => {
-            const pendingTransferPollingMock = stub<PendingTransferPollingService>();
+            const pendingTransferPollingMock =
+                stub<PendingTransferPollingService>();
             pendingTransfersSubject = new BehaviorSubject(pendingTransfers);
             // @ts-ignore
-            pendingTransferPollingMock.pendingTransfers$ = pendingTransfersSubject.asObservable();
+            pendingTransferPollingMock.pendingTransfers$ =
+                pendingTransfersSubject.asObservable();
 
             TestBed.configureTestingModule({
                 declarations: [

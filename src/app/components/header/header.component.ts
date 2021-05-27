@@ -78,7 +78,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 network.faucet.replace('${ADDRESS}', raidenAddress)
             )
         );
-        this.numberOfNotifications$ = this.notificationService.numberOfNotifications$;
+        this.numberOfNotifications$ =
+            this.notificationService.numberOfNotifications$;
         this.udcBalance$ = this.userDepositService.balance$;
         this.servicesToken$ = this.userDepositService.servicesToken$;
         this.zeroUdcBalance$ = this.userDepositService.balance$.pipe(

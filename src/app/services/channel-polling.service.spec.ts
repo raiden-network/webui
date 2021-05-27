@@ -111,9 +111,9 @@ describe('ChannelPollingService', () => {
         expect(notificationService.addInfoNotification).toHaveBeenCalledTimes(
             2
         );
-        // @ts-ignore
-        const payload = notificationService.addInfoNotification.calls.first()
-            .args[0];
+        const payload = (
+            notificationService.addInfoNotification as Spy
+        ).calls.first().args[0];
         expect(payload.title).toBe('New channel');
         subscription.unsubscribe();
         flush();

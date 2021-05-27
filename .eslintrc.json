@@ -23,7 +23,7 @@
                         "accessibility": "explicit"
                     }
                 ],
-                "brace-style": ["error", "1tbs"],
+                "brace-style": "off",
                 "id-blacklist": "off",
                 "id-match": "off",
                 "no-underscore-dangle": "off",

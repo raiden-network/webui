@@ -160,9 +160,8 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             let contactMatchesSearchFilter = false;
-            const partnerLabel = this.addressBookService.get()[
-                channel.partner_address
-            ];
+            const partnerLabel =
+                this.addressBookService.get()[channel.partner_address];
             if (partnerLabel) {
                 const contact: Contact = {
                     address: channel.partner_address,
@@ -208,8 +207,8 @@ export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private calculateItemsPerRow() {
-        const sectionWidth = this.channelsElement.nativeElement.getBoundingClientRect()
-            .width;
+        const sectionWidth =
+            this.channelsElement.nativeElement.getBoundingClientRect().width;
         this.itemsPerRow = Math.max(
             1,
             Math.floor(sectionWidth / ChannelListComponent.MIN_CHANNEL_WIDTH)

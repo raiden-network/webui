@@ -84,7 +84,7 @@ describe('ContactActionsComponent', () => {
         // @ts-ignore
         channelPollingService.channels$ = channelsSubject.asObservable();
         selectedTokenService = TestBed.inject(SelectedTokenService);
-        dialog = (TestBed.inject(MatDialog) as unknown) as MockMatDialog;
+        dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
         raidenService = TestBed.inject(RaidenService);
 
         component.contact = contact;
