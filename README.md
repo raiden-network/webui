@@ -88,7 +88,7 @@ If you haven't used Raiden before, you can:
 
 ### Using the WebUI
 
-If you want to learn how to use the Raiden WebUI an [updated tutorial](https://docs.raiden.network/the-raiden-web-interface) has been published in the new documentation for Raiden.
+If you want to learn how to use the Raiden WebUI an [updated tutorial](https://raiden-network.readthedocs.io/en/latest/the-raiden-web-interface/the-raiden-web-interface.html) has been published in the documentation for Raiden.
 
 ### Prerequisites
 
@@ -96,12 +96,12 @@ If you just want to use the WebUI all you need to do is install and run Raiden. 
 
 For details on how to easily install Raiden:
 
-Read the [Quick Start](https://docs.raiden.network/quick-start) section in the documentation.
+Read the [Quick Start](https://raiden-network.readthedocs.io/en/stable/installation/quick-start/) section in the documentation.
 
 If you want to work on the WebUI codebase you need:
 
 -   Node >=10.13.0
--   A working [Raiden client](https://raiden-network.readthedocs.io/en/latest/overview_and_guide.html).
+-   A working [Raiden client](https://raiden-network.readthedocs.io/en/latest/overview_and_guide.html#installation).
 -   Git for version control.
 -   Yarn v1 for package management.
 
