@@ -298,12 +298,12 @@
   dependencies:
     tslib "^2.2.0"
 
-"@angular/cdk@11.2.13":
-  version "11.2.13"
-  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-11.2.13.tgz#d54c9187e3b8cf3f8ba190b1edddc08ed2b740de"
-  integrity sha512-FkE4iCwoLbQxLDUOjV1I7M/6hmpyb7erAjEdWgch7nGRNxF1hqX5Bqf1lvLFKPNCbx5NRI5K7YVAdIUQUR8vug==
+"@angular/cdk@12.1.1":
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-12.1.1.tgz#83b7ec7d5b97a003d31ea0dd25403e890d5e06ea"
+  integrity sha512-MJENa8qmfLAr6t59u1+mEC2YPbCn4n3vsY6k8fKyf+ILXwwGHWNZlYblaRMBjrF/crSx1Kd5vb30RCqIcNTGsA==
   dependencies:
-    tslib "^2.0.0"
+    tslib "^2.2.0"
   optionalDependencies:
     parse5 "^5.0.0"
 
@@ -373,12 +373,12 @@
   dependencies:
     tslib "^2.2.0"
 
-"@angular/flex-layout@11.0.0-beta.33":
-  version "11.0.0-beta.33"
-  resolved "https://registry.yarnpkg.com/@angular/flex-layout/-/flex-layout-11.0.0-beta.33.tgz#c2d08f90164701b66a62b8c4365b4e22c1e95789"
-  integrity sha512-unfhw3abZuKtdwQicRStHCYGbANPTHYg4WNRQk/RC5Mxq+4WOp4Q8HI7GqRHCGUYDCGUP7w1sU/oDt8f09nM8w==
+"@angular/flex-layout@12.0.0-beta.34":
+  version "12.0.0-beta.34"
+  resolved "https://registry.yarnpkg.com/@angular/flex-layout/-/flex-layout-12.0.0-beta.34.tgz#24d83bf3f8e4eacb661b3b8f9f85b0102415ff30"
+  integrity sha512-nLwKovXpyG+/U3Lbmfwt+q4ARupxtbPmFTZD0Y8oItFAV6/Oh9l+QQsNQa2VhOHAOrVagyDwcEM+SePtB5EmrQ==
   dependencies:
-    tslib "^2.0.0"
+    tslib "^2.1.0"
 
 "@angular/forms@12.1.1":
   version "12.1.1"
@@ -392,12 +392,12 @@
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-12.1.1.tgz#8e8e4857c1ba1383bdf73a35e8bc3cb1fb24dff9"
   integrity sha512-8jpfEJcK2rO6JFhqrSoHqAXyIiOmWtAnl6cNkvzvQjQgrzlIwFuixEgcohq8QaKN4vWYZtnX6YKxUakNmGo+Ww==
 
-"@angular/material@11.2.13":
-  version "11.2.13"
-  resolved "https://registry.yarnpkg.com/@angular/material/-/material-11.2.13.tgz#99960316d3ce58aac7497d7bb8b0c05468f502b9"
-  integrity sha512-FqFdGSkOtqsmeLyTSousodDGUy2NqbtxCIKv2rwbsIRwHNKB0KpR/UQhA2gMRuGa5hxhMJ0DW0Tf9neMRuLCTg==
+"@angular/material@12.1.1":
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-12.1.1.tgz#9b01743b54b68ef8a4f8904032caef625403df70"
+  integrity sha512-q2vhbVQfjr+88beqCotCVlaPRyy9y2O2asiR3+0BU9OJ1DjTo1QpBmMpck5InP7Es49t9RTk9RzzC0t18p45yA==
   dependencies:
-    tslib "^2.0.0"
+    tslib "^2.2.0"
 
 "@angular/platform-browser-dynamic@12.1.1":
   version "12.1.1"
@@ -11130,7 +11130,7 @@ tslib@2.1.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.1.0.tgz#da60860f1c2ecaa5703ab7d39bc05b6bf988b97a"
   integrity sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A==
 
-tslib@2.3.0, tslib@^2.0.0, tslib@^2.2.0:
+tslib@2.3.0, tslib@^2.0.0, tslib@^2.1.0, tslib@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
   integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
