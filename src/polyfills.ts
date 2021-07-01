@@ -53,3 +53,10 @@
  * Zone JS is required by default for Angular itself.
  */
 import 'zone.js'; // Included with Angular CLI.
+
+/** Needed for web3.js to work **/
+import { Buffer } from 'buffer';
+import * as process from 'process';
+(window as any).global = window;
+global.process = process;
+global.Buffer = Buffer;
