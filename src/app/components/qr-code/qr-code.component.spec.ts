@@ -42,7 +42,7 @@ describe('QrCodeComponent', () => {
     );
 
     beforeEach(() => {
-        qrCodeSpy = spyOn(QRCode, 'toCanvas');
+        qrCodeSpy = spyOn((QRCode as any).default, 'toCanvas');
         fixture = TestBed.createComponent(QrCodeComponent);
         component = fixture.componentInstance;
     });
