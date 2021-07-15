@@ -41,6 +41,7 @@ import { BalanceWithSymbolComponent } from '../balance-with-symbol/balance-with-
 import { SelectedTokenService } from 'app/services/selected-token.service';
 import { getMintAmount } from 'app/shared/mint-amount';
 import { UserDepositDialogComponent } from '../user-deposit-dialog/user-deposit-dialog.component';
+import { ShortenAddressPipe } from 'app/pipes/shorten-address.pipe';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -86,6 +87,7 @@ describe('HeaderComponent', () => {
                     SearchFieldComponent,
                     DecimalPipe,
                     BalanceWithSymbolComponent,
+                    ShortenAddressPipe,
                 ],
                 providers: [
                     NotificationService,
@@ -127,27 +129,6 @@ describe('HeaderComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
         fixture.destroy();
-    });
-
-    it('should have a faucet button when network has a faucet', () => {
-        expect(
-            fixture.debugElement.query(By.css('#faucet-button'))
-        ).toBeTruthy();
-    });
-
-    it('should not have a faucet button when network does not have a faucet', () => {
-        networkSubject.next(createNetworkMock({ faucet: null }));
-        fixture.detectChanges();
-        expect(
-            fixture.debugElement.query(By.css('#faucet-button'))
-        ).toBeFalsy();
-    });
-
-    it('should insert the address correctly into the href attribute of the faucet button', () => {
-        const href = fixture.debugElement
-            .query(By.css('#faucet-button'))
-            .nativeElement.getAttribute('href');
-        expect(href).toBe(`http://faucet.test/?${raidenAddress}`);
     });
 
     it('should show the qr code dialog for the raiden address', () => {
@@ -209,7 +190,7 @@ describe('HeaderComponent', () => {
         fixture.detectChanges();
 
         expect(
-            fixture.debugElement.query(By.css('.balances-button'))
+            fixture.debugElement.query(By.css('#on-chain-balances-button'))
         ).toBeFalsy();
         const balances = fixture.debugElement.queryAll(
             By.css('.header__token-balance')

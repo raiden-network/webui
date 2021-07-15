@@ -35,17 +35,17 @@
         background-color: $bg-dark-grey;
         padding: 0 16px;
         border-radius: 15px;
+
+        &--unpadded {
+            padding: 0;
+        }
     }
 
     &__address {
-        width: 60px;
         color: $light-grey;
         font-size: 12px;
         line-height: 14px;
         letter-spacing: 1.07px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     &__user-icon {
@@ -85,6 +85,12 @@
         height: 16px !important;
         width: 16px !important;
         line-height: 16px;
+
+        &--small {
+            width: 13px !important;
+            height: 13px !important;
+            line-height: 13px !important;
+        }
     }
 
     &--alert {
@@ -159,22 +165,6 @@
             border-bottom: none;
             padding-bottom: 12px;
         }
-    }
-}
-
-.account-button {
-    height: 29px !important;
-    width: 29px !important;
-    border: 2px solid $white;
-
-    &__icon-faucet {
-        height: 15px !important;
-        line-height: 15px !important;
-    }
-
-    &__icon-qr {
-        height: 13px !important;
-        line-height: 13px !important;
     }
 }
 

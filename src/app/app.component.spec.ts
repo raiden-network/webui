@@ -50,6 +50,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { DecimalPipe } from './pipes/decimal.pipe';
 import { BalanceWithSymbolComponent } from './components/balance-with-symbol/balance-with-symbol.component';
 import { TokenNetworkSelectorComponent } from './components/token-network-selector/token-network-selector.component';
+import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
 
 describe('AppComponent', () => {
     let fixture: ComponentFixture<AppComponent>;
@@ -116,6 +117,7 @@ describe('AppComponent', () => {
                     DecimalPipe,
                     BalanceWithSymbolComponent,
                     TokenNetworkSelectorComponent,
+                    ShortenAddressPipe,
                 ],
                 providers: [
                     TestProviders.MockRaidenConfigProvider(),
