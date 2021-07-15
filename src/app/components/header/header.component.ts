@@ -42,7 +42,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     readonly network$: Observable<Network>;
     readonly balance$: Observable<string>;
     readonly zeroBalance$: Observable<boolean>;
-    readonly faucetLink$: Observable<string>;
     readonly numberOfNotifications$: Observable<number>;
     readonly udcBalance$: Observable<BigNumber>;
     readonly servicesToken$: Observable<UserToken>;
@@ -69,14 +68,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.balance$ = raidenService.balance$;
         this.zeroBalance$ = raidenService.balance$.pipe(
             map((balance) => new BigNumber(balance).isZero())
-        );
-        this.faucetLink$ = zip(
-            raidenService.network$,
-            raidenService.raidenAddress$
-        ).pipe(
-            map(([network, raidenAddress]) =>
-                network.faucet.replace('${ADDRESS}', raidenAddress)
-            )
         );
         this.numberOfNotifications$ =
             this.notificationService.numberOfNotifications$;
