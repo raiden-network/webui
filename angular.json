@@ -39,6 +39,14 @@
                         }
                     },
                     "configurations": {
+                        "development": {
+                            "vendorChunk": true,
+                            "extractLicenses": false,
+                            "buildOptimizer": false,
+                            "sourceMap": true,
+                            "optimization": false,
+                            "namedChunks": true
+                        },
                         "production": {
                             "budgets": [
                                 {
@@ -61,16 +69,18 @@
                                 }
                             ]
                         }
-                    }
+                    },
+                    "defaultConfiguration": "production"
                 },
                 "serve": {
                     "builder": "@angular-builders/custom-webpack:dev-server",
-                    "options": {
-                        "browserTarget": "raidenwebui:build"
+                    "defaultConfiguration": "",
+                    "options": {    
+                        "browserTarget": "raidenwebui:build:development"
                     },
                     "configurations": {
                         "production": {
-                            "browserTarget": "raidenwebui:build:production"
+                            "browserTarget": "raidenwebui:build:development"
                         }
                     }
                 },
