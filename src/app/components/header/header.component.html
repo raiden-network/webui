@@ -40,23 +40,26 @@
                         {{ balance | displayDecimals: 3 }}&nbsp;
                     </span>
                     <span class="header__balance header__balance--uppercase">
-                        {{ (network$ | async)?.shortName }}
+                        ETH
                     </span>
-                    <span
+                    <button
                         *ngIf="zeroBalance$ | async"
-                        class="alert"
+                        class="small-balance-button small-balance-button--alert"
+                        mat-icon-button
+                        matTooltip="Funds needed"
                         fxLayout="column"
                         fxLayoutAlign="center center"
                         fxFlexOffset="6px"
+                        (click)="openAccountDialog('ETH')"
+                        id="balance-alert"
                     >
                         <mat-icon
+                            class="small-balance-button__icon"
                             svgIcon="down-arrow"
-                            aria-hidden="true"
-                            class="alert__icon"
-                            matTooltip="Funds needed"
-                            id="balance-alert"
-                        ></mat-icon>
-                    </span>
+                            aria-label="Funds needed"
+                        >
+                        </mat-icon>
+                    </button>
                 </span>
                 <span class="header__label">On-Chain</span>
             </div>
@@ -189,12 +192,13 @@
             <button
                 mat-icon-button
                 class="balances-button"
-                matTooltip="Fill up your account"
+                matTooltip="Top up your account"
+                (click)="openAccountDialog(selectedToken ?? 'ETH')"
             >
                 <mat-icon
                     class="balances-button__icon"
                     svgIcon="deposit"
-                    aria-label="Fill up your account"
+                    aria-label="Top up your account"
                 >
                 </mat-icon>
             </button>
@@ -207,11 +211,7 @@
         fxLayoutGap="16px"
         fxFlex.gt-md="334 0 0"
     >
-        <div
-            fxLayout="row"
-            fxLayoutAlign="start center"
-            class="header__box"
-        >
+        <div fxLayout="row" fxLayoutAlign="start center" class="header__box">
             <div fxLayout="column" fxLayoutGap="4px">
                 <span fxLayout="row" fxLayoutGap="6px">
                     <mat-icon
@@ -234,7 +234,10 @@
                         id="qr-button"
                     >
                         <mat-icon
-                            class="small-balance-button__icon small-balance-button__icon--small"
+                            class="
+                                small-balance-button__icon
+                                small-balance-button__icon--small
+                            "
                             svgIcon="qr"
                             aria-label="Show QR code to scan your address"
                         >

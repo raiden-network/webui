@@ -9,9 +9,14 @@
     #selector
 >
     <mat-select-trigger>
-        <ng-container *ngIf="setSelectedToken; else token_info">
-            Change Network
+        <ng-container *ngIf="triggerText; else eth_info">
+            {{ triggerText }}
         </ng-container>
+        <ng-template #eth_info>
+            <ng-container *ngIf="value === 'ETH'; else token_info">
+                ETH
+            </ng-container>
+        </ng-template>
         <ng-template #token_info>
             <ng-container *ngIf="!!value">
                 {{ value.symbol }} {{ value.name }} {{ value.address }}
@@ -35,6 +40,9 @@
         <span>Add new Network</span>
     </button>
     <mat-option *ngIf="setSelectedToken">All Networks</mat-option>
+    <mat-option *ngIf="showEthOption" value="ETH">
+        {{ ethBalance$ | async | displayDecimals: 3 }} ETH
+    </mat-option>
     <mat-option
         *ngFor="let option of tokens$ | async; trackBy: trackByFn"
         [value]="option"

@@ -52,6 +52,7 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     errors: ValidationErrors = { empty: true };
     touched = false;
     disabled = false;
+    ethInput = false;
 
     private _selectedToken: UserToken;
     private _maxAmount: BigNumber;
@@ -59,15 +60,30 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     constructor() {}
 
     get decimals(): number {
-        return this._selectedToken ? this._selectedToken.decimals : 0;
+        let decimals: number;
+        if (this.ethInput) {
+            decimals = 18;
+        } else if (this._selectedToken) {
+            decimals = this._selectedToken.decimals;
+        } else {
+            decimals = 0;
+        }
+        return decimals;
     }
 
     get selectedToken(): UserToken {
         return this._selectedToken;
     }
 
-    set selectedToken(value: UserToken) {
-        this._selectedToken = value;
+    set selectedToken(value: UserToken | 'ETH') {
+        if (value === 'ETH') {
+            this._selectedToken = undefined;
+            this.ethInput = true;
+        } else {
+            this._selectedToken = value;
+            this.ethInput = false;
+        }
+
         if (BigNumber.isBigNumber(this.amount) && !this.amount.isNaN()) {
             const newDecimalAmount = amountToDecimal(
                 this.amount,

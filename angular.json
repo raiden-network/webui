@@ -75,7 +75,7 @@
                 "serve": {
                     "builder": "@angular-builders/custom-webpack:dev-server",
                     "defaultConfiguration": "",
-                    "options": {    
+                    "options": {
                         "browserTarget": "raidenwebui:build:development"
                     },
                     "configurations": {

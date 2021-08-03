@@ -1,0 +1,60 @@
+@import '../../../sass/colors';
+
+.info {
+    &__balance {
+        font-weight: 500;
+        font-size: 26px;
+        line-height: 32px;
+        padding: 3.5px 0;
+        color: $white;
+
+        &--uppercase {
+            text-transform: uppercase;
+        }
+
+        &--limited {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+    }
+
+    &__label {
+        font-size: 12px;
+        line-height: 15px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+
+        &--white {
+            color: $white;
+        }
+    }
+
+    &__alert {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background-color: $bg-label-red;
+        color: $label-red;
+    }
+
+    &__button {
+        height: 22px !important;
+        width: 22px !important;
+        background-color: $bg-dark-light-grey;
+        color: $light-grey;
+    }
+
+    &__icon {
+        height: 16px !important;
+        width: 16px !important;
+        line-height: 16px;
+    }
+
+    &__small-icon {
+        height: 14px !important;
+        width: 14px !important;
+        line-height: 14px;
+    }
+}

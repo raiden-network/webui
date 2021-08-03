@@ -1,0 +1,82 @@
+<app-raiden-dialog
+    acceptText="Done"
+    infoText="You can use this dialog to top up your account with ETH or tokens from a wallet."
+    [showCancel]="false"
+    [formGroup]="form"
+    (accept)="close()"
+    (cancel)="close()"
+>
+    <div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="16px">
+        <app-token-network-selector
+            class="token-selector"
+            formControlName="asset"
+            [showOnChainBalance]="true"
+            [showEthOption]="true"
+            [showServicesToken]="true"
+            triggerText="Change Asset"
+            selectorClass="mat-select--dark"
+        ></app-token-network-selector>
+        <div class="info" fxLayout="column" fxLayoutAlign="start center">
+            <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="center center">
+                <div
+                    class="info__balance"
+                    *ngIf="ethSelected; else token_balance"
+                >
+                    <span
+                        [matTooltip]="ethBalance$ | async"
+                        class="info__balance info__balance--limited"
+                    >
+                        {{ ethBalance$ | async | displayDecimals: 3 }}
+                    </span>
+                    <span class="info__balance info__balance--uppercase">
+                        ETH
+                    </span>
+                </div>
+                <ng-template #token_balance>
+                    <app-balance-with-symbol
+                        class="info__balance"
+                        [balance]="balance"
+                        [token]="token"
+                        [maxBalanceWidth]="200"
+                    ></app-balance-with-symbol>
+                </ng-template>
+                <span
+                    *ngIf="ethSelected && zeroEthBalance$ | async"
+                    class="info__alert"
+                    fxLayoutAlign="center center"
+                >
+                    <mat-icon
+                        svgIcon="down-arrow"
+                        aria-label="Funds needed"
+                        class="info__icon"
+                        matTooltip="Funds needed"
+                    ></mat-icon>
+                </span>
+                <a
+                    *ngIf="ethSelected && (network$ | async)?.faucet"
+                    [href]="faucetLink$ | async"
+                    target="_blank"
+                    mat-icon-button
+                    class="info__button"
+                    matTooltip="Open ether faucet"
+                    fxLayout="column"
+                    fxLayoutAlign="center center"
+                    fxFlexAlign="center"
+                    id="faucet-button"
+                >
+                    <mat-icon
+                        class="info__small-icon"
+                        svgIcon="faucet"
+                        aria-label="Open ether faucet"
+                    >
+                    </mat-icon>
+                </a>
+            </div>
+            <span class="info__label">On-chain balance</span>
+        </div>
+        <span class="info__label info__label--white">
+            Send {{ ethSelected ? 'ETH' : token.symbol }} to your account
+        </span>
+        <app-token-input formControlName="amount"></app-token-input>
+    </div>
+</app-raiden-dialog>

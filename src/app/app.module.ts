@@ -68,6 +68,7 @@ import { ConnectionSelectorComponent } from './components/quick-connect-dialog/c
 import { UserDepositDialogComponent } from './components/user-deposit-dialog/user-deposit-dialog.component';
 import { DepositWithdrawFormComponent } from './components/user-deposit-dialog/deposit-withdraw-form/deposit-withdraw-form.component';
 import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
+import { AccountDialogComponent } from './components/account-dialog/account-dialog.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -128,6 +129,7 @@ export function ConfigLoader(raidenConfig: RaidenConfig) {
         UserDepositDialogComponent,
         DepositWithdrawFormComponent,
         ShortenAddressPipe,
+        AccountDialogComponent,
     ],
     imports: [
         RouterModule.forRoot(appRoutes, { relativeLinkResolution: 'legacy' }),

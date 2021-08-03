@@ -54,20 +54,6 @@
     }
 }
 
-.alert {
-    background-color: $bg-label-red;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    color: $label-red;
-    margin: -4px 0;
-
-    &__icon {
-        height: 16px;
-        width: 16px;
-    }
-}
-
 .divider {
     height: 36px;
     width: 1px;
