@@ -18,7 +18,7 @@
         />
 
         <div class="input__symbol">
-            {{ selectedToken?.symbol }}
+            {{ ethInput ? 'ETH' : selectedToken?.symbol }}
         </div>
     </div>
 
@@ -52,8 +52,8 @@
         <span *ngIf="errors['negativeAmount']">
             The amount should not be negative
         </span>
-        <span *ngIf="errors['tooManyDecimals'] && selectedToken">
-            The selected token network only supports up to
+        <span *ngIf="errors['tooManyDecimals'] && (selectedToken || ethInput)">
+            {{ ethInput ? 'Ether' : 'The selected token' }} only supports up to
             {{ decimals }} decimals
         </span>
         <span *ngIf="errors['notANumber']">

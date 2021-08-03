@@ -10,9 +10,8 @@ import {
 import { Animations } from '../../animations/animations';
 import { RaidenService } from '../../services/raiden.service';
 import { finalize, map, takeUntil } from 'rxjs/operators';
-import { Observable, zip, Subject, combineLatest } from 'rxjs';
+import { Observable, Subject, combineLatest } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
-import { Network } from '../../utils/network-info';
 import BigNumber from 'bignumber.js';
 import { QrCodePayload, QrCodeComponent } from '../qr-code/qr-code.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -24,6 +23,10 @@ import { SharedService } from '../../services/shared.service';
 import { SelectedTokenService } from 'app/services/selected-token.service';
 import { UserDepositDialogComponent } from '../user-deposit-dialog/user-deposit-dialog.component';
 import { getMintAmount } from 'app/shared/mint-amount';
+import {
+    AccountDialogComponent,
+    AccountDialogPayload,
+} from '../account-dialog/account-dialog.component';
 
 @Component({
     selector: 'app-header',
@@ -39,7 +42,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private tokenBalancesElement: ElementRef;
 
     raidenAddress: string;
-    readonly network$: Observable<Network>;
     readonly balance$: Observable<string>;
     readonly zeroBalance$: Observable<boolean>;
     readonly numberOfNotifications$: Observable<number>;
@@ -51,6 +53,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     readonly udcWithdrawPlanned$: Observable<boolean>;
     tokenBalancesOpen = false;
     mintPending: { [tokenAddress: string]: boolean } = {};
+    selectedToken: UserToken;
 
     private ngUnsubscribe = new Subject();
 
@@ -64,7 +67,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private sharedService: SharedService,
         private selectedTokenService: SelectedTokenService
     ) {
-        this.network$ = raidenService.network$;
         this.balance$ = raidenService.balance$;
         this.zeroBalance$ = raidenService.balance$.pipe(
             map((balance) => new BigNumber(balance).isZero())
@@ -116,6 +118,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
                     this.tokenBalancesOpen = false;
                 }
             });
+
+        this.selectedTokenService.selectedToken$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((token) => {
+                this.selectedToken = token;
+            });
     }
 
     ngOnDestroy() {
@@ -153,6 +161,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     openUdcDialog() {
         this.dialog.open(UserDepositDialogComponent, {
             width: '509px',
+        });
+    }
+
+    openAccountDialog(asset: UserToken | 'ETH') {
+        const payload: AccountDialogPayload = {
+            asset,
+        };
+        this.dialog.open(AccountDialogComponent, {
+            data: payload,
         });
     }
 
