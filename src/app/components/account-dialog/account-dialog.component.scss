@@ -58,3 +58,21 @@
         line-height: 14px;
     }
 }
+
+.token-input {
+    width: 224px;
+}
+
+.error-box {
+    width: 100%;
+    font-size: 12px;
+    line-height: 15px;
+    color: $red;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &__item {
+        height: 32px;
+    }
+}

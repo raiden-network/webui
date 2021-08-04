@@ -8,15 +8,32 @@ import { TokenPollingService } from 'app/services/token-polling.service';
 import { UserDepositService } from 'app/services/user-deposit.service';
 import { Network } from 'app/utils/network-info';
 import BigNumber from 'bignumber.js';
-import { combineLatest, Observable, Subject, zip } from 'rxjs';
 import {
+    combineLatest,
+    defer,
+    from,
+    Observable,
+    Subject,
+    throwError,
+    zip,
+} from 'rxjs';
+import {
+    catchError,
     filter,
+    finalize,
     first,
     map,
     switchMap,
     takeUntil,
+    tap,
 } from 'rxjs/operators';
 import { TokenInputComponent } from '../token-input/token-input.component';
+import detectEthereumProvider from '@metamask/detect-provider';
+import Web3 from 'web3';
+import { Animations } from 'app/animations/animations';
+import { tokenabi } from 'app/models/tokenabi';
+import { NotificationService } from 'app/services/notification.service';
+import { amountToDecimal } from 'app/utils/amount.converter';
 
 export interface AccountDialogPayload {
     readonly asset: UserToken | 'ETH';
@@ -26,6 +43,7 @@ export interface AccountDialogPayload {
     selector: 'app-account-dialog',
     templateUrl: './account-dialog.component.html',
     styleUrls: ['./account-dialog.component.scss'],
+    animations: Animations.fallDown,
 })
 export class AccountDialogComponent implements OnInit, OnDestroy {
     @ViewChild(TokenInputComponent, { static: true })
@@ -35,6 +53,11 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
     token: UserToken;
     balance: BigNumber;
     ethSelected: boolean;
+    web3: Web3;
+    defaultAccount: string;
+    requesting = false;
+    accountRequestRejected = false;
+    wrongChainID = false;
 
     readonly network$: Observable<Network>;
     readonly faucetLink$: Observable<string>;
@@ -49,7 +72,8 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
         private raidenService: RaidenService,
         private fb: FormBuilder,
         private tokenPollingService: TokenPollingService,
-        private userDepositService: UserDepositService
+        private userDepositService: UserDepositService,
+        private notificationService: NotificationService
     ) {
         this.form = this.fb.group({
             asset: [data.asset, Validators.required],
@@ -104,6 +128,21 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
                 }
             });
         this.form.controls.asset.updateValueAndValidity();
+
+        from(detectEthereumProvider())
+            .pipe(
+                filter((provider) => !!provider),
+                map((provider: any) => new Web3(provider)),
+                tap((web3) => (this.web3 = web3)),
+                switchMap((web3) =>
+                    from<Promise<string[]>>(web3.eth.getAccounts())
+                )
+            )
+            .subscribe((accounts) => {
+                if (accounts.length > 0) {
+                    this.defaultAccount = accounts[0];
+                }
+            });
     }
 
     ngOnDestroy() {
@@ -111,7 +150,119 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
         this.ngUnsubscribe.complete();
     }
 
+    accept() {
+        if (this.defaultAccount) {
+            this.sendTransaction();
+        } else {
+            this.connectWallet();
+        }
+    }
+
     close() {
         this.dialogRef.close();
+    }
+
+    private sendTransaction() {
+        const symbol = this.ethSelected ? 'ETH' : this.token.symbol;
+        const formattedAmount = amountToDecimal(
+            this.form.value.amount,
+            this.ethSelected ? 18 : this.token.decimals
+        ).toFixed();
+        let notificationIdentifier: number;
+
+        defer(() => {
+            this.dialogRef.close();
+            notificationIdentifier = this.notificationService.addPendingAction({
+                title: `Sending ${symbol} to account`,
+                description: `${formattedAmount} ${symbol}`,
+                icon: 'deposit',
+                userToken: this.token,
+            });
+            const raidenAddress = this.raidenService.raidenAddress;
+            const transferValue = (
+                this.form.value.amount as BigNumber
+            ).toFixed();
+
+            if (this.ethSelected) {
+                return from(
+                    this.web3.eth.sendTransaction({
+                        from: this.defaultAccount,
+                        to: raidenAddress,
+                        value: transferValue,
+                    })
+                );
+            } else {
+                const tokenContract = new this.web3.eth.Contract(
+                    tokenabi,
+                    this.token.address
+                );
+                return from(
+                    tokenContract.methods
+                        .transfer(raidenAddress, transferValue)
+                        .send({ from: this.defaultAccount })
+                );
+            }
+        })
+            .pipe(
+                catchError((e) => {
+                    console.log(e);
+                    return throwError(e);
+                }),
+                finalize(() =>
+                    this.notificationService.removePendingAction(
+                        notificationIdentifier
+                    )
+                )
+            )
+            .subscribe({
+                next: () =>
+                    this.notificationService.addSuccessNotification({
+                        title: `Sent ${symbol} to account`,
+                        description: `${formattedAmount} ${symbol}`,
+                        icon: 'deposit',
+                        userToken: this.token,
+                    }),
+                error: (error) =>
+                    this.notificationService.addErrorNotification({
+                        title: `Send ${symbol} to account failed`,
+                        description: error.message
+                            ? error.message
+                            : error.toString(),
+                        icon: 'error-mark',
+                        userToken: this.token,
+                    }),
+            });
+    }
+
+    private connectWallet() {
+        const requestAccounts$ = defer(() =>
+            from(this.web3.eth.requestAccounts())
+        ).pipe(
+            catchError((error) => {
+                this.accountRequestRejected = true;
+                return throwError(error);
+            })
+        );
+
+        defer(() => {
+            this.requesting = true;
+            this.accountRequestRejected = false;
+            this.wrongChainID = false;
+            return zip(
+                from(this.web3.eth.getChainId()),
+                this.raidenService.network$
+            );
+        })
+            .pipe(
+                switchMap(([web3ChainId, network]) => {
+                    if (web3ChainId !== network.chainId) {
+                        this.wrongChainID = true;
+                        return throwError('Chain ids not matching.');
+                    }
+                    return requestAccounts$;
+                }),
+                finalize(() => (this.requesting = false))
+            )
+            .subscribe((accounts) => (this.defaultAccount = accounts[0]));
     }
 }
