@@ -1,9 +1,15 @@
 <app-raiden-dialog
-    acceptText="Done"
+    [acceptText]="
+        defaultAccount
+            ? 'Send ' + (ethSelected ? 'ETH' : token.symbol)
+            : 'Connect Wallet'
+    "
+    [acceptDisabled]="!web3 || (defaultAccount && form.invalid)"
     infoText="You can use this dialog to top up your account with ETH or tokens from a wallet."
     [showCancel]="false"
     [formGroup]="form"
-    (accept)="close()"
+    [noButtons]="requesting"
+    (accept)="accept()"
     (cancel)="close()"
 >
     <div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="16px">
@@ -77,6 +83,27 @@
         <span class="info__label info__label--white">
             Send {{ ethSelected ? 'ETH' : token.symbol }} to your account
         </span>
-        <app-token-input formControlName="amount"></app-token-input>
+        <app-token-input
+            class="token-input"
+            formControlName="amount"
+        ></app-token-input>
+        <mat-progress-spinner
+            *ngIf="requesting"
+            diameter="38"
+            mode="indeterminate"
+            color="accent"
+        ></mat-progress-spinner>
+        <div class="error-box" [@fallDown]="'in'">
+            <span *ngIf="!web3">
+                Could not detect wallet. You need MetaMask to proceed.
+            </span>
+            <span *ngIf="wrongChainID" class="error-box__item">
+                The chain ids of your Web3 provider and your Raiden client do
+                not match.
+            </span>
+            <span *ngIf="accountRequestRejected" class="error-box__item">
+                Access to accounts rejected.
+            </span>
+        </div>
     </div>
 </app-raiden-dialog>
