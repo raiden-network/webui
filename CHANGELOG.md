@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- [#655] Integrated MetaMask for easily filling up the Raiden account with ETH and tokens.
 
 ## [1.2.1] - 2020-04-26
 ### Fixed
@@ -208,6 +210,7 @@ token network.
 [0.7.0]: https://github.com/raiden-network/webui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/raiden-network/webui/releases/tag/v0.6.0
 
+[#655]: https://github.com/raiden-network/webui/issues/655
 [#603]: https://github.com/raiden-network/webui/issues/603
 [#598]: https://github.com/raiden-network/webui/issues/598
 [#590]: https://github.com/raiden-network/webui/issues/590
