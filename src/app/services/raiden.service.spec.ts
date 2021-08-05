@@ -10,7 +10,7 @@ import {
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { Channel } from '../models/channel';
-import { RaidenConfig, Web3Factory } from './raiden.config';
+import { RaidenConfig } from './raiden.config';
 import { RaidenService } from './raiden.service';
 import { TokenInfoRetrieverService } from './token-info-retriever.service';
 import { TestProviders } from '../../testing/test-providers';
@@ -39,6 +39,7 @@ import { PaymentEvent } from '../models/payment-event';
 import { MockConfig } from '../../testing/mock-config';
 import { TokenInfo } from '../models/usertoken';
 import { Settings } from '../models/settings';
+import { Web3Factory } from './web3-factory.service';
 
 describe('RaidenService', () => {
     const token = createToken();

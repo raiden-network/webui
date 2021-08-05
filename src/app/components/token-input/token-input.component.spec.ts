@@ -135,6 +135,15 @@ describe('TokenInputComponent', () => {
         expect(component.errors['tooManyDecimals']).toBe(true);
     });
 
+    it('should use 18 decimals when used as ETH input', () => {
+        component.selectedToken = 'ETH';
+        mockInput(fixture.debugElement, 'input', '0.000000000000000010');
+        fixture.detectChanges();
+        expect(component.decimals).toBe(18);
+        expect(component.amount.isEqualTo(10)).toBe(true);
+        expect(component.errors).toBeFalsy();
+    });
+
     it('should be able to set a string value programmatically', () => {
         component.writeValue('0.00003');
         fixture.detectChanges();

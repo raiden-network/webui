@@ -37,11 +37,13 @@ class MockWeb3 extends Web3 {
     }
 }
 
-// noinspection JSUnusedLocalSymbols
 const mockProvider = {
     web3: new MockWeb3(),
     create(provider: HttpProvider): Web3 {
         return this.web3;
+    },
+    detectProvider() {
+        return Promise.resolve('http://localhost:8485');
     },
 };
 

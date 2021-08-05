@@ -23,7 +23,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { ClipboardModule } from 'ngx-clipboard';
 import { BehaviorSubject } from 'rxjs';
-import { clickElement, mockInput } from 'testing/interaction-helper';
+import { mockInput } from 'testing/interaction-helper';
 import { MockMatDialog } from 'testing/mock-mat-dialog';
 import { createToken } from 'testing/test-data';
 import { TestProviders } from 'testing/test-providers';

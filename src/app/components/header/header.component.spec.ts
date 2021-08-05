@@ -42,6 +42,7 @@ import { SelectedTokenService } from 'app/services/selected-token.service';
 import { getMintAmount } from 'app/shared/mint-amount';
 import { UserDepositDialogComponent } from '../user-deposit-dialog/user-deposit-dialog.component';
 import { ShortenAddressPipe } from 'app/pipes/shorten-address.pipe';
+import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -260,6 +261,37 @@ describe('HeaderComponent', () => {
         expect(dialogSpy).toHaveBeenCalledTimes(1);
         expect(dialogSpy).toHaveBeenCalledWith(UserDepositDialogComponent, {
             width: '509px',
+        });
+    });
+
+    it('should open the account dialog with the selected token', () => {
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
+        const dialogSpy = spyOn(dialog, 'open');
+        const selectedTokenService = TestBed.inject(SelectedTokenService);
+        selectedTokenService.setToken(tokens[2]);
+        fixture.detectChanges();
+
+        clickElement(fixture.debugElement, '#open-account');
+        fixture.detectChanges();
+
+        expect(dialogSpy).toHaveBeenCalledTimes(1);
+        expect(dialogSpy).toHaveBeenCalledWith(AccountDialogComponent, {
+            data: { asset: tokens[2] },
+        });
+    });
+
+    it('should open the account dialog with ETH', () => {
+        const dialog = TestBed.inject(MatDialog) as unknown as MockMatDialog;
+        const dialogSpy = spyOn(dialog, 'open');
+        balanceSubject.next('0');
+        fixture.detectChanges();
+
+        clickElement(fixture.debugElement, '#balance-alert');
+        fixture.detectChanges();
+
+        expect(dialogSpy).toHaveBeenCalledTimes(1);
+        expect(dialogSpy).toHaveBeenCalledWith(AccountDialogComponent, {
+            data: { asset: 'ETH' },
         });
     });
 });

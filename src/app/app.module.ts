@@ -15,7 +15,7 @@ import { OpenDialogComponent } from './components/open-dialog/open-dialog.compon
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
 import { RegisterDialogComponent } from './components/register-dialog/register-dialog.component';
 import { MaterialComponentsModule } from './modules/material-components/material-components.module';
-import { RaidenConfig, Web3Factory } from './services/raiden.config';
+import { RaidenConfig } from './services/raiden.config';
 import { LosslessJsonInterceptor } from './interceptors/lossless-json.interceptor';
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
 import { ErrorHandlingInterceptor } from './interceptors/error-handling.interceptor';
@@ -69,6 +69,7 @@ import { UserDepositDialogComponent } from './components/user-deposit-dialog/use
 import { DepositWithdrawFormComponent } from './components/user-deposit-dialog/deposit-withdraw-form/deposit-withdraw-form.component';
 import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
 import { AccountDialogComponent } from './components/account-dialog/account-dialog.component';
+import { Web3Factory } from './services/web3-factory.service';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },

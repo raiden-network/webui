@@ -1,11 +1,12 @@
 import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentType } from '../models/enviroment-type.enum';
-import { HttpProvider, provider } from 'web3-core';
+import { HttpProvider } from 'web3-core';
 import Web3 from 'web3';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Network, NetworkInfo } from '../utils/network-info';
 import { NotificationService } from './notification.service';
+import { Web3Factory } from './web3-factory.service';
 
 interface RDNConfig {
     raiden: string;
@@ -32,13 +33,6 @@ const default_config: RDNConfig = {
     reveal_timeout: 10,
     environment_type: EnvironmentType.DEVELOPMENT,
 };
-
-@Injectable()
-export class Web3Factory {
-    create(web3Provider: provider): Web3 {
-        return new Web3(web3Provider);
-    }
-}
 
 @Injectable()
 export class RaidenConfig {
