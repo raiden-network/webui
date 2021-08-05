@@ -60,15 +60,12 @@ export class TokenInputComponent implements ControlValueAccessor, Validator {
     constructor() {}
 
     get decimals(): number {
-        let decimals: number;
         if (this.ethInput) {
-            decimals = 18;
+            return 18;
         } else if (this._selectedToken) {
-            decimals = this._selectedToken.decimals;
-        } else {
-            decimals = 0;
+            return this._selectedToken.decimals;
         }
-        return decimals;
+        return 0;
     }
 
     get selectedToken(): UserToken {

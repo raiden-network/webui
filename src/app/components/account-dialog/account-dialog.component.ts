@@ -28,12 +28,12 @@ import {
     tap,
 } from 'rxjs/operators';
 import { TokenInputComponent } from '../token-input/token-input.component';
-import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
 import { Animations } from 'app/animations/animations';
 import { tokenabi } from 'app/models/tokenabi';
 import { NotificationService } from 'app/services/notification.service';
 import { amountToDecimal } from 'app/utils/amount.converter';
+import { Web3Factory } from 'app/services/web3-factory.service';
 
 export interface AccountDialogPayload {
     readonly asset: UserToken | 'ETH';
@@ -73,7 +73,8 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         private tokenPollingService: TokenPollingService,
         private userDepositService: UserDepositService,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private web3Factory: Web3Factory
     ) {
         this.form = this.fb.group({
             asset: [data.asset, Validators.required],
@@ -129,10 +130,10 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
             });
         this.form.controls.asset.updateValueAndValidity();
 
-        from(detectEthereumProvider())
+        from(this.web3Factory.detectProvider())
             .pipe(
                 filter((provider) => !!provider),
-                map((provider: any) => new Web3(provider)),
+                map((provider: any) => this.web3Factory.create(provider)),
                 tap((web3) => (this.web3 = web3)),
                 switchMap((web3) =>
                     from<Promise<string[]>>(web3.eth.getAccounts())
@@ -204,10 +205,6 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
             }
         })
             .pipe(
-                catchError((e) => {
-                    console.log(e);
-                    return throwError(e);
-                }),
                 finalize(() =>
                     this.notificationService.removePendingAction(
                         notificationIdentifier
@@ -225,7 +222,7 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
                 error: (error) =>
                     this.notificationService.addErrorNotification({
                         title: `Send ${symbol} to account failed`,
-                        description: error.message
+                        description: error?.message
                             ? error.message
                             : error.toString(),
                         icon: 'error-mark',
@@ -263,6 +260,9 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
                 }),
                 finalize(() => (this.requesting = false))
             )
-            .subscribe((accounts) => (this.defaultAccount = accounts[0]));
+            .subscribe({
+                next: (accounts) => (this.defaultAccount = accounts[0]),
+                error: console.error,
+            });
     }
 }

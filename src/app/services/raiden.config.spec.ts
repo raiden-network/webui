@@ -1,5 +1,5 @@
 import { fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
-import { RaidenConfig, Web3Factory } from './raiden.config';
+import { RaidenConfig } from './raiden.config';
 import { HttpClientModule } from '@angular/common/http';
 import {
     HttpClientTestingModule,
@@ -10,6 +10,7 @@ import { EnvironmentType } from '../models/enviroment-type.enum';
 import Web3 from 'web3';
 import { HttpProvider } from 'web3-core';
 import Spy = jasmine.Spy;
+import { Web3Factory } from './web3-factory.service';
 
 describe('RaidenConfig', () => {
     let testingController: HttpTestingController;
@@ -259,31 +260,5 @@ describe('RaidenConfig', () => {
             raidenConfig.config.web3_fallback
         );
         flush();
-    }));
-});
-
-describe('Web3Factory', () => {
-    let web3Factory: Web3Factory;
-
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
-            providers: [Web3Factory],
-        });
-
-        web3Factory = TestBed.inject(Web3Factory);
-    });
-
-    it('should be created', inject([Web3Factory], (service: Web3Factory) => {
-        expect(service).toBeTruthy();
-    }));
-
-    it('should create a new web3 instance', fakeAsync(() => {
-        const web3 = web3Factory.create(
-            new Web3.providers.HttpProvider('http://localhost:8485')
-        );
-        expect((web3.currentProvider as HttpProvider).host).toBe(
-            'http://localhost:8485'
-        );
     }));
 });

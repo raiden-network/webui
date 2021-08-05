@@ -20,6 +20,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MockMatDialog } from '../../../testing/mock-mat-dialog';
 import { RegisterDialogComponent } from '../register-dialog/register-dialog.component';
 import { RaidenIconsModule } from '../../modules/raiden-icons/raiden-icons.module';
+import { DisplayDecimalsPipe } from 'app/pipes/display-decimals.pipe';
 
 describe('TokenNetworkSelectorComponent', () => {
     let component: TokenNetworkSelectorComponent;
@@ -41,6 +42,10 @@ describe('TokenNetworkSelectorComponent', () => {
         balance: new BigNumber(0),
     });
     const tokens = [connectedToken, ownedToken, notOwnedToken];
+    const servicesToken = createToken({
+        symbol: 'STT',
+        name: 'Service Test Token',
+    });
 
     beforeEach(
         waitForAsync(() => {
@@ -50,7 +55,10 @@ describe('TokenNetworkSelectorComponent', () => {
             tokenPollingMock.refresh = () => {};
 
             TestBed.configureTestingModule({
-                declarations: [TokenNetworkSelectorComponent],
+                declarations: [
+                    TokenNetworkSelectorComponent,
+                    DisplayDecimalsPipe,
+                ],
                 providers: [
                     TestProviders.MockRaidenConfigProvider(),
                     {
@@ -60,6 +68,7 @@ describe('TokenNetworkSelectorComponent', () => {
                     RaidenService,
                     TestProviders.AddressBookStubProvider(),
                     TestProviders.MockMatDialog(),
+                    TestProviders.MockUserDepositService(servicesToken),
                 ],
                 imports: [
                     MaterialComponentsModule,
@@ -75,10 +84,10 @@ describe('TokenNetworkSelectorComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(TokenNetworkSelectorComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
     });
 
     it('should create', () => {
+        fixture.detectChanges();
         expect(component).toBeTruthy();
     });
 
@@ -108,16 +117,62 @@ describe('TokenNetworkSelectorComponent', () => {
         mockMatSelectFirst(fixture.debugElement);
         fixture.detectChanges();
 
-        expect(component.value).toBe(connectedToken);
+        expect(component.value).toEqual(connectedToken);
         expect(touchedSpy).toHaveBeenCalled();
         expect(changeSpy).toHaveBeenCalledTimes(1);
         expect(changeSpy).toHaveBeenCalledWith(connectedToken);
     });
 
+    it('should be able to show and select ETH', () => {
+        component.showEthOption = true;
+        const changeSpy = jasmine.createSpy('onChange');
+        const touchedSpy = jasmine.createSpy('onTouched');
+        component.registerOnChange(changeSpy);
+        component.registerOnTouched(touchedSpy);
+        fixture.detectChanges();
+
+        mockOpenMatSelect(fixture.debugElement);
+        fixture.detectChanges();
+
+        mockMatSelectFirst(fixture.debugElement);
+        fixture.detectChanges();
+
+        expect(component.value).toBe('ETH');
+        expect(touchedSpy).toHaveBeenCalled();
+        expect(changeSpy).toHaveBeenCalledTimes(1);
+        expect(changeSpy).toHaveBeenCalledWith('ETH');
+    });
+
+    it('should be able to show and select the services token', () => {
+        component.showServicesToken = true;
+        const changeSpy = jasmine.createSpy('onChange');
+        const touchedSpy = jasmine.createSpy('onTouched');
+        component.registerOnChange(changeSpy);
+        component.registerOnTouched(touchedSpy);
+        fixture.detectChanges();
+
+        mockOpenMatSelect(fixture.debugElement);
+        fixture.detectChanges();
+
+        mockMatSelectFirst(fixture.debugElement);
+        fixture.detectChanges();
+
+        expect(component.value).toEqual(servicesToken);
+        expect(touchedSpy).toHaveBeenCalled();
+        expect(changeSpy).toHaveBeenCalledTimes(1);
+        expect(changeSpy).toHaveBeenCalledWith(servicesToken);
+    });
+
     it('should be able to set a value programmatically', () => {
         component.writeValue(notOwnedToken);
         fixture.detectChanges();
-        expect(component.value).toBe(notOwnedToken);
+        expect(component.value).toEqual(notOwnedToken);
+    });
+
+    it('should be able to set ETH as value programmatically', () => {
+        component.writeValue('ETH');
+        fixture.detectChanges();
+        expect(component.value).toBe('ETH');
     });
 
     it('should not to set a non token object programmatically', () => {
