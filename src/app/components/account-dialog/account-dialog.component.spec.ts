@@ -194,7 +194,9 @@ describe('AccountDialogComponent', () => {
         fixture.detectChanges();
         tick();
         fixture.detectChanges();
-        spyOn(web3Mock.eth, 'requestAccounts').and.rejectWith();
+        spyOn(web3Mock.eth, 'requestAccounts').and.rejectWith(
+            new Error('User rejected.')
+        );
         clickElement(fixture.debugElement, '#accept');
         fixture.detectChanges();
         tick();

@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ShortenAddressPipe implements PipeTransform {
     transform(value?: string, width: number = 6): string {
-        const separator = '...';
+        const separator = '…';
         if (!value) {
             return '';
         } else if (value.length <= width) {

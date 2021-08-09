@@ -65,7 +65,15 @@ export class TokenNetworkSelectorComponent
                 this.tokens$,
                 this.userDepositService.servicesToken$,
             ]).pipe(
-                map(([tokens, servicesToken]) => [servicesToken, ...tokens])
+                map(([tokens, servicesToken]) => {
+                    const servicesTokenRegistered = !!tokens.find(
+                        (item) => servicesToken.address === item.address
+                    );
+                    if (servicesTokenRegistered) {
+                        return tokens;
+                    }
+                    return [servicesToken, ...tokens];
+                })
             );
         }
     }

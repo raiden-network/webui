@@ -135,9 +135,7 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
                 filter((provider) => !!provider),
                 map((provider: any) => this.web3Factory.create(provider)),
                 tap((web3) => (this.web3 = web3)),
-                switchMap((web3) =>
-                    from<Promise<string[]>>(web3.eth.getAccounts())
-                )
+                switchMap(async (web3) => web3.eth.getAccounts())
             )
             .subscribe((accounts) => {
                 if (accounts.length > 0) {
@@ -171,7 +169,7 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
         ).toFixed();
         let notificationIdentifier: number;
 
-        defer(() => {
+        defer(async () => {
             this.dialogRef.close();
             notificationIdentifier = this.notificationService.addPendingAction({
                 title: `Sending ${symbol} to account`,
@@ -185,23 +183,19 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
             ).toFixed();
 
             if (this.ethSelected) {
-                return from(
-                    this.web3.eth.sendTransaction({
-                        from: this.defaultAccount,
-                        to: raidenAddress,
-                        value: transferValue,
-                    })
-                );
+                return this.web3.eth.sendTransaction({
+                    from: this.defaultAccount,
+                    to: raidenAddress,
+                    value: transferValue,
+                });
             } else {
                 const tokenContract = new this.web3.eth.Contract(
                     tokenabi,
                     this.token.address
                 );
-                return from(
-                    tokenContract.methods
-                        .transfer(raidenAddress, transferValue)
-                        .send({ from: this.defaultAccount })
-                );
+                return tokenContract.methods
+                    .transfer(raidenAddress, transferValue)
+                    .send({ from: this.defaultAccount });
             }
         })
             .pipe(
@@ -232,8 +226,8 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
     }
 
     private connectWallet() {
-        const requestAccounts$ = defer(() =>
-            from(this.web3.eth.requestAccounts())
+        const requestAccounts$ = defer(async () =>
+            this.web3.eth.requestAccounts()
         ).pipe(
             catchError((error) => {
                 this.accountRequestRejected = true;
@@ -245,16 +239,13 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
             this.requesting = true;
             this.accountRequestRejected = false;
             this.wrongChainID = false;
-            return zip(
-                from(this.web3.eth.getChainId()),
-                this.raidenService.network$
-            );
+            return zip(this.web3.eth.getChainId(), this.raidenService.network$);
         })
             .pipe(
                 switchMap(([web3ChainId, network]) => {
                     if (web3ChainId !== network.chainId) {
                         this.wrongChainID = true;
-                        return throwError('Chain ids not matching.');
+                        throw new Error('Chain ids not matching.');
                     }
                     return requestAccounts$;
                 }),
@@ -262,7 +253,7 @@ export class AccountDialogComponent implements OnInit, OnDestroy {
             )
             .subscribe({
                 next: (accounts) => (this.defaultAccount = accounts[0]),
-                error: console.error,
+                error: (error) => console.error(error?.message),
             });
     }
 }
